@@ -6,20 +6,20 @@
   </picture>
 </p>
 
-# Xata TypeScript SDK
+## Xata TypeScript SDK
 
 The official TypeScript SDK for [Xata](https://xata.io).
 
-## Installation
+### Installation
 
 ```bash
 npm install @xata.io/api
 ```
 
-## Documentation
+### Documentation
 
 See the [Xata documentation](https://xata.io/docs) for usage instructions.
 
-## License
+### License
 
 Apache-2.0 — see [LICENSE](LICENSE) for details.
