@@ -5,8 +5,7 @@
     "paths": {
       "~/*": ["./src/*"]
     },
-    "jsx": "react-jsx",
-    "jsxImportSource": "@kubb/react-fabric",
     "rootDir": "."
-  }
+  },
+  "include": ["src", "env.ts"]
 }
