@@ -725,7 +725,10 @@ export const branchUpdateDetailsSchema = z
     postgresConfigurationParameters: z.optional(
       z.object({}).catchall(z.string()).describe('Arbitrary PostgreSQL configuration parameters for the cluster')
     ),
-    preloadLibraries: z.optional(z.array(z.string()).describe('List of PostgreSQL extensions and libraries to preload'))
+    preloadLibraries: z.optional(
+      z.array(z.string()).describe('List of PostgreSQL extensions and libraries to preload')
+    ),
+    image: z.optional(z.string().describe('PostgreSQL image to use for the database instances'))
   })
   .describe('Details that can be updated for an existing branch');
 

@@ -1492,6 +1492,11 @@ export type BranchUpdateDetails = {
    * @type array | undefined
    */
   preloadLibraries?: string[] | undefined;
+  /**
+   * @description PostgreSQL image to use for the database instances
+   * @type string | undefined
+   */
+  image?: string | undefined;
 };
 
 /**
