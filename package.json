@@ -22,9 +22,9 @@
     "@kubb/react": "4.3.1",
     "@kubb/react-fabric": "0.16.0",
     "@types/node": "25.6.0",
-    "@typescript/native-preview": "7.0.0-dev.20260414.1",
+    "@typescript/native-preview": "7.0.0-dev.20260419.1",
     "case": "1.6.3",
-    "typescript": "6.0.2",
+    "typescript": "6.0.3",
     "vitest": "4.1.4",
     "@xata.io/tsconfig": "0.0.1"
   },
