@@ -210,6 +210,12 @@ import type {
   GetBranchCredentials400,
   GetBranchCredentials401,
   GetBranchCredentials404,
+  RotateBranchCredentialsMutationRequest,
+  RotateBranchCredentialsMutationResponse,
+  RotateBranchCredentialsPathParams,
+  RotateBranchCredentials400,
+  RotateBranchCredentials401,
+  RotateBranchCredentials404,
   RestoreFromBackupMutationRequest,
   RestoreFromBackupMutationResponse,
   RestoreFromBackupPathParams,
@@ -1520,6 +1526,50 @@ export async function getBranchCredentials({
 }
 
 /**
+ * @description Triggers a credential rotation for the branch database user. The new credentials can be retrieved via the credentials endpoint after rotation completes.
+ * @summary Rotate branch credentials
+ * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/credentials/rotate}
+ */
+export async function rotateBranchCredentials({
+  pathParams: { organizationID, projectID, branchID },
+  body,
+  config = {}
+}: {
+  pathParams: RotateBranchCredentialsPathParams;
+  body: RotateBranchCredentialsMutationRequest;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  if (!projectID) {
+    throw new Error(`Missing required path parameter: projectID`);
+  }
+
+  if (!branchID) {
+    throw new Error(`Missing required path parameter: branchID`);
+  }
+
+  const data = await request<
+    RotateBranchCredentialsMutationResponse,
+    ErrorWrapper<RotateBranchCredentials400 | RotateBranchCredentials401 | RotateBranchCredentials404>,
+    RotateBranchCredentialsMutationRequest,
+    Record<string, string>,
+    Record<string, string>,
+    RotateBranchCredentialsPathParams
+  >({
+    method: 'POST',
+    url: `/organizations/${organizationID}/projects/${projectID}/branches/${branchID}/credentials/rotate`,
+    body,
+    ...requestConfig
+  });
+  return data;
+}
+
+/**
  * @summary Retrieve branch metrics
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/metrics}
  */
@@ -2016,6 +2066,8 @@ export const operationsByPath = {
   'PATCH /organizations/{organizationID}/projects/{projectID}/branches/{branchID}': updateBranch,
   'DELETE /organizations/{organizationID}/projects/{projectID}/branches/{branchID}': deleteBranch,
   'GET /organizations/{organizationID}/projects/{projectID}/branches/{branchID}/credentials': getBranchCredentials,
+  'POST /organizations/{organizationID}/projects/{projectID}/branches/{branchID}/credentials/rotate':
+    rotateBranchCredentials,
   'POST /organizations/{organizationID}/projects/{projectID}/branches/{branchID}/metrics': branchMetrics,
   'POST /organizations/{organizationID}/projects/{projectID}/branches/{branchID}/restore': restoreFromBackup,
   'GET /organizations/{organizationID}/projects/{projectID}/branches/{branchID}/postgres-config':
@@ -2086,6 +2138,7 @@ export const operationsByTag = {
     updateBranch,
     deleteBranch,
     getBranchCredentials,
+    rotateBranchCredentials,
     branchMetrics,
     restoreFromBackup,
     getBranchPostgresConfig
@@ -2151,7 +2204,7 @@ export const tagDictionary = {
   },
   branches: {
     GET: ['listBranches', 'describeBranch', 'getBranchCredentials', 'getBranchPostgresConfig'],
-    POST: ['createBranch', 'branchMetrics', 'restoreFromBackup'],
+    POST: ['createBranch', 'rotateBranchCredentials', 'branchMetrics', 'restoreFromBackup'],
     PATCH: ['updateBranch'],
     DELETE: ['deleteBranch']
   },
@@ -2182,5 +2235,6 @@ export const Scopes = [
   'branch:read',
   'branch:write',
   'credentials:read',
+  'credentials:write',
   'metrics:read'
 ] as const;

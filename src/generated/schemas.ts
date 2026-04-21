@@ -638,6 +638,15 @@ export const branchCredentialsSchema = z
   .describe('Credentials for accessing a branch, username and password');
 
 /**
+ * @description Request to rotate credentials for a branch database user
+ */
+export const rotateCredentialsRequestSchema = z
+  .object({
+    username: z.string().describe('Database username to rotate credentials for')
+  })
+  .describe('Request to rotate credentials for a branch database user');
+
+/**
  * @description Details required when creating a new branch
  */
 export const branchCreationDetailsSchema = z
@@ -2740,6 +2749,59 @@ export const getBranchCredentials5XXSchema = z.unknown();
 export const getBranchCredentialsErrorSchema = z.unknown();
 
 export const getBranchCredentialsQueryResponseSchema = z.lazy(() => getBranchCredentials200Schema);
+
+export const rotateBranchCredentialsPathParamsSchema = z.object({
+  get organizationID() {
+    return organizationIDSchema;
+  },
+  projectID: z.string(),
+  branchID: z.string()
+});
+
+/**
+ * @description Credential rotation initiated successfully
+ */
+export const rotateBranchCredentials204Schema = z.unknown();
+
+/**
+ * @description Generic error response for most error conditions
+ */
+export const rotateBranchCredentials400Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Error response when authentication or authorization fails
+ */
+export const rotateBranchCredentials401Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
+});
+
+/**
+ * @description Generic error response for most error conditions
+ */
+export const rotateBranchCredentials404Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Unexpected Error
+ */
+export const rotateBranchCredentials5XXSchema = z.unknown();
+
+/**
+ * @description Unexpected Error
+ */
+export const rotateBranchCredentialsErrorSchema = z.unknown();
+
+export const rotateBranchCredentialsMutationRequestSchema = z
+  .lazy(() => rotateCredentialsRequestSchema)
+  .describe('Request to rotate credentials for a branch database user');
+
+export const rotateBranchCredentialsMutationResponseSchema = z.lazy(() => rotateBranchCredentials204Schema);
 
 export const branchMetricsPathParamsSchema = z.object({
   get organizationID() {

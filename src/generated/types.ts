@@ -1367,6 +1367,17 @@ export type BranchCredentials = {
 };
 
 /**
+ * @description Request to rotate credentials for a branch database user
+ */
+export type RotateCredentialsRequest = {
+  /**
+   * @description Database username to rotate credentials for
+   * @type string
+   */
+  username: string;
+};
+
+/**
  * @description Details required when creating a new branch
  */
 export type BranchCreationDetails =
@@ -5123,6 +5134,96 @@ export type GetBranchCredentialsQuery = {
   PathParams: GetBranchCredentialsPathParams;
   QueryParams: GetBranchCredentialsQueryParams;
   Errors: GetBranchCredentials400 | GetBranchCredentials401 | GetBranchCredentials404;
+};
+
+export type RotateBranchCredentialsPathParams = {
+  /**
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+  /**
+   * @type string
+   */
+  projectID: string;
+  /**
+   * @type string
+   */
+  branchID: string;
+};
+
+/**
+ * @description Credential rotation initiated successfully
+ */
+export type RotateBranchCredentials204 = unknown;
+
+/**
+ * @description Generic error response for most error conditions
+ */
+export type RotateBranchCredentials400 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Error response when authentication or authorization fails
+ */
+export type RotateBranchCredentials401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the authentication or authorization issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Generic error response for most error conditions
+ */
+export type RotateBranchCredentials404 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Unexpected Error
+ */
+export type RotateBranchCredentials5XX = unknown;
+
+/**
+ * @description Unexpected Error
+ */
+export type RotateBranchCredentialsError = unknown;
+
+export type RotateBranchCredentialsMutationRequest = RotateCredentialsRequest;
+
+export type RotateBranchCredentialsMutationResponse = RotateBranchCredentials204;
+
+export type RotateBranchCredentialsMutation = {
+  Response: RotateBranchCredentials204;
+  Request: RotateBranchCredentialsMutationRequest;
+  PathParams: RotateBranchCredentialsPathParams;
+  Errors: RotateBranchCredentials400 | RotateBranchCredentials401 | RotateBranchCredentials404;
 };
 
 export type BranchMetricsPathParams = {
