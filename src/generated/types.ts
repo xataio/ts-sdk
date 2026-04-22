@@ -1515,11 +1515,6 @@ export type BranchUpdateDetails = {
  */
 export type ProjectLimits = {
   /**
-   * @description List of region identifiers where branches can be deployed
-   * @type array
-   */
-  regions: string[];
-  /**
    * @description Maximum number of database instances allowed per branch
    * @minLength 1
    * @type integer
@@ -1531,11 +1526,6 @@ export type ProjectLimits = {
    * @type integer
    */
   minInstances: number;
-  /**
-   * @description List of PostgreSQL image identifiers that can be used for branches
-   * @type array
-   */
-  images: string[];
   /**
    * @description Maximum character length allowed for project descriptions
    * @minLength 25

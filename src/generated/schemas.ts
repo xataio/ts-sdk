@@ -746,13 +746,8 @@ export const branchUpdateDetailsSchema = z
  */
 export const projectLimitsSchema = z
   .object({
-    regions: z.array(z.string()).describe('List of region identifiers where branches can be deployed'),
     maxInstances: z.int().min(1).describe('Maximum number of database instances allowed per branch'),
     minInstances: z.int().min(1).describe('Minimum number of database instances required per branch'),
-    images: z
-      .array(z.string())
-      .refine((items) => new Set(items).size === items.length, { message: 'Array entries must be unique' })
-      .describe('List of PostgreSQL image identifiers that can be used for branches'),
     maxDescriptionLength: z.int().min(25).describe('Maximum character length allowed for project descriptions'),
     maxBranches: z.int().describe('Maximum number of branches allowed per project')
   })

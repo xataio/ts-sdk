@@ -259,11 +259,11 @@ packages:
   '@redocly/ajv@8.18.3':
     resolution: {integrity: sha512-l42u0of3hY98sN2A+M4qTX1O/KrpgGH32Hu9kP2GtHyD5Dfqq86PKFLe5dwaD8DEnNmlOlll2BAmeEtf0DaySg==}
 
-  '@redocly/config@0.48.0':
-    resolution: {integrity: sha512-8W3wz+Q7y4e9klJWlYOvQWK5r7P2Mo589vcjtlT5coOxsyAdt53k8Vb8iAqnRiGWExbjBQmSbL2XbuU747Nf6Q==}
+  '@redocly/config@0.48.1':
+    resolution: {integrity: sha512-vq8GM3e0KiglqkwE5Lb9XayrmZY4dHCs21BsvV92yAZN68f1N9cZUuwY1SwnztPbH06dn9uLzubBl/JNfImqfA==}
 
-  '@redocly/openapi-core@2.29.0':
-    resolution: {integrity: sha512-hIbOw1ZY01NhjEGwAuG/OXy19EAY31W7J7b061aNpCzJ8+mFyyy52X4CTrpF2c0rbemSLobXowvAEddVSX1QzQ==}
+  '@redocly/openapi-core@2.29.1':
+    resolution: {integrity: sha512-T9FeS2+lpXR9V/XHqiJ53uGjoF1Hs80nRA9ACEXpTLF9a4jzzSANO92/f9HKuQvl0bHgyaIbP5OsBgVU3EP1KQ==}
     engines: {node: '>=22.12.0 || >=20.19.0 <21.0.0', npm: '>=10'}
 
   '@rolldown/binding-android-arm64@1.0.0-rc.16':
@@ -1589,7 +1589,7 @@ snapshots:
       '@kubb/ast': 4.37.2
       '@kubb/core': 4.37.2(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/fabric-core': 0.14.0
-      '@redocly/openapi-core': 2.29.0
+      '@redocly/openapi-core': 2.29.1
       '@stoplight/yaml': 4.3.0
       jsonpointer: 5.0.1
       oas: 31.1.2
@@ -1606,7 +1606,7 @@ snapshots:
       '@kubb/ast': 4.37.2
       '@kubb/core': 4.37.2(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/fabric-core': 0.14.0
-      '@redocly/openapi-core': 2.29.0
+      '@redocly/openapi-core': 2.29.1
       '@stoplight/yaml': 4.3.0
       jsonpointer: 5.0.1
       oas: 31.1.2
@@ -1801,14 +1801,14 @@ snapshots:
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
-  '@redocly/config@0.48.0':
+  '@redocly/config@0.48.1':
     dependencies:
       json-schema-to-ts: 2.7.2
 
-  '@redocly/openapi-core@2.29.0':
+  '@redocly/openapi-core@2.29.1':
     dependencies:
       '@redocly/ajv': 8.18.3
-      '@redocly/config': 0.48.0
+      '@redocly/config': 0.48.1
       ajv: '@redocly/ajv@8.18.0'
       ajv-formats: 3.0.1(@redocly/ajv@8.18.0)
       colorette: 1.4.0
