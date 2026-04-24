@@ -160,7 +160,7 @@ export const fullAPIKeySchema = z.object({
  * @description Endpoint suffix that determines which PostgreSQL instance receives traffic.\nEncoded as the hostname suffix in the connection string (e.g. `my-branch-ro.example.com`).\n
  */
 export const endpointTypeSchema = z
-  .enum(['rw', 'ro', 'r'])
+  .enum(['rw', 'ro', 'r', 'pooled_rw'])
   .describe(
     'Endpoint suffix that determines which PostgreSQL instance receives traffic.\nEncoded as the hostname suffix in the connection string (e.g. `my-branch-ro.example.com`).\n'
   );

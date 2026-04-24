@@ -398,7 +398,8 @@ export type FullAPIKey = {
 export const endpointTypeEnum = {
   rw: 'rw',
   ro: 'ro',
-  r: 'r'
+  r: 'r',
+  pooled_rw: 'pooled_rw'
 } as const;
 
 export type EndpointTypeEnumKey = (typeof endpointTypeEnum)[keyof typeof endpointTypeEnum];
