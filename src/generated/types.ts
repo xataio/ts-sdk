@@ -64,7 +64,8 @@ export const organizationStatusBillingStatusEnum = {
   ok: 'ok',
   no_payment_method: 'no_payment_method',
   invoice_overdue: 'invoice_overdue',
-  unknown: 'unknown'
+  unknown: 'unknown',
+  deletion_requested: 'deletion_requested'
 } as const;
 
 export type OrganizationStatusBillingStatusEnumKey =

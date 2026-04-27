@@ -53,7 +53,7 @@ export const organizationStatusSchema = z.object({
   disabled_by_admin: z.boolean().describe('Indicates if the organization has been disabled by an admin'),
   admin_reason: z.optional(z.string().describe('Reason for the current admin status')),
   billing_status: z
-    .enum(['ok', 'no_payment_method', 'invoice_overdue', 'unknown'])
+    .enum(['ok', 'no_payment_method', 'invoice_overdue', 'unknown', 'deletion_requested'])
     .describe('Indicates the status of the organization from a billing perspective'),
   billing_reason: z.optional(z.string().describe('Reason for the current billing status')),
   usage_tier: z
