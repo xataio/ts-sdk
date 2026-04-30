@@ -1664,6 +1664,143 @@ export type BranchMetrics = {
   unit: string;
 };
 
+export const logFilterFieldEnum = {
+  instance: 'instance',
+  level: 'level',
+  process: 'process',
+  body: 'body'
+} as const;
+
+export type LogFilterFieldEnumKey = (typeof logFilterFieldEnum)[keyof typeof logFilterFieldEnum];
+
+export const logFilterOpEnum = {
+  in: 'in',
+  contains: 'contains',
+  icontains: 'icontains',
+  regex: 'regex',
+  iregex: 'iregex'
+} as const;
+
+export type LogFilterOpEnumKey = (typeof logFilterOpEnum)[keyof typeof logFilterOpEnum];
+
+/**
+ * @description A single filter on log entries.
+ */
+export type LogFilter = {
+  /**
+   * @description Log attribute to filter on.
+   * @type string
+   */
+  field: LogFilterFieldEnumKey;
+  /**
+   * @description Match operator.
+   * @type string
+   */
+  op: LogFilterOpEnumKey;
+  /**
+   * @description Used with `op: in`.
+   * @type array | undefined
+   */
+  values?: string[] | undefined;
+  /**
+   * @description Used with the body operators.
+   * @type string | undefined
+   */
+  value?: string | undefined;
+};
+
+export type BranchLogsRequest = {
+  /**
+   * @description Start time
+   * @type string, date-time
+   */
+  start: string;
+  /**
+   * @description End time
+   * @type string, date-time
+   */
+  end: string;
+  /**
+   * @description Filters applied to log entries. Multiple filters are combined with AND.
+   * @type array | undefined
+   */
+  filters?: LogFilter[] | undefined;
+  /**
+   * @minLength 1
+   * @maxLength 1000
+   * @default 100
+   * @type integer | undefined
+   */
+  limit?: number | undefined;
+  /**
+   * @description Pagination cursor from a previous response
+   * @type string | undefined
+   */
+  cursor?: string | undefined;
+};
+
+export const logLevelEnum = {
+  debug: 'debug',
+  info: 'info',
+  warning: 'warning',
+  error: 'error'
+} as const;
+
+export type LogLevelEnumKey = (typeof logLevelEnum)[keyof typeof logLevelEnum];
+
+/**
+ * @description Log level enumeration
+ */
+export type LogLevel = LogLevelEnumKey;
+
+export type LogEntry = {
+  /**
+   * @type string, date-time
+   */
+  timestamp: string;
+  /**
+   * @type string
+   */
+  instanceID: string;
+  /**
+   * @description Log level enumeration
+   * @type string | undefined
+   */
+  level?: LogLevel | undefined;
+  /**
+   * @type string
+   */
+  message: string;
+  /**
+   * @description Name of the PostgreSQL process that emitted the log
+   * @type string | undefined
+   */
+  process?: string | undefined;
+};
+
+/**
+ * @description A collection of logs for each of the instances of a branch
+ */
+export type BranchLogs = {
+  /**
+   * @type string, date-time
+   */
+  start: string;
+  /**
+   * @type string, date-time
+   */
+  end: string;
+  /**
+   * @type array
+   */
+  logs: LogEntry[];
+  /**
+   * @description Pagination cursor for the next page
+   * @type string
+   */
+  nextCursor: string | null;
+};
+
 export const postgresConfigParameterTypeEnum = {
   string: 'string',
   int: 'int',
@@ -3580,6 +3717,33 @@ export type WebsocketQuery = {
   Errors: Websocket400;
 };
 
+/**
+ * @description Webhook received and processed successfully
+ */
+export type GithubWebhook200 = unknown;
+
+/**
+ * @description Invalid signature or malformed request
+ */
+export type GithubWebhook400 = unknown;
+
+/**
+ * @description Internal error while handling the webhook
+ */
+export type GithubWebhook500 = unknown;
+
+export type GithubWebhookMutationRequest = {
+  [key: string]: unknown;
+};
+
+export type GithubWebhookMutationResponse = GithubWebhook200;
+
+export type GithubWebhookMutation = {
+  Response: GithubWebhook200;
+  Request: GithubWebhookMutationRequest;
+  Errors: GithubWebhook400 | GithubWebhook500;
+};
+
 export type ListRegionsPathParams = {
   /**
    * @description Unique identifier of the organization to check region availability for
@@ -5399,6 +5563,96 @@ export type RestoreFromBackupMutation = {
   Request: RestoreFromBackupMutationRequest;
   PathParams: RestoreFromBackupPathParams;
   Errors: RestoreFromBackup400 | RestoreFromBackup401 | RestoreFromBackup404;
+};
+
+export type BranchLogsPathParams = {
+  /**
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+  /**
+   * @type string
+   */
+  projectID: string;
+  /**
+   * @type string
+   */
+  branchID: string;
+};
+
+/**
+ * @description Logs for a branch
+ */
+export type BranchLogs200 = BranchLogs;
+
+/**
+ * @description Generic error response for most error conditions
+ */
+export type BranchLogs400 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Error response when authentication or authorization fails
+ */
+export type BranchLogs401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the authentication or authorization issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Generic error response for most error conditions
+ */
+export type BranchLogs404 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Unexpected Error
+ */
+export type BranchLogs5XX = unknown;
+
+/**
+ * @description Unexpected Error
+ */
+export type BranchLogsError = unknown;
+
+export type BranchLogsMutationRequest = BranchLogsRequest;
+
+export type BranchLogsMutationResponse = BranchLogs200;
+
+export type BranchLogsMutation = {
+  Response: BranchLogs200;
+  Request: BranchLogsMutationRequest;
+  PathParams: BranchLogsPathParams;
+  Errors: BranchLogs400 | BranchLogs401 | BranchLogs404;
 };
 
 export type GetBranchPostgresConfigPathParams = {

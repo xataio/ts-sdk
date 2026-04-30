@@ -815,6 +815,60 @@ export const branchMetricsSchema = z
   .describe('A collection of metrics (cpu, memory, disk,...) for each of the instances of a branch');
 
 /**
+ * @description A single filter on log entries.
+ */
+export const logFilterSchema = z
+  .object({
+    field: z.enum(['instance', 'level', 'process', 'body']).describe('Log attribute to filter on.'),
+    op: z.enum(['in', 'contains', 'icontains', 'regex', 'iregex']).describe('Match operator.'),
+    values: z.optional(z.array(z.string()).describe('Used with `op: in`.')),
+    value: z.optional(z.string().describe('Used with the body operators.'))
+  })
+  .describe('A single filter on log entries.');
+
+export const branchLogsRequestSchema = z.object({
+  start: z.date().describe('Start time'),
+  end: z.date().describe('End time'),
+  get filters() {
+    return z
+      .array(logFilterSchema.describe('A single filter on log entries.'))
+      .describe('Filters applied to log entries. Multiple filters are combined with AND.')
+      .optional();
+  },
+  limit: z.optional(z.int().min(1).max(1000).default(100)),
+  cursor: z.optional(z.string().describe('Pagination cursor from a previous response'))
+});
+
+/**
+ * @description Log level enumeration
+ */
+export const logLevelSchema = z.enum(['debug', 'info', 'warning', 'error']).describe('Log level enumeration');
+
+export const logEntrySchema = z.object({
+  timestamp: z.date(),
+  instanceID: z.string(),
+  get level() {
+    return logLevelSchema.describe('Log level enumeration').optional();
+  },
+  message: z.string(),
+  process: z.optional(z.string().describe('Name of the PostgreSQL process that emitted the log'))
+});
+
+/**
+ * @description A collection of logs for each of the instances of a branch
+ */
+export const branchLogsSchema = z
+  .object({
+    start: z.date(),
+    end: z.date(),
+    get logs() {
+      return z.array(logEntrySchema);
+    },
+    nextCursor: z.nullable(z.string().describe('Pagination cursor for the next page'))
+  })
+  .describe('A collection of logs for each of the instances of a branch');
+
+/**
  * @description Detailed information about a single PostgreSQL configuration parameter
  */
 export const postgresConfigParameterSchema = z
@@ -1833,6 +1887,28 @@ export const websocket101Schema = z.unknown();
 export const websocket400Schema = z.unknown();
 
 export const websocketQueryResponseSchema = z.unknown();
+
+/**
+ * @description Webhook received and processed successfully
+ */
+export const githubWebhook200Schema = z.unknown();
+
+/**
+ * @description Invalid signature or malformed request
+ */
+export const githubWebhook400Schema = z.unknown();
+
+/**
+ * @description Internal error while handling the webhook
+ */
+export const githubWebhook500Schema = z.unknown();
+
+export const githubWebhookMutationRequestSchema = z
+  .object({})
+  .catchall(z.unknown())
+  .describe('GitHub webhook event payload');
+
+export const githubWebhookMutationResponseSchema = z.lazy(() => githubWebhook200Schema);
 
 export const listRegionsPathParamsSchema = z.object({
   get organizationID() {
@@ -2907,6 +2983,59 @@ export const restoreFromBackupMutationRequestSchema = z
   );
 
 export const restoreFromBackupMutationResponseSchema = z.lazy(() => restoreFromBackup201Schema);
+
+export const branchLogsPathParamsSchema = z.object({
+  get organizationID() {
+    return organizationIDSchema;
+  },
+  projectID: z.string(),
+  branchID: z.string()
+});
+
+/**
+ * @description Logs for a branch
+ */
+export const branchLogs200Schema = z
+  .lazy(() => branchLogsSchema)
+  .describe('A collection of logs for each of the instances of a branch');
+
+/**
+ * @description Generic error response for most error conditions
+ */
+export const branchLogs400Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Error response when authentication or authorization fails
+ */
+export const branchLogs401Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
+});
+
+/**
+ * @description Generic error response for most error conditions
+ */
+export const branchLogs404Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Unexpected Error
+ */
+export const branchLogs5XXSchema = z.unknown();
+
+/**
+ * @description Unexpected Error
+ */
+export const branchLogsErrorSchema = z.unknown();
+
+export const branchLogsMutationRequestSchema = z.lazy(() => branchLogsRequestSchema);
+
+export const branchLogsMutationResponseSchema = z.lazy(() => branchLogs200Schema);
 
 export const getBranchPostgresConfigPathParamsSchema = z.object({
   get organizationID() {

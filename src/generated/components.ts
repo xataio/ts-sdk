@@ -6,6 +6,12 @@
 import client from '../utils/fetcher';
 import type { FetcherConfig, ErrorWrapper } from '../utils/fetcher';
 import type {
+  BranchLogsMutationRequest,
+  BranchLogsMutationResponse,
+  BranchLogsPathParams,
+  BranchLogs400,
+  BranchLogs401,
+  BranchLogs404,
   BranchMetricsMutationRequest,
   BranchMetricsMutationResponse,
   BranchMetricsPathParams,
@@ -127,6 +133,10 @@ import type {
   Query507,
   WebsocketQueryResponse,
   Websocket400,
+  GithubWebhookMutationRequest,
+  GithubWebhookMutationResponse,
+  GithubWebhook400,
+  GithubWebhook500,
   ListRegionsQueryResponse,
   ListRegionsPathParams,
   ListRegions400,
@@ -903,6 +913,33 @@ export async function websocket({ config = {} }: { config?: Partial<FetcherConfi
 }
 
 /**
+ * @description Endpoint used by GitHub to deliver App webhook events.
+ * This endpoint is authenticated via GitHub's HMAC-SHA256 signature header,
+ * not via the normal API authentication.
+ * @summary GitHub App webhook
+ * {@link /webhooks/github}
+ */
+export async function githubWebhook({
+  body,
+  config = {}
+}: {
+  body: GithubWebhookMutationRequest;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  const data = await request<
+    GithubWebhookMutationResponse,
+    ErrorWrapper<GithubWebhook400 | GithubWebhook500>,
+    GithubWebhookMutationRequest,
+    Record<string, string>,
+    Record<string, string>,
+    Record<string, string>
+  >({ method: 'POST', url: `/webhooks/github`, body, ...requestConfig });
+  return data;
+}
+
+/**
  * @description Retrieves a list of all regions where new branches can be deployed for the specified organization.
  * @summary Get available regions
  * {@link /organizations/:organizationID/regions}
@@ -1657,6 +1694,49 @@ export async function restoreFromBackup({
 }
 
 /**
+ * @summary Retrieve branch logs
+ * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/logs}
+ */
+export async function branchLogs({
+  pathParams: { organizationID, projectID, branchID },
+  body,
+  config = {}
+}: {
+  pathParams: BranchLogsPathParams;
+  body: BranchLogsMutationRequest;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  if (!projectID) {
+    throw new Error(`Missing required path parameter: projectID`);
+  }
+
+  if (!branchID) {
+    throw new Error(`Missing required path parameter: branchID`);
+  }
+
+  const data = await request<
+    BranchLogsMutationResponse,
+    ErrorWrapper<BranchLogs400 | BranchLogs401 | BranchLogs404>,
+    BranchLogsMutationRequest,
+    Record<string, string>,
+    Record<string, string>,
+    BranchLogsPathParams
+  >({
+    method: 'POST',
+    url: `/organizations/${organizationID}/projects/${projectID}/branches/${branchID}/logs`,
+    body,
+    ...requestConfig
+  });
+  return data;
+}
+
+/**
  * @description Retrieves detailed information about the current PostgreSQL configuration parameters for a branch, including parameter types, descriptions, acceptable ranges, default values, and current values.
  * @summary Get PostgreSQL configuration details
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/postgres-config}
@@ -2048,6 +2128,7 @@ export const operationsByPath = {
   'DELETE /api-keys': deleteUserAPIKeys,
   'POST /sql': query,
   'GET /v2': websocket,
+  'POST /webhooks/github': githubWebhook,
   'GET /organizations/{organizationID}/regions': listRegions,
   'GET /organizations/{organizationID}/instanceTypes': listInstanceTypes,
   'GET /organizations/{organizationID}/images': listImages,
@@ -2070,6 +2151,7 @@ export const operationsByPath = {
     rotateBranchCredentials,
   'POST /organizations/{organizationID}/projects/{projectID}/branches/{branchID}/metrics': branchMetrics,
   'POST /organizations/{organizationID}/projects/{projectID}/branches/{branchID}/restore': restoreFromBackup,
+  'POST /organizations/{organizationID}/projects/{projectID}/branches/{branchID}/logs': branchLogs,
   'GET /organizations/{organizationID}/projects/{projectID}/branches/{branchID}/postgres-config':
     getBranchPostgresConfig,
   'GET /organizations/{organizationID}/githubapp/installations': listGithubAppInstallations,
@@ -2117,6 +2199,9 @@ export const operationsByTag = {
     query,
     websocket
   },
+  projectsWebhooks: {
+    githubWebhook
+  },
   projects: {
     listRegions,
     listInstanceTypes,
@@ -2141,10 +2226,14 @@ export const operationsByTag = {
     rotateBranchCredentials,
     branchMetrics,
     restoreFromBackup,
+    branchLogs,
     getBranchPostgresConfig
   },
   metrics: {
     branchMetrics
+  },
+  logs: {
+    branchLogs
   },
   githubApp: {
     listGithubAppInstallations,
@@ -2186,6 +2275,9 @@ export const tagDictionary = {
     POST: ['query'],
     GET: ['websocket']
   },
+  projectsWebhooks: {
+    POST: ['githubWebhook']
+  },
   projects: {
     GET: [
       'listRegions',
@@ -2204,12 +2296,15 @@ export const tagDictionary = {
   },
   branches: {
     GET: ['listBranches', 'describeBranch', 'getBranchCredentials', 'getBranchPostgresConfig'],
-    POST: ['createBranch', 'rotateBranchCredentials', 'branchMetrics', 'restoreFromBackup'],
+    POST: ['createBranch', 'rotateBranchCredentials', 'branchMetrics', 'restoreFromBackup', 'branchLogs'],
     PATCH: ['updateBranch'],
     DELETE: ['deleteBranch']
   },
   metrics: {
     POST: ['branchMetrics']
+  },
+  logs: {
+    POST: ['branchLogs']
   },
   githubApp: {
     GET: ['listGithubAppInstallations', 'getGithubRepository'],
@@ -2236,5 +2331,6 @@ export const Scopes = [
   'branch:write',
   'credentials:read',
   'credentials:write',
-  'metrics:read'
+  'metrics:read',
+  'logs:read'
 ] as const;
