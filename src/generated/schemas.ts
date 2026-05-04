@@ -1660,6 +1660,56 @@ export const resendOrganizationInvitation5XXSchema = z.unknown();
 
 export const resendOrganizationInvitationMutationResponseSchema = z.lazy(() => resendOrganizationInvitation204Schema);
 
+export const requestOrganizationDeletionPathParamsSchema = z.object({
+  get organizationID() {
+    return organizationIDSchema.describe('Unique identifier for a specific organization');
+  }
+});
+
+/**
+ * @description Deletion request accepted
+ */
+export const requestOrganizationDeletion202Schema = z.unknown();
+
+/**
+ * @description Error returned when the request is malformed or contains invalid parameters
+ */
+export const requestOrganizationDeletion400Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Error returned when authentication or authorization fails
+ */
+export const requestOrganizationDeletion401Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Error returned when authentication or authorization fails
+ */
+export const requestOrganizationDeletion403Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Generic error response
+ */
+export const requestOrganizationDeletion409Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Unexpected Error
+ */
+export const requestOrganizationDeletion5XXSchema = z.unknown();
+
+export const requestOrganizationDeletionMutationResponseSchema = z.lazy(() => requestOrganizationDeletion202Schema);
+
 /**
  * @description Marketplace registration successful
  */

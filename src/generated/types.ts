@@ -3326,6 +3326,103 @@ export type ResendOrganizationInvitationMutation = {
     | ResendOrganizationInvitation404;
 };
 
+export type RequestOrganizationDeletionPathParams = {
+  /**
+   * @description Unique identifier for a specific organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+};
+
+/**
+ * @description Deletion request accepted
+ */
+export type RequestOrganizationDeletion202 = unknown;
+
+/**
+ * @description Error returned when the request is malformed or contains invalid parameters
+ */
+export type RequestOrganizationDeletion400 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Error returned when authentication or authorization fails
+ * @example [object Object]
+ */
+export type RequestOrganizationDeletion401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Error returned when authentication or authorization fails
+ * @example [object Object]
+ */
+export type RequestOrganizationDeletion403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Generic error response
+ */
+export type RequestOrganizationDeletion409 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Unexpected Error
+ */
+export type RequestOrganizationDeletion5XX = unknown;
+
+export type RequestOrganizationDeletionMutationResponse = RequestOrganizationDeletion202;
+
+export type RequestOrganizationDeletionMutation = {
+  Response: RequestOrganizationDeletion202;
+  PathParams: RequestOrganizationDeletionPathParams;
+  Errors:
+    | RequestOrganizationDeletion400
+    | RequestOrganizationDeletion401
+    | RequestOrganizationDeletion403
+    | RequestOrganizationDeletion409;
+};
+
 /**
  * @description Marketplace registration successful
  */

@@ -106,6 +106,12 @@ import type {
   ResendOrganizationInvitation401,
   ResendOrganizationInvitation403,
   ResendOrganizationInvitation404,
+  RequestOrganizationDeletionMutationResponse,
+  RequestOrganizationDeletionPathParams,
+  RequestOrganizationDeletion400,
+  RequestOrganizationDeletion401,
+  RequestOrganizationDeletion403,
+  RequestOrganizationDeletion409,
   RegisterMarketplaceMutationRequest,
   RegisterMarketplaceMutationResponse,
   RegisterMarketplace400,
@@ -759,6 +765,40 @@ export async function resendOrganizationInvitation({
     Record<string, string>,
     ResendOrganizationInvitationPathParams
   >({ method: 'POST', url: `/organizations/${organizationID}/invitations/${invitationID}/resend`, ...requestConfig });
+  return data;
+}
+
+/**
+ * @description Flags the organization for deletion. The request is rejected if the organization still has active projects or outstanding invoices. Once accepted the organization is immediately inaccessible.
+ * @summary Request organization deletion
+ * {@link /organizations/:organizationID/deletion-request}
+ */
+export async function requestOrganizationDeletion({
+  pathParams: { organizationID },
+  config = {}
+}: {
+  pathParams: RequestOrganizationDeletionPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  const data = await request<
+    RequestOrganizationDeletionMutationResponse,
+    ErrorWrapper<
+      | RequestOrganizationDeletion400
+      | RequestOrganizationDeletion401
+      | RequestOrganizationDeletion403
+      | RequestOrganizationDeletion409
+    >,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    RequestOrganizationDeletionPathParams
+  >({ method: 'POST', url: `/organizations/${organizationID}/deletion-request`, ...requestConfig });
   return data;
 }
 
@@ -2122,6 +2162,7 @@ export const operationsByPath = {
   'GET /organizations/{organizationID}/invitations/{invitationID}': getOrganizationInvitation,
   'DELETE /organizations/{organizationID}/invitations/{invitationID}': deleteOrganizationInvitation,
   'POST /organizations/{organizationID}/invitations/{invitationID}/resend': resendOrganizationInvitation,
+  'POST /organizations/{organizationID}/deletion-request': requestOrganizationDeletion,
   'POST /marketplace/register': registerMarketplace,
   'GET /api-keys': listUserAPIKeys,
   'POST /api-keys': createUserAPIKey,
@@ -2182,7 +2223,8 @@ export const operationsByTag = {
     createOrganizationInvitation,
     getOrganizationInvitation,
     deleteOrganizationInvitation,
-    resendOrganizationInvitation
+    resendOrganizationInvitation,
+    requestOrganizationDeletion
   },
   apiKeys: {
     listOrganizationAPIKeys,
@@ -2259,7 +2301,12 @@ export const tagDictionary = {
       'listOrganizationInvitations',
       'getOrganizationInvitation'
     ],
-    POST: ['createOrganization', 'createOrganizationInvitation', 'resendOrganizationInvitation'],
+    POST: [
+      'createOrganization',
+      'createOrganizationInvitation',
+      'resendOrganizationInvitation',
+      'requestOrganizationDeletion'
+    ],
     PUT: ['updateOrganization'],
     DELETE: ['deleteOrganization', 'removeOrganizationMember', 'deleteOrganizationInvitation']
   },
@@ -2324,6 +2371,7 @@ export const Scopes = [
   'keys:write',
   'invite:read',
   'invite:write',
+  'org:delete',
   'marketplace:write',
   'project:read',
   'project:write',
