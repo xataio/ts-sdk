@@ -2371,7 +2371,6 @@ export const Scopes = [
   'keys:write',
   'invite:read',
   'invite:write',
-  'org:delete',
   'marketplace:write',
   'project:read',
   'project:write',
