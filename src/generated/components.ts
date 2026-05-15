@@ -112,6 +112,10 @@ import type {
   RequestOrganizationDeletion401,
   RequestOrganizationDeletion403,
   RequestOrganizationDeletion409,
+  GetOrganizationMembershipLimitsQueryResponse,
+  GetOrganizationMembershipLimitsPathParams,
+  GetOrganizationMembershipLimits401,
+  GetOrganizationMembershipLimits403,
   RegisterMarketplaceMutationRequest,
   RegisterMarketplaceMutationResponse,
   RegisterMarketplace400,
@@ -162,6 +166,10 @@ import type {
   ListExtensionsQueryParams,
   ListExtensions400,
   ListExtensions401,
+  GetOrganizationLimitsQueryResponse,
+  GetOrganizationLimitsPathParams,
+  GetOrganizationLimits401,
+  GetOrganizationLimits403,
   GetDefaultProjectLimitsQueryResponse,
   GetDefaultProjectLimitsPathParams,
   ListProjectsQueryResponse,
@@ -189,6 +197,9 @@ import type {
   DeleteProject400,
   DeleteProject401,
   DeleteProject404,
+  GetProjectLimitsQueryResponse,
+  GetProjectLimitsPathParams,
+  GetProjectLimits401,
   ListBackupsQueryResponse,
   ListBackupsPathParams,
   ListBackups400,
@@ -803,6 +814,35 @@ export async function requestOrganizationDeletion({
 }
 
 /**
+ * @description Retrieves the membership limits for the specified organization (maximum members and invitations).
+ * @summary Get organization membership limits
+ * {@link /organizations/:organizationID/membership-limits}
+ */
+export async function getOrganizationMembershipLimits({
+  pathParams: { organizationID },
+  config = {}
+}: {
+  pathParams: GetOrganizationMembershipLimitsPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  const data = await request<
+    GetOrganizationMembershipLimitsQueryResponse,
+    ErrorWrapper<GetOrganizationMembershipLimits401 | GetOrganizationMembershipLimits403>,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    GetOrganizationMembershipLimitsPathParams
+  >({ method: 'GET', url: `/organizations/${organizationID}/membership-limits`, ...requestConfig });
+  return data;
+}
+
+/**
  * @description Links the authenticated user to a cloud marketplace subscription. Only one marketplace registration is allowed per user.
  * @summary Register with a cloud marketplace
  * {@link /marketplace/register}
@@ -1102,6 +1142,35 @@ export async function listExtensions({
 }
 
 /**
+ * @description Retrieves the effective org-level limits, including project creation limits and branch configuration defaults. Project-specific overrides are not applied here.
+ * @summary Get organization resource limits
+ * {@link /organizations/:organizationID/limits}
+ */
+export async function getOrganizationLimits({
+  pathParams: { organizationID },
+  config = {}
+}: {
+  pathParams: GetOrganizationLimitsPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  const data = await request<
+    GetOrganizationLimitsQueryResponse,
+    ErrorWrapper<GetOrganizationLimits401 | GetOrganizationLimits403>,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    GetOrganizationLimitsPathParams
+  >({ method: 'GET', url: `/organizations/${organizationID}/limits`, ...requestConfig });
+  return data;
+}
+
+/**
  * @description Retrieves the default resource limits for projects in the specified organization, including maximum instances, storage, and allowed regions.
  * @summary Get project resource limits
  * {@link /organizations/:organizationID/projects/limits}
@@ -1288,6 +1357,39 @@ export async function deleteProject({
     Record<string, string>,
     DeleteProjectPathParams
   >({ method: 'DELETE', url: `/organizations/${organizationID}/projects/${projectID}`, ...requestConfig });
+  return data;
+}
+
+/**
+ * @description Retrieves the effective resource limits for the specified project, merging organization-level overrides with any project-specific overrides.
+ * @summary Get project resource limits
+ * {@link /organizations/:organizationID/projects/:projectID/limits}
+ */
+export async function getProjectLimits({
+  pathParams: { organizationID, projectID },
+  config = {}
+}: {
+  pathParams: GetProjectLimitsPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  if (!projectID) {
+    throw new Error(`Missing required path parameter: projectID`);
+  }
+
+  const data = await request<
+    GetProjectLimitsQueryResponse,
+    ErrorWrapper<GetProjectLimits401>,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    GetProjectLimitsPathParams
+  >({ method: 'GET', url: `/organizations/${organizationID}/projects/${projectID}/limits`, ...requestConfig });
   return data;
 }
 
@@ -2163,6 +2265,7 @@ export const operationsByPath = {
   'DELETE /organizations/{organizationID}/invitations/{invitationID}': deleteOrganizationInvitation,
   'POST /organizations/{organizationID}/invitations/{invitationID}/resend': resendOrganizationInvitation,
   'POST /organizations/{organizationID}/deletion-request': requestOrganizationDeletion,
+  'GET /organizations/{organizationID}/membership-limits': getOrganizationMembershipLimits,
   'POST /marketplace/register': registerMarketplace,
   'GET /api-keys': listUserAPIKeys,
   'POST /api-keys': createUserAPIKey,
@@ -2174,12 +2277,14 @@ export const operationsByPath = {
   'GET /organizations/{organizationID}/instanceTypes': listInstanceTypes,
   'GET /organizations/{organizationID}/images': listImages,
   'GET /organizations/{organizationID}/extensions': listExtensions,
+  'GET /organizations/{organizationID}/limits': getOrganizationLimits,
   'GET /organizations/{organizationID}/projects/limits': getDefaultProjectLimits,
   'GET /organizations/{organizationID}/projects': listProjects,
   'POST /organizations/{organizationID}/projects': createProject,
   'GET /organizations/{organizationID}/projects/{projectID}': getProject,
   'PATCH /organizations/{organizationID}/projects/{projectID}': updateProject,
   'DELETE /organizations/{organizationID}/projects/{projectID}': deleteProject,
+  'GET /organizations/{organizationID}/projects/{projectID}/limits': getProjectLimits,
   'GET /organizations/{organizationID}/projects/{projectID}/backups': listBackups,
   'GET /organizations/{organizationID}/projects/{projectID}/backups/{backupID}': getBackup,
   'GET /organizations/{organizationID}/projects/{projectID}/branches': listBranches,
@@ -2224,7 +2329,8 @@ export const operationsByTag = {
     getOrganizationInvitation,
     deleteOrganizationInvitation,
     resendOrganizationInvitation,
-    requestOrganizationDeletion
+    requestOrganizationDeletion,
+    getOrganizationMembershipLimits
   },
   apiKeys: {
     listOrganizationAPIKeys,
@@ -2249,12 +2355,14 @@ export const operationsByTag = {
     listInstanceTypes,
     listImages,
     listExtensions,
+    getOrganizationLimits,
     getDefaultProjectLimits,
     listProjects,
     createProject,
     getProject,
     updateProject,
     deleteProject,
+    getProjectLimits,
     listBackups,
     getBackup
   },
@@ -2299,7 +2407,8 @@ export const tagDictionary = {
       'getOrganization',
       'listOrganizationMembers',
       'listOrganizationInvitations',
-      'getOrganizationInvitation'
+      'getOrganizationInvitation',
+      'getOrganizationMembershipLimits'
     ],
     POST: [
       'createOrganization',
@@ -2331,9 +2440,11 @@ export const tagDictionary = {
       'listInstanceTypes',
       'listImages',
       'listExtensions',
+      'getOrganizationLimits',
       'getDefaultProjectLimits',
       'listProjects',
       'getProject',
+      'getProjectLimits',
       'listBackups',
       'getBackup'
     ],

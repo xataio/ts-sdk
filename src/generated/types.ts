@@ -396,6 +396,24 @@ export type FullAPIKey = {
   created_by_key?: (string | null) | undefined;
 };
 
+/**
+ * @description Membership limits for an organization
+ */
+export type OrganizationMembershipLimits = {
+  /**
+   * @description Maximum number of members allowed in the organization
+   * @minLength 1
+   * @type integer
+   */
+  maxMembers: number;
+  /**
+   * @description Maximum number of pending invitations allowed at once
+   * @minLength 1
+   * @type integer
+   */
+  maxInvites: number;
+};
+
 export const endpointTypeEnum = {
   rw: 'rw',
   ro: 'ro',
@@ -1539,6 +1557,70 @@ export type ProjectLimits = {
    * @type integer
    */
   maxBranches: number;
+};
+
+/**
+ * @description Full set of resource limits applicable to a project and its branches
+ */
+export type EffectiveProjectLimits = {
+  /**
+   * @description Maximum character length allowed for project descriptions
+   * @minLength 25
+   * @type integer
+   */
+  maxDescriptionLength: number;
+  /**
+   * @description Maximum number of branches allowed per project
+   * @type integer
+   */
+  maxBranchesPerProject: number;
+  /**
+   * @description Maximum number of database instances allowed per branch
+   * @minLength 1
+   * @type integer
+   */
+  maxInstancesPerBranch: number;
+  /**
+   * @description Minimum number of database instances required per branch
+   * @minLength 1
+   * @type integer
+   */
+  minInstancesPerBranch: number;
+  /**
+   * @description Maximum storage in GB allowed per branch
+   * @minLength 1
+   * @type integer
+   */
+  maxStorageGbPerBranch: number;
+  /**
+   * @description Highest instance type allowed (e.g. xata.large); instances with a higher hourly cost are unavailable
+   * @type string
+   */
+  maxAllowedInstanceType: string;
+  /**
+   * @description Maximum number of branches that can be created in a rolling one-hour window
+   * @minLength 1
+   * @type integer
+   */
+  maxBranchesPerHour: number;
+};
+
+/**
+ * @description Effective resource limits for an organization, covering org-level defaults for all projects plus organization-specific constraints
+ */
+export type OrganizationLimits = EffectiveProjectLimits & {
+  /**
+   * @description Maximum number of projects allowed in the organization
+   * @minLength 1
+   * @type integer
+   */
+  maxProjects: number;
+  /**
+   * @description Maximum number of projects that can be created in a rolling one-hour window
+   * @minLength 1
+   * @type integer
+   */
+  maxProjectsPerHour: number;
 };
 
 export const branchMetricsRequestMetricEnum = {
@@ -3423,6 +3505,67 @@ export type RequestOrganizationDeletionMutation = {
     | RequestOrganizationDeletion409;
 };
 
+export type GetOrganizationMembershipLimitsPathParams = {
+  /**
+   * @description Unique identifier for a specific organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+};
+
+/**
+ * @description Membership limits for the organization
+ */
+export type GetOrganizationMembershipLimits200 = OrganizationMembershipLimits;
+
+/**
+ * @description Error returned when authentication or authorization fails
+ * @example [object Object]
+ */
+export type GetOrganizationMembershipLimits401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Error returned when authentication or authorization fails
+ * @example [object Object]
+ */
+export type GetOrganizationMembershipLimits403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Unexpected Error
+ */
+export type GetOrganizationMembershipLimits5XX = unknown;
+
+export type GetOrganizationMembershipLimitsQueryResponse = GetOrganizationMembershipLimits200;
+
+export type GetOrganizationMembershipLimitsQuery = {
+  Response: GetOrganizationMembershipLimits200;
+  PathParams: GetOrganizationMembershipLimitsPathParams;
+  Errors: GetOrganizationMembershipLimits401 | GetOrganizationMembershipLimits403;
+};
+
 /**
  * @description Marketplace registration successful
  */
@@ -4205,6 +4348,65 @@ export type ListExtensionsQuery = {
   Errors: ListExtensions400 | ListExtensions401;
 };
 
+export type GetOrganizationLimitsPathParams = {
+  /**
+   * @description Unique identifier of the organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+};
+
+/**
+ * @description Effective resource limits for the organization
+ */
+export type GetOrganizationLimits200 = OrganizationLimits;
+
+/**
+ * @description Error response when authentication or authorization fails
+ */
+export type GetOrganizationLimits401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the authentication or authorization issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Error response when authentication or authorization fails
+ */
+export type GetOrganizationLimits403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the authentication or authorization issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Unexpected Error
+ */
+export type GetOrganizationLimits5XX = unknown;
+
+export type GetOrganizationLimitsQueryResponse = GetOrganizationLimits200;
+
+export type GetOrganizationLimitsQuery = {
+  Response: GetOrganizationLimits200;
+  PathParams: GetOrganizationLimitsPathParams;
+  Errors: GetOrganizationLimits401 | GetOrganizationLimits403;
+};
+
 export type GetDefaultProjectLimitsPathParams = {
   /**
    * @description Unique identifier of the organization to get project limits for
@@ -4642,6 +4844,59 @@ export type DeleteProjectMutation = {
   Response: DeleteProject204;
   PathParams: DeleteProjectPathParams;
   Errors: DeleteProject400 | DeleteProject401 | DeleteProject404;
+};
+
+export type GetProjectLimitsPathParams = {
+  /**
+   * @description Unique identifier of the organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+  /**
+   * @description Unique identifier of the project to get limits for
+   * @type string
+   */
+  projectID: string;
+};
+
+/**
+ * @description Effective resource limits for the project
+ */
+export type GetProjectLimits200 = EffectiveProjectLimits;
+
+/**
+ * @description Error response when authentication or authorization fails
+ */
+export type GetProjectLimits401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the authentication or authorization issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Unexpected Error
+ */
+export type GetProjectLimits5XX = unknown;
+
+/**
+ * @description Unexpected Error
+ */
+export type GetProjectLimitsError = unknown;
+
+export type GetProjectLimitsQueryResponse = GetProjectLimits200;
+
+export type GetProjectLimitsQuery = {
+  Response: GetProjectLimits200;
+  PathParams: GetProjectLimitsPathParams;
+  Errors: GetProjectLimits401;
 };
 
 export type ListBackupsPathParams = {

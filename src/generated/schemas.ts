@@ -157,6 +157,16 @@ export const fullAPIKeySchema = z.object({
 });
 
 /**
+ * @description Membership limits for an organization
+ */
+export const organizationMembershipLimitsSchema = z
+  .object({
+    maxMembers: z.int().min(1).describe('Maximum number of members allowed in the organization'),
+    maxInvites: z.int().min(1).describe('Maximum number of pending invitations allowed at once')
+  })
+  .describe('Membership limits for an organization');
+
+/**
  * @description Endpoint suffix that determines which PostgreSQL instance receives traffic.\nEncoded as the hostname suffix in the connection string (e.g. `my-branch-ro.example.com`).\n
  */
 export const endpointTypeSchema = z
@@ -752,6 +762,44 @@ export const projectLimitsSchema = z
     maxBranches: z.int().describe('Maximum number of branches allowed per project')
   })
   .describe('Resource limits and constraints for projects within an organization');
+
+/**
+ * @description Full set of resource limits applicable to a project and its branches
+ */
+export const effectiveProjectLimitsSchema = z
+  .object({
+    maxDescriptionLength: z.int().min(25).describe('Maximum character length allowed for project descriptions'),
+    maxBranchesPerProject: z.int().describe('Maximum number of branches allowed per project'),
+    maxInstancesPerBranch: z.int().min(1).describe('Maximum number of database instances allowed per branch'),
+    minInstancesPerBranch: z.int().min(1).describe('Minimum number of database instances required per branch'),
+    maxStorageGbPerBranch: z.int().min(1).describe('Maximum storage in GB allowed per branch'),
+    maxAllowedInstanceType: z
+      .string()
+      .describe('Highest instance type allowed (e.g. xata.large); instances with a higher hourly cost are unavailable'),
+    maxBranchesPerHour: z
+      .int()
+      .min(1)
+      .describe('Maximum number of branches that can be created in a rolling one-hour window')
+  })
+  .describe('Full set of resource limits applicable to a project and its branches');
+
+/**
+ * @description Effective resource limits for an organization, covering org-level defaults for all projects plus organization-specific constraints
+ */
+export const organizationLimitsSchema = z
+  .lazy(() => effectiveProjectLimitsSchema)
+  .and(
+    z.object({
+      maxProjects: z.int().min(1).describe('Maximum number of projects allowed in the organization'),
+      maxProjectsPerHour: z
+        .int()
+        .min(1)
+        .describe('Maximum number of projects that can be created in a rolling one-hour window')
+    })
+  )
+  .describe(
+    'Effective resource limits for an organization, covering org-level defaults for all projects plus organization-specific constraints'
+  );
 
 export const branchMetricsRequestSchema = z.object({
   start: z.date().describe('Start time'),
@@ -1710,6 +1758,44 @@ export const requestOrganizationDeletion5XXSchema = z.unknown();
 
 export const requestOrganizationDeletionMutationResponseSchema = z.lazy(() => requestOrganizationDeletion202Schema);
 
+export const getOrganizationMembershipLimitsPathParamsSchema = z.object({
+  get organizationID() {
+    return organizationIDSchema.describe('Unique identifier for a specific organization');
+  }
+});
+
+/**
+ * @description Membership limits for the organization
+ */
+export const getOrganizationMembershipLimits200Schema = z
+  .lazy(() => organizationMembershipLimitsSchema)
+  .describe('Membership limits for an organization');
+
+/**
+ * @description Error returned when authentication or authorization fails
+ */
+export const getOrganizationMembershipLimits401Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Error returned when authentication or authorization fails
+ */
+export const getOrganizationMembershipLimits403Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Unexpected Error
+ */
+export const getOrganizationMembershipLimits5XXSchema = z.unknown();
+
+export const getOrganizationMembershipLimitsQueryResponseSchema = z.lazy(
+  () => getOrganizationMembershipLimits200Schema
+);
+
 /**
  * @description Marketplace registration successful
  */
@@ -2175,6 +2261,44 @@ export const listExtensionsErrorSchema = z.unknown();
 
 export const listExtensionsQueryResponseSchema = z.lazy(() => listExtensions200Schema);
 
+export const getOrganizationLimitsPathParamsSchema = z.object({
+  get organizationID() {
+    return organizationIDSchema.describe('Unique identifier of the organization');
+  }
+});
+
+/**
+ * @description Effective resource limits for the organization
+ */
+export const getOrganizationLimits200Schema = z
+  .lazy(() => organizationLimitsSchema)
+  .describe(
+    'Effective resource limits for an organization, covering org-level defaults for all projects plus organization-specific constraints'
+  );
+
+/**
+ * @description Error response when authentication or authorization fails
+ */
+export const getOrganizationLimits401Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
+});
+
+/**
+ * @description Error response when authentication or authorization fails
+ */
+export const getOrganizationLimits403Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
+});
+
+/**
+ * @description Unexpected Error
+ */
+export const getOrganizationLimits5XXSchema = z.unknown();
+
+export const getOrganizationLimitsQueryResponseSchema = z.lazy(() => getOrganizationLimits200Schema);
+
 export const getDefaultProjectLimitsPathParamsSchema = z.object({
   get organizationID() {
     return organizationIDSchema.describe('Unique identifier of the organization to get project limits for');
@@ -2439,6 +2563,40 @@ export const deleteProject5XXSchema = z.unknown();
 export const deleteProjectErrorSchema = z.unknown();
 
 export const deleteProjectMutationResponseSchema = z.lazy(() => deleteProject204Schema);
+
+export const getProjectLimitsPathParamsSchema = z.object({
+  get organizationID() {
+    return organizationIDSchema.describe('Unique identifier of the organization');
+  },
+  projectID: z.string().describe('Unique identifier of the project to get limits for')
+});
+
+/**
+ * @description Effective resource limits for the project
+ */
+export const getProjectLimits200Schema = z
+  .lazy(() => effectiveProjectLimitsSchema)
+  .describe('Full set of resource limits applicable to a project and its branches');
+
+/**
+ * @description Error response when authentication or authorization fails
+ */
+export const getProjectLimits401Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
+});
+
+/**
+ * @description Unexpected Error
+ */
+export const getProjectLimits5XXSchema = z.unknown();
+
+/**
+ * @description Unexpected Error
+ */
+export const getProjectLimitsErrorSchema = z.unknown();
+
+export const getProjectLimitsQueryResponseSchema = z.lazy(() => getProjectLimits200Schema);
 
 export const listBackupsPathParamsSchema = z.object({
   get organizationID() {
