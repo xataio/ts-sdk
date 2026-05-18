@@ -23,7 +23,7 @@ export type ApiClient = {
   [Tag in keyof typeof operationsByTag]: {
     [Method in keyof (typeof operationsByTag)[Tag]]: (typeof operationsByTag)[Tag][Method] extends infer Operation extends
       (...args: any) => any
-      ? Omit<Parameters<Operation>[0], keyof FetcherConfig> extends infer Params
+      ? Omit<Parameters<Operation>[0], keyof FetcherConfig> & { headers?: Record<string, string> } extends infer Params
         ? RequiredKeys<Params> extends never
           ? (params?: Params) => ReturnType<Operation>
           : (params: Params) => ReturnType<Operation>
@@ -54,7 +54,7 @@ export type ApiOperationParams<T extends ApiOperation> = T extends `${infer Tag}
   ? Tag extends keyof typeof operationsByTag
     ? Operation extends keyof (typeof operationsByTag)[Tag]
       ? (typeof operationsByTag)[Tag][Operation] extends infer Operation extends (...args: any) => any
-        ? Omit<Parameters<Operation>[0], keyof FetcherConfig>
+        ? Omit<Parameters<Operation>[0], keyof FetcherConfig> & { headers?: Record<string, string> }
         : never
       : never
     : never
