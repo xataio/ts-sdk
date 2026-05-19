@@ -780,7 +780,9 @@ export async function resendOrganizationInvitation({
 }
 
 /**
- * @description Flags the organization for deletion. The request is rejected if the organization still has active projects or outstanding invoices. Once accepted the organization is immediately inaccessible.
+ * @description Flags the organization for deletion. The request is rejected if the organization still has active projects.
+ * If there are no outstanding invoices the organization is deleted immediately (200).
+ * If there are outstanding invoices the organization is wound down and deletion completes automatically once all invoices are paid (202).
  * @summary Request organization deletion
  * {@link /organizations/:organizationID/deletion-request}
  */

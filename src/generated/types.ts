@@ -3418,7 +3418,12 @@ export type RequestOrganizationDeletionPathParams = {
 };
 
 /**
- * @description Deletion request accepted
+ * @description Organization has been deleted
+ */
+export type RequestOrganizationDeletion200 = unknown;
+
+/**
+ * @description Deletion pending — outstanding invoices will be collected before the organization is removed
  */
 export type RequestOrganizationDeletion202 = unknown;
 
@@ -3493,10 +3498,12 @@ export type RequestOrganizationDeletion409 = {
  */
 export type RequestOrganizationDeletion5XX = unknown;
 
-export type RequestOrganizationDeletionMutationResponse = RequestOrganizationDeletion202;
+export type RequestOrganizationDeletionMutationResponse =
+  | RequestOrganizationDeletion200
+  | RequestOrganizationDeletion202;
 
 export type RequestOrganizationDeletionMutation = {
-  Response: RequestOrganizationDeletion202;
+  Response: RequestOrganizationDeletion200 | RequestOrganizationDeletion202;
   PathParams: RequestOrganizationDeletionPathParams;
   Errors:
     | RequestOrganizationDeletion400
