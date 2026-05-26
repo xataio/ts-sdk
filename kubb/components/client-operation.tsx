@@ -93,7 +93,7 @@ export function ClientOperation({
     typeSchemas.headerParams?.name ? '...headers' : undefined
   ].filter(Boolean);
 
-  const TError = `ErrorWrapper<${typeSchemas.errors?.map((item) => item.name).join(' | ') || 'Error'}>`;
+  const TError = typeSchemas.errors?.map((item) => item.name).join(' | ') || 'Error';
 
   const generics = [
     typeSchemas.response.name,

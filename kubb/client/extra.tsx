@@ -3,6 +3,7 @@ import type { PluginClient } from '@kubb/plugin-client';
 import { createReactGenerator } from '@kubb/plugin-oas/generators';
 import { useOas, useOperationManager } from '@kubb/plugin-oas/hooks';
 import { getBanner, getFooter } from '@kubb/plugin-oas/utils';
+import { pluginTsName } from '@kubb/plugin-ts';
 import { File } from '@kubb/react-fabric';
 import c from 'case';
 
@@ -11,7 +12,7 @@ export const extraGenerator = createReactGenerator<PluginClient>({
   Operations({ operations, generator, plugin }) {
     const pluginManager = usePluginManager();
     const oas = useOas();
-    const { getFile, getName } = useOperationManager(generator);
+    const { getFile, getName, getSchemas } = useOperationManager(generator);
 
     const fileName = 'extra';
     const file = pluginManager.getFile({ name: fileName, extname: '.ts', pluginKey: plugin.key });
@@ -85,6 +86,33 @@ export const extraGenerator = createReactGenerator<PluginClient>({
       )
     );
 
+    const operationErrorEntries = operations
+      .filter((operation) => {
+        const upperMethod = operation.method.toUpperCase();
+        return (
+          ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].includes(upperMethod) &&
+          operation.getOperationId() !== undefined &&
+          operation.getTags().length > 0
+        );
+      })
+      .map((operation) => {
+        const tagName = operation.getTags()[0]?.name ?? '';
+        const tag = c.camel(tagName.toLowerCase());
+        const opId = operation.getOperationId()!;
+        const pascalOp = c.pascal(opId);
+        const suffix = operation.method.toUpperCase() === 'GET' ? 'Query' : 'Mutation';
+        const schemas = getSchemas(operation, { pluginKey: [pluginTsName], type: 'type' });
+        const statusCodes = Array.from(
+          new Set((schemas.errors ?? []).map((e) => e.statusCode).filter((s): s is number => typeof s === 'number'))
+        ).sort((a, b) => a - b);
+        const statusUnion = statusCodes.length > 0 ? statusCodes.join(' | ') : 'never';
+        return { key: `${tag}.${opId}`, typeName: `${pascalOp}${suffix}`, statusUnion };
+      });
+
+    const operationErrorTypeNames = Array.from(new Set(operationErrorEntries.map((entry) => entry.typeName))).sort();
+
+    const typesFile = operations[0] ? getFile(operations[0], { pluginKey: [pluginTsName] }) : { path: './types.ts' };
+
     return (
       <File
         baseName={file.baseName}
@@ -94,6 +122,7 @@ export const extraGenerator = createReactGenerator<PluginClient>({
         footer={getFooter({ oas, output: plugin.options.output })}
       >
         {imports}
+        <File.Import name={operationErrorTypeNames} root={file.path} path={typesFile.path} isTypeOnly />
 
         <File.Source>
           {`
@@ -120,6 +149,16 @@ export const extraGenerator = createReactGenerator<PluginClient>({
         } as const;
 
         export const Scopes = ${JSON.stringify(xataScopes)} as const;
+
+        export type OperationErrors = {
+            ${operationErrorEntries
+              .map((entry) => `'${entry.key}': ${entry.typeName}['Errors'];`)
+              .join('\n            ')}
+        };
+
+        export type OperationErrorStatus = {
+            ${operationErrorEntries.map((entry) => `'${entry.key}': ${entry.statusUnion};`).join('\n            ')}
+        };
         `}
         </File.Source>
       </File>

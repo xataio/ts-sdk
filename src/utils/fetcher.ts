@@ -8,8 +8,6 @@ export type FetcherConfig = {
   headers?: Record<string, string>;
 };
 
-export type ErrorWrapper<TError> = TError | { status: 'unknown'; payload: string };
-
 export type FetcherOptions<TBody, THeaders, TQueryParams, TPathParams> = {
   url: string;
   method: string;
@@ -19,6 +17,27 @@ export type FetcherOptions<TBody, THeaders, TQueryParams, TPathParams> = {
   pathParams?: TPathParams | undefined;
   signal?: AbortSignal | undefined;
 } & FetcherConfig;
+
+export class ApiError<TBody = unknown, TStatus extends number = number> extends Error {
+  readonly status: TStatus;
+  readonly body: TBody;
+
+  constructor(status: TStatus, body: TBody, message: string) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.body = body;
+  }
+}
+
+export class NetworkError extends Error {
+  readonly status: undefined;
+
+  constructor(message: string, options?: { cause?: unknown }) {
+    super(message, options);
+    this.name = 'NetworkError';
+  }
+}
 
 async function client<
   TData,
@@ -38,64 +57,54 @@ async function client<
   baseUrl = '',
   fetchImpl = fetch
 }: FetcherOptions<TBody, THeaders, TQueryParams, TPathParams>): Promise<TData> {
-  try {
-    const requestHeaders: HeadersInit = compactObject({
-      'Content-Type': 'application/json',
-      Authorization: token ? `Bearer ${token}` : undefined,
-      ...headers
-    });
+  const requestHeaders: HeadersInit = compactObject({
+    'Content-Type': 'application/json',
+    Authorization: token ? `Bearer ${token}` : undefined,
+    ...headers
+  });
 
-    /**
-     * As the fetch API is being used, when multipart/form-data is specified
-     * the Content-Type header must be deleted so that the browser can set
-     * the correct boundary.
-     * https://developer.mozilla.org/en-US/docs/Web/API/FormData/Using_FormData_Objects#sending_files_using_a_formdata_object
-     */
-    if (requestHeaders['Content-Type']?.toLowerCase().includes('multipart/form-data')) {
-      delete requestHeaders['Content-Type'];
-    }
+  /**
+   * As the fetch API is being used, when multipart/form-data is specified
+   * the Content-Type header must be deleted so that the browser can set
+   * the correct boundary.
+   * https://developer.mozilla.org/en-US/docs/Web/API/FormData/Using_FormData_Objects#sending_files_using_a_formdata_object
+   */
+  if (requestHeaders['Content-Type']?.toLowerCase().includes('multipart/form-data')) {
+    delete requestHeaders['Content-Type'];
+  }
 
-    const payload =
-      body instanceof FormData
-        ? body
-        : requestHeaders['Content-Type'] === 'application/json'
-          ? JSON.stringify(body)
-          : (body as unknown as string);
+  const payload =
+    body instanceof FormData
+      ? body
+      : requestHeaders['Content-Type'] === 'application/json'
+        ? JSON.stringify(body)
+        : (body as unknown as string);
 
-    const fullUrl = `${baseUrl}${resolveUrl(url, queryParams)}`;
+  const fullUrl = `${baseUrl}${resolveUrl(url, queryParams)}`;
 
-    const response = await fetchImpl(fullUrl, {
-      signal,
-      method: method.toUpperCase(),
-      body: payload,
-      headers: requestHeaders
-    });
+  const response = await fetchImpl(fullUrl, {
+    signal,
+    method: method.toUpperCase(),
+    body: payload,
+    headers: requestHeaders
+  }).catch((e: unknown) => {
+    throw new NetworkError(e instanceof Error && e.message ? e.message : 'Network error', { cause: e });
+  });
 
-    if (!response.ok) {
-      let error: ErrorWrapper<TError>;
-      try {
-        error = await response.json();
-      } catch (e) {
-        error = {
-          status: 'unknown' as const,
-          payload: e instanceof Error ? `Unexpected error (${e.message})` : 'Unexpected error'
-        };
-      }
-      throw error;
-    }
+  if (!response.ok) {
+    const parsedBody = (await response.json().catch(() => undefined)) as TError | undefined;
+    const message =
+      parsedBody && typeof parsedBody === 'object' && 'message' in parsedBody && typeof parsedBody.message === 'string'
+        ? parsedBody.message
+        : `Request failed with status ${response.status}`;
+    throw new ApiError<TError | undefined>(response.status, parsedBody, message);
+  }
 
-    if (response.headers?.get('content-type')?.includes('json')) {
-      return await response.json();
-    } else {
-      // if it is not a json response, assume it is a blob and cast it to TData
-      return (await response.text()) as unknown as TData;
-    }
-  } catch (e) {
-    const errorObject: Error = {
-      name: 'unknown' as const,
-      message: (e as any)?.message ? `${(e as any)?.message}` : 'Network error'
-    };
-    throw errorObject;
+  if (response.headers?.get('content-type')?.includes('json')) {
+    return await response.json();
+  } else {
+    // if it is not a json response, assume it is a blob and cast it to TData
+    return (await response.text()) as unknown as TData;
   }
 }
 

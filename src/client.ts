@@ -1,6 +1,12 @@
 import type { RequiredKeys } from '@xata.io/lang';
 import { createDeviceSession, exchangeDeviceCode, type OpenIdClient, type OpenIdToken, refreshToken } from './auth';
-import { type operationsByPath, operationsByTag, type tagDictionary } from './generated/components';
+import {
+  type OperationErrors,
+  type OperationErrorStatus,
+  type operationsByPath,
+  operationsByTag,
+  type tagDictionary
+} from './generated/components';
 import type { FetchImpl } from './utils/fetch';
 import fetchFn, { type FetcherConfig } from './utils/fetcher';
 import { type XataAgentFields, withXataAgentHeader } from './utils/xata-agent';
@@ -68,6 +74,12 @@ export type ApiOperationResult<T extends ApiOperation> = T extends `${infer Tag}
         : never
       : never
     : never
+  : never;
+
+export type ApiOperationError<T extends ApiOperation> = T extends keyof OperationErrors ? OperationErrors[T] : never;
+
+export type ApiOperationErrorStatus<T extends ApiOperation> = T extends keyof OperationErrorStatus
+  ? OperationErrorStatus[T]
   : never;
 
 type RequestEndpointParams<T extends keyof typeof operationsByPath> = Omit<

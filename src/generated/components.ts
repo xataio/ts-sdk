@@ -4,7 +4,7 @@
  */
 
 import client from '../utils/fetcher';
-import type { FetcherConfig, ErrorWrapper } from '../utils/fetcher';
+import type { FetcherConfig } from '../utils/fetcher';
 import type {
   BranchLogsMutationRequest,
   BranchLogsMutationResponse,
@@ -299,7 +299,65 @@ import type {
   StripeWebhookMutationRequest,
   StripeWebhookMutationResponse,
   StripeWebhook400,
-  StripeWebhook500
+  StripeWebhook500,
+  BranchLogsMutation,
+  BranchMetricsMutation,
+  CreateBranchMutation,
+  CreateGithubAppInstallationMutation,
+  CreateGithubRepositoryMutation,
+  CreateOrganizationAPIKeyMutation,
+  CreateOrganizationInvitationMutation,
+  CreateOrganizationMutation,
+  CreateProjectMutation,
+  CreateUserAPIKeyMutation,
+  DeleteBranchMutation,
+  DeleteGithubRepositoryMutation,
+  DeleteOrganizationAPIKeysMutation,
+  DeleteOrganizationInvitationMutation,
+  DeleteOrganizationMutation,
+  DeleteProjectMutation,
+  DeleteUserAPIKeysMutation,
+  DescribeBranchQuery,
+  GetBackupQuery,
+  GetBranchCredentialsQuery,
+  GetBranchPostgresConfigQuery,
+  GetDefaultProjectLimitsQuery,
+  GetGithubRepositoryQuery,
+  GetOrganizationInvitationQuery,
+  GetOrganizationLimitsQuery,
+  GetOrganizationMembershipLimitsQuery,
+  GetOrganizationQuery,
+  GetOrganizationsListQuery,
+  GetProjectLimitsQuery,
+  GetProjectQuery,
+  GithubWebhookMutation,
+  ListBackupsQuery,
+  ListBranchesQuery,
+  ListExtensionsQuery,
+  ListGithubAppInstallationsQuery,
+  ListImagesQuery,
+  ListInstanceTypesQuery,
+  ListOrganizationAPIKeysQuery,
+  ListOrganizationInvitationsQuery,
+  ListOrganizationMembersQuery,
+  ListProjectsQuery,
+  ListRegionsQuery,
+  ListUserAPIKeysQuery,
+  OrbWebhookMutation,
+  QueryMutation,
+  RegisterMarketplaceMutation,
+  RemoveOrganizationMemberMutation,
+  RequestOrganizationDeletionMutation,
+  ResendOrganizationInvitationMutation,
+  RestoreFromBackupMutation,
+  RotateBranchCredentialsMutation,
+  StripeWebhookMutation,
+  UpdateBranchMutation,
+  UpdateGithubAppInstallationMutation,
+  UpdateGithubRepositoryMutation,
+  UpdateOrganizationMutation,
+  UpdateProjectMutation,
+  WebsocketQuery
 } from './types.ts';
 
 /**
@@ -316,7 +374,7 @@ export async function getOrganizationsList({
 
   const data = await request<
     GetOrganizationsListQueryResponse,
-    ErrorWrapper<GetOrganizationsList400 | GetOrganizationsList401 | GetOrganizationsList404>,
+    GetOrganizationsList400 | GetOrganizationsList401 | GetOrganizationsList404,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -341,7 +399,7 @@ export async function createOrganization({
 
   const data = await request<
     CreateOrganizationMutationResponse,
-    ErrorWrapper<CreateOrganization400 | CreateOrganization401 | CreateOrganization404>,
+    CreateOrganization400 | CreateOrganization401 | CreateOrganization404,
     CreateOrganizationMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -370,7 +428,7 @@ export async function getOrganization({
 
   const data = await request<
     GetOrganizationQueryResponse,
-    ErrorWrapper<GetOrganization400 | GetOrganization401 | GetOrganization403 | GetOrganization404>,
+    GetOrganization400 | GetOrganization401 | GetOrganization403 | GetOrganization404,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -401,7 +459,7 @@ export async function updateOrganization({
 
   const data = await request<
     UpdateOrganizationMutationResponse,
-    ErrorWrapper<UpdateOrganization400 | UpdateOrganization401 | UpdateOrganization403 | UpdateOrganization404>,
+    UpdateOrganization400 | UpdateOrganization401 | UpdateOrganization403 | UpdateOrganization404,
     UpdateOrganizationMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -430,7 +488,7 @@ export async function deleteOrganization({
 
   const data = await request<
     DeleteOrganizationMutationResponse,
-    ErrorWrapper<DeleteOrganization400 | DeleteOrganization401 | DeleteOrganization403 | DeleteOrganization404>,
+    DeleteOrganization400 | DeleteOrganization401 | DeleteOrganization403 | DeleteOrganization404,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -459,9 +517,7 @@ export async function listOrganizationAPIKeys({
 
   const data = await request<
     ListOrganizationAPIKeysQueryResponse,
-    ErrorWrapper<
-      ListOrganizationAPIKeys400 | ListOrganizationAPIKeys401 | ListOrganizationAPIKeys403 | ListOrganizationAPIKeys404
-    >,
+    ListOrganizationAPIKeys400 | ListOrganizationAPIKeys401 | ListOrganizationAPIKeys403 | ListOrganizationAPIKeys404,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -492,7 +548,7 @@ export async function createOrganizationAPIKey({
 
   const data = await request<
     CreateOrganizationAPIKeyMutationResponse,
-    ErrorWrapper<CreateOrganizationAPIKey400>,
+    CreateOrganizationAPIKey400,
     CreateOrganizationAPIKeyMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -523,7 +579,7 @@ export async function deleteOrganizationAPIKeys({
 
   const data = await request<
     DeleteOrganizationAPIKeysMutationResponse,
-    ErrorWrapper<DeleteOrganizationAPIKeys400 | DeleteOrganizationAPIKeys401 | DeleteOrganizationAPIKeys404>,
+    DeleteOrganizationAPIKeys400 | DeleteOrganizationAPIKeys401 | DeleteOrganizationAPIKeys404,
     DeleteOrganizationAPIKeysMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -551,7 +607,7 @@ export async function listOrganizationMembers({
 
   const data = await request<
     ListOrganizationMembersQueryResponse,
-    ErrorWrapper<Error>,
+    Error,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -583,7 +639,7 @@ export async function removeOrganizationMember({
 
   const data = await request<
     RemoveOrganizationMemberMutationResponse,
-    ErrorWrapper<Error>,
+    Error,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -614,12 +670,10 @@ export async function listOrganizationInvitations({
 
   const data = await request<
     ListOrganizationInvitationsQueryResponse,
-    ErrorWrapper<
-      | ListOrganizationInvitations400
-      | ListOrganizationInvitations401
-      | ListOrganizationInvitations403
-      | ListOrganizationInvitations404
-    >,
+    | ListOrganizationInvitations400
+    | ListOrganizationInvitations401
+    | ListOrganizationInvitations403
+    | ListOrganizationInvitations404,
     null,
     Record<string, string>,
     ListOrganizationInvitationsQueryParams,
@@ -650,13 +704,11 @@ export async function createOrganizationInvitation({
 
   const data = await request<
     CreateOrganizationInvitationMutationResponse,
-    ErrorWrapper<
-      | CreateOrganizationInvitation400
-      | CreateOrganizationInvitation401
-      | CreateOrganizationInvitation403
-      | CreateOrganizationInvitation404
-      | CreateOrganizationInvitation409
-    >,
+    | CreateOrganizationInvitation400
+    | CreateOrganizationInvitation401
+    | CreateOrganizationInvitation403
+    | CreateOrganizationInvitation404
+    | CreateOrganizationInvitation409,
     CreateOrganizationInvitationMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -689,12 +741,10 @@ export async function getOrganizationInvitation({
 
   const data = await request<
     GetOrganizationInvitationQueryResponse,
-    ErrorWrapper<
-      | GetOrganizationInvitation400
-      | GetOrganizationInvitation401
-      | GetOrganizationInvitation403
-      | GetOrganizationInvitation404
-    >,
+    | GetOrganizationInvitation400
+    | GetOrganizationInvitation401
+    | GetOrganizationInvitation403
+    | GetOrganizationInvitation404,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -727,12 +777,10 @@ export async function deleteOrganizationInvitation({
 
   const data = await request<
     DeleteOrganizationInvitationMutationResponse,
-    ErrorWrapper<
-      | DeleteOrganizationInvitation400
-      | DeleteOrganizationInvitation401
-      | DeleteOrganizationInvitation403
-      | DeleteOrganizationInvitation404
-    >,
+    | DeleteOrganizationInvitation400
+    | DeleteOrganizationInvitation401
+    | DeleteOrganizationInvitation403
+    | DeleteOrganizationInvitation404,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -765,12 +813,10 @@ export async function resendOrganizationInvitation({
 
   const data = await request<
     ResendOrganizationInvitationMutationResponse,
-    ErrorWrapper<
-      | ResendOrganizationInvitation400
-      | ResendOrganizationInvitation401
-      | ResendOrganizationInvitation403
-      | ResendOrganizationInvitation404
-    >,
+    | ResendOrganizationInvitation400
+    | ResendOrganizationInvitation401
+    | ResendOrganizationInvitation403
+    | ResendOrganizationInvitation404,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -801,12 +847,10 @@ export async function requestOrganizationDeletion({
 
   const data = await request<
     RequestOrganizationDeletionMutationResponse,
-    ErrorWrapper<
-      | RequestOrganizationDeletion400
-      | RequestOrganizationDeletion401
-      | RequestOrganizationDeletion403
-      | RequestOrganizationDeletion409
-    >,
+    | RequestOrganizationDeletion400
+    | RequestOrganizationDeletion401
+    | RequestOrganizationDeletion403
+    | RequestOrganizationDeletion409,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -835,7 +879,7 @@ export async function getOrganizationMembershipLimits({
 
   const data = await request<
     GetOrganizationMembershipLimitsQueryResponse,
-    ErrorWrapper<GetOrganizationMembershipLimits401 | GetOrganizationMembershipLimits403>,
+    GetOrganizationMembershipLimits401 | GetOrganizationMembershipLimits403,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -860,7 +904,7 @@ export async function registerMarketplace({
 
   const data = await request<
     RegisterMarketplaceMutationResponse,
-    ErrorWrapper<RegisterMarketplace400 | RegisterMarketplace401 | RegisterMarketplace409 | RegisterMarketplace502>,
+    RegisterMarketplace400 | RegisterMarketplace401 | RegisterMarketplace409 | RegisterMarketplace502,
     RegisterMarketplaceMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -883,7 +927,7 @@ export async function listUserAPIKeys({
 
   const data = await request<
     ListUserAPIKeysQueryResponse,
-    ErrorWrapper<ListUserAPIKeys400 | ListUserAPIKeys401>,
+    ListUserAPIKeys400 | ListUserAPIKeys401,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -908,7 +952,7 @@ export async function createUserAPIKey({
 
   const data = await request<
     CreateUserAPIKeyMutationResponse,
-    ErrorWrapper<CreateUserAPIKey400 | CreateUserAPIKey401>,
+    CreateUserAPIKey400 | CreateUserAPIKey401,
     CreateUserAPIKeyMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -933,7 +977,7 @@ export async function deleteUserAPIKeys({
 
   const data = await request<
     DeleteUserAPIKeysMutationResponse,
-    ErrorWrapper<DeleteUserAPIKeys400 | DeleteUserAPIKeys401 | DeleteUserAPIKeys404>,
+    DeleteUserAPIKeys400 | DeleteUserAPIKeys401 | DeleteUserAPIKeys404,
     DeleteUserAPIKeysMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -963,7 +1007,7 @@ export async function query({
 
   const data = await request<
     QueryMutationResponse,
-    ErrorWrapper<Query400 | Query401 | Query500 | Query507>,
+    Query400 | Query401 | Query500 | Query507,
     QueryMutationRequest,
     QueryHeaderParams,
     Record<string, string>,
@@ -985,7 +1029,7 @@ export async function websocket({ config = {} }: { config?: Partial<FetcherConfi
 
   const data = await request<
     WebsocketQueryResponse,
-    ErrorWrapper<Websocket400>,
+    Websocket400,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1012,7 +1056,7 @@ export async function githubWebhook({
 
   const data = await request<
     GithubWebhookMutationResponse,
-    ErrorWrapper<GithubWebhook400 | GithubWebhook500>,
+    GithubWebhook400 | GithubWebhook500,
     GithubWebhookMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -1041,7 +1085,7 @@ export async function listRegions({
 
   const data = await request<
     ListRegionsQueryResponse,
-    ErrorWrapper<ListRegions400 | ListRegions401>,
+    ListRegions400 | ListRegions401,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1072,7 +1116,7 @@ export async function listInstanceTypes({
 
   const data = await request<
     ListInstanceTypesQueryResponse,
-    ErrorWrapper<ListInstanceTypes400 | ListInstanceTypes401>,
+    ListInstanceTypes400 | ListInstanceTypes401,
     null,
     Record<string, string>,
     ListInstanceTypesQueryParams,
@@ -1103,7 +1147,7 @@ export async function listImages({
 
   const data = await request<
     ListImagesQueryResponse,
-    ErrorWrapper<ListImages400 | ListImages401>,
+    ListImages400 | ListImages401,
     null,
     Record<string, string>,
     ListImagesQueryParams,
@@ -1134,7 +1178,7 @@ export async function listExtensions({
 
   const data = await request<
     ListExtensionsQueryResponse,
-    ErrorWrapper<ListExtensions400 | ListExtensions401>,
+    ListExtensions400 | ListExtensions401,
     null,
     Record<string, string>,
     ListExtensionsQueryParams,
@@ -1163,7 +1207,7 @@ export async function getOrganizationLimits({
 
   const data = await request<
     GetOrganizationLimitsQueryResponse,
-    ErrorWrapper<GetOrganizationLimits401 | GetOrganizationLimits403>,
+    GetOrganizationLimits401 | GetOrganizationLimits403,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1192,7 +1236,7 @@ export async function getDefaultProjectLimits({
 
   const data = await request<
     GetDefaultProjectLimitsQueryResponse,
-    ErrorWrapper<Error>,
+    Error,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1221,7 +1265,7 @@ export async function listProjects({
 
   const data = await request<
     ListProjectsQueryResponse,
-    ErrorWrapper<ListProjects400 | ListProjects401>,
+    ListProjects400 | ListProjects401,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1252,7 +1296,7 @@ export async function createProject({
 
   const data = await request<
     CreateProjectMutationResponse,
-    ErrorWrapper<CreateProject400 | CreateProject401>,
+    CreateProject400 | CreateProject401,
     CreateProjectMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -1285,7 +1329,7 @@ export async function getProject({
 
   const data = await request<
     GetProjectQueryResponse,
-    ErrorWrapper<GetProject400 | GetProject401 | GetProject404>,
+    GetProject400 | GetProject401 | GetProject404,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1320,7 +1364,7 @@ export async function updateProject({
 
   const data = await request<
     UpdateProjectMutationResponse,
-    ErrorWrapper<UpdateProject400 | UpdateProject401 | UpdateProject404>,
+    UpdateProject400 | UpdateProject401 | UpdateProject404,
     UpdateProjectMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -1353,7 +1397,7 @@ export async function deleteProject({
 
   const data = await request<
     DeleteProjectMutationResponse,
-    ErrorWrapper<DeleteProject400 | DeleteProject401 | DeleteProject404>,
+    DeleteProject400 | DeleteProject401 | DeleteProject404,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1386,7 +1430,7 @@ export async function getProjectLimits({
 
   const data = await request<
     GetProjectLimitsQueryResponse,
-    ErrorWrapper<GetProjectLimits401>,
+    GetProjectLimits401,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1419,7 +1463,7 @@ export async function listBackups({
 
   const data = await request<
     ListBackupsQueryResponse,
-    ErrorWrapper<ListBackups400 | ListBackups401 | ListBackups404>,
+    ListBackups400 | ListBackups401 | ListBackups404,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1456,7 +1500,7 @@ export async function getBackup({
 
   const data = await request<
     GetBackupQueryResponse,
-    ErrorWrapper<GetBackup400 | GetBackup401 | GetBackup404>,
+    GetBackup400 | GetBackup401 | GetBackup404,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1493,7 +1537,7 @@ export async function listBranches({
 
   const data = await request<
     ListBranchesQueryResponse,
-    ErrorWrapper<ListBranches400 | ListBranches401 | ListBranches404>,
+    ListBranches400 | ListBranches401 | ListBranches404,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1528,7 +1572,7 @@ export async function createBranch({
 
   const data = await request<
     CreateBranchMutationResponse,
-    ErrorWrapper<CreateBranch400 | CreateBranch401 | CreateBranch404 | CreateBranch412>,
+    CreateBranch400 | CreateBranch401 | CreateBranch404 | CreateBranch412,
     CreateBranchMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -1565,7 +1609,7 @@ export async function describeBranch({
 
   const data = await request<
     DescribeBranchQueryResponse,
-    ErrorWrapper<DescribeBranch400 | DescribeBranch401 | DescribeBranch404>,
+    DescribeBranch400 | DescribeBranch401 | DescribeBranch404,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1608,7 +1652,7 @@ export async function updateBranch({
 
   const data = await request<
     UpdateBranchMutationResponse,
-    ErrorWrapper<UpdateBranch400 | UpdateBranch401 | UpdateBranch404>,
+    UpdateBranch400 | UpdateBranch401 | UpdateBranch404,
     UpdateBranchMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -1650,7 +1694,7 @@ export async function deleteBranch({
 
   const data = await request<
     DeleteBranchMutationResponse,
-    ErrorWrapper<DeleteBranch400 | DeleteBranch401 | DeleteBranch404>,
+    DeleteBranch400 | DeleteBranch401 | DeleteBranch404,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1692,7 +1736,7 @@ export async function getBranchCredentials({
 
   const data = await request<
     GetBranchCredentialsQueryResponse,
-    ErrorWrapper<GetBranchCredentials400 | GetBranchCredentials401 | GetBranchCredentials404>,
+    GetBranchCredentials400 | GetBranchCredentials401 | GetBranchCredentials404,
     null,
     Record<string, string>,
     GetBranchCredentialsQueryParams,
@@ -1736,7 +1780,7 @@ export async function rotateBranchCredentials({
 
   const data = await request<
     RotateBranchCredentialsMutationResponse,
-    ErrorWrapper<RotateBranchCredentials400 | RotateBranchCredentials401 | RotateBranchCredentials404>,
+    RotateBranchCredentials400 | RotateBranchCredentials401 | RotateBranchCredentials404,
     RotateBranchCredentialsMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -1779,7 +1823,7 @@ export async function branchMetrics({
 
   const data = await request<
     BranchMetricsMutationResponse,
-    ErrorWrapper<BranchMetrics400 | BranchMetrics401 | BranchMetrics404>,
+    BranchMetrics400 | BranchMetrics401 | BranchMetrics404,
     BranchMetricsMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -1823,7 +1867,7 @@ export async function restoreFromBackup({
 
   const data = await request<
     RestoreFromBackupMutationResponse,
-    ErrorWrapper<RestoreFromBackup400 | RestoreFromBackup401 | RestoreFromBackup404>,
+    RestoreFromBackup400 | RestoreFromBackup401 | RestoreFromBackup404,
     RestoreFromBackupMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -1866,7 +1910,7 @@ export async function branchLogs({
 
   const data = await request<
     BranchLogsMutationResponse,
-    ErrorWrapper<BranchLogs400 | BranchLogs401 | BranchLogs404>,
+    BranchLogs400 | BranchLogs401 | BranchLogs404,
     BranchLogsMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -1908,7 +1952,7 @@ export async function getBranchPostgresConfig({
 
   const data = await request<
     GetBranchPostgresConfigQueryResponse,
-    ErrorWrapper<GetBranchPostgresConfig400 | GetBranchPostgresConfig401 | GetBranchPostgresConfig404>,
+    GetBranchPostgresConfig400 | GetBranchPostgresConfig401 | GetBranchPostgresConfig404,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1941,7 +1985,7 @@ export async function listGithubAppInstallations({
 
   const data = await request<
     ListGithubAppInstallationsQueryResponse,
-    ErrorWrapper<ListGithubAppInstallations400 | ListGithubAppInstallations401>,
+    ListGithubAppInstallations400 | ListGithubAppInstallations401,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1972,7 +2016,7 @@ export async function createGithubAppInstallation({
 
   const data = await request<
     CreateGithubAppInstallationMutationResponse,
-    ErrorWrapper<CreateGithubAppInstallation400 | CreateGithubAppInstallation401 | CreateGithubAppInstallation409>,
+    CreateGithubAppInstallation400 | CreateGithubAppInstallation401 | CreateGithubAppInstallation409,
     CreateGithubAppInstallationMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -2007,12 +2051,10 @@ export async function updateGithubAppInstallation({
 
   const data = await request<
     UpdateGithubAppInstallationMutationResponse,
-    ErrorWrapper<
-      | UpdateGithubAppInstallation400
-      | UpdateGithubAppInstallation401
-      | UpdateGithubAppInstallation404
-      | UpdateGithubAppInstallation409
-    >,
+    | UpdateGithubAppInstallation400
+    | UpdateGithubAppInstallation401
+    | UpdateGithubAppInstallation404
+    | UpdateGithubAppInstallation409,
     UpdateGithubAppInstallationMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -2054,7 +2096,7 @@ export async function getGithubRepository({
 
   const data = await request<
     GetGithubRepositoryQueryResponse,
-    ErrorWrapper<GetGithubRepository400 | GetGithubRepository401>,
+    GetGithubRepository400 | GetGithubRepository401,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -2097,7 +2139,7 @@ export async function createGithubRepository({
 
   const data = await request<
     CreateGithubRepositoryMutationResponse,
-    ErrorWrapper<CreateGithubRepository400 | CreateGithubRepository401 | CreateGithubRepository409>,
+    CreateGithubRepository400 | CreateGithubRepository401 | CreateGithubRepository409,
     CreateGithubRepositoryMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -2141,7 +2183,7 @@ export async function updateGithubRepository({
 
   const data = await request<
     UpdateGithubRepositoryMutationResponse,
-    ErrorWrapper<UpdateGithubRepository400 | UpdateGithubRepository401 | UpdateGithubRepository404>,
+    UpdateGithubRepository400 | UpdateGithubRepository401 | UpdateGithubRepository404,
     UpdateGithubRepositoryMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -2183,7 +2225,7 @@ export async function deleteGithubRepository({
 
   const data = await request<
     DeleteGithubRepositoryMutationResponse,
-    ErrorWrapper<DeleteGithubRepository400 | DeleteGithubRepository401 | DeleteGithubRepository404>,
+    DeleteGithubRepository400 | DeleteGithubRepository401 | DeleteGithubRepository404,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -2214,7 +2256,7 @@ export async function orbWebhook({
 
   const data = await request<
     OrbWebhookMutationResponse,
-    ErrorWrapper<OrbWebhook400 | OrbWebhook500>,
+    OrbWebhook400 | OrbWebhook500,
     OrbWebhookMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -2241,7 +2283,7 @@ export async function stripeWebhook({
 
   const data = await request<
     StripeWebhookMutationResponse,
-    ErrorWrapper<StripeWebhook400 | StripeWebhook500>,
+    StripeWebhook400 | StripeWebhook500,
     StripeWebhookMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -2494,3 +2536,125 @@ export const Scopes = [
   'metrics:read',
   'logs:read'
 ] as const;
+
+export type OperationErrors = {
+  'organizations.getOrganizationsList': GetOrganizationsListQuery['Errors'];
+  'organizations.createOrganization': CreateOrganizationMutation['Errors'];
+  'organizations.getOrganization': GetOrganizationQuery['Errors'];
+  'organizations.updateOrganization': UpdateOrganizationMutation['Errors'];
+  'organizations.deleteOrganization': DeleteOrganizationMutation['Errors'];
+  'apiKeys.listOrganizationAPIKeys': ListOrganizationAPIKeysQuery['Errors'];
+  'apiKeys.createOrganizationAPIKey': CreateOrganizationAPIKeyMutation['Errors'];
+  'apiKeys.deleteOrganizationAPIKeys': DeleteOrganizationAPIKeysMutation['Errors'];
+  'organizations.listOrganizationMembers': ListOrganizationMembersQuery['Errors'];
+  'organizations.removeOrganizationMember': RemoveOrganizationMemberMutation['Errors'];
+  'organizations.listOrganizationInvitations': ListOrganizationInvitationsQuery['Errors'];
+  'organizations.createOrganizationInvitation': CreateOrganizationInvitationMutation['Errors'];
+  'organizations.getOrganizationInvitation': GetOrganizationInvitationQuery['Errors'];
+  'organizations.deleteOrganizationInvitation': DeleteOrganizationInvitationMutation['Errors'];
+  'organizations.resendOrganizationInvitation': ResendOrganizationInvitationMutation['Errors'];
+  'organizations.requestOrganizationDeletion': RequestOrganizationDeletionMutation['Errors'];
+  'organizations.getOrganizationMembershipLimits': GetOrganizationMembershipLimitsQuery['Errors'];
+  'marketplace.registerMarketplace': RegisterMarketplaceMutation['Errors'];
+  'apiKeys.listUserAPIKeys': ListUserAPIKeysQuery['Errors'];
+  'apiKeys.createUserAPIKey': CreateUserAPIKeyMutation['Errors'];
+  'apiKeys.deleteUserAPIKeys': DeleteUserAPIKeysMutation['Errors'];
+  'gateway.query': QueryMutation['Errors'];
+  'gateway.websocket': WebsocketQuery['Errors'];
+  'projectsWebhooks.githubWebhook': GithubWebhookMutation['Errors'];
+  'projects.listRegions': ListRegionsQuery['Errors'];
+  'projects.listInstanceTypes': ListInstanceTypesQuery['Errors'];
+  'projects.listImages': ListImagesQuery['Errors'];
+  'projects.listExtensions': ListExtensionsQuery['Errors'];
+  'projects.getOrganizationLimits': GetOrganizationLimitsQuery['Errors'];
+  'projects.getDefaultProjectLimits': GetDefaultProjectLimitsQuery['Errors'];
+  'projects.listProjects': ListProjectsQuery['Errors'];
+  'projects.createProject': CreateProjectMutation['Errors'];
+  'projects.getProject': GetProjectQuery['Errors'];
+  'projects.updateProject': UpdateProjectMutation['Errors'];
+  'projects.deleteProject': DeleteProjectMutation['Errors'];
+  'projects.getProjectLimits': GetProjectLimitsQuery['Errors'];
+  'projects.listBackups': ListBackupsQuery['Errors'];
+  'projects.getBackup': GetBackupQuery['Errors'];
+  'branches.listBranches': ListBranchesQuery['Errors'];
+  'branches.createBranch': CreateBranchMutation['Errors'];
+  'branches.describeBranch': DescribeBranchQuery['Errors'];
+  'branches.updateBranch': UpdateBranchMutation['Errors'];
+  'branches.deleteBranch': DeleteBranchMutation['Errors'];
+  'branches.getBranchCredentials': GetBranchCredentialsQuery['Errors'];
+  'branches.rotateBranchCredentials': RotateBranchCredentialsMutation['Errors'];
+  'branches.branchMetrics': BranchMetricsMutation['Errors'];
+  'branches.restoreFromBackup': RestoreFromBackupMutation['Errors'];
+  'branches.branchLogs': BranchLogsMutation['Errors'];
+  'branches.getBranchPostgresConfig': GetBranchPostgresConfigQuery['Errors'];
+  'githubApp.listGithubAppInstallations': ListGithubAppInstallationsQuery['Errors'];
+  'githubApp.createGithubAppInstallation': CreateGithubAppInstallationMutation['Errors'];
+  'githubApp.updateGithubAppInstallation': UpdateGithubAppInstallationMutation['Errors'];
+  'githubApp.getGithubRepository': GetGithubRepositoryQuery['Errors'];
+  'githubApp.createGithubRepository': CreateGithubRepositoryMutation['Errors'];
+  'githubApp.updateGithubRepository': UpdateGithubRepositoryMutation['Errors'];
+  'githubApp.deleteGithubRepository': DeleteGithubRepositoryMutation['Errors'];
+  'webhooks.orbWebhook': OrbWebhookMutation['Errors'];
+  'webhooks.stripeWebhook': StripeWebhookMutation['Errors'];
+};
+
+export type OperationErrorStatus = {
+  'organizations.getOrganizationsList': 400 | 401 | 404;
+  'organizations.createOrganization': 400 | 401 | 404;
+  'organizations.getOrganization': 400 | 401 | 403 | 404;
+  'organizations.updateOrganization': 400 | 401 | 403 | 404;
+  'organizations.deleteOrganization': 400 | 401 | 403 | 404;
+  'apiKeys.listOrganizationAPIKeys': 400 | 401 | 403 | 404;
+  'apiKeys.createOrganizationAPIKey': 400;
+  'apiKeys.deleteOrganizationAPIKeys': 400 | 401 | 404;
+  'organizations.listOrganizationMembers': never;
+  'organizations.removeOrganizationMember': never;
+  'organizations.listOrganizationInvitations': 400 | 401 | 403 | 404;
+  'organizations.createOrganizationInvitation': 400 | 401 | 403 | 404 | 409;
+  'organizations.getOrganizationInvitation': 400 | 401 | 403 | 404;
+  'organizations.deleteOrganizationInvitation': 400 | 401 | 403 | 404;
+  'organizations.resendOrganizationInvitation': 400 | 401 | 403 | 404;
+  'organizations.requestOrganizationDeletion': 400 | 401 | 403 | 409;
+  'organizations.getOrganizationMembershipLimits': 401 | 403;
+  'marketplace.registerMarketplace': 400 | 401 | 409 | 502;
+  'apiKeys.listUserAPIKeys': 400 | 401;
+  'apiKeys.createUserAPIKey': 400 | 401;
+  'apiKeys.deleteUserAPIKeys': 400 | 401 | 404;
+  'gateway.query': 400 | 401 | 500 | 507;
+  'gateway.websocket': 400;
+  'projectsWebhooks.githubWebhook': 400 | 500;
+  'projects.listRegions': 400 | 401;
+  'projects.listInstanceTypes': 400 | 401;
+  'projects.listImages': 400 | 401;
+  'projects.listExtensions': 400 | 401;
+  'projects.getOrganizationLimits': 401 | 403;
+  'projects.getDefaultProjectLimits': never;
+  'projects.listProjects': 400 | 401;
+  'projects.createProject': 400 | 401;
+  'projects.getProject': 400 | 401 | 404;
+  'projects.updateProject': 400 | 401 | 404;
+  'projects.deleteProject': 400 | 401 | 404;
+  'projects.getProjectLimits': 401;
+  'projects.listBackups': 400 | 401 | 404;
+  'projects.getBackup': 400 | 401 | 404;
+  'branches.listBranches': 400 | 401 | 404;
+  'branches.createBranch': 400 | 401 | 404 | 412;
+  'branches.describeBranch': 400 | 401 | 404;
+  'branches.updateBranch': 400 | 401 | 404;
+  'branches.deleteBranch': 400 | 401 | 404;
+  'branches.getBranchCredentials': 400 | 401 | 404;
+  'branches.rotateBranchCredentials': 400 | 401 | 404;
+  'branches.branchMetrics': 400 | 401 | 404;
+  'branches.restoreFromBackup': 400 | 401 | 404;
+  'branches.branchLogs': 400 | 401 | 404;
+  'branches.getBranchPostgresConfig': 400 | 401 | 404;
+  'githubApp.listGithubAppInstallations': 400 | 401;
+  'githubApp.createGithubAppInstallation': 400 | 401 | 409;
+  'githubApp.updateGithubAppInstallation': 400 | 401 | 404 | 409;
+  'githubApp.getGithubRepository': 400 | 401;
+  'githubApp.createGithubRepository': 400 | 401 | 409;
+  'githubApp.updateGithubRepository': 400 | 401 | 404;
+  'githubApp.deleteGithubRepository': 400 | 401 | 404;
+  'webhooks.orbWebhook': 400 | 500;
+  'webhooks.stripeWebhook': 400 | 500;
+};
