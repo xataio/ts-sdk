@@ -1715,12 +1715,7 @@ export const requestOrganizationDeletionPathParamsSchema = z.object({
 });
 
 /**
- * @description Organization has been deleted
- */
-export const requestOrganizationDeletion200Schema = z.unknown();
-
-/**
- * @description Deletion pending — outstanding invoices will be collected before the organization is removed
+ * @description Deletion requested — the organization will be removed once all outstanding invoices are settled
  */
 export const requestOrganizationDeletion202Schema = z.unknown();
 
@@ -1761,10 +1756,7 @@ export const requestOrganizationDeletion409Schema = z.object({
  */
 export const requestOrganizationDeletion5XXSchema = z.unknown();
 
-export const requestOrganizationDeletionMutationResponseSchema = z.union([
-  z.lazy(() => requestOrganizationDeletion200Schema),
-  z.lazy(() => requestOrganizationDeletion202Schema)
-]);
+export const requestOrganizationDeletionMutationResponseSchema = z.lazy(() => requestOrganizationDeletion202Schema);
 
 export const getOrganizationMembershipLimitsPathParamsSchema = z.object({
   get organizationID() {

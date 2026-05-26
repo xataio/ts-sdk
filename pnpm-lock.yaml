@@ -72,16 +72,16 @@ packages:
     peerDependencies:
       '@types/json-schema': ^7.0.15
 
-  '@babel/code-frame@7.29.0':
-    resolution: {integrity: sha512-9NhCeYjq9+3uxgdtp20LSiJXJvN0FeCtNGpJxuMFZ1Kv3cWUNb6DOhJwUvcVCzKGR66cw4njwM6hrJLqgOwbcw==}
+  '@babel/code-frame@7.29.7':
+    resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/helper-validator-identifier@7.28.5':
-    resolution: {integrity: sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==}
+  '@babel/helper-validator-identifier@7.29.7':
+    resolution: {integrity: sha512-qehxGkRj55h/ff8EMaJ+cYhyaKlHIxqYDn682wQD7RNp9UujOQsHog2uS0r2vzr4pW+sXf90NeeayjcNaX3fFg==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/runtime@7.29.2':
-    resolution: {integrity: sha512-JiDShH45zKHWyGe4ZNVRrCjBz8Nh9TMmZG1kh4QTK8hCBTWBi8Da+i7s1fJw7/lYpM4ccepSNfqzZ/QvABBi5g==}
+  '@babel/runtime@7.29.7':
+    resolution: {integrity: sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==}
     engines: {node: '>=6.9.0'}
 
   '@clack/core@1.3.1':
@@ -264,11 +264,11 @@ packages:
   '@redocly/ajv@8.18.3':
     resolution: {integrity: sha512-l42u0of3hY98sN2A+M4qTX1O/KrpgGH32Hu9kP2GtHyD5Dfqq86PKFLe5dwaD8DEnNmlOlll2BAmeEtf0DaySg==}
 
-  '@redocly/config@0.48.2':
-    resolution: {integrity: sha512-DUHthTRdj+caAQWCtJae4yzvxaUDuwQkFsZFVaAEyORd8Bt8K2wYso61jYZuR/kQZaDejfUREtQTVVZ5VYTqgw==}
+  '@redocly/config@0.49.0':
+    resolution: {integrity: sha512-OI/rpEffX3fKUuy+OuBHPRspRI/S30b9aiqxfZLMpSWZzDncEGPxSEP1O2LrBVshnDX4hLjVjLvCZ4YT85+1rw==}
 
-  '@redocly/openapi-core@2.31.3':
-    resolution: {integrity: sha512-aaQJjEqmG3E74y9okvQvCIeBqR7P/Wwk3r1ezG4n04Xa/0zqxj+2aNrWm96WTCmGOBkqnd06A6ysiHCI1XU+nw==}
+  '@redocly/openapi-core@2.31.4':
+    resolution: {integrity: sha512-ne2e5NduK9MHnu42LoPXgfKhyCFG5Mc2Cwh3wNfLdoieYvhKtl37rW7p4p+GDMEJmlI9t6fagQbGPAKic2+3Pw==}
     engines: {node: '>=22.12.0 || >=20.19.0 <21.0.0', npm: '>=10'}
 
   '@rolldown/binding-android-arm64@1.0.2':
@@ -1103,8 +1103,8 @@ packages:
   reftools@1.1.9:
     resolution: {integrity: sha512-OVede/NQE13xBQ+ob5CKd5KyeJYU2YInb1bmV4nRoOfquZPkAkxuOXicSe1PvqIuZZ4kD13sPKBbR7UFDmli6w==}
 
-  remeda@2.34.1:
-    resolution: {integrity: sha512-k5iIF3lHm2NQ+2bNGDvZTD5jZl/JZkCS6AQOfGjYBd7V4rbb3K5whHvab0/O7CqPI43vYzbnIVCQXQJqmOyI6w==}
+  remeda@2.35.0:
+    resolution: {integrity: sha512-77gMzbGcFDFhhFPzhD3wrtXNsF1bYkJ4NSX8u3whKq5N3eNwj4cIeifbJXIjyTbulGJhJtqZW/gw10oX85aKLg==}
 
   remove-undefined-objects@7.0.0:
     resolution: {integrity: sha512-+9ycqqqpv6EdaOvHpyOkf81SXJ4MjARKX450Je6AmshEYeqAuiVcfbLx1coNICO3KulleXlOHd0GSHFkEdB3YQ==}
@@ -1143,8 +1143,8 @@ packages:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
 
-  shell-quote@1.8.3:
-    resolution: {integrity: sha512-ObmnIF4hXNg1BqhnHmgbDETF8dLPCggZWBjkQfhZpbszZnYur5DUljTcCHii5LC3J5E0yeO/1LIMyH+UvHQgyw==}
+  shell-quote@1.8.4:
+    resolution: {integrity: sha512-VsC6n6vz1ihYYyZZwX7YZSF5l5x36ca17OC+a69h94YqB7X6XLwf+5MOgynYir2SLFUbl8gIYvBo8K8RoNQ6bQ==}
     engines: {node: '>= 0.4'}
 
   should-equal@2.0.0:
@@ -1219,8 +1219,8 @@ packages:
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
 
-  tinyexec@1.1.2:
-    resolution: {integrity: sha512-dAqSqE/RabpBKI8+h26GfLq6Vb3JVXs30XYQjdMjaj/c2tS8IYYMbIzP599KtRj7c57/wYApb3QjgRgXmrCukA==}
+  tinyexec@1.2.2:
+    resolution: {integrity: sha512-M/Q0B2cp4K7kynaT/vnED1j8TlLY+Pp7C6Wl2bl/7u/F0mUVwdyOpwomQb8JpYLitHUssAJRmLZdMCGsrx7i+g==}
     engines: {node: '>=18'}
 
   tinyglobby@0.2.16:
@@ -1392,8 +1392,8 @@ packages:
     resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}
     engines: {node: '>=10'}
 
-  ws@7.5.10:
-    resolution: {integrity: sha512-+dbF1tHwZpXcbOJdVOkzLDxZP1ailvSxM6ZweXTegylPny803bFhA+vqBYw4s31NSAk4S2Qz+AKXK9a4wkdjcQ==}
+  ws@7.5.11:
+    resolution: {integrity: sha512-zS54Oen9bITtp7kp2XM3AydrCIq1D+HwJOuH+c+e4LfpL/lotP5osijd+UoMnxwAam1GN8R4KtLAyIrIcBNpiA==}
     engines: {node: '>=8.3.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -1416,8 +1416,8 @@ packages:
       utf-8-validate:
         optional: true
 
-  ws@8.20.1:
-    resolution: {integrity: sha512-It4dO0K5v//JtTXuPkfEOaI3uUN87iYPnqo/ZzqCoG3g8uhA66QUMs/SrM0YK7/NAu+r4LMh/9dq2A7k+rHs+w==}
+  ws@8.21.0:
+    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -1469,15 +1469,15 @@ snapshots:
       '@types/json-schema': 7.0.15
       js-yaml: 4.1.1
 
-  '@babel/code-frame@7.29.0':
+  '@babel/code-frame@7.29.7':
     dependencies:
-      '@babel/helper-validator-identifier': 7.28.5
+      '@babel/helper-validator-identifier': 7.29.7
       js-tokens: 4.0.0
       picocolors: 1.1.1
 
-  '@babel/helper-validator-identifier@7.28.5': {}
+  '@babel/helper-validator-identifier@7.29.7': {}
 
-  '@babel/runtime@7.29.2': {}
+  '@babel/runtime@7.29.7': {}
 
   '@clack/core@1.3.1':
     dependencies:
@@ -1547,7 +1547,7 @@ snapshots:
       chokidar: 5.0.0
       cosmiconfig: 9.0.1(typescript@6.0.3)
       jiti: 2.5.1
-      tinyexec: 1.1.2
+      tinyexec: 1.2.2
     transitivePeerDependencies:
       - '@kubb/fabric-core'
       - '@kubb/react-fabric'
@@ -1560,9 +1560,9 @@ snapshots:
       '@kubb/react-fabric': 0.14.0
       empathic: 2.0.1
       fflate: 0.8.3
-      remeda: 2.34.1
+      remeda: 2.35.0
       semver: 7.8.1
-      tinyexec: 1.1.2
+      tinyexec: 1.2.2
 
   '@kubb/core@4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)':
     dependencies:
@@ -1571,9 +1571,9 @@ snapshots:
       '@kubb/react-fabric': 0.16.0
       empathic: 2.0.1
       fflate: 0.8.3
-      remeda: 2.34.1
+      remeda: 2.35.0
       semver: 7.8.1
-      tinyexec: 1.1.2
+      tinyexec: 1.2.2
 
   '@kubb/fabric-core@0.1.5':
     dependencies:
@@ -1581,21 +1581,21 @@ snapshots:
       js-runtime: 0.0.8
       natural-orderby: 5.0.0
       p-limit: 7.3.0
-      remeda: 2.34.1
+      remeda: 2.35.0
       typescript: 5.9.3
 
   '@kubb/fabric-core@0.14.0':
     dependencies:
       '@clack/prompts': 1.4.0
       p-limit: 7.3.0
-      remeda: 2.34.1
+      remeda: 2.35.0
       typescript: 5.9.3
 
   '@kubb/fabric-core@0.16.0':
     dependencies:
       '@clack/prompts': 1.4.0
       p-limit: 7.3.0
-      remeda: 2.34.1
+      remeda: 2.35.0
       typescript: 5.9.3
 
   '@kubb/oas@4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)':
@@ -1603,13 +1603,13 @@ snapshots:
       '@kubb/ast': 4.37.5
       '@kubb/core': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/fabric-core': 0.14.0
-      '@redocly/openapi-core': 2.31.3
+      '@redocly/openapi-core': 2.31.4
       '@stoplight/yaml': 4.3.0
       jsonpointer: 5.0.1
       oas: 31.1.2
       oas-normalize: 16.0.4
       openapi-types: 12.1.3
-      remeda: 2.34.1
+      remeda: 2.35.0
       swagger2openapi: 7.0.8
     transitivePeerDependencies:
       - '@kubb/react-fabric'
@@ -1620,13 +1620,13 @@ snapshots:
       '@kubb/ast': 4.37.5
       '@kubb/core': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/fabric-core': 0.14.0
-      '@redocly/openapi-core': 2.31.3
+      '@redocly/openapi-core': 2.31.4
       '@stoplight/yaml': 4.3.0
       jsonpointer: 5.0.1
       oas: 31.1.2
       oas-normalize: 16.0.4
       openapi-types: 12.1.3
-      remeda: 2.34.1
+      remeda: 2.35.0
       swagger2openapi: 7.0.8
     transitivePeerDependencies:
       - '@kubb/react-fabric'
@@ -1652,7 +1652,7 @@ snapshots:
       '@kubb/fabric-core': 0.14.0
       '@kubb/oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/react-fabric': 0.14.0
-      remeda: 2.34.1
+      remeda: 2.35.0
     transitivePeerDependencies:
       - encoding
 
@@ -1662,7 +1662,7 @@ snapshots:
       '@kubb/fabric-core': 0.14.0
       '@kubb/oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/react-fabric': 0.16.0
-      remeda: 2.34.1
+      remeda: 2.35.0
     transitivePeerDependencies:
       - encoding
 
@@ -1674,7 +1674,7 @@ snapshots:
       '@kubb/oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/plugin-oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/react-fabric': 0.14.0
-      remeda: 2.34.1
+      remeda: 2.35.0
       typescript: 5.9.3
     transitivePeerDependencies:
       - encoding
@@ -1687,7 +1687,7 @@ snapshots:
       '@kubb/oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/plugin-oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/react-fabric': 0.16.0
-      remeda: 2.34.1
+      remeda: 2.35.0
       typescript: 5.9.3
     transitivePeerDependencies:
       - encoding
@@ -1699,7 +1699,7 @@ snapshots:
       '@kubb/plugin-oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/plugin-ts': 4.37.5(@kubb/react-fabric@0.14.0)
       '@kubb/react-fabric': 0.14.0
-      remeda: 2.34.1
+      remeda: 2.35.0
     transitivePeerDependencies:
       - '@kubb/fabric-core'
       - bufferutil
@@ -1717,7 +1717,7 @@ snapshots:
       react-devtools-inline: 7.0.1
       react-reconciler: 0.32.0(react@19.2.6)
       signal-exit: 4.1.0
-      ws: 8.20.1
+      ws: 8.21.0
     transitivePeerDependencies:
       - babel-plugin-macros
       - bufferutil
@@ -1727,7 +1727,7 @@ snapshots:
     dependencies:
       '@kubb/fabric-core': 0.14.0
       react-devtools-core: 6.1.5
-      remeda: 2.34.1
+      remeda: 2.35.0
       ws: 8.18.0
     transitivePeerDependencies:
       - bufferutil
@@ -1737,7 +1737,7 @@ snapshots:
     dependencies:
       '@kubb/fabric-core': 0.16.0
       react-devtools-core: 6.1.5
-      remeda: 2.34.1
+      remeda: 2.35.0
       ws: 8.18.0
     transitivePeerDependencies:
       - bufferutil
@@ -1770,8 +1770,8 @@ snapshots:
 
   '@readme/better-ajv-errors@2.4.0(ajv@8.20.0)':
     dependencies:
-      '@babel/code-frame': 7.29.0
-      '@babel/runtime': 7.29.2
+      '@babel/code-frame': 7.29.7
+      '@babel/runtime': 7.29.7
       '@humanwhocodes/momoa': 2.0.4
       ajv: 8.20.0
       jsonpointer: 5.0.1
@@ -1815,14 +1815,14 @@ snapshots:
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
-  '@redocly/config@0.48.2':
+  '@redocly/config@0.49.0':
     dependencies:
       json-schema-to-ts: 2.7.2
 
-  '@redocly/openapi-core@2.31.3':
+  '@redocly/openapi-core@2.31.4':
     dependencies:
       '@redocly/ajv': 8.18.3
-      '@redocly/config': 0.48.2
+      '@redocly/config': 0.49.0
       ajv: '@redocly/ajv@8.18.1'
       ajv-formats: 3.0.1(@redocly/ajv@8.18.1)
       colorette: 1.4.0
@@ -2299,7 +2299,7 @@ snapshots:
 
   json-schema-to-ts@2.7.2:
     dependencies:
-      '@babel/runtime': 7.29.2
+      '@babel/runtime': 7.29.7
       '@types/json-schema': 7.0.15
       ts-algebra: 1.2.2
 
@@ -2506,7 +2506,7 @@ snapshots:
 
   parse-json@5.2.0:
     dependencies:
-      '@babel/code-frame': 7.29.0
+      '@babel/code-frame': 7.29.7
       error-ex: 1.3.4
       json-parse-even-better-errors: 2.3.1
       lines-and-columns: 1.2.4
@@ -2539,8 +2539,8 @@ snapshots:
 
   react-devtools-core@6.1.5:
     dependencies:
-      shell-quote: 1.8.3
-      ws: 7.5.10
+      shell-quote: 1.8.4
+      ws: 7.5.11
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -2561,7 +2561,7 @@ snapshots:
 
   reftools@1.1.9: {}
 
-  remeda@2.34.1: {}
+  remeda@2.35.0: {}
 
   remove-undefined-objects@7.0.0: {}
 
@@ -2602,7 +2602,7 @@ snapshots:
 
   shebang-regex@3.0.0: {}
 
-  shell-quote@1.8.3: {}
+  shell-quote@1.8.4: {}
 
   should-equal@2.0.0:
     dependencies:
@@ -2683,7 +2683,7 @@ snapshots:
 
   tinybench@2.9.0: {}
 
-  tinyexec@1.1.2: {}
+  tinyexec@1.2.2: {}
 
   tinyglobby@0.2.16:
     dependencies:
@@ -2756,7 +2756,7 @@ snapshots:
       picomatch: 4.0.4
       std-env: 4.1.0
       tinybench: 2.9.0
-      tinyexec: 1.1.2
+      tinyexec: 1.2.2
       tinyglobby: 0.2.16
       tinyrainbow: 3.1.0
       vite: 8.0.14(@types/node@25.8.0)(jiti@2.5.1)
@@ -2792,11 +2792,11 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
 
-  ws@7.5.10: {}
+  ws@7.5.11: {}
 
   ws@8.18.0: {}
 
-  ws@8.20.1: {}
+  ws@8.21.0: {}
 
   y18n@5.0.8: {}
 
