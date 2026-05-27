@@ -1612,16 +1612,11 @@ export type EffectiveProjectLimits = {
    */
   minInstancesPerBranch: number;
   /**
-   * @description Maximum storage in GB allowed per branch
+   * @description Maximum VCPUs (in millicores) allowed per instance; instance types with a higher VCPUsRequest are unavailable
    * @minLength 1
    * @type integer
    */
-  maxStorageGbPerBranch: number;
-  /**
-   * @description Highest instance type allowed (e.g. xata.large); instances with a higher hourly cost are unavailable
-   * @type string
-   */
-  maxAllowedInstanceType: string;
+  maxAllowedInstanceType: number;
   /**
    * @description Maximum number of branches that can be created in a rolling one-hour window
    * @minLength 1
@@ -1646,6 +1641,12 @@ export type OrganizationLimits = EffectiveProjectLimits & {
    * @type integer
    */
   maxProjectsPerHour: number;
+  /**
+   * @description Maximum number of active branches allowed across all projects in the organization
+   * @minLength 1
+   * @type integer
+   */
+  maxBranchesPerOrg: number;
 };
 
 export const branchMetricsRequestAggregationsEnum = {

@@ -795,10 +795,12 @@ export const effectiveProjectLimitsSchema = z
     maxBranchesPerProject: z.int().describe('Maximum number of branches allowed per project'),
     maxInstancesPerBranch: z.int().min(1).describe('Maximum number of database instances allowed per branch'),
     minInstancesPerBranch: z.int().min(1).describe('Minimum number of database instances required per branch'),
-    maxStorageGbPerBranch: z.int().min(1).describe('Maximum storage in GB allowed per branch'),
     maxAllowedInstanceType: z
-      .string()
-      .describe('Highest instance type allowed (e.g. xata.large); instances with a higher hourly cost are unavailable'),
+      .int()
+      .min(1)
+      .describe(
+        'Maximum VCPUs (in millicores) allowed per instance; instance types with a higher VCPUsRequest are unavailable'
+      ),
     maxBranchesPerHour: z
       .int()
       .min(1)
@@ -817,7 +819,11 @@ export const organizationLimitsSchema = z
       maxProjectsPerHour: z
         .int()
         .min(1)
-        .describe('Maximum number of projects that can be created in a rolling one-hour window')
+        .describe('Maximum number of projects that can be created in a rolling one-hour window'),
+      maxBranchesPerOrg: z
+        .int()
+        .min(1)
+        .describe('Maximum number of active branches allowed across all projects in the organization')
     })
   )
   .describe(
