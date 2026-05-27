@@ -833,16 +833,12 @@ export const organizationLimitsSchema = z
 export const branchMetricsRequestSchema = z.object({
   start: z.date().describe('Start time'),
   end: z.date().describe('End time'),
-  get metric() {
-    return branchMetricNameSchema.describe('Metric name to query. Deprecated: use `metrics` instead.').optional();
-  },
   get metrics() {
     return z
       .array(branchMetricNameSchema.describe('Name of a branch metric exposed by the API.'))
       .min(1)
       .max(15)
-      .describe('List of metric names to query. Exactly one of `metric` or `metrics` must be supplied.')
-      .optional();
+      .describe('List of metric names to query.');
   },
   instances: z.optional(z.array(z.string()).describe('List of instance IDs to query')),
   aggregations: z
@@ -888,21 +884,6 @@ export const branchMetricsSchema = z
   .object({
     start: z.date(),
     end: z.date(),
-    metric: z
-      .string()
-      .describe(
-        'Name of the queried metric. Deprecated: read `results` instead, which carries one entry per requested metric.'
-      ),
-    get series() {
-      return z
-        .array(metricSeriesSchema.describe('The metric series'))
-        .describe('Time-series for the first requested metric. Deprecated: read `results` instead.');
-    },
-    unit: z
-      .string()
-      .describe(
-        'Unit of the first requested metric (percentage, bytes, ms, etc.). Deprecated: read `results` instead.'
-      ),
     get results() {
       return z
         .array(branchMetricResultSchema.describe('Time-series for a single metric.'))

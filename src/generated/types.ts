@@ -1670,15 +1670,10 @@ export type BranchMetricsRequest = {
    */
   end: string;
   /**
-   * @description Metric name to query. Deprecated: use `metrics` instead.
-   * @deprecated
+   * @description List of metric names to query.
+   * @type array
    */
-  metric?: BranchMetricName | undefined;
-  /**
-   * @description List of metric names to query. Exactly one of `metric` or `metrics` must be supplied.
-   * @type array | undefined
-   */
-  metrics?: BranchMetricName[] | undefined;
+  metrics: BranchMetricName[];
   /**
    * @description List of instance IDs to query
    * @type array | undefined
@@ -1761,24 +1756,6 @@ export type BranchMetrics = {
    * @type string, date-time
    */
   end: string;
-  /**
-   * @description Name of the queried metric. Deprecated: read `results` instead, which carries one entry per requested metric.
-   * @deprecated
-   * @type string
-   */
-  metric: string;
-  /**
-   * @description Time-series for the first requested metric. Deprecated: read `results` instead.
-   * @deprecated
-   * @type array
-   */
-  series: MetricSeries[];
-  /**
-   * @description Unit of the first requested metric (percentage, bytes, ms, etc.). Deprecated: read `results` instead.
-   * @deprecated
-   * @type string
-   */
-  unit: string;
   /**
    * @description One entry per requested metric, in the order the metrics were requested.
    * @type array
