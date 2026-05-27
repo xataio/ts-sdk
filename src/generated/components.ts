@@ -1795,6 +1795,7 @@ export async function rotateBranchCredentials({
 }
 
 /**
+ * @description Returns time-series data for one or more metrics of a branch.
  * @summary Retrieve branch metrics
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/metrics}
  */

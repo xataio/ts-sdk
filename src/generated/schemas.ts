@@ -764,6 +764,29 @@ export const projectLimitsSchema = z
   .describe('Resource limits and constraints for projects within an organization');
 
 /**
+ * @description Name of a branch metric exposed by the API.
+ */
+export const branchMetricNameSchema = z
+  .enum([
+    'cpu',
+    'memory',
+    'disk',
+    'connections_active',
+    'connections_idle',
+    'network_ingress',
+    'network_egress',
+    'iops_read',
+    'iops_write',
+    'latency_read',
+    'latency_write',
+    'throughput_read',
+    'throughput_write',
+    'wal_sync_time',
+    'replication_lag_time'
+  ])
+  .describe('Name of a branch metric exposed by the API.');
+
+/**
  * @description Full set of resource limits applicable to a project and its branches
  */
 export const effectiveProjectLimitsSchema = z
@@ -804,30 +827,22 @@ export const organizationLimitsSchema = z
 export const branchMetricsRequestSchema = z.object({
   start: z.date().describe('Start time'),
   end: z.date().describe('End time'),
-  metric: z
-    .enum([
-      'cpu',
-      'memory',
-      'disk',
-      'connections_active',
-      'connections_idle',
-      'network_ingress',
-      'network_egress',
-      'iops_read',
-      'iops_write',
-      'latency_read',
-      'latency_write',
-      'throughput_read',
-      'throughput_write',
-      'wal_sync_time',
-      'replication_lag_time'
-    ])
-    .describe('Metric name to query'),
-  instances: z.array(z.string()).describe('List of instance IDs to query'),
+  get metric() {
+    return branchMetricNameSchema.describe('Metric name to query. Deprecated: use `metrics` instead.').optional();
+  },
+  get metrics() {
+    return z
+      .array(branchMetricNameSchema.describe('Name of a branch metric exposed by the API.'))
+      .min(1)
+      .max(15)
+      .describe('List of metric names to query. Exactly one of `metric` or `metrics` must be supplied.')
+      .optional();
+  },
+  instances: z.optional(z.array(z.string()).describe('List of instance IDs to query')),
   aggregations: z
     .array(z.enum(['avg', 'max', 'min']))
     .describe(
-      'List of aggregations to get, this is how the data-points within the interval are aggregated. Each one will generate a separate time-series in the response.'
+      'List of aggregations to get, this is how the data-points within the interval are aggregated. Each one will generate a separate time-series per metric in the response.'
     )
 });
 
@@ -848,17 +863,45 @@ export const metricSeriesSchema = z
   .describe('The metric series');
 
 /**
+ * @description Time-series for a single metric.
+ */
+export const branchMetricResultSchema = z
+  .object({
+    metric: z.string().describe('Name of the queried metric.'),
+    unit: z.string().describe('Unit of the metric (percentage, bytes, ms, etc.)'),
+    get series() {
+      return z.array(metricSeriesSchema.describe('The metric series'));
+    }
+  })
+  .describe('Time-series for a single metric.');
+
+/**
  * @description A collection of metrics (cpu, memory, disk,...) for each of the instances of a branch
  */
 export const branchMetricsSchema = z
   .object({
     start: z.date(),
     end: z.date(),
-    metric: z.string(),
+    metric: z
+      .string()
+      .describe(
+        'Name of the queried metric. Deprecated: read `results` instead, which carries one entry per requested metric.'
+      ),
     get series() {
-      return z.array(metricSeriesSchema.describe('The metric series'));
+      return z
+        .array(metricSeriesSchema.describe('The metric series'))
+        .describe('Time-series for the first requested metric. Deprecated: read `results` instead.');
     },
-    unit: z.string().describe('The unit of the metric (percentage, bytes, ms, etc.)')
+    unit: z
+      .string()
+      .describe(
+        'Unit of the first requested metric (percentage, bytes, ms, etc.). Deprecated: read `results` instead.'
+      ),
+    get results() {
+      return z
+        .array(branchMetricResultSchema.describe('Time-series for a single metric.'))
+        .describe('One entry per requested metric, in the order the metrics were requested.');
+    }
   })
   .describe('A collection of metrics (cpu, memory, disk,...) for each of the instances of a branch');
 

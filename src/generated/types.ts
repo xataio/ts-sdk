@@ -1559,6 +1559,31 @@ export type ProjectLimits = {
   maxBranches: number;
 };
 
+export const branchMetricNameEnum = {
+  cpu: 'cpu',
+  memory: 'memory',
+  disk: 'disk',
+  connections_active: 'connections_active',
+  connections_idle: 'connections_idle',
+  network_ingress: 'network_ingress',
+  network_egress: 'network_egress',
+  iops_read: 'iops_read',
+  iops_write: 'iops_write',
+  latency_read: 'latency_read',
+  latency_write: 'latency_write',
+  throughput_read: 'throughput_read',
+  throughput_write: 'throughput_write',
+  wal_sync_time: 'wal_sync_time',
+  replication_lag_time: 'replication_lag_time'
+} as const;
+
+export type BranchMetricNameEnumKey = (typeof branchMetricNameEnum)[keyof typeof branchMetricNameEnum];
+
+/**
+ * @description Name of a branch metric exposed by the API.
+ */
+export type BranchMetricName = BranchMetricNameEnumKey;
+
 /**
  * @description Full set of resource limits applicable to a project and its branches
  */
@@ -1623,27 +1648,6 @@ export type OrganizationLimits = EffectiveProjectLimits & {
   maxProjectsPerHour: number;
 };
 
-export const branchMetricsRequestMetricEnum = {
-  cpu: 'cpu',
-  memory: 'memory',
-  disk: 'disk',
-  connections_active: 'connections_active',
-  connections_idle: 'connections_idle',
-  network_ingress: 'network_ingress',
-  network_egress: 'network_egress',
-  iops_read: 'iops_read',
-  iops_write: 'iops_write',
-  latency_read: 'latency_read',
-  latency_write: 'latency_write',
-  throughput_read: 'throughput_read',
-  throughput_write: 'throughput_write',
-  wal_sync_time: 'wal_sync_time',
-  replication_lag_time: 'replication_lag_time'
-} as const;
-
-export type BranchMetricsRequestMetricEnumKey =
-  (typeof branchMetricsRequestMetricEnum)[keyof typeof branchMetricsRequestMetricEnum];
-
 export const branchMetricsRequestAggregationsEnum = {
   avg: 'avg',
   max: 'max',
@@ -1665,17 +1669,22 @@ export type BranchMetricsRequest = {
    */
   end: string;
   /**
-   * @description Metric name to query
-   * @type string
+   * @description Metric name to query. Deprecated: use `metrics` instead.
+   * @deprecated
    */
-  metric: BranchMetricsRequestMetricEnumKey;
+  metric?: BranchMetricName | undefined;
+  /**
+   * @description List of metric names to query. Exactly one of `metric` or `metrics` must be supplied.
+   * @type array | undefined
+   */
+  metrics?: BranchMetricName[] | undefined;
   /**
    * @description List of instance IDs to query
-   * @type array
+   * @type array | undefined
    */
-  instances: string[];
+  instances?: string[] | undefined;
   /**
-   * @description List of aggregations to get, this is how the data-points within the interval are aggregated. Each one will generate a separate time-series in the response.
+   * @description List of aggregations to get, this is how the data-points within the interval are aggregated. Each one will generate a separate time-series per metric in the response.
    * @type array
    */
   aggregations: BranchMetricsRequestAggregationsEnumKey[];
@@ -1720,6 +1729,26 @@ export type MetricSeries = {
 };
 
 /**
+ * @description Time-series for a single metric.
+ */
+export type BranchMetricResult = {
+  /**
+   * @description Name of the queried metric.
+   * @type string
+   */
+  metric: string;
+  /**
+   * @description Unit of the metric (percentage, bytes, ms, etc.)
+   * @type string
+   */
+  unit: string;
+  /**
+   * @type array
+   */
+  series: MetricSeries[];
+};
+
+/**
  * @description A collection of metrics (cpu, memory, disk,...) for each of the instances of a branch
  */
 export type BranchMetrics = {
@@ -1732,18 +1761,28 @@ export type BranchMetrics = {
    */
   end: string;
   /**
+   * @description Name of the queried metric. Deprecated: read `results` instead, which carries one entry per requested metric.
+   * @deprecated
    * @type string
    */
   metric: string;
   /**
+   * @description Time-series for the first requested metric. Deprecated: read `results` instead.
+   * @deprecated
    * @type array
    */
   series: MetricSeries[];
   /**
-   * @description The unit of the metric (percentage, bytes, ms, etc.)
+   * @description Unit of the first requested metric (percentage, bytes, ms, etc.). Deprecated: read `results` instead.
+   * @deprecated
    * @type string
    */
   unit: string;
+  /**
+   * @description One entry per requested metric, in the order the metrics were requested.
+   * @type array
+   */
+  results: BranchMetricResult[];
 };
 
 export const logFilterFieldEnum = {
