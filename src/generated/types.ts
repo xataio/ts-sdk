@@ -214,6 +214,22 @@ export type OrganizationInvitation = {
   invite_link?: string | undefined;
 };
 
+export type BillingCheckoutSessionResponse = {
+  /**
+   * @description Stripe checkout session URL
+   * @type string, uri
+   */
+  url: string;
+};
+
+export type BillingPaymentMethodSessionResponse = {
+  /**
+   * @description Stripe payment method session URL
+   * @type string, uri
+   */
+  url: string;
+};
+
 export const marketplaceRegisterRequestMarketplaceEnum = {
   aws: 'aws'
 } as const;
@@ -3581,6 +3597,163 @@ export type GetOrganizationMembershipLimitsQuery = {
   Response: GetOrganizationMembershipLimits200;
   PathParams: GetOrganizationMembershipLimitsPathParams;
   Errors: GetOrganizationMembershipLimits401 | GetOrganizationMembershipLimits403;
+};
+
+export type CreateBillingCheckoutSessionPathParams = {
+  /**
+   * @description Unique identifier for a specific organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+};
+
+/**
+ * @description Billing checkout session created
+ */
+export type CreateBillingCheckoutSession200 = BillingCheckoutSessionResponse;
+
+/**
+ * @description Error returned when the request is malformed or contains invalid parameters
+ */
+export type CreateBillingCheckoutSession400 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Error returned when authentication or authorization fails
+ * @example [object Object]
+ */
+export type CreateBillingCheckoutSession401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Error returned when authentication or authorization fails
+ * @example [object Object]
+ */
+export type CreateBillingCheckoutSession403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Unexpected Error
+ */
+export type CreateBillingCheckoutSession5XX = unknown;
+
+export type CreateBillingCheckoutSessionMutationResponse = CreateBillingCheckoutSession200;
+
+export type CreateBillingCheckoutSessionMutation = {
+  Response: CreateBillingCheckoutSession200;
+  PathParams: CreateBillingCheckoutSessionPathParams;
+  Errors: CreateBillingCheckoutSession400 | CreateBillingCheckoutSession401 | CreateBillingCheckoutSession403;
+};
+
+export type CreateBillingPaymentMethodSessionPathParams = {
+  /**
+   * @description Unique identifier for a specific organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+};
+
+/**
+ * @description Billing payment method session created
+ */
+export type CreateBillingPaymentMethodSession200 = BillingPaymentMethodSessionResponse;
+
+/**
+ * @description Error returned when the request is malformed or contains invalid parameters
+ */
+export type CreateBillingPaymentMethodSession400 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Error returned when authentication or authorization fails
+ * @example [object Object]
+ */
+export type CreateBillingPaymentMethodSession401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Error returned when authentication or authorization fails
+ * @example [object Object]
+ */
+export type CreateBillingPaymentMethodSession403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Unexpected Error
+ */
+export type CreateBillingPaymentMethodSession5XX = unknown;
+
+export type CreateBillingPaymentMethodSessionMutationResponse = CreateBillingPaymentMethodSession200;
+
+export type CreateBillingPaymentMethodSessionMutation = {
+  Response: CreateBillingPaymentMethodSession200;
+  PathParams: CreateBillingPaymentMethodSessionPathParams;
+  Errors:
+    | CreateBillingPaymentMethodSession400
+    | CreateBillingPaymentMethodSession401
+    | CreateBillingPaymentMethodSession403;
 };
 
 /**

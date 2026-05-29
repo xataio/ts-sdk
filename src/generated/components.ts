@@ -18,13 +18,11 @@ import type {
   BranchMetrics400,
   BranchMetrics401,
   BranchMetrics404,
-  CreateBranchMutationRequest,
-  CreateBranchMutationResponse,
-  CreateBranchPathParams,
-  CreateBranch400,
-  CreateBranch401,
-  CreateBranch404,
-  CreateBranch412,
+  CreateBillingCheckoutSessionMutationResponse,
+  CreateBillingCheckoutSessionPathParams,
+  CreateBillingCheckoutSession400,
+  CreateBillingCheckoutSession401,
+  CreateBillingCheckoutSession403,
   CreateOrganizationMutationRequest,
   CreateOrganizationMutationResponse,
   CreateOrganization400,
@@ -116,6 +114,11 @@ import type {
   GetOrganizationMembershipLimitsPathParams,
   GetOrganizationMembershipLimits401,
   GetOrganizationMembershipLimits403,
+  CreateBillingPaymentMethodSessionMutationResponse,
+  CreateBillingPaymentMethodSessionPathParams,
+  CreateBillingPaymentMethodSession400,
+  CreateBillingPaymentMethodSession401,
+  CreateBillingPaymentMethodSession403,
   RegisterMarketplaceMutationRequest,
   RegisterMarketplaceMutationResponse,
   RegisterMarketplace400,
@@ -215,6 +218,13 @@ import type {
   ListBranches400,
   ListBranches401,
   ListBranches404,
+  CreateBranchMutationRequest,
+  CreateBranchMutationResponse,
+  CreateBranchPathParams,
+  CreateBranch400,
+  CreateBranch401,
+  CreateBranch404,
+  CreateBranch412,
   DescribeBranchQueryResponse,
   DescribeBranchPathParams,
   DescribeBranch400,
@@ -302,6 +312,8 @@ import type {
   StripeWebhook500,
   BranchLogsMutation,
   BranchMetricsMutation,
+  CreateBillingCheckoutSessionMutation,
+  CreateBillingPaymentMethodSessionMutation,
   CreateBranchMutation,
   CreateGithubAppInstallationMutation,
   CreateGithubRepositoryMutation,
@@ -885,6 +897,64 @@ export async function getOrganizationMembershipLimits({
     Record<string, string>,
     GetOrganizationMembershipLimitsPathParams
   >({ method: 'GET', url: `/organizations/${organizationID}/membership-limits`, ...requestConfig });
+  return data;
+}
+
+/**
+ * @description Creates a Stripe checkout session used to activate card billing for an organization.
+ * @summary Create a billing checkout session
+ * {@link /organizations/:organizationID/billing/checkout-session}
+ */
+export async function createBillingCheckoutSession({
+  pathParams: { organizationID },
+  config = {}
+}: {
+  pathParams: CreateBillingCheckoutSessionPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  const data = await request<
+    CreateBillingCheckoutSessionMutationResponse,
+    CreateBillingCheckoutSession400 | CreateBillingCheckoutSession401 | CreateBillingCheckoutSession403,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    CreateBillingCheckoutSessionPathParams
+  >({ method: 'POST', url: `/organizations/${organizationID}/billing/checkout-session`, ...requestConfig });
+  return data;
+}
+
+/**
+ * @description Creates a Stripe setup-mode checkout session used to add or update an organization payment method.
+ * @summary Create a billing payment method session
+ * {@link /organizations/:organizationID/billing/payment-method-session}
+ */
+export async function createBillingPaymentMethodSession({
+  pathParams: { organizationID },
+  config = {}
+}: {
+  pathParams: CreateBillingPaymentMethodSessionPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  const data = await request<
+    CreateBillingPaymentMethodSessionMutationResponse,
+    CreateBillingPaymentMethodSession400 | CreateBillingPaymentMethodSession401 | CreateBillingPaymentMethodSession403,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    CreateBillingPaymentMethodSessionPathParams
+  >({ method: 'POST', url: `/organizations/${organizationID}/billing/payment-method-session`, ...requestConfig });
   return data;
 }
 
@@ -2311,6 +2381,8 @@ export const operationsByPath = {
   'POST /organizations/{organizationID}/invitations/{invitationID}/resend': resendOrganizationInvitation,
   'POST /organizations/{organizationID}/deletion-request': requestOrganizationDeletion,
   'GET /organizations/{organizationID}/membership-limits': getOrganizationMembershipLimits,
+  'POST /organizations/{organizationID}/billing/checkout-session': createBillingCheckoutSession,
+  'POST /organizations/{organizationID}/billing/payment-method-session': createBillingPaymentMethodSession,
   'POST /marketplace/register': registerMarketplace,
   'GET /api-keys': listUserAPIKeys,
   'POST /api-keys': createUserAPIKey,
@@ -2384,6 +2456,10 @@ export const operationsByTag = {
     listUserAPIKeys,
     createUserAPIKey,
     deleteUserAPIKeys
+  },
+  billing: {
+    createBillingCheckoutSession,
+    createBillingPaymentMethodSession
   },
   marketplace: {
     registerMarketplace
@@ -2468,6 +2544,9 @@ export const tagDictionary = {
     GET: ['listOrganizationAPIKeys', 'listUserAPIKeys'],
     POST: ['createOrganizationAPIKey', 'createUserAPIKey'],
     DELETE: ['deleteOrganizationAPIKeys', 'deleteUserAPIKeys']
+  },
+  billing: {
+    POST: ['createBillingCheckoutSession', 'createBillingPaymentMethodSession']
   },
   marketplace: {
     POST: ['registerMarketplace']
@@ -2556,6 +2635,8 @@ export type OperationErrors = {
   'organizations.resendOrganizationInvitation': ResendOrganizationInvitationMutation['Errors'];
   'organizations.requestOrganizationDeletion': RequestOrganizationDeletionMutation['Errors'];
   'organizations.getOrganizationMembershipLimits': GetOrganizationMembershipLimitsQuery['Errors'];
+  'billing.createBillingCheckoutSession': CreateBillingCheckoutSessionMutation['Errors'];
+  'billing.createBillingPaymentMethodSession': CreateBillingPaymentMethodSessionMutation['Errors'];
   'marketplace.registerMarketplace': RegisterMarketplaceMutation['Errors'];
   'apiKeys.listUserAPIKeys': ListUserAPIKeysQuery['Errors'];
   'apiKeys.createUserAPIKey': CreateUserAPIKeyMutation['Errors'];
@@ -2617,6 +2698,8 @@ export type OperationErrorStatus = {
   'organizations.resendOrganizationInvitation': 400 | 401 | 403 | 404;
   'organizations.requestOrganizationDeletion': 400 | 401 | 403 | 409;
   'organizations.getOrganizationMembershipLimits': 401 | 403;
+  'billing.createBillingCheckoutSession': 400 | 401 | 403;
+  'billing.createBillingPaymentMethodSession': 400 | 401 | 403;
   'marketplace.registerMarketplace': 400 | 401 | 409 | 502;
   'apiKeys.listUserAPIKeys': 400 | 401;
   'apiKeys.createUserAPIKey': 400 | 401;

@@ -102,6 +102,14 @@ export const organizationInvitationSchema = z.object({
   invite_link: z.optional(z.string().describe('URL link to accept the invitation'))
 });
 
+export const billingCheckoutSessionResponseSchema = z.object({
+  url: z.url().describe('Stripe checkout session URL')
+});
+
+export const billingPaymentMethodSessionResponseSchema = z.object({
+  url: z.url().describe('Stripe payment method session URL')
+});
+
 /**
  * @description Request to register with a cloud marketplace
  */
@@ -1824,6 +1832,92 @@ export const getOrganizationMembershipLimits5XXSchema = z.unknown();
 
 export const getOrganizationMembershipLimitsQueryResponseSchema = z.lazy(
   () => getOrganizationMembershipLimits200Schema
+);
+
+export const createBillingCheckoutSessionPathParamsSchema = z.object({
+  get organizationID() {
+    return organizationIDSchema.describe('Unique identifier for a specific organization');
+  }
+});
+
+/**
+ * @description Billing checkout session created
+ */
+export const createBillingCheckoutSession200Schema = z.lazy(() => billingCheckoutSessionResponseSchema);
+
+/**
+ * @description Error returned when the request is malformed or contains invalid parameters
+ */
+export const createBillingCheckoutSession400Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Error returned when authentication or authorization fails
+ */
+export const createBillingCheckoutSession401Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Error returned when authentication or authorization fails
+ */
+export const createBillingCheckoutSession403Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Unexpected Error
+ */
+export const createBillingCheckoutSession5XXSchema = z.unknown();
+
+export const createBillingCheckoutSessionMutationResponseSchema = z.lazy(() => createBillingCheckoutSession200Schema);
+
+export const createBillingPaymentMethodSessionPathParamsSchema = z.object({
+  get organizationID() {
+    return organizationIDSchema.describe('Unique identifier for a specific organization');
+  }
+});
+
+/**
+ * @description Billing payment method session created
+ */
+export const createBillingPaymentMethodSession200Schema = z.lazy(() => billingPaymentMethodSessionResponseSchema);
+
+/**
+ * @description Error returned when the request is malformed or contains invalid parameters
+ */
+export const createBillingPaymentMethodSession400Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Error returned when authentication or authorization fails
+ */
+export const createBillingPaymentMethodSession401Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Error returned when authentication or authorization fails
+ */
+export const createBillingPaymentMethodSession403Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Unexpected Error
+ */
+export const createBillingPaymentMethodSession5XXSchema = z.unknown();
+
+export const createBillingPaymentMethodSessionMutationResponseSchema = z.lazy(
+  () => createBillingPaymentMethodSession200Schema
 );
 
 /**
