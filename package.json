@@ -7,25 +7,25 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@dotenvx/dotenvx": "1.69.1",
+    "@dotenvx/dotenvx": "1.71.0",
     "zod": "4.4.3",
     "@xata.io/lang": "0.0.1"
   },
   "devDependencies": {
-    "@kubb/cli": "4.37.8",
-    "@kubb/core": "4.37.8",
-    "@kubb/oas": "4.37.8",
-    "@kubb/plugin-client": "4.37.8",
-    "@kubb/plugin-oas": "4.37.8",
-    "@kubb/plugin-ts": "4.37.8",
-    "@kubb/plugin-zod": "4.37.8",
+    "@kubb/cli": "4.37.11",
+    "@kubb/core": "4.37.11",
+    "@kubb/oas": "4.37.11",
+    "@kubb/plugin-client": "4.37.11",
+    "@kubb/plugin-oas": "4.37.11",
+    "@kubb/plugin-ts": "4.37.11",
+    "@kubb/plugin-zod": "4.37.11",
     "@kubb/react": "4.3.1",
     "@kubb/react-fabric": "0.16.0",
-    "@types/node": "25.9.1",
-    "@typescript/native-preview": "7.0.0-dev.20260527.2",
+    "@types/node": "25.9.2",
+    "@typescript/native-preview": "7.0.0-dev.20260608.1",
     "case": "1.6.3",
     "typescript": "6.0.3",
-    "vitest": "4.1.7",
+    "vitest": "4.1.8",
     "@xata.io/tsconfig": "0.0.1"
   },
   "scripts": {
