@@ -212,8 +212,8 @@ packages:
     engines: {node: '>=20'}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
-  '@napi-rs/wasm-runtime@1.1.4':
-    resolution: {integrity: sha512-3NQNNgA1YSlJb/kMH1ildASP9HW7/7kYnRI2szWJaofaS1hWmbGI4H+d3+22aGzXXN9IJ+n+GiFVcGipJP18ow==}
+  '@napi-rs/wasm-runtime@1.1.5':
+    resolution: {integrity: sha512-AWPoBRJ9tsnVhor4sjO7rkni+7p+2IAEFj6cx06UgP10jkQHqay/36uRV/bFkgrh18D9vb4cr8Q0Pthskgzy+Q==}
     peerDependencies:
       '@emnapi/core': ^1.7.1
       '@emnapi/runtime': ^1.7.1
@@ -265,8 +265,8 @@ packages:
   '@redocly/config@0.49.0':
     resolution: {integrity: sha512-OI/rpEffX3fKUuy+OuBHPRspRI/S30b9aiqxfZLMpSWZzDncEGPxSEP1O2LrBVshnDX4hLjVjLvCZ4YT85+1rw==}
 
-  '@redocly/openapi-core@2.31.6':
-    resolution: {integrity: sha512-h+zh6UQ4e5oRspUZUaNl1XRXwMf0ENHbGLKIDFAjhV6JACpqUrcBxkPKHY/uCXGdJSCzxVP3twCrnOWB0iMVuw==}
+  '@redocly/openapi-core@2.32.0':
+    resolution: {integrity: sha512-B4CsuuokMc3vgNh9e+eFX8FAbjMTWUVgYtBvPXm0X2pwBs9nO2v+m6ARp7lEpg1P42B6XztIdI08BGMqUAerJQ==}
     engines: {node: '>=22.12.0 || >=20.19.0 <21.0.0', npm: '>=10'}
 
   '@rolldown/binding-android-arm64@1.0.3':
@@ -1110,8 +1110,8 @@ packages:
   reftools@1.1.9:
     resolution: {integrity: sha512-OVede/NQE13xBQ+ob5CKd5KyeJYU2YInb1bmV4nRoOfquZPkAkxuOXicSe1PvqIuZZ4kD13sPKBbR7UFDmli6w==}
 
-  remeda@2.38.0:
-    resolution: {integrity: sha512-yhZjp7dd+L0NWS8gn4caKOHI6ALfbN3/2H5WNBCnFyzPYcG5vOw5b30FVpDFdQ+7Ui62QiCWKubJhG9Y5SqF5A==}
+  remeda@2.39.0:
+    resolution: {integrity: sha512-3Ki8dU1o3OVu4dwIQ2Pj+yiuP7OnEbmWAGmJ3yDRqopily5jsj8NWzPvbS89H85d6UdONKEcUnrfuHY6jN9vyw==}
     engines: {node: '>=18.0.0'}
 
   remove-undefined-objects@7.0.0:
@@ -1138,8 +1138,8 @@ packages:
   scheduler@0.26.0:
     resolution: {integrity: sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==}
 
-  semver@7.8.3:
-    resolution: {integrity: sha512-wnilbGyMxzbY7dNOl7jpKbLSjcfeweJWU5j4+u5qW+6/wuGD9KzIGOyZnQVSBM9E7DtWaaH3CyHkppYrKYoxwg==}
+  semver@7.8.4:
+    resolution: {integrity: sha512-rUCObTnP32Q08R2uuIrt7r9PlEonuTmtuXYcW6s5kjdlj3xbnwe+21yXptAUYcMAABLkYYTtnmzb3w3EDZfueA==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -1569,8 +1569,8 @@ snapshots:
       '@kubb/react-fabric': 0.14.0
       empathic: 2.0.1
       fflate: 0.8.3
-      remeda: 2.38.0
-      semver: 7.8.3
+      remeda: 2.39.0
+      semver: 7.8.4
       tinyexec: 1.2.4
 
   '@kubb/core@4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)':
@@ -1580,8 +1580,8 @@ snapshots:
       '@kubb/react-fabric': 0.16.0
       empathic: 2.0.1
       fflate: 0.8.3
-      remeda: 2.38.0
-      semver: 7.8.3
+      remeda: 2.39.0
+      semver: 7.8.4
       tinyexec: 1.2.4
 
   '@kubb/fabric-core@0.1.5':
@@ -1590,21 +1590,21 @@ snapshots:
       js-runtime: 0.0.8
       natural-orderby: 5.0.0
       p-limit: 7.3.0
-      remeda: 2.38.0
+      remeda: 2.39.0
       typescript: 5.9.3
 
   '@kubb/fabric-core@0.14.0':
     dependencies:
       '@clack/prompts': 1.5.1
       p-limit: 7.3.0
-      remeda: 2.38.0
+      remeda: 2.39.0
       typescript: 5.9.3
 
   '@kubb/fabric-core@0.16.0':
     dependencies:
       '@clack/prompts': 1.5.1
       p-limit: 7.3.0
-      remeda: 2.38.0
+      remeda: 2.39.0
       typescript: 5.9.3
 
   '@kubb/oas@4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)':
@@ -1612,13 +1612,13 @@ snapshots:
       '@kubb/ast': 4.37.11
       '@kubb/core': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/fabric-core': 0.14.0
-      '@redocly/openapi-core': 2.31.6
+      '@redocly/openapi-core': 2.32.0
       '@stoplight/yaml': 4.3.0
       jsonpointer: 5.0.1
       oas: 31.1.2
       oas-normalize: 16.0.5
       openapi-types: 12.1.3
-      remeda: 2.38.0
+      remeda: 2.39.0
       swagger2openapi: 7.0.8
     transitivePeerDependencies:
       - '@kubb/react-fabric'
@@ -1629,13 +1629,13 @@ snapshots:
       '@kubb/ast': 4.37.11
       '@kubb/core': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/fabric-core': 0.14.0
-      '@redocly/openapi-core': 2.31.6
+      '@redocly/openapi-core': 2.32.0
       '@stoplight/yaml': 4.3.0
       jsonpointer: 5.0.1
       oas: 31.1.2
       oas-normalize: 16.0.5
       openapi-types: 12.1.3
-      remeda: 2.38.0
+      remeda: 2.39.0
       swagger2openapi: 7.0.8
     transitivePeerDependencies:
       - '@kubb/react-fabric'
@@ -1661,7 +1661,7 @@ snapshots:
       '@kubb/fabric-core': 0.14.0
       '@kubb/oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/react-fabric': 0.14.0
-      remeda: 2.38.0
+      remeda: 2.39.0
     transitivePeerDependencies:
       - encoding
 
@@ -1671,7 +1671,7 @@ snapshots:
       '@kubb/fabric-core': 0.14.0
       '@kubb/oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/react-fabric': 0.16.0
-      remeda: 2.38.0
+      remeda: 2.39.0
     transitivePeerDependencies:
       - encoding
 
@@ -1683,7 +1683,7 @@ snapshots:
       '@kubb/oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/plugin-oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/react-fabric': 0.14.0
-      remeda: 2.38.0
+      remeda: 2.39.0
       typescript: 5.9.3
     transitivePeerDependencies:
       - encoding
@@ -1696,7 +1696,7 @@ snapshots:
       '@kubb/oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/plugin-oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/react-fabric': 0.16.0
-      remeda: 2.38.0
+      remeda: 2.39.0
       typescript: 5.9.3
     transitivePeerDependencies:
       - encoding
@@ -1708,7 +1708,7 @@ snapshots:
       '@kubb/plugin-oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/plugin-ts': 4.37.11(@kubb/react-fabric@0.14.0)
       '@kubb/react-fabric': 0.14.0
-      remeda: 2.38.0
+      remeda: 2.39.0
     transitivePeerDependencies:
       - '@kubb/fabric-core'
       - bufferutil
@@ -1736,7 +1736,7 @@ snapshots:
     dependencies:
       '@kubb/fabric-core': 0.14.0
       react-devtools-core: 6.1.5
-      remeda: 2.38.0
+      remeda: 2.39.0
       ws: 8.18.0
     transitivePeerDependencies:
       - bufferutil
@@ -1746,7 +1746,7 @@ snapshots:
     dependencies:
       '@kubb/fabric-core': 0.16.0
       react-devtools-core: 6.1.5
-      remeda: 2.38.0
+      remeda: 2.39.0
       ws: 8.18.0
     transitivePeerDependencies:
       - bufferutil
@@ -1760,7 +1760,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@napi-rs/wasm-runtime@1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
+  '@napi-rs/wasm-runtime@1.1.5(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
     dependencies:
       '@emnapi/core': 1.10.0
       '@emnapi/runtime': 1.10.0
@@ -1828,7 +1828,7 @@ snapshots:
     dependencies:
       json-schema-to-ts: 2.7.2
 
-  '@redocly/openapi-core@2.31.6':
+  '@redocly/openapi-core@2.32.0':
     dependencies:
       '@redocly/ajv': 8.18.3
       '@redocly/config': 0.49.0
@@ -1881,7 +1881,7 @@ snapshots:
     dependencies:
       '@emnapi/core': 1.10.0
       '@emnapi/runtime': 1.10.0
-      '@napi-rs/wasm-runtime': 1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
+      '@napi-rs/wasm-runtime': 1.1.5(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
     optional: true
 
   '@rolldown/binding-win32-arm64-msvc@1.0.3':
@@ -2577,7 +2577,7 @@ snapshots:
 
   reftools@1.1.9: {}
 
-  remeda@2.38.0: {}
+  remeda@2.39.0: {}
 
   remove-undefined-objects@7.0.0: {}
 
@@ -2610,7 +2610,7 @@ snapshots:
 
   scheduler@0.26.0: {}
 
-  semver@7.8.3: {}
+  semver@7.8.4: {}
 
   shebang-command@2.0.0:
     dependencies:

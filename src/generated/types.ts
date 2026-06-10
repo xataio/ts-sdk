@@ -1842,7 +1842,7 @@ export type BranchLogsRequest = {
   filters?: LogFilter[] | undefined;
   /**
    * @minLength 1
-   * @maxLength 1000
+   * @maxLength 200
    * @default 100
    * @type integer | undefined
    */

@@ -921,7 +921,7 @@ export const branchLogsRequestSchema = z.object({
       .describe('Filters applied to log entries. Multiple filters are combined with AND.')
       .optional();
   },
-  limit: z.optional(z.int().min(1).max(1000).default(100)),
+  limit: z.optional(z.int().min(1).max(200).default(100)),
   cursor: z.optional(z.string().describe('Pagination cursor from a previous response'))
 });
 
