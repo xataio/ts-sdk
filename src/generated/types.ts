@@ -4183,6 +4183,14 @@ export type ListRegionsPathParams = {
   organizationID: OrganizationID;
 };
 
+export const regionsProviderEnum = {
+  aws: 'aws',
+  gcp: 'gcp',
+  custom: 'custom'
+} as const;
+
+export type RegionsProviderEnumKey = (typeof regionsProviderEnum)[keyof typeof regionsProviderEnum];
+
 /**
  * @description List of regions available for the organization
  */
@@ -4207,6 +4215,11 @@ export type ListRegions200 = {
      * @type boolean
      */
     backupsEnabled: boolean;
+    /**
+     * @description Cloud provider the region runs on
+     * @type string
+     */
+    provider: RegionsProviderEnumKey;
     /**
      * @description Organization that owns this region, if set the region is only available to this organization
      * @type string
