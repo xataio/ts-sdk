@@ -119,6 +119,30 @@ import type {
   CreateBillingPaymentMethodSession400,
   CreateBillingPaymentMethodSession401,
   CreateBillingPaymentMethodSession403,
+  GetBillingCustomerQueryResponse,
+  GetBillingCustomerPathParams,
+  GetBillingCustomer401,
+  GetBillingCustomer403,
+  GetBillingCustomer404,
+  UpdateBillingCustomerMutationRequest,
+  UpdateBillingCustomerMutationResponse,
+  UpdateBillingCustomerPathParams,
+  UpdateBillingCustomer400,
+  UpdateBillingCustomer401,
+  UpdateBillingCustomer403,
+  UpdateBillingCustomer404,
+  GetBillingInvoicesQueryResponse,
+  GetBillingInvoicesPathParams,
+  GetBillingInvoicesQueryParams,
+  GetBillingInvoices400,
+  GetBillingInvoices401,
+  GetBillingInvoices403,
+  GetBillingInvoices404,
+  GetBillingUpcomingInvoiceQueryResponse,
+  GetBillingUpcomingInvoicePathParams,
+  GetBillingUpcomingInvoice401,
+  GetBillingUpcomingInvoice403,
+  GetBillingUpcomingInvoice404,
   RegisterMarketplaceMutationRequest,
   RegisterMarketplaceMutationResponse,
   RegisterMarketplace400,
@@ -331,6 +355,9 @@ import type {
   DeleteUserAPIKeysMutation,
   DescribeBranchQuery,
   GetBackupQuery,
+  GetBillingCustomerQuery,
+  GetBillingInvoicesQuery,
+  GetBillingUpcomingInvoiceQuery,
   GetBranchCredentialsQuery,
   GetBranchPostgresConfigQuery,
   GetDefaultProjectLimitsQuery,
@@ -364,6 +391,7 @@ import type {
   RestoreFromBackupMutation,
   RotateBranchCredentialsMutation,
   StripeWebhookMutation,
+  UpdateBillingCustomerMutation,
   UpdateBranchMutation,
   UpdateGithubAppInstallationMutation,
   UpdateGithubRepositoryMutation,
@@ -959,6 +987,126 @@ export async function createBillingPaymentMethodSession({
 }
 
 /**
+ * @description Retrieves billing customer details for the specified organization.
+ * @summary Get billing customer details
+ * {@link /organizations/:organizationID/billing/customer}
+ */
+export async function getBillingCustomer({
+  pathParams: { organizationID },
+  config = {}
+}: {
+  pathParams: GetBillingCustomerPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  const data = await request<
+    GetBillingCustomerQueryResponse,
+    GetBillingCustomer401 | GetBillingCustomer403 | GetBillingCustomer404,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    GetBillingCustomerPathParams
+  >({ method: 'GET', url: `/organizations/${organizationID}/billing/customer`, ...requestConfig });
+  return data;
+}
+
+/**
+ * @description Updates billing customer details for the specified organization.
+ * @summary Update billing customer details
+ * {@link /organizations/:organizationID/billing/customer}
+ */
+export async function updateBillingCustomer({
+  pathParams: { organizationID },
+  body,
+  config = {}
+}: {
+  pathParams: UpdateBillingCustomerPathParams;
+  body: UpdateBillingCustomerMutationRequest;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  const data = await request<
+    UpdateBillingCustomerMutationResponse,
+    UpdateBillingCustomer400 | UpdateBillingCustomer401 | UpdateBillingCustomer403 | UpdateBillingCustomer404,
+    UpdateBillingCustomerMutationRequest,
+    Record<string, string>,
+    Record<string, string>,
+    UpdateBillingCustomerPathParams
+  >({ method: 'PATCH', url: `/organizations/${organizationID}/billing/customer`, body, ...requestConfig });
+  return data;
+}
+
+/**
+ * @description Retrieves billing invoices for the specified organization.
+ * @summary List billing invoices
+ * {@link /organizations/:organizationID/billing/invoices}
+ */
+export async function getBillingInvoices({
+  pathParams: { organizationID },
+  queryParams,
+  config = {}
+}: {
+  pathParams: GetBillingInvoicesPathParams;
+  queryParams?: GetBillingInvoicesQueryParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  const data = await request<
+    GetBillingInvoicesQueryResponse,
+    GetBillingInvoices400 | GetBillingInvoices401 | GetBillingInvoices403 | GetBillingInvoices404,
+    null,
+    Record<string, string>,
+    GetBillingInvoicesQueryParams,
+    GetBillingInvoicesPathParams
+  >({ method: 'GET', url: `/organizations/${organizationID}/billing/invoices`, queryParams, ...requestConfig });
+  return data;
+}
+
+/**
+ * @description Retrieves the upcoming billing invoice for the specified organization's active subscription. Organizations are expected to have at most one active subscription.
+ * @summary Get upcoming billing invoice
+ * {@link /organizations/:organizationID/billing/invoices/upcoming}
+ */
+export async function getBillingUpcomingInvoice({
+  pathParams: { organizationID },
+  config = {}
+}: {
+  pathParams: GetBillingUpcomingInvoicePathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  const data = await request<
+    GetBillingUpcomingInvoiceQueryResponse,
+    GetBillingUpcomingInvoice401 | GetBillingUpcomingInvoice403 | GetBillingUpcomingInvoice404,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    GetBillingUpcomingInvoicePathParams
+  >({ method: 'GET', url: `/organizations/${organizationID}/billing/invoices/upcoming`, ...requestConfig });
+  return data;
+}
+
+/**
  * @description Links the authenticated user to a cloud marketplace subscription. Only one marketplace registration is allowed per user.
  * @summary Register with a cloud marketplace
  * {@link /marketplace/register}
@@ -1058,6 +1206,12 @@ export async function deleteUserAPIKeys({
 
 /**
  * @description Execute a single SQL query or a batch of queries against a PostgreSQL branch.
+ * **Authentication:** send the branch's PostgreSQL connection string in the
+ * `Connection-String` header. The control-plane API key (Bearer token) is
+ * **not** accepted on the gateway host.
+ * **Routing:** the target branch, region, and endpoint type are taken from the
+ * hostname embedded in the connection string, which must match the request host.
+ * See the `Connection-String` security scheme for the host format.
  * **Single query:** provide `query` (and optional `params`) at the top level.
  * **Batch:** provide `queries` as an array of query objects, or send the request body
  * as a JSON array. Batch queries execute within a single transaction.
@@ -1089,8 +1243,10 @@ export async function query({
 /**
  * @description Upgrade to a WebSocket connection that proxies the PostgreSQL wire protocol.
  * The client sends and receives PostgreSQL protocol messages over binary WebSocket frames.
- * Authentication is handled via the PostgreSQL startup message within the wire protocol,
- * using the same connection-string hostname conventions as the HTTP SQL endpoint.
+ * **Authentication:** the same branch connection string credential as the
+ * HTTP SQL endpoint is used, but it is supplied via the PostgreSQL startup
+ * message inside the wire protocol rather than an HTTP header. The
+ * control-plane API key (Bearer token) is not accepted.
  * @summary WebSocket wire protocol proxy
  * {@link /v2}
  */
@@ -2383,6 +2539,10 @@ export const operationsByPath = {
   'GET /organizations/{organizationID}/membership-limits': getOrganizationMembershipLimits,
   'POST /organizations/{organizationID}/billing/checkout-session': createBillingCheckoutSession,
   'POST /organizations/{organizationID}/billing/payment-method-session': createBillingPaymentMethodSession,
+  'GET /organizations/{organizationID}/billing/customer': getBillingCustomer,
+  'PATCH /organizations/{organizationID}/billing/customer': updateBillingCustomer,
+  'GET /organizations/{organizationID}/billing/invoices': getBillingInvoices,
+  'GET /organizations/{organizationID}/billing/invoices/upcoming': getBillingUpcomingInvoice,
   'POST /marketplace/register': registerMarketplace,
   'GET /api-keys': listUserAPIKeys,
   'POST /api-keys': createUserAPIKey,
@@ -2459,7 +2619,11 @@ export const operationsByTag = {
   },
   billing: {
     createBillingCheckoutSession,
-    createBillingPaymentMethodSession
+    createBillingPaymentMethodSession,
+    getBillingCustomer,
+    updateBillingCustomer,
+    getBillingInvoices,
+    getBillingUpcomingInvoice
   },
   marketplace: {
     registerMarketplace
@@ -2546,7 +2710,9 @@ export const tagDictionary = {
     DELETE: ['deleteOrganizationAPIKeys', 'deleteUserAPIKeys']
   },
   billing: {
-    POST: ['createBillingCheckoutSession', 'createBillingPaymentMethodSession']
+    POST: ['createBillingCheckoutSession', 'createBillingPaymentMethodSession'],
+    GET: ['getBillingCustomer', 'getBillingInvoices', 'getBillingUpcomingInvoice'],
+    PATCH: ['updateBillingCustomer']
   },
   marketplace: {
     POST: ['registerMarketplace']
@@ -2637,6 +2803,10 @@ export type OperationErrors = {
   'organizations.getOrganizationMembershipLimits': GetOrganizationMembershipLimitsQuery['Errors'];
   'billing.createBillingCheckoutSession': CreateBillingCheckoutSessionMutation['Errors'];
   'billing.createBillingPaymentMethodSession': CreateBillingPaymentMethodSessionMutation['Errors'];
+  'billing.getBillingCustomer': GetBillingCustomerQuery['Errors'];
+  'billing.updateBillingCustomer': UpdateBillingCustomerMutation['Errors'];
+  'billing.getBillingInvoices': GetBillingInvoicesQuery['Errors'];
+  'billing.getBillingUpcomingInvoice': GetBillingUpcomingInvoiceQuery['Errors'];
   'marketplace.registerMarketplace': RegisterMarketplaceMutation['Errors'];
   'apiKeys.listUserAPIKeys': ListUserAPIKeysQuery['Errors'];
   'apiKeys.createUserAPIKey': CreateUserAPIKeyMutation['Errors'];
@@ -2700,6 +2870,10 @@ export type OperationErrorStatus = {
   'organizations.getOrganizationMembershipLimits': 401 | 403;
   'billing.createBillingCheckoutSession': 400 | 401 | 403;
   'billing.createBillingPaymentMethodSession': 400 | 401 | 403;
+  'billing.getBillingCustomer': 401 | 403 | 404;
+  'billing.updateBillingCustomer': 400 | 401 | 403 | 404;
+  'billing.getBillingInvoices': 400 | 401 | 403 | 404;
+  'billing.getBillingUpcomingInvoice': 401 | 403 | 404;
   'marketplace.registerMarketplace': 400 | 401 | 409 | 502;
   'apiKeys.listUserAPIKeys': 400 | 401;
   'apiKeys.createUserAPIKey': 400 | 401;

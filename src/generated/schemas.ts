@@ -102,6 +102,105 @@ export const organizationInvitationSchema = z.object({
   invite_link: z.optional(z.string().describe('URL link to accept the invitation'))
 });
 
+export const billingPaymentMethodCardSchema = z.object({
+  brand: z.string(),
+  last4: z.string(),
+  expiry_month: z.int(),
+  expiry_year: z.int()
+});
+
+export const billingPaymentMethodSchema = z.object({
+  get card() {
+    return billingPaymentMethodCardSchema;
+  }
+});
+
+export const billingCreditSchema = z.object({
+  id: z.string(),
+  balance: z.number().describe('Remaining credit balance.'),
+  effective_date: z.date().describe('Date when the credit becomes usable.'),
+  expiry_date: z.nullable(z.date().describe('Date when the credit expires, or null for credits that do not expire.')),
+  maximum_initial_balance: z.number().describe('Initial credit balance before any usage.'),
+  status: z.enum(['active', 'pending_payment'])
+});
+
+export const billingCreditDetailsSchema = z.object({
+  total_lifetime_credits: z.number(),
+  last_expiry: z.nullable(z.date()),
+  last_expiry_with_balance: z.nullable(z.date()),
+  get active_credits() {
+    return z
+      .array(billingCreditSchema)
+      .describe('Credits with active status, a reached effective date, positive balance, and no past expiry.');
+  },
+  last_active_credit_expiry: z.nullable(z.date()),
+  total_active_credits: z.number(),
+  days_until_last_active_credit_expiry: z.nullable(
+    z.int().describe('Days until the last active credit expiry, or null when there is no future active credit expiry.')
+  ),
+  days_until_last_expiry_with_balance: z.nullable(
+    z
+      .int()
+      .describe(
+        'Days until the last positive-balance credit expiry, or null when there is no future positive-balance credit expiry.'
+      )
+  )
+});
+
+export const billingCustomerResponseSchema = z.object({
+  billing_email: z.email(),
+  has_payment_method: z.boolean().describe('True when the customer has a valid Stripe default card payment method.'),
+  get default_payment_method() {
+    return billingPaymentMethodSchema
+      .describe('The Stripe default card payment method, when one is configured and retrievable.')
+      .nullable();
+  },
+  get credits() {
+    return z.array(billingCreditSchema);
+  },
+  get credit_details() {
+    return billingCreditDetailsSchema;
+  }
+});
+
+export const updateBillingCustomerRequestSchema = z.object({
+  billing_email: z.email()
+});
+
+export const billingInvoiceSchema = z.object({
+  id: z.string(),
+  invoice_number: z.string(),
+  amount_due: z.number().describe('Decimal amount due.'),
+  currency: z.string(),
+  invoice_date: z.date(),
+  status: z.enum(['draft', 'issued', 'paid', 'void', 'synced']),
+  invoice_pdf: z.nullable(z.string())
+});
+
+export const paginationMetadataSchema = z.object({
+  has_more: z.boolean(),
+  next_cursor: z.nullable(z.string())
+});
+
+export const billingInvoicesResponseSchema = z.object({
+  get data() {
+    return z.array(billingInvoiceSchema);
+  },
+  get pagination_metadata() {
+    return paginationMetadataSchema;
+  }
+});
+
+export const billingUpcomingInvoiceResponseSchema = z.object({
+  created_at: z.date(),
+  amount_due: z.number().describe('Decimal amount due.'),
+  currency: z.string(),
+  target_date: z.date(),
+  subtotal: z.number().describe('Decimal subtotal.'),
+  total: z.number().describe('Decimal total.'),
+  hosted_invoice_url: z.nullable(z.url())
+});
+
 export const billingCheckoutSessionResponseSchema = z.object({
   url: z.url().describe('Stripe checkout session URL')
 });
@@ -1920,6 +2019,197 @@ export const createBillingPaymentMethodSessionMutationResponseSchema = z.lazy(
   () => createBillingPaymentMethodSession200Schema
 );
 
+export const getBillingCustomerPathParamsSchema = z.object({
+  get organizationID() {
+    return organizationIDSchema.describe('Unique identifier for a specific organization');
+  }
+});
+
+/**
+ * @description Billing customer details
+ */
+export const getBillingCustomer200Schema = z.lazy(() => billingCustomerResponseSchema);
+
+/**
+ * @description Error returned when authentication or authorization fails
+ */
+export const getBillingCustomer401Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Error returned when authentication or authorization fails
+ */
+export const getBillingCustomer403Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Generic error response
+ */
+export const getBillingCustomer404Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Unexpected Error
+ */
+export const getBillingCustomer5XXSchema = z.unknown();
+
+export const getBillingCustomerQueryResponseSchema = z.lazy(() => getBillingCustomer200Schema);
+
+export const updateBillingCustomerPathParamsSchema = z.object({
+  get organizationID() {
+    return organizationIDSchema.describe('Unique identifier for a specific organization');
+  }
+});
+
+/**
+ * @description Billing customer updated
+ */
+export const updateBillingCustomer200Schema = z.lazy(() => billingCustomerResponseSchema);
+
+/**
+ * @description Error returned when the request is malformed or contains invalid parameters
+ */
+export const updateBillingCustomer400Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Error returned when authentication or authorization fails
+ */
+export const updateBillingCustomer401Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Error returned when authentication or authorization fails
+ */
+export const updateBillingCustomer403Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Generic error response
+ */
+export const updateBillingCustomer404Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Unexpected Error
+ */
+export const updateBillingCustomer5XXSchema = z.unknown();
+
+export const updateBillingCustomerMutationRequestSchema = z.lazy(() => updateBillingCustomerRequestSchema);
+
+export const updateBillingCustomerMutationResponseSchema = z.lazy(() => updateBillingCustomer200Schema);
+
+export const getBillingInvoicesPathParamsSchema = z.object({
+  get organizationID() {
+    return organizationIDSchema.describe('Unique identifier for a specific organization');
+  }
+});
+
+export const getBillingInvoicesQueryParamsSchema = z.object({
+  cursor: z.optional(z.string().describe('Pagination cursor from a previous response')),
+  limit: z.coerce.number().int().min(1).max(100).default(20).describe('Number of invoices to fetch')
+});
+
+/**
+ * @description Billing invoices
+ */
+export const getBillingInvoices200Schema = z.lazy(() => billingInvoicesResponseSchema);
+
+/**
+ * @description Error returned when the request is malformed or contains invalid parameters
+ */
+export const getBillingInvoices400Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Error returned when authentication or authorization fails
+ */
+export const getBillingInvoices401Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Error returned when authentication or authorization fails
+ */
+export const getBillingInvoices403Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Generic error response
+ */
+export const getBillingInvoices404Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Unexpected Error
+ */
+export const getBillingInvoices5XXSchema = z.unknown();
+
+export const getBillingInvoicesQueryResponseSchema = z.lazy(() => getBillingInvoices200Schema);
+
+export const getBillingUpcomingInvoicePathParamsSchema = z.object({
+  get organizationID() {
+    return organizationIDSchema.describe('Unique identifier for a specific organization');
+  }
+});
+
+/**
+ * @description Upcoming billing invoice
+ */
+export const getBillingUpcomingInvoice200Schema = z.lazy(() => billingUpcomingInvoiceResponseSchema);
+
+/**
+ * @description Error returned when authentication or authorization fails
+ */
+export const getBillingUpcomingInvoice401Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Error returned when authentication or authorization fails
+ */
+export const getBillingUpcomingInvoice403Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Generic error response
+ */
+export const getBillingUpcomingInvoice404Schema = z.object({
+  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+/**
+ * @description Unexpected Error
+ */
+export const getBillingUpcomingInvoice5XXSchema = z.unknown();
+
+export const getBillingUpcomingInvoiceQueryResponseSchema = z.lazy(() => getBillingUpcomingInvoice200Schema);
+
 /**
  * @description Marketplace registration successful
  */
@@ -2070,13 +2360,6 @@ export const deleteUserAPIKeysMutationResponseSchema = z.lazy(() => deleteUserAP
 
 export const queryHeaderParamsSchema = z
   .object({
-    'Connection-String': z.optional(
-      z
-        .url()
-        .describe(
-          'PostgreSQL connection string (`postgres://user:pass@host/db`). The hostname encodes the target branch and endpoint type.'
-        )
-    ),
     'Array-Mode': z.optional(
       z.enum(['true', 'false']).describe('When `true`, return rows as arrays instead of objects.')
     ),

@@ -214,6 +214,237 @@ export type OrganizationInvitation = {
   invite_link?: string | undefined;
 };
 
+export type BillingPaymentMethodCard = {
+  /**
+   * @type string
+   */
+  brand: string;
+  /**
+   * @type string
+   */
+  last4: string;
+  /**
+   * @type integer
+   */
+  expiry_month: number;
+  /**
+   * @type integer
+   */
+  expiry_year: number;
+};
+
+export type BillingPaymentMethod = {
+  /**
+   * @type object
+   */
+  card: BillingPaymentMethodCard;
+};
+
+export const billingCreditStatusEnum = {
+  active: 'active',
+  pending_payment: 'pending_payment'
+} as const;
+
+export type BillingCreditStatusEnumKey = (typeof billingCreditStatusEnum)[keyof typeof billingCreditStatusEnum];
+
+export type BillingCredit = {
+  /**
+   * @type string
+   */
+  id: string;
+  /**
+   * @description Remaining credit balance.
+   * @type number, double
+   */
+  balance: number;
+  /**
+   * @description Date when the credit becomes usable.
+   * @type string, date-time
+   */
+  effective_date: string;
+  /**
+   * @description Date when the credit expires, or null for credits that do not expire.
+   * @type string, date-time
+   */
+  expiry_date: string | null;
+  /**
+   * @description Initial credit balance before any usage.
+   * @type number, double
+   */
+  maximum_initial_balance: number;
+  /**
+   * @type string
+   */
+  status: BillingCreditStatusEnumKey;
+};
+
+export type BillingCreditDetails = {
+  /**
+   * @type number, double
+   */
+  total_lifetime_credits: number;
+  /**
+   * @type string, date-time
+   */
+  last_expiry: string | null;
+  /**
+   * @type string, date-time
+   */
+  last_expiry_with_balance: string | null;
+  /**
+   * @description Credits with active status, a reached effective date, positive balance, and no past expiry.
+   * @type array
+   */
+  active_credits: BillingCredit[];
+  /**
+   * @type string, date-time
+   */
+  last_active_credit_expiry: string | null;
+  /**
+   * @type number, double
+   */
+  total_active_credits: number;
+  /**
+   * @description Days until the last active credit expiry, or null when there is no future active credit expiry.
+   * @type integer
+   */
+  days_until_last_active_credit_expiry: number | null;
+  /**
+   * @description Days until the last positive-balance credit expiry, or null when there is no future positive-balance credit expiry.
+   * @type integer
+   */
+  days_until_last_expiry_with_balance: number | null;
+};
+
+export type BillingCustomerResponse = {
+  /**
+   * @type string, email
+   */
+  billing_email: string;
+  /**
+   * @description True when the customer has a valid Stripe default card payment method.
+   * @type boolean
+   */
+  has_payment_method: boolean;
+  /**
+   * @description The Stripe default card payment method, when one is configured and retrievable.
+   */
+  default_payment_method: BillingPaymentMethod | null;
+  /**
+   * @type array
+   */
+  credits: BillingCredit[];
+  /**
+   * @type object
+   */
+  credit_details: BillingCreditDetails;
+};
+
+export type UpdateBillingCustomerRequest = {
+  /**
+   * @type string, email
+   */
+  billing_email: string;
+};
+
+export const billingInvoiceStatusEnum = {
+  draft: 'draft',
+  issued: 'issued',
+  paid: 'paid',
+  void: 'void',
+  synced: 'synced'
+} as const;
+
+export type BillingInvoiceStatusEnumKey = (typeof billingInvoiceStatusEnum)[keyof typeof billingInvoiceStatusEnum];
+
+export type BillingInvoice = {
+  /**
+   * @type string
+   */
+  id: string;
+  /**
+   * @type string
+   */
+  invoice_number: string;
+  /**
+   * @description Decimal amount due.
+   * @type number, double
+   */
+  amount_due: number;
+  /**
+   * @type string
+   */
+  currency: string;
+  /**
+   * @type string, date-time
+   */
+  invoice_date: string;
+  /**
+   * @type string
+   */
+  status: BillingInvoiceStatusEnumKey;
+  /**
+   * @type string
+   */
+  invoice_pdf: string | null;
+};
+
+export type PaginationMetadata = {
+  /**
+   * @type boolean
+   */
+  has_more: boolean;
+  /**
+   * @type string
+   */
+  next_cursor: string | null;
+};
+
+export type BillingInvoicesResponse = {
+  /**
+   * @type array
+   */
+  data: BillingInvoice[];
+  /**
+   * @type object
+   */
+  pagination_metadata: PaginationMetadata;
+};
+
+export type BillingUpcomingInvoiceResponse = {
+  /**
+   * @type string, date-time
+   */
+  created_at: string;
+  /**
+   * @description Decimal amount due.
+   * @type number, double
+   */
+  amount_due: number;
+  /**
+   * @type string
+   */
+  currency: string;
+  /**
+   * @type string, date-time
+   */
+  target_date: string;
+  /**
+   * @description Decimal subtotal.
+   * @type number, double
+   */
+  subtotal: number;
+  /**
+   * @description Decimal total.
+   * @type number, double
+   */
+  total: number;
+  /**
+   * @type string, uri
+   */
+  hosted_invoice_url: string | null;
+};
+
 export type BillingCheckoutSessionResponse = {
   /**
    * @description Stripe checkout session URL
@@ -3756,6 +3987,366 @@ export type CreateBillingPaymentMethodSessionMutation = {
     | CreateBillingPaymentMethodSession403;
 };
 
+export type GetBillingCustomerPathParams = {
+  /**
+   * @description Unique identifier for a specific organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+};
+
+/**
+ * @description Billing customer details
+ */
+export type GetBillingCustomer200 = BillingCustomerResponse;
+
+/**
+ * @description Error returned when authentication or authorization fails
+ * @example [object Object]
+ */
+export type GetBillingCustomer401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Error returned when authentication or authorization fails
+ * @example [object Object]
+ */
+export type GetBillingCustomer403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Generic error response
+ */
+export type GetBillingCustomer404 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Unexpected Error
+ */
+export type GetBillingCustomer5XX = unknown;
+
+export type GetBillingCustomerQueryResponse = GetBillingCustomer200;
+
+export type GetBillingCustomerQuery = {
+  Response: GetBillingCustomer200;
+  PathParams: GetBillingCustomerPathParams;
+  Errors: GetBillingCustomer401 | GetBillingCustomer403 | GetBillingCustomer404;
+};
+
+export type UpdateBillingCustomerPathParams = {
+  /**
+   * @description Unique identifier for a specific organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+};
+
+/**
+ * @description Billing customer updated
+ */
+export type UpdateBillingCustomer200 = BillingCustomerResponse;
+
+/**
+ * @description Error returned when the request is malformed or contains invalid parameters
+ */
+export type UpdateBillingCustomer400 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Error returned when authentication or authorization fails
+ * @example [object Object]
+ */
+export type UpdateBillingCustomer401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Error returned when authentication or authorization fails
+ * @example [object Object]
+ */
+export type UpdateBillingCustomer403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Generic error response
+ */
+export type UpdateBillingCustomer404 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Unexpected Error
+ */
+export type UpdateBillingCustomer5XX = unknown;
+
+export type UpdateBillingCustomerMutationRequest = UpdateBillingCustomerRequest;
+
+export type UpdateBillingCustomerMutationResponse = UpdateBillingCustomer200;
+
+export type UpdateBillingCustomerMutation = {
+  Response: UpdateBillingCustomer200;
+  Request: UpdateBillingCustomerMutationRequest;
+  PathParams: UpdateBillingCustomerPathParams;
+  Errors: UpdateBillingCustomer400 | UpdateBillingCustomer401 | UpdateBillingCustomer403 | UpdateBillingCustomer404;
+};
+
+export type GetBillingInvoicesPathParams = {
+  /**
+   * @description Unique identifier for a specific organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+};
+
+export type GetBillingInvoicesQueryParams = {
+  /**
+   * @description Pagination cursor from a previous response
+   * @type string | undefined
+   */
+  cursor?: string | undefined;
+  /**
+   * @description Number of invoices to fetch
+   * @minLength 1
+   * @maxLength 100
+   * @default 20
+   * @type integer | undefined
+   */
+  limit?: number | undefined;
+};
+
+/**
+ * @description Billing invoices
+ */
+export type GetBillingInvoices200 = BillingInvoicesResponse;
+
+/**
+ * @description Error returned when the request is malformed or contains invalid parameters
+ */
+export type GetBillingInvoices400 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Error returned when authentication or authorization fails
+ * @example [object Object]
+ */
+export type GetBillingInvoices401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Error returned when authentication or authorization fails
+ * @example [object Object]
+ */
+export type GetBillingInvoices403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Generic error response
+ */
+export type GetBillingInvoices404 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Unexpected Error
+ */
+export type GetBillingInvoices5XX = unknown;
+
+export type GetBillingInvoicesQueryResponse = GetBillingInvoices200;
+
+export type GetBillingInvoicesQuery = {
+  Response: GetBillingInvoices200;
+  PathParams: GetBillingInvoicesPathParams;
+  QueryParams: GetBillingInvoicesQueryParams;
+  Errors: GetBillingInvoices400 | GetBillingInvoices401 | GetBillingInvoices403 | GetBillingInvoices404;
+};
+
+export type GetBillingUpcomingInvoicePathParams = {
+  /**
+   * @description Unique identifier for a specific organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+};
+
+/**
+ * @description Upcoming billing invoice
+ */
+export type GetBillingUpcomingInvoice200 = BillingUpcomingInvoiceResponse;
+
+/**
+ * @description Error returned when authentication or authorization fails
+ * @example [object Object]
+ */
+export type GetBillingUpcomingInvoice401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Error returned when authentication or authorization fails
+ * @example [object Object]
+ */
+export type GetBillingUpcomingInvoice403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Generic error response
+ */
+export type GetBillingUpcomingInvoice404 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @description Unexpected Error
+ */
+export type GetBillingUpcomingInvoice5XX = unknown;
+
+export type GetBillingUpcomingInvoiceQueryResponse = GetBillingUpcomingInvoice200;
+
+export type GetBillingUpcomingInvoiceQuery = {
+  Response: GetBillingUpcomingInvoice200;
+  PathParams: GetBillingUpcomingInvoicePathParams;
+  Errors: GetBillingUpcomingInvoice401 | GetBillingUpcomingInvoice403 | GetBillingUpcomingInvoice404;
+};
+
 /**
  * @description Marketplace registration successful
  */
@@ -4062,11 +4653,6 @@ export type QueryHeaderParamsBatchDeferrableEnumKey =
   (typeof queryHeaderParamsBatchDeferrableEnum)[keyof typeof queryHeaderParamsBatchDeferrableEnum];
 
 export type QueryHeaderParams = {
-  /**
-   * @description PostgreSQL connection string (`postgres://user:pass@host/db`). The hostname encodes the target branch and endpoint type.
-   * @type string | undefined, uri
-   */
-  'Connection-String'?: string | undefined;
   /**
    * @description When `true`, return rows as arrays instead of objects.
    * @type string | undefined
