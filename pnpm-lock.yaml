@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@dotenvx/dotenvx':
-        specifier: 1.71.0
-        version: 1.71.0
+        specifier: 1.71.3
+        version: 1.71.3
       '@xata.io/lang':
         specifier: 0.0.1
         version: 0.0.1
@@ -19,26 +19,26 @@ importers:
         version: 4.4.3
     devDependencies:
       '@kubb/cli':
-        specifier: 4.37.11
-        version: 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)(typescript@6.0.3)
+        specifier: 4.38.0
+        version: 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)(typescript@6.0.3)
       '@kubb/core':
-        specifier: 4.37.11
-        version: 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
+        specifier: 4.38.0
+        version: 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/oas':
-        specifier: 4.37.11
-        version: 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
+        specifier: 4.38.0
+        version: 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/plugin-client':
-        specifier: 4.37.11
-        version: 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
+        specifier: 4.38.0
+        version: 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/plugin-oas':
-        specifier: 4.37.11
-        version: 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
+        specifier: 4.38.0
+        version: 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/plugin-ts':
-        specifier: 4.37.11
-        version: 4.37.11(@kubb/react-fabric@0.16.0)
+        specifier: 4.38.0
+        version: 4.38.0(@kubb/react-fabric@0.16.0)
       '@kubb/plugin-zod':
-        specifier: 4.37.11
-        version: 4.37.11(@kubb/fabric-core@0.14.0)
+        specifier: 4.38.0
+        version: 4.38.0(@kubb/fabric-core@0.14.0)
       '@kubb/react':
         specifier: 4.3.1
         version: 4.3.1
@@ -46,11 +46,11 @@ importers:
         specifier: 0.16.0
         version: 0.16.0
       '@types/node':
-        specifier: 25.9.2
-        version: 25.9.2
+        specifier: 25.9.3
+        version: 25.9.3
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260608.1
-        version: 7.0.0-dev.20260608.1
+        specifier: 7.0.0-dev.20260615.1
+        version: 7.0.0-dev.20260615.1
       '@xata.io/tsconfig':
         specifier: 0.0.1
         version: 0.0.1
@@ -62,7 +62,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: 4.1.8
-        version: 4.1.8(@types/node@25.9.2)(vite@8.0.16(@types/node@25.9.2)(jiti@2.5.1))
+        version: 4.1.8(@types/node@25.9.3)(vite@8.0.16(@types/node@25.9.3)(jiti@2.5.1))
 
 packages:
 
@@ -92,8 +92,8 @@ packages:
     resolution: {integrity: sha512-zccHj2z2oCCO4yrDiRSlFOxWerGqRiysP7a5jPK6uoI9URKAquwY42Dd/iUP8JWHxEzdRe4TlbvZCo8z1/mhrw==}
     engines: {node: '>= 20.12.0'}
 
-  '@dotenvx/dotenvx@1.71.0':
-    resolution: {integrity: sha512-KEUw/mGu+EDRhYWRTNGHIimVCs9NvMFaIXOGrHSXoCteKLE5EsJnmPjOPpYorjXVg/0xG0fbdVw720azw1z4ag==}
+  '@dotenvx/dotenvx@1.71.3':
+    resolution: {integrity: sha512-WSmox5aD+XxJEUEOTk7gKLpd5+Iz9Nik89Zpbu5DijMln6LsFiv3xpNKBMc/b9sSkUlKvAblzrhik2TqKFE7NA==}
     hasBin: true
 
   '@ecies/ciphers@0.2.6':
@@ -133,17 +133,17 @@ packages:
     peerDependencies:
       jsep: ^0.4.0||^1.0.0
 
-  '@kubb/ast@4.37.11':
-    resolution: {integrity: sha512-lhHRMl3YPThBO3napKJYk7ZFMdh39a4rXYZz7BC6Rd0AOCgQIEGStj+MoXVytUKaUhL16HYQTjmNSTPb7wN1UQ==}
+  '@kubb/ast@4.38.0':
+    resolution: {integrity: sha512-eTjF48qWaoYw5/F5HeVmgIScLK5tGM2yp5HAhk24gYDXtNq8TP9P2rKozSc78aCMZHzbgLU7DrEPlNqHwwGR5w==}
     engines: {node: '>=20'}
 
-  '@kubb/cli@4.37.11':
-    resolution: {integrity: sha512-zNga51J/ZCV1M4j3tax+JL/RlAsqSMzGfd1iDLvWZFZAdNZpOOcesqpM93Y1b0u9ePt/DfT5mgPaaXkLEHCpMA==}
+  '@kubb/cli@4.38.0':
+    resolution: {integrity: sha512-Mzv4P2e++6R6Vc8qzFq6blgWmouECLdGnK/7fN1E8BV7cQqt9kpt+GRgAbv1dYXaFQaax86GPb30oD+SD9bVZQ==}
     engines: {node: '>=20'}
     hasBin: true
 
-  '@kubb/core@4.37.11':
-    resolution: {integrity: sha512-mO1V23Smlf6vDwVjz+dk07+C0digLBB7QWSND6BrCoF5+4zJvXokAPStAWAV6sL1EiaCxRXi1eK+w84/iNSTnQ==}
+  '@kubb/core@4.38.0':
+    resolution: {integrity: sha512-K5q+Kt7EbUsSKsxp8AHWxxUmILwQmDsyCgNiF2UPIthLTnpC5u/VEXZzs/KjEnKekgJPggjse6JcQv4Oum7GrQ==}
     engines: {node: '>=20'}
     peerDependencies:
       '@kubb/fabric-core': 0.14.0
@@ -161,14 +161,14 @@ packages:
     resolution: {integrity: sha512-Eu8SvlBlcGMToh5yWnMnZtHr9yj4UBuylnATdQy5Tb3CO/cikytUdT7aadEH8QcdyHbfevG0LJaHnj9cOB3qhg==}
     engines: {node: '>=20'}
 
-  '@kubb/oas@4.37.11':
-    resolution: {integrity: sha512-rR8CUVXwXzphx57+OLSVTOdkWmLrwch2eNZwfpQU21FK7UULAyHVp0r5Vo0SrCJroJUlFQx71BTTROZP5nuo/Q==}
+  '@kubb/oas@4.38.0':
+    resolution: {integrity: sha512-Lzn9ljpI4eSOvX9oG7ttP0ayZgYPrlHdAnHUZ10LTwrcZbK9oSf7yVFNqUxsVAFxPNk0ASAvMHcHs8ZLwAykxg==}
     engines: {node: '>=20'}
     peerDependencies:
       '@kubb/fabric-core': 0.14.0
 
-  '@kubb/plugin-client@4.37.11':
-    resolution: {integrity: sha512-3wlkhgqyLG2xlJYQdB1hF5PlbKmUtWQpiFsStq4ilpGxxxR23UNhjOzalHpOH2vPdzAPiiyDlGZ3gLbcS63J0g==}
+  '@kubb/plugin-client@4.38.0':
+    resolution: {integrity: sha512-LnLOirw82enO9TgYqF17V458eXqJX9KFECy6j6MOD75xT427dRzLH8pmadw8ej0/zvxtjdlAkvTqWZyBi+StaA==}
     engines: {node: '>=20'}
     peerDependencies:
       '@kubb/fabric-core': 0.14.0
@@ -178,21 +178,21 @@ packages:
       axios:
         optional: true
 
-  '@kubb/plugin-oas@4.37.11':
-    resolution: {integrity: sha512-3WiI3hjTx7l1OEwL9Rss/qqydkzirw6v2rQGy+4LJ4/nfI4hkCTCkrkulLC+eSdRKMwlA1p3sog/JGTpO+AimQ==}
+  '@kubb/plugin-oas@4.38.0':
+    resolution: {integrity: sha512-BHVoKZQktSXZ4etRAyn0XCI+SObsJi0+Tx04Csy1xmjBahjmuu/yAoUYW2Lq21S0QUMPgJVwdbmifMUU8pgcJg==}
     engines: {node: '>=20'}
     peerDependencies:
       '@kubb/fabric-core': 0.14.0
       '@kubb/react-fabric': 0.14.0
 
-  '@kubb/plugin-ts@4.37.11':
-    resolution: {integrity: sha512-OSu4uMPdaivr75EEuXzHbmnWHt3k8qYRXO2WpkK/B6MXt/JWoETu0SqmQgbyRSCbfjneWs2J6Pzgnulb+cVtpw==}
+  '@kubb/plugin-ts@4.38.0':
+    resolution: {integrity: sha512-3x/Rr+O0z2vakiLOc7xCEYiMJPSHxV4YX92LwgreCEAEHdMxQJvKSPuzdO3oJYzMtPp/O7+k+COFL9Ny9+5dOw==}
     engines: {node: '>=20'}
     peerDependencies:
       '@kubb/react-fabric': 0.14.0
 
-  '@kubb/plugin-zod@4.37.11':
-    resolution: {integrity: sha512-ITMQZ8YgD7S1ZszNc3kd6NnbwdXQT5O6d+M1ZOpDN1RalUytJXIzJtnfjboMddjGV3W6V84XaU6adoVdf4MhtQ==}
+  '@kubb/plugin-zod@4.38.0':
+    resolution: {integrity: sha512-cfTIpf+Fc4/TQbNjGARm70YYHiisOaEQHT5HfYaWntorP+JKYPlzV13NGfUsk8MAI+jVAePayXoTn3Wkq5/a0Q==}
     engines: {node: '>=20'}
 
   '@kubb/react-fabric@0.1.5':
@@ -407,53 +407,53 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/node@25.9.2':
-    resolution: {integrity: sha512-G05zqtJhcDLb8uslf5EjCxXg9G1KQxiV8OS0R26IC//Eoyitzqe8z37I7cqvnZlrlSfgocQRfSn/AHBZJJFyGw==}
+  '@types/node@25.9.3':
+    resolution: {integrity: sha512-603BddQMv3pUcr4U2dhujk83N2tTDVr/34wII2B6bJy6g+8WD6yUb11jszNs0gdi4PesVWl7ABt8nYMVpnLUcg==}
 
-  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260608.1':
-    resolution: {integrity: sha512-ZGs+yhsPWFDkSHydJyF8I3d4witpXiD69auWZtSotNWG3gBR5Ne291m38rvxoLFDRlFHwAQpPT7q3yStp+cQSQ==}
+  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260615.1':
+    resolution: {integrity: sha512-EHrtoVGEEhIhsnGe+b8w0FoM9JfIw5SkoPwO8ifaU0PrYm2UbyPbj2I2hOTxtk458t0irvGz2+8cshylBRbKng==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@typescript/native-preview-darwin-x64@7.0.0-dev.20260608.1':
-    resolution: {integrity: sha512-cxmBCl1+fvGgom2vwPTbZ43bW68rfjDIU1ZDQGtjXvj1bpW9fEozskJqgZdNNHu8WQIl17zj4Ke+noENwgGu9w==}
+  '@typescript/native-preview-darwin-x64@7.0.0-dev.20260615.1':
+    resolution: {integrity: sha512-BcDA56hkk6mrUpysaOVvrdACoX5d2SF1JTwHMoNjT1KysBicExS2wlH0eN0L01iDeqtB73XHl7A4zrKFmKzrBg==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [darwin]
 
-  '@typescript/native-preview-linux-arm64@7.0.0-dev.20260608.1':
-    resolution: {integrity: sha512-/JPrQqa36CSMdXeEXhZ0mYUmufehIL8ujagXvU8z/3/b/CeWjgoZLJCuy76k9NLZCG7wGvcFWFK5kgOEKyDQdw==}
+  '@typescript/native-preview-linux-arm64@7.0.0-dev.20260615.1':
+    resolution: {integrity: sha512-TDAlBpyYCF7Z+ELTH+1tabDE6W3shl+H+Z+nmzaQio1I8pFvbwt2iLlE0Rc9CpRdIeaqr0ppMEgXHoeV3fZFWA==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [linux]
 
-  '@typescript/native-preview-linux-arm@7.0.0-dev.20260608.1':
-    resolution: {integrity: sha512-tWFLuzAWg8XnOkN7f94MAW8qLTMG7Q74IXHSG18cVmftuBxwvn1Lov+0Rnd9rsH7VAuSIu00Co6G3/PbGvGrxA==}
+  '@typescript/native-preview-linux-arm@7.0.0-dev.20260615.1':
+    resolution: {integrity: sha512-YRXRS/7ZqrDKXBJhFQcZiOdnHRuRbWoL/QkggpoGfhIuSAh4HvTU0WEUnPM+jRnH2kUMfsSgd8EAnPvmuP7/VA==}
     engines: {node: '>=16.20.0'}
     cpu: [arm]
     os: [linux]
 
-  '@typescript/native-preview-linux-x64@7.0.0-dev.20260608.1':
-    resolution: {integrity: sha512-QfVLSH1NMAOa+N6Ey9cFHWppLFISOeCG3c0nJER3LXrDwkE4WtsVGHQ4IRDpIYT3Q2iC7QWUFWwrHayNKlrGYA==}
+  '@typescript/native-preview-linux-x64@7.0.0-dev.20260615.1':
+    resolution: {integrity: sha512-/QDmRWt6abB7fw3yMchjlyDXej/7Dr8mYG4wvGGf6c1hc5Il5UpDQWNHejatdeKvAu+sszz8JhTuL8et47fTTg==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [linux]
 
-  '@typescript/native-preview-win32-arm64@7.0.0-dev.20260608.1':
-    resolution: {integrity: sha512-DvpbX0aPCWCe4bJEP0cOky4cCwF+5QJZHsLoGV4gYd+0EFEkarTOxZG0CezP30E/iX6u1RUOrtTeMZOQthqDpQ==}
+  '@typescript/native-preview-win32-arm64@7.0.0-dev.20260615.1':
+    resolution: {integrity: sha512-WTJOLoe2rxT0W1i8ndWk2MKrakxRFNki537JZxvKAmSTbyOZznHlW3O3dbryUtTBYA716DDqS3ci24kuIfvBdg==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [win32]
 
-  '@typescript/native-preview-win32-x64@7.0.0-dev.20260608.1':
-    resolution: {integrity: sha512-J9nQB87sU+YJE3fq3XKwQvgLNWVXiEWyOP1L/FuyOlHb77UkFXmpaUbFTJ1w7rfd91nlKb2EECfsdTxbELUT0Q==}
+  '@typescript/native-preview-win32-x64@7.0.0-dev.20260615.1':
+    resolution: {integrity: sha512-4cSCpXG7um18nwmLdU/SjoTv3OcO38/ufTiy1oWVccgGHLJqppiOP9/o+ElKIWhvrp78IaGy8+h3YqEjQ4/pcQ==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [win32]
 
-  '@typescript/native-preview@7.0.0-dev.20260608.1':
-    resolution: {integrity: sha512-nJyuPQwFn/VlP7JvFA0jPHJMMHaDy5vWM5xRYUwjZZd3dcY7LldfZ1EkdPOLc+GW0trXcmvRemQ4XCsBkOGOUQ==}
+  '@typescript/native-preview@7.0.0-dev.20260615.1':
+    resolution: {integrity: sha512-JJ8X1l7H1GrnseK1k30qfQqB8Pz6jw3IALZVIj5oXQeRbUCe0Wx3ljkJEmOpunogdhEfA8IlOggskbUjVsXKBQ==}
     engines: {node: '>=16.20.0'}
     hasBin: true
 
@@ -1499,7 +1499,7 @@ snapshots:
       fast-wrap-ansi: 0.2.2
       sisteransi: 1.0.5
 
-  '@dotenvx/dotenvx@1.71.0':
+  '@dotenvx/dotenvx@1.71.3':
     dependencies:
       commander: 11.1.0
       dotenv: 17.4.2
@@ -1547,12 +1547,12 @@ snapshots:
     dependencies:
       jsep: 1.4.0
 
-  '@kubb/ast@4.37.11': {}
+  '@kubb/ast@4.38.0': {}
 
-  '@kubb/cli@4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)(typescript@6.0.3)':
+  '@kubb/cli@4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)(typescript@6.0.3)':
     dependencies:
       '@clack/prompts': 1.5.1
-      '@kubb/core': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
+      '@kubb/core': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       chokidar: 5.0.0
       cosmiconfig: 9.0.2(typescript@6.0.3)
       jiti: 2.5.1
@@ -1562,9 +1562,9 @@ snapshots:
       - '@kubb/react-fabric'
       - typescript
 
-  '@kubb/core@4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)':
+  '@kubb/core@4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)':
     dependencies:
-      '@kubb/ast': 4.37.11
+      '@kubb/ast': 4.38.0
       '@kubb/fabric-core': 0.14.0
       '@kubb/react-fabric': 0.14.0
       empathic: 2.0.1
@@ -1573,9 +1573,9 @@ snapshots:
       semver: 7.8.4
       tinyexec: 1.2.4
 
-  '@kubb/core@4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)':
+  '@kubb/core@4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)':
     dependencies:
-      '@kubb/ast': 4.37.11
+      '@kubb/ast': 4.38.0
       '@kubb/fabric-core': 0.14.0
       '@kubb/react-fabric': 0.16.0
       empathic: 2.0.1
@@ -1607,10 +1607,10 @@ snapshots:
       remeda: 2.39.0
       typescript: 5.9.3
 
-  '@kubb/oas@4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)':
+  '@kubb/oas@4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)':
     dependencies:
-      '@kubb/ast': 4.37.11
-      '@kubb/core': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/ast': 4.38.0
+      '@kubb/core': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/fabric-core': 0.14.0
       '@redocly/openapi-core': 2.32.2
       '@stoplight/yaml': 4.3.0
@@ -1624,10 +1624,10 @@ snapshots:
       - '@kubb/react-fabric'
       - encoding
 
-  '@kubb/oas@4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)':
+  '@kubb/oas@4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)':
     dependencies:
-      '@kubb/ast': 4.37.11
-      '@kubb/core': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
+      '@kubb/ast': 4.38.0
+      '@kubb/core': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/fabric-core': 0.14.0
       '@redocly/openapi-core': 2.32.2
       '@stoplight/yaml': 4.3.0
@@ -1641,72 +1641,72 @@ snapshots:
       - '@kubb/react-fabric'
       - encoding
 
-  '@kubb/plugin-client@4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)':
+  '@kubb/plugin-client@4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)':
     dependencies:
-      '@kubb/core': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
+      '@kubb/core': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/fabric-core': 0.14.0
-      '@kubb/oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
-      '@kubb/plugin-oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
-      '@kubb/plugin-ts': 4.37.11(@kubb/react-fabric@0.16.0)
-      '@kubb/plugin-zod': 4.37.11(@kubb/fabric-core@0.14.0)
+      '@kubb/oas': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
+      '@kubb/plugin-oas': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
+      '@kubb/plugin-ts': 4.38.0(@kubb/react-fabric@0.16.0)
+      '@kubb/plugin-zod': 4.38.0(@kubb/fabric-core@0.14.0)
       '@kubb/react-fabric': 0.16.0
     transitivePeerDependencies:
       - bufferutil
       - encoding
       - utf-8-validate
 
-  '@kubb/plugin-oas@4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)':
+  '@kubb/plugin-oas@4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)':
     dependencies:
-      '@kubb/core': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/core': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/fabric-core': 0.14.0
-      '@kubb/oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/oas': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/react-fabric': 0.14.0
       remeda: 2.39.0
     transitivePeerDependencies:
       - encoding
 
-  '@kubb/plugin-oas@4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)':
+  '@kubb/plugin-oas@4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)':
     dependencies:
-      '@kubb/core': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
+      '@kubb/core': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/fabric-core': 0.14.0
-      '@kubb/oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
+      '@kubb/oas': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/react-fabric': 0.16.0
       remeda: 2.39.0
     transitivePeerDependencies:
       - encoding
 
-  '@kubb/plugin-ts@4.37.11(@kubb/react-fabric@0.14.0)':
+  '@kubb/plugin-ts@4.38.0(@kubb/react-fabric@0.14.0)':
     dependencies:
-      '@kubb/ast': 4.37.11
-      '@kubb/core': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/ast': 4.38.0
+      '@kubb/core': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/fabric-core': 0.14.0
-      '@kubb/oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/plugin-oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/oas': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/plugin-oas': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/react-fabric': 0.14.0
       remeda: 2.39.0
       typescript: 5.9.3
     transitivePeerDependencies:
       - encoding
 
-  '@kubb/plugin-ts@4.37.11(@kubb/react-fabric@0.16.0)':
+  '@kubb/plugin-ts@4.38.0(@kubb/react-fabric@0.16.0)':
     dependencies:
-      '@kubb/ast': 4.37.11
-      '@kubb/core': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
+      '@kubb/ast': 4.38.0
+      '@kubb/core': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/fabric-core': 0.14.0
-      '@kubb/oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
-      '@kubb/plugin-oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
+      '@kubb/oas': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
+      '@kubb/plugin-oas': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/react-fabric': 0.16.0
       remeda: 2.39.0
       typescript: 5.9.3
     transitivePeerDependencies:
       - encoding
 
-  '@kubb/plugin-zod@4.37.11(@kubb/fabric-core@0.14.0)':
+  '@kubb/plugin-zod@4.38.0(@kubb/fabric-core@0.14.0)':
     dependencies:
-      '@kubb/core': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/plugin-oas': 4.37.11(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/plugin-ts': 4.37.11(@kubb/react-fabric@0.14.0)
+      '@kubb/core': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/oas': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/plugin-oas': 4.38.0(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/plugin-ts': 4.38.0(@kubb/react-fabric@0.14.0)
       '@kubb/react-fabric': 0.14.0
       remeda: 2.39.0
     transitivePeerDependencies:
@@ -1930,40 +1930,40 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/node@25.9.2':
+  '@types/node@25.9.3':
     dependencies:
       undici-types: 7.24.6
 
-  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260608.1':
+  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260615.1':
     optional: true
 
-  '@typescript/native-preview-darwin-x64@7.0.0-dev.20260608.1':
+  '@typescript/native-preview-darwin-x64@7.0.0-dev.20260615.1':
     optional: true
 
-  '@typescript/native-preview-linux-arm64@7.0.0-dev.20260608.1':
+  '@typescript/native-preview-linux-arm64@7.0.0-dev.20260615.1':
     optional: true
 
-  '@typescript/native-preview-linux-arm@7.0.0-dev.20260608.1':
+  '@typescript/native-preview-linux-arm@7.0.0-dev.20260615.1':
     optional: true
 
-  '@typescript/native-preview-linux-x64@7.0.0-dev.20260608.1':
+  '@typescript/native-preview-linux-x64@7.0.0-dev.20260615.1':
     optional: true
 
-  '@typescript/native-preview-win32-arm64@7.0.0-dev.20260608.1':
+  '@typescript/native-preview-win32-arm64@7.0.0-dev.20260615.1':
     optional: true
 
-  '@typescript/native-preview-win32-x64@7.0.0-dev.20260608.1':
+  '@typescript/native-preview-win32-x64@7.0.0-dev.20260615.1':
     optional: true
 
-  '@typescript/native-preview@7.0.0-dev.20260608.1':
+  '@typescript/native-preview@7.0.0-dev.20260615.1':
     optionalDependencies:
-      '@typescript/native-preview-darwin-arm64': 7.0.0-dev.20260608.1
-      '@typescript/native-preview-darwin-x64': 7.0.0-dev.20260608.1
-      '@typescript/native-preview-linux-arm': 7.0.0-dev.20260608.1
-      '@typescript/native-preview-linux-arm64': 7.0.0-dev.20260608.1
-      '@typescript/native-preview-linux-x64': 7.0.0-dev.20260608.1
-      '@typescript/native-preview-win32-arm64': 7.0.0-dev.20260608.1
-      '@typescript/native-preview-win32-x64': 7.0.0-dev.20260608.1
+      '@typescript/native-preview-darwin-arm64': 7.0.0-dev.20260615.1
+      '@typescript/native-preview-darwin-x64': 7.0.0-dev.20260615.1
+      '@typescript/native-preview-linux-arm': 7.0.0-dev.20260615.1
+      '@typescript/native-preview-linux-arm64': 7.0.0-dev.20260615.1
+      '@typescript/native-preview-linux-x64': 7.0.0-dev.20260615.1
+      '@typescript/native-preview-win32-arm64': 7.0.0-dev.20260615.1
+      '@typescript/native-preview-win32-x64': 7.0.0-dev.20260615.1
 
   '@vitest/expect@4.1.8':
     dependencies:
@@ -1974,13 +1974,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.0
 
-  '@vitest/mocker@4.1.8(vite@8.0.16(@types/node@25.9.2)(jiti@2.5.1))':
+  '@vitest/mocker@4.1.8(vite@8.0.16(@types/node@25.9.3)(jiti@2.5.1))':
     dependencies:
       '@vitest/spy': 4.1.8
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.0.16(@types/node@25.9.2)(jiti@2.5.1)
+      vite: 8.0.16(@types/node@25.9.3)(jiti@2.5.1)
 
   '@vitest/pretty-format@4.1.8':
     dependencies:
@@ -2743,7 +2743,7 @@ snapshots:
 
   validate.io-number@1.0.3: {}
 
-  vite@8.0.16(@types/node@25.9.2)(jiti@2.5.1):
+  vite@8.0.16(@types/node@25.9.3)(jiti@2.5.1):
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
@@ -2751,14 +2751,14 @@ snapshots:
       rolldown: 1.0.3
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 25.9.2
+      '@types/node': 25.9.3
       fsevents: 2.3.3
       jiti: 2.5.1
 
-  vitest@4.1.8(@types/node@25.9.2)(vite@8.0.16(@types/node@25.9.2)(jiti@2.5.1)):
+  vitest@4.1.8(@types/node@25.9.3)(vite@8.0.16(@types/node@25.9.3)(jiti@2.5.1)):
     dependencies:
       '@vitest/expect': 4.1.8
-      '@vitest/mocker': 4.1.8(vite@8.0.16(@types/node@25.9.2)(jiti@2.5.1))
+      '@vitest/mocker': 4.1.8(vite@8.0.16(@types/node@25.9.3)(jiti@2.5.1))
       '@vitest/pretty-format': 4.1.8
       '@vitest/runner': 4.1.8
       '@vitest/snapshot': 4.1.8
@@ -2775,10 +2775,10 @@ snapshots:
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.0
-      vite: 8.0.16(@types/node@25.9.2)(jiti@2.5.1)
+      vite: 8.0.16(@types/node@25.9.3)(jiti@2.5.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 25.9.2
+      '@types/node': 25.9.3
     transitivePeerDependencies:
       - msw
 
