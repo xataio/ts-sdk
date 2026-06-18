@@ -1,5 +1,11 @@
 # @xata.io/api
 
+## 0.1.1
+
+### Patch Changes
+
+- [#2557](https://github.com/xataio/frontend/pull/2557) [`24ae41b`](https://github.com/xataio/frontend/commit/24ae41b1d8e94d3ceb278609e627876ac90bbb12) Thanks [@SferaDev](https://github.com/SferaDev)! - Capture the `x-request-id` response header on `ApiError` (as `requestId`, and appended to the error message) so failed API calls are traceable in support; add an optional `retry` option to `XataApi` to opt out of client-level retries.
+
 ## 0.1.0
 
 ### Minor Changes
