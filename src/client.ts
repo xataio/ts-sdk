@@ -23,6 +23,7 @@ export type ApiOptions = {
   fetch?: FetchImpl;
   callbacks?: Callbacks;
   xataAgent?: XataAgentFields;
+  retry?: FetcherConfig['retry'];
 };
 
 export type ApiClient = {
@@ -97,12 +98,14 @@ export class XataApi {
   fetch: FetchImpl;
   callbacks?: Callbacks;
   xataAgent: XataAgentFields;
+  retry: FetcherConfig['retry'];
 
   constructor(options: ApiOptions) {
     this.baseUrl = options.baseUrl;
     this.token = options.token;
     this.callbacks = options.callbacks;
     this.xataAgent = options.xataAgent ?? {};
+    this.retry = options.retry;
 
     this.fetch = options.fetch || (fetch as FetchImpl);
     if (!this.fetch) throw new Error('Fetch is required');
@@ -143,7 +146,8 @@ export class XataApi {
       baseUrl: this.baseUrl,
       token: await this.refreshToken(),
       fetchImpl: this.fetch,
-      headers: withXataAgentHeader(headers, this.xataAgent)
+      headers: withXataAgentHeader(headers, this.xataAgent),
+      retry: this.retry
     });
 
     return new Proxy(
@@ -189,7 +193,8 @@ export class XataApi {
       baseUrl: this.baseUrl,
       token: await this.refreshToken(),
       fetchImpl: this.fetch,
-      headers
+      headers,
+      retry: this.retry
     });
 
     return result;
