@@ -31,7 +31,9 @@ export const userWithIDSchema = z
         return userIDSchema.describe('Unique identifier for a user account');
       }
     })
-  );
+  )
+  .describe('User information including email, full name, and profile image')
+  .describe('Extended user object that includes the unique user identifier');
 
 /**
  * @description Request payload for creating a new organization
@@ -933,6 +935,7 @@ export const organizationLimitsSchema = z
         .describe('Maximum number of active branches allowed across all projects in the organization')
     })
   )
+  .describe('Full set of resource limits applicable to a project and its branches')
   .describe(
     'Effective resource limits for an organization, covering org-level defaults for all projects plus organization-specific constraints'
   );

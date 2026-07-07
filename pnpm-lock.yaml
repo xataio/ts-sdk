@@ -96,8 +96,8 @@ packages:
     resolution: {integrity: sha512-BUaa08tjymTIQinNvBrlwdCyfaTjUi6tjWqKmcbd9CJyrYpA9E8J9IcT369FXb0YD7LRxuqi45H6/U5e+Xe9VQ==}
     hasBin: true
 
-  '@dotenvx/primitives@1.7.0':
-    resolution: {integrity: sha512-DeOtLg1+uzbq34voCBrBbmqePPV8cnRQEsHxXEn0s06oCpyOSdU0yOirRhBE+d70bkv4emeMUptLKpMpMZRREQ==}
+  '@dotenvx/primitives@1.7.1':
+    resolution: {integrity: sha512-HI/WcBC3PD/Onp8uTopXsKdQavJ7jYVF/s8imHBSGTwtV/Z2XPr+FApDZnLZiTHazsIVhzdpNSjT41WMZHOWVw==}
 
   '@emnapi/core@1.11.1':
     resolution: {integrity: sha512-RSvbQmHzdKzNsLYa/wHrbc3KN4sYLKAdPZxqiM2HATqv/SBk2/ENSHpvXGaLOMcsAyz0poEGqkmmKYG3OWiJEQ==}
@@ -231,15 +231,15 @@ packages:
   '@readme/http-status-codes@7.2.0':
     resolution: {integrity: sha512-/dBh9qw3QhJYqlGwt2I+KUP/lQ6nytdCx3aq+GpMUhibLHF3O7fwoowNcTwlbnwtyJ+TJYTIIrp3oVUlRNx3fA==}
 
-  '@readme/openapi-parser@6.2.0':
-    resolution: {integrity: sha512-JS7TheecOlDe4hw/9RJkZwFDWXSwqUPxDBcq0IIY0WL5cPv9hCrUw+gq+Gn2y8d4kSbAKLQlG0/d2V9WXNxujw==}
+  '@readme/openapi-parser@6.2.1':
+    resolution: {integrity: sha512-15kP7exAU30ycF0u5/nW6J64HFzqxKYp06wErb1+cGU2rYz2dDBtf+63RjGLfGEhXND69OXIZ7RvjS7Tu7s1Yg==}
     engines: {node: '>=20'}
     peerDependencies:
       openapi-types: '>=7'
 
-  '@readme/openapi-schemas@3.1.0':
-    resolution: {integrity: sha512-9FC/6ho8uFa8fV50+FPy/ngWN53jaUu4GRXlAjcxIRrzhltJnpKkBG2Tp0IDraFJeWrOpk84RJ9EMEEYzaI1Bw==}
-    engines: {node: '>=18'}
+  '@readme/openapi-schemas@4.0.0':
+    resolution: {integrity: sha512-hrG//9/+RpOZTrUDirU4OzfMqaxCdY5BMpr3YuLf3Rje9rfNsydQJsH9iCPTie9ZRu9xe+0OUD4fHe0JmGwa2w==}
+    engines: {node: '>=20'}
 
   '@readme/postman-to-openapi@4.1.0':
     resolution: {integrity: sha512-VvV2Hzjskz01m8doSn7Ypt6cSZzgjnypVqXy1ipThbyYD6SGiM74VSePXykOODj/43Y2m6zeYedPk/ZLts/HvQ==}
@@ -1293,8 +1293,8 @@ packages:
     resolution: {integrity: sha512-eNRKgb3z66Yp3D2CixVujOUvXLFUTij/zVnV8KRyvFdQwpz7I5DS8UfRkTeLzb64u+dkzDSdelE24izu+zSSUg==}
     engines: {node: ^14.18.0 || >=16.0.0}
 
-  systeminformation@5.31.13:
-    resolution: {integrity: sha512-iUJXJoKzm4vtLSeT3nwe2s9QjoJAxHg7wYJ0KaQ54Xy2u9jsTq0ULWQQ0+T72FXjX2XnGqubazNx9lUfng7ELw==}
+  systeminformation@5.31.14:
+    resolution: {integrity: sha512-nefRpMCsAI4m71/6JHH//KPaP/d5nTuRVxEtQ7N7SlBrX18DAcC+5Z1JKZYeN9Iw49qMx95BTo/gBMk3Y2H6+g==}
     engines: {node: '>=8.0.0'}
     os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
     hasBin: true
@@ -1584,7 +1584,7 @@ snapshots:
 
   '@dotenvx/dotenvx@2.1.4':
     dependencies:
-      '@dotenvx/primitives': 1.7.0
+      '@dotenvx/primitives': 1.7.1
       commander: 11.1.0
       conf: 10.2.0
       dotenv: 17.4.2
@@ -1597,12 +1597,12 @@ snapshots:
       open: 8.4.2
       picomatch: 4.0.5
       synckit: 0.11.13
-      systeminformation: 5.31.13
+      systeminformation: 5.31.14
       undici: 7.28.0
       which: 6.0.1
       yocto-spinner: 1.2.1
 
-  '@dotenvx/primitives@1.7.0': {}
+  '@dotenvx/primitives@1.7.1': {}
 
   '@emnapi/core@1.11.1':
     dependencies:
@@ -1870,17 +1870,19 @@ snapshots:
 
   '@readme/http-status-codes@7.2.0': {}
 
-  '@readme/openapi-parser@6.2.0(openapi-types@12.1.3)':
+  '@readme/openapi-parser@6.2.1(openapi-types@12.1.3)':
     dependencies:
       '@apidevtools/json-schema-ref-parser': 14.2.1(@types/json-schema@7.0.15)
       '@readme/better-ajv-errors': 2.4.0(ajv@8.20.0)
-      '@readme/openapi-schemas': 3.1.0
+      '@readme/openapi-schemas': 4.0.0
       '@types/json-schema': 7.0.15
       ajv: 8.20.0
       ajv-draft-04: 1.0.0(ajv@8.20.0)
       openapi-types: 12.1.3
 
-  '@readme/openapi-schemas@3.1.0': {}
+  '@readme/openapi-schemas@4.0.0':
+    dependencies:
+      '@types/json-schema': 7.0.15
 
   '@readme/postman-to-openapi@4.1.0':
     dependencies:
@@ -2587,7 +2589,7 @@ snapshots:
 
   oas-normalize@16.1.1:
     dependencies:
-      '@readme/openapi-parser': 6.2.0(openapi-types@12.1.3)
+      '@readme/openapi-parser': 6.2.1(openapi-types@12.1.3)
       '@readme/postman-to-openapi': 4.1.0
       js-yaml: 4.3.0
       openapi-types: 12.1.3
@@ -2619,7 +2621,7 @@ snapshots:
   oas@31.1.2:
     dependencies:
       '@apidevtools/json-schema-ref-parser': 14.2.1(@types/json-schema@7.0.15)
-      '@readme/openapi-parser': 6.2.0(openapi-types@12.1.3)
+      '@readme/openapi-parser': 6.2.1(openapi-types@12.1.3)
       '@types/json-schema': 7.0.15
       json-schema-merge-allof: 0.8.1
       jsonpath-plus: 10.4.0
@@ -2845,7 +2847,7 @@ snapshots:
     dependencies:
       '@pkgr/core': 0.3.6
 
-  systeminformation@5.31.13: {}
+  systeminformation@5.31.14: {}
 
   timers-ext@0.1.8:
     dependencies:
