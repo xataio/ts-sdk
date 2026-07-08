@@ -322,6 +322,11 @@ export type BillingCustomerResponse = {
    */
   billing_email: string;
   /**
+   * @description Marketplace provider for this organization (e.g. \"aws\"), if billed through a marketplace
+   * @type string
+   */
+  marketplace: string | null;
+  /**
    * @description True when the customer has a valid Stripe default card payment method.
    * @type boolean
    */

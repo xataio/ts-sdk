@@ -151,6 +151,9 @@ export const billingCreditDetailsSchema = z.object({
 
 export const billingCustomerResponseSchema = z.object({
   billing_email: z.email(),
+  marketplace: z.nullable(
+    z.string().describe('Marketplace provider for this organization (e.g. "aws"), if billed through a marketplace')
+  ),
   has_payment_method: z.boolean().describe('True when the customer has a valid Stripe default card payment method.'),
   get default_payment_method() {
     return billingPaymentMethodSchema
