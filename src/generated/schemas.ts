@@ -68,6 +68,13 @@ export const organizationStatusSchema = z.object({
 });
 
 /**
+ * @description Marketplace provider associated with an organization.
+ */
+export const organizationMarketplaceProviderSchema = z
+  .enum(['aws'])
+  .describe('Marketplace provider associated with an organization.');
+
+/**
  * @description Organization details including ID and name
  */
 export const organizationSchema = z
@@ -79,10 +86,12 @@ export const organizationSchema = z
     get status() {
       return organizationStatusSchema.describe('Current status of the organization');
     },
-    marketplace: z
-      .string()
-      .describe('Marketplace provider for this organization (e.g. "aws"), if billed through a marketplace')
-      .nullish()
+    get marketplace() {
+      return organizationMarketplaceProviderSchema
+        .describe('Marketplace provider associated with an organization.')
+        .describe('Marketplace provider for this organization (e.g. "aws"), if billed through a marketplace')
+        .nullish();
+    }
   })
   .describe('Organization details including ID and name');
 
@@ -151,9 +160,12 @@ export const billingCreditDetailsSchema = z.object({
 
 export const billingCustomerResponseSchema = z.object({
   billing_email: z.email(),
-  marketplace: z.nullable(
-    z.string().describe('Marketplace provider for this organization (e.g. "aws"), if billed through a marketplace')
-  ),
+  get marketplace() {
+    return organizationMarketplaceProviderSchema
+      .describe('Marketplace provider associated with an organization.')
+      .describe('Marketplace provider for this organization (e.g. "aws"), if billed through a marketplace')
+      .nullable();
+  },
   has_payment_method: z.boolean().describe('True when the customer has a valid Stripe default card payment method.'),
   get default_payment_method() {
     return billingPaymentMethodSchema
@@ -215,11 +227,22 @@ export const billingPaymentMethodSessionResponseSchema = z.object({
 });
 
 /**
+ * @description Marketplace provider accepted for registration.
+ */
+export const marketplaceRegistrationProviderSchema = z
+  .enum(['aws'])
+  .describe('Marketplace provider accepted for registration.');
+
+/**
  * @description Request to register with a cloud marketplace
  */
 export const marketplaceRegisterRequestSchema = z
   .object({
-    marketplace: z.enum(['aws']).describe('The cloud marketplace provider'),
+    get marketplace() {
+      return marketplaceRegistrationProviderSchema
+        .describe('Marketplace provider accepted for registration.')
+        .describe('The cloud marketplace provider');
+    },
     company_name: z.string().describe('Company name for the marketplace registration'),
     aws: z
       .object({

@@ -122,6 +122,18 @@ export type OrganizationStatus = {
   created_at?: string | undefined;
 };
 
+export const organizationMarketplaceProvider = {
+  OrganizationMarketplaceProviderAWS: 'aws'
+} as const;
+
+export type OrganizationMarketplaceProviderEnumKey =
+  (typeof organizationMarketplaceProvider)[keyof typeof organizationMarketplaceProvider];
+
+/**
+ * @description Marketplace provider associated with an organization.
+ */
+export type OrganizationMarketplaceProvider = OrganizationMarketplaceProviderEnumKey;
+
 /**
  * @description Organization details including ID and name
  */
@@ -144,9 +156,8 @@ export type Organization = {
   status: OrganizationStatus;
   /**
    * @description Marketplace provider for this organization (e.g. \"aws\"), if billed through a marketplace
-   * @type string
    */
-  marketplace?: (string | null) | undefined;
+  marketplace?: (OrganizationMarketplaceProvider | null) | undefined;
 };
 
 export type CreateOrganizationInvitationRequest = {
@@ -323,9 +334,8 @@ export type BillingCustomerResponse = {
   billing_email: string;
   /**
    * @description Marketplace provider for this organization (e.g. \"aws\"), if billed through a marketplace
-   * @type string
    */
-  marketplace: string | null;
+  marketplace: OrganizationMarketplaceProvider | null;
   /**
    * @description True when the customer has a valid Stripe default card payment method.
    * @type boolean
@@ -466,12 +476,17 @@ export type BillingPaymentMethodSessionResponse = {
   url: string;
 };
 
-export const marketplaceRegisterRequestMarketplaceEnum = {
-  aws: 'aws'
+export const marketplaceRegistrationProvider = {
+  MarketplaceRegistrationProviderAWS: 'aws'
 } as const;
 
-export type MarketplaceRegisterRequestMarketplaceEnumKey =
-  (typeof marketplaceRegisterRequestMarketplaceEnum)[keyof typeof marketplaceRegisterRequestMarketplaceEnum];
+export type MarketplaceRegistrationProviderEnumKey =
+  (typeof marketplaceRegistrationProvider)[keyof typeof marketplaceRegistrationProvider];
+
+/**
+ * @description Marketplace provider accepted for registration.
+ */
+export type MarketplaceRegistrationProvider = MarketplaceRegistrationProviderEnumKey;
 
 /**
  * @description Request to register with a cloud marketplace
@@ -479,9 +494,8 @@ export type MarketplaceRegisterRequestMarketplaceEnumKey =
 export type MarketplaceRegisterRequest = {
   /**
    * @description The cloud marketplace provider
-   * @type string
    */
-  marketplace: MarketplaceRegisterRequestMarketplaceEnumKey;
+  marketplace: MarketplaceRegistrationProvider;
   /**
    * @description Company name for the marketplace registration
    * @type string
