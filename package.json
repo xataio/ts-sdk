@@ -7,7 +7,7 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@dotenvx/dotenvx": "2.1.4",
+    "@dotenvx/dotenvx": "2.3.4",
     "zod": "4.4.3",
     "@xata.io/lang": "0.0.1"
   },
@@ -21,11 +21,11 @@
     "@kubb/plugin-zod": "4.39.2",
     "@kubb/react": "4.3.1",
     "@kubb/react-fabric": "0.16.0",
-    "@types/node": "26.1.0",
-    "@typescript/native-preview": "7.0.0-dev.20260705.1",
+    "@types/node": "26.1.1",
+    "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "case": "1.6.3",
     "typescript": "6.0.3",
-    "vitest": "4.1.9",
+    "vitest": "4.1.10",
     "@xata.io/tsconfig": "0.0.1"
   },
   "scripts": {
