@@ -4705,7 +4705,7 @@ export type QueryHeaderParams = {
 export type Query200 = QueryResult | BatchResponse;
 
 /**
- * @description Invalid request or SQL error
+ * @description Invalid request, SQL error, or query execution timeout
  */
 export type Query400 = ErrorResponse;
 
@@ -4720,6 +4720,11 @@ export type Query401 = ErrorResponse;
 export type Query500 = ErrorResponse;
 
 /**
+ * @description Timed out connecting to the database
+ */
+export type Query504 = ErrorResponse;
+
+/**
  * @description Response too large
  */
 export type Query507 = ErrorResponse;
@@ -4732,7 +4737,7 @@ export type QueryMutation = {
   Response: Query200;
   Request: QueryMutationRequest;
   HeaderParams: QueryHeaderParams;
-  Errors: Query400 | Query401 | Query500 | Query507;
+  Errors: Query400 | Query401 | Query500 | Query504 | Query507;
 };
 
 /**

@@ -2415,7 +2415,7 @@ export const queryHeaderParamsSchema = z
 export const query200Schema = z.union([z.lazy(() => queryResultSchema), z.lazy(() => batchResponseSchema)]);
 
 /**
- * @description Invalid request or SQL error
+ * @description Invalid request, SQL error, or query execution timeout
  */
 export const query400Schema = z
   .lazy(() => errorResponseSchema)
@@ -2432,6 +2432,13 @@ export const query401Schema = z
  * @description Internal server error
  */
 export const query500Schema = z
+  .lazy(() => errorResponseSchema)
+  .describe('Error response with PostgreSQL error fields.');
+
+/**
+ * @description Timed out connecting to the database
+ */
+export const query504Schema = z
   .lazy(() => errorResponseSchema)
   .describe('Error response with PostgreSQL error fields.');
 
