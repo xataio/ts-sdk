@@ -507,8 +507,8 @@ export const projectScaleToZeroConfigurationSchema = z
   .describe('Whether the project branches are configured to scale down to zero when not in use');
 
 export const cidrEntrySchema = z.object({
-  cidr: z.string().describe('CIDR block (e.g., "192.168.0.0/24")'),
-  description: z.optional(z.string().describe('Optional label for the CIDR entry'))
+  cidr: z.string().min(1).max(64).describe('IP address or CIDR block (e.g., "192.168.0.0/24")'),
+  description: z.optional(z.string().max(100).describe('Optional label for the CIDR entry'))
 });
 
 /**
@@ -518,7 +518,7 @@ export const IPFilteringConfigurationSchema = z
   .object({
     enabled: z.boolean().describe('Whether IP filtering is enabled'),
     get cidr() {
-      return z.array(cidrEntrySchema);
+      return z.array(cidrEntrySchema).max(64);
     }
   })
   .describe('Configuration for IP filtering on project branches');

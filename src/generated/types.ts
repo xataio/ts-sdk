@@ -1119,12 +1119,15 @@ export type ProjectScaleToZeroConfiguration = {
 
 export type CidrEntry = {
   /**
-   * @description CIDR block (e.g., \"192.168.0.0/24\")
+   * @description IP address or CIDR block (e.g., \"192.168.0.0/24\")
+   * @minLength 1
+   * @maxLength 64
    * @type string
    */
   cidr: string;
   /**
    * @description Optional label for the CIDR entry
+   * @maxLength 100
    * @type string | undefined
    */
   description?: string | undefined;
