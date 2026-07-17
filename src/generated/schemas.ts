@@ -863,7 +863,14 @@ export const branchUpdateDetailsSchema = z
         .describe('New description for the branch (max 50 characters)')
     ),
     replicas: z.optional(z.int().min(0).max(4).describe('Number of database replicas to scale to')),
-    storage: z.optional(z.int().max(250).describe('Branch storage in GiB (gigabytes)')),
+    storage: z.optional(
+      z
+        .int()
+        .min(1)
+        .describe(
+          "Branch storage in GiB (gigabytes). The maximum allowed value depends on the organization's storage limit."
+        )
+    ),
     instanceType: z.optional(z.string().describe('New instance type for the branch')),
     get backupConfiguration() {
       return backupConfigurationSchema.describe('Details about the branch continuous backup configuration').optional();
@@ -939,7 +946,11 @@ export const effectiveProjectLimitsSchema = z
     maxBranchesPerHour: z
       .int()
       .min(1)
-      .describe('Maximum number of branches that can be created in a rolling one-hour window')
+      .describe('Maximum number of branches that can be created in a rolling one-hour window'),
+    maxStorageGBPerBranch: z
+      .int()
+      .min(0)
+      .describe('Maximum storage in GiB (gigabytes) allowed per branch; 0 means no limit')
   })
   .describe('Full set of resource limits applicable to a project and its branches');
 

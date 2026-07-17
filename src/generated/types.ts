@@ -1753,8 +1753,8 @@ export type BranchUpdateDetails = {
    */
   replicas?: number | undefined;
   /**
-   * @description Branch storage in GiB (gigabytes)
-   * @maxLength 250
+   * @description Branch storage in GiB (gigabytes). The maximum allowed value depends on the organization\'s storage limit.
+   * @minLength 1
    * @type integer | undefined, int32
    */
   storage?: number | undefined;
@@ -1892,6 +1892,12 @@ export type EffectiveProjectLimits = {
    * @type integer
    */
   maxBranchesPerHour: number;
+  /**
+   * @description Maximum storage in GiB (gigabytes) allowed per branch; 0 means no limit
+   * @minLength 0
+   * @type integer
+   */
+  maxStorageGBPerBranch: number;
 };
 
 /**
