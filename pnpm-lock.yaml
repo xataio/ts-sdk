@@ -230,8 +230,8 @@ packages:
   '@readme/http-status-codes@7.2.0':
     resolution: {integrity: sha512-/dBh9qw3QhJYqlGwt2I+KUP/lQ6nytdCx3aq+GpMUhibLHF3O7fwoowNcTwlbnwtyJ+TJYTIIrp3oVUlRNx3fA==}
 
-  '@readme/openapi-parser@6.2.1':
-    resolution: {integrity: sha512-15kP7exAU30ycF0u5/nW6J64HFzqxKYp06wErb1+cGU2rYz2dDBtf+63RjGLfGEhXND69OXIZ7RvjS7Tu7s1Yg==}
+  '@readme/openapi-parser@6.3.0':
+    resolution: {integrity: sha512-pLsspfvN/m6C4BuZ91ZppK2uo86IT4EDhXu6B+giNLehLkuZbtg47OJvOktwDHBmheULPmXg5pzM7065AAHeyQ==}
     engines: {node: '>=20'}
     peerDependencies:
       openapi-types: '>=7'
@@ -1772,7 +1772,7 @@ snapshots:
 
   '@readme/http-status-codes@7.2.0': {}
 
-  '@readme/openapi-parser@6.2.1(openapi-types@12.1.3)':
+  '@readme/openapi-parser@6.3.0(openapi-types@12.1.3)':
     dependencies:
       '@apidevtools/json-schema-ref-parser': 14.2.1(@types/json-schema@7.0.15)
       '@readme/better-ajv-errors': 2.4.0(ajv@8.20.0)
@@ -2433,7 +2433,7 @@ snapshots:
 
   oas-normalize@16.1.1:
     dependencies:
-      '@readme/openapi-parser': 6.2.1(openapi-types@12.1.3)
+      '@readme/openapi-parser': 6.3.0(openapi-types@12.1.3)
       '@readme/postman-to-openapi': 4.1.0
       js-yaml: 4.3.0
       openapi-types: 12.1.3
@@ -2465,7 +2465,7 @@ snapshots:
   oas@31.1.2:
     dependencies:
       '@apidevtools/json-schema-ref-parser': 14.2.1(@types/json-schema@7.0.15)
-      '@readme/openapi-parser': 6.2.1(openapi-types@12.1.3)
+      '@readme/openapi-parser': 6.3.0(openapi-types@12.1.3)
       '@types/json-schema': 7.0.15
       json-schema-merge-allof: 0.8.1
       jsonpath-plus: 10.4.0
