@@ -4,7 +4,8 @@
   "version": "0.1.1",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./errors": "./src/errors.ts"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "2.3.4",
