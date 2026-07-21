@@ -22,3 +22,17 @@ export class NetworkError extends Error {
     this.name = 'NetworkError';
   }
 }
+
+/**
+ * Thrown when the refresh token grant is rejected because the underlying
+ * offline session has expired or been revoked. Callers can catch this to
+ * drive a re-login flow instead of surfacing a raw OAuth error.
+ */
+export class SessionExpiredError extends Error {
+  readonly code = 'session_expired';
+
+  constructor(message = 'Your session has expired.', options?: { cause?: unknown }) {
+    super(message, options);
+    this.name = 'SessionExpiredError';
+  }
+}

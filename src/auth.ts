@@ -1,3 +1,4 @@
+import { SessionExpiredError } from './errors';
 import type { FetchImpl } from './utils/fetch';
 
 export async function refreshToken(
@@ -30,6 +31,12 @@ export async function refreshToken(
   if (!response.ok) {
     const isJson = response.headers?.get('Content-Type')?.includes('application/json');
     const errorData = isJson ? await response.json() : { error: 'Unknown error' };
+
+    // `invalid_grant` is the OAuth signal that the refresh token is expired or revoked
+    if (errorData?.error === 'invalid_grant') {
+      throw new SessionExpiredError();
+    }
+
     throw new Error(`HTTP error! status: ${response.status}, error: ${errorData?.error}`);
   }
 
