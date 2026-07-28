@@ -3454,11 +3454,9 @@ export const getBranchCredentialsPathParamsSchema = z.object({
   branchID: z.string()
 });
 
-export const getBranchCredentialsQueryParamsSchema = z
-  .object({
-    username: z.optional(z.string().describe('Username that the credentials requested for'))
-  })
-  .optional();
+export const getBranchCredentialsQueryParamsSchema = z.object({
+  username: z.string().default('xata').describe('Username that the credentials requested for, defaults to `xata`')
+});
 
 /**
  * @description Credentials for the branch retrieved successfully

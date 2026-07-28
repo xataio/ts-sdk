@@ -6410,7 +6410,8 @@ export type GetBranchCredentialsPathParams = {
 
 export type GetBranchCredentialsQueryParams = {
   /**
-   * @description Username that the credentials requested for
+   * @description Username that the credentials requested for, defaults to `xata`
+   * @default "xata"
    * @type string | undefined
    */
   username?: string | undefined;

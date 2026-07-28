@@ -254,8 +254,8 @@ packages:
   '@redocly/config@0.52.0':
     resolution: {integrity: sha512-e/++L27tRgo35GVCy4ivy+uqHi/ksg4KnhlYzj5FTJ9OokuyX18B0mJm0SUXLBih9VIQMgSk6tXsyYmhg5OsIQ==}
 
-  '@redocly/openapi-core@2.41.0':
-    resolution: {integrity: sha512-tXHd86i/v9arUCTbD2MzWKLEq8GV/U+7MLCi2PqmW2lumF8h+tpwkdMrRNOHMahVUjyKM82Wqaw5r1XEkGRcQg==}
+  '@redocly/openapi-core@2.41.1':
+    resolution: {integrity: sha512-1YbCgv2/zZ8rDWTT36uGiUtPHvsJ6V6GNnWY9Ul5TsdT3DnVTfnprxzDOkbKhHkHIbAoC4J16Y9JBdiBzky0Hg==}
     engines: {node: '>=22.12.0 || >=20.19.0 <21.0.0', npm: '>=10'}
 
   '@rolldown/binding-android-arm64@1.1.5':
@@ -1034,8 +1034,8 @@ packages:
   oas-linter@3.2.2:
     resolution: {integrity: sha512-KEGjPDVoU5K6swgo9hJVA/qYGlwfbFx+Kg2QB/kd7rzV5N8N5Mg6PlsoCMohVnQmo+pzJap/F610qTodKzecGQ==}
 
-  oas-normalize@16.1.1:
-    resolution: {integrity: sha512-B1FEi5dezuCjDsp7OiyBY7p+1gjCzMDEfFYiIZUdcf9FEo18CT3/sE9zBZupMwFLtjnTHXI+WGcmf09HqRrEBQ==}
+  oas-normalize@16.1.2:
+    resolution: {integrity: sha512-rwxJ/6fAkSKEZwhdSvy4cyMMoklgCAWwKJ7VSAGt5epAFKBiLWoiQrDiFvtC2hJCdiw9JzjZVIoju4DqRzVIrA==}
     engines: {node: '>=20'}
 
   oas-resolver@2.5.6:
@@ -1618,11 +1618,11 @@ snapshots:
       '@kubb/ast': 4.39.2
       '@kubb/core': 4.39.2(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/fabric-core': 0.14.0
-      '@redocly/openapi-core': 2.41.0
+      '@redocly/openapi-core': 2.41.1
       '@stoplight/yaml': 4.3.0
       jsonpointer: 5.0.1
       oas: 31.1.2
-      oas-normalize: 16.1.1
+      oas-normalize: 16.1.2
       openapi-types: 12.1.3
       remeda: 2.39.0
       swagger2openapi: 7.0.8
@@ -1635,11 +1635,11 @@ snapshots:
       '@kubb/ast': 4.39.2
       '@kubb/core': 4.39.2(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/fabric-core': 0.14.0
-      '@redocly/openapi-core': 2.41.0
+      '@redocly/openapi-core': 2.41.1
       '@stoplight/yaml': 4.3.0
       jsonpointer: 5.0.1
       oas: 31.1.2
-      oas-normalize: 16.1.1
+      oas-normalize: 16.1.2
       openapi-types: 12.1.3
       remeda: 2.39.0
       swagger2openapi: 7.0.8
@@ -1828,7 +1828,7 @@ snapshots:
     dependencies:
       json-schema-to-ts: 2.7.2
 
-  '@redocly/openapi-core@2.41.0':
+  '@redocly/openapi-core@2.41.1':
     dependencies:
       '@redocly/ajv': 8.18.3
       '@redocly/config': 0.52.0
@@ -2460,7 +2460,7 @@ snapshots:
       should: 13.2.3
       yaml: 1.10.3
 
-  oas-normalize@16.1.1:
+  oas-normalize@16.1.2:
     dependencies:
       '@readme/openapi-parser': 6.3.0(openapi-types@12.1.3)
       '@readme/postman-to-openapi': 4.1.0
