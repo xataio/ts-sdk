@@ -621,7 +621,12 @@ export const branchShortMetadataSchema = z
       .string()
       .describe('Identifier of the parent branch if this is a derived branch, null otherwise')
       .nullish(),
-    connectionString: z.string().describe('Database connection string for accessing this branch').nullish(),
+    connectionString: z
+      .string()
+      .describe(
+        'Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead.'
+      )
+      .nullish(),
     region: z.string().describe('Geographic region where the branch is deployed'),
     publicAccess: z.boolean().describe('Whether the branch allows public access without authentication')
   })
@@ -744,7 +749,13 @@ export const branchMetadataSchema = z
         'Detailed status information about a branch and its underlying database cluster'
       );
     },
-    connectionString: z.nullable(z.string().describe('Database connection string for accessing this branch')),
+    connectionString: z.nullable(
+      z
+        .string()
+        .describe(
+          'Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead.'
+        )
+    ),
     publicAccess: z.boolean().describe('Whether the branch allows public access without authentication'),
     backupsEnabled: z.boolean().describe('Whether the branch is in a region that supports backups'),
     get scaleToZero() {
@@ -773,14 +784,22 @@ export const backupMetadataSchema = z
   .describe('metadata about a continuous backup');
 
 /**
- * @description Credentials for accessing a branch, username and password
+ * @description Credentials and connection details for accessing a branch
  */
 export const branchCredentialsSchema = z
   .object({
     username: z.string().describe('Username for accessing the branch database'),
-    password: z.string().describe('Password for accessing the branch database')
+    password: z.string().describe('Password for accessing the branch database'),
+    hostname: z.string().describe('Hostname for accessing the branch database'),
+    port: z.int().describe('Port for accessing the branch database'),
+    dbname: z.string().describe('Name of the database to connect to'),
+    connectionString: z
+      .string()
+      .describe(
+        'Database connection string for accessing this branch. It carries no sslmode parameter, clients choose their own TLS settings.'
+      )
   })
-  .describe('Credentials for accessing a branch, username and password');
+  .describe('Credentials and connection details for accessing a branch');
 
 /**
  * @description Request to rotate credentials for a branch database user
@@ -3446,7 +3465,7 @@ export const getBranchCredentialsQueryParamsSchema = z
  */
 export const getBranchCredentials200Schema = z
   .lazy(() => branchCredentialsSchema)
-  .describe('Credentials for accessing a branch, username and password');
+  .describe('Credentials and connection details for accessing a branch');
 
 /**
  * @description Generic error response for most error conditions

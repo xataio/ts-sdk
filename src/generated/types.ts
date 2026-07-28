@@ -1331,7 +1331,8 @@ export type BranchShortMetadata = {
    */
   parentID?: (string | null) | undefined;
   /**
-   * @description Database connection string for accessing this branch
+   * @description Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead.
+   * @deprecated
    * @type string
    */
   connectionString?: (string | null) | undefined;
@@ -1577,7 +1578,8 @@ export type BranchMetadata = {
    */
   status: BranchStatus;
   /**
-   * @description Database connection string for accessing this branch
+   * @description Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead.
+   * @deprecated
    * @type string
    */
   connectionString: string | null;
@@ -1640,7 +1642,7 @@ export type BackupMetadata = {
 };
 
 /**
- * @description Credentials for accessing a branch, username and password
+ * @description Credentials and connection details for accessing a branch
  */
 export type BranchCredentials = {
   /**
@@ -1653,6 +1655,26 @@ export type BranchCredentials = {
    * @type string
    */
   password: string;
+  /**
+   * @description Hostname for accessing the branch database
+   * @type string
+   */
+  hostname: string;
+  /**
+   * @description Port for accessing the branch database
+   * @type integer
+   */
+  port: number;
+  /**
+   * @description Name of the database to connect to
+   * @type string
+   */
+  dbname: string;
+  /**
+   * @description Database connection string for accessing this branch. It carries no sslmode parameter, clients choose their own TLS settings.
+   * @type string
+   */
+  connectionString: string;
 };
 
 /**
