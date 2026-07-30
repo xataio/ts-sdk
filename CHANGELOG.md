@@ -1,5 +1,11 @@
 # @xata.io/api
 
+## 0.1.5
+
+### Patch Changes
+
+- [#2807](https://github.com/xataio/frontend/pull/2807) [`dc83a3a`](https://github.com/xataio/frontend/commit/dc83a3a6bd6594297b7b30484eb98619368dcc6b) Thanks [@SferaDev](https://github.com/SferaDev)! - Expose the retry policy (`isRetryableError`, `retryDelayMs`, `DEFAULT_RETRY`) from a new `@xata.io/api/retry` entry point, so callers that own their own retry loop can reuse it instead of restating the status list
+
 ## 0.1.4
 
 ### Patch Changes
