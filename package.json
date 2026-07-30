@@ -1,14 +1,15 @@
 {
   "name": "@xata.io/api",
   "private": false,
-  "version": "0.1.4",
+  "version": "0.1.5",
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./errors": "./src/errors.ts"
+    "./errors": "./src/errors.ts",
+    "./retry": "./src/retry.ts"
   },
   "dependencies": {
-    "@dotenvx/dotenvx": "2.17.4",
+    "@dotenvx/dotenvx": "2.19.0",
     "zod": "4.4.3",
     "@xata.io/lang": "0.0.3"
   },
