@@ -1,19 +1,10 @@
 import { compactObject, retry as retryAsync } from '@xata.io/lang';
 import { ApiError, NetworkError } from '../errors';
+import { DEFAULT_RETRY, isRetryableError, retryDelayMs, type RetryOptions } from '../retry';
 import type { FetchImpl } from './fetch';
 
 export { ApiError, NetworkError };
-
-export type RetryOptions = {
-  /** Total attempts including the first one. */
-  attempts?: number;
-  /** HTTP status codes that should be retried. */
-  statuses?: number[];
-  /** Request methods that are safe to retry (idempotent). */
-  methods?: string[];
-  baseDelayMs?: number;
-  maxDelayMs?: number;
-};
+export type { RetryOptions };
 
 export type FetcherConfig = {
   baseUrl?: string;
@@ -35,14 +26,6 @@ export type FetcherOptions<TBody, THeaders, TQueryParams, TPathParams> = {
   /** Override the method-based idempotency check for this request. */
   retryable?: boolean | undefined;
 } & FetcherConfig;
-
-const DEFAULT_RETRY = {
-  attempts: 3,
-  statuses: [408, 429, 500, 502, 503, 504],
-  methods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE'],
-  baseDelayMs: 300,
-  maxDelayMs: 5000
-} satisfies Required<RetryOptions>;
 
 async function client<
   TData,
@@ -136,21 +119,10 @@ async function client<
     signal,
     shouldRetry: (error) => {
       ctx.error = error;
-      if (error instanceof NetworkError) return true;
-      if (error instanceof ApiError) return retryConfig.statuses.includes(error.status);
-      return false;
+      return isRetryableError(error, retryConfig.statuses);
     },
     delay: (attempt) => retryDelayMs(attempt, ctx.error, retryConfig)
   });
-}
-
-function retryDelayMs(attempt: number, error: unknown, config: Required<RetryOptions>): number {
-  if (error instanceof ApiError && typeof error.retryAfterMs === 'number') {
-    return Math.min(error.retryAfterMs, 30_000);
-  }
-  const exponential = Math.min(config.maxDelayMs, config.baseDelayMs * 2 ** attempt);
-  // jitter in the [50%, 100%] band to avoid synchronized retries (thundering herd)
-  return Math.round(exponential * (0.5 + Math.random() * 0.5));
 }
 
 function parseRetryAfterMs(value: string | null): number | undefined {
