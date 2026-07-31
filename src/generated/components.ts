@@ -171,6 +171,14 @@ import type {
   Query507,
   WebsocketQueryResponse,
   Websocket400,
+  SendMcpRequestMutationRequest,
+  SendMcpRequestMutationResponse,
+  SendMcpRequestHeaderParams,
+  SendMcpRequest400,
+  SendMcpRequest401,
+  SendMcpRequest413,
+  SendMcpRequest415,
+  SendMcpRequest500,
   GithubWebhookMutationRequest,
   GithubWebhookMutationResponse,
   GithubWebhook400,
@@ -391,6 +399,7 @@ import type {
   ResendOrganizationInvitationMutation,
   RestoreFromBackupMutation,
   RotateBranchCredentialsMutation,
+  SendMcpRequestMutation,
   StripeWebhookMutation,
   UpdateBillingCustomerMutation,
   UpdateBranchMutation,
@@ -1262,6 +1271,41 @@ export async function websocket({ config = {} }: { config?: Partial<FetcherConfi
     Record<string, string>,
     Record<string, string>
   >({ method: 'GET', url: `/v2`, ...requestConfig });
+  return data;
+}
+
+/**
+ * @description Handle a single JSON-RPC 2.0 message from an MCP client, per the MCP
+ * [Streamable HTTP transport](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports).
+ * The server is stateless: every request is self-contained and carries the caller's
+ * credential, so there is no session to establish or resume. `GET` and `DELETE` on this
+ * path return `405 Method Not Allowed`.
+ * **Requests** (messages with an `id`) are answered with the JSON-RPC response, either as
+ * `application/json` or as a `text/event-stream` carrying the response and any notifications
+ * emitted while it runs. Requests must accept both. **Notifications and responses**
+ * (messages without an `id`) are answered with `202 Accepted` and an empty body.
+ * @summary Send an MCP message
+ * {@link /mcp}
+ */
+export async function sendMcpRequest({
+  body,
+  headers,
+  config = {}
+}: {
+  body: SendMcpRequestMutationRequest;
+  headers: SendMcpRequestHeaderParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  const data = await request<
+    SendMcpRequestMutationResponse,
+    SendMcpRequest400 | SendMcpRequest401 | SendMcpRequest413 | SendMcpRequest415 | SendMcpRequest500,
+    SendMcpRequestMutationRequest,
+    SendMcpRequestHeaderParams,
+    Record<string, string>,
+    Record<string, string>
+  >({ method: 'POST', url: `/mcp`, body, ...requestConfig, headers: { ...headers, ...requestConfig.headers } });
   return data;
 }
 
@@ -2550,6 +2594,7 @@ export const operationsByPath = {
   'DELETE /api-keys': deleteUserAPIKeys,
   'POST /sql': query,
   'GET /v2': websocket,
+  'POST /mcp': sendMcpRequest,
   'POST /webhooks/github': githubWebhook,
   'GET /organizations/{organizationID}/regions': listRegions,
   'GET /organizations/{organizationID}/instanceTypes': listInstanceTypes,
@@ -2632,6 +2677,9 @@ export const operationsByTag = {
   gateway: {
     query,
     websocket
+  },
+  mcp: {
+    sendMcpRequest
   },
   projectsWebhooks: {
     githubWebhook
@@ -2721,6 +2769,9 @@ export const tagDictionary = {
   gateway: {
     POST: ['query'],
     GET: ['websocket']
+  },
+  mcp: {
+    POST: ['sendMcpRequest']
   },
   projectsWebhooks: {
     POST: ['githubWebhook']
@@ -2814,6 +2865,7 @@ export type OperationErrors = {
   'apiKeys.deleteUserAPIKeys': DeleteUserAPIKeysMutation['Errors'];
   'gateway.query': QueryMutation['Errors'];
   'gateway.websocket': WebsocketQuery['Errors'];
+  'mcp.sendMcpRequest': SendMcpRequestMutation['Errors'];
   'projectsWebhooks.githubWebhook': GithubWebhookMutation['Errors'];
   'projects.listRegions': ListRegionsQuery['Errors'];
   'projects.listInstanceTypes': ListInstanceTypesQuery['Errors'];
@@ -2881,6 +2933,7 @@ export type OperationErrorStatus = {
   'apiKeys.deleteUserAPIKeys': 400 | 401 | 404;
   'gateway.query': 400 | 401 | 500 | 504 | 507;
   'gateway.websocket': 400;
+  'mcp.sendMcpRequest': 400 | 401 | 413 | 415 | 500;
   'projectsWebhooks.githubWebhook': 400 | 500;
   'projects.listRegions': 400 | 401;
   'projects.listInstanceTypes': 400 | 401;

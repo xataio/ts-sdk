@@ -411,6 +411,53 @@ export const errorResponseSchema = z
   .describe('Error response with PostgreSQL error fields.');
 
 /**
+ * @description A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a\nresponse; a notification carries `method` without `id` and is not. The `method` and\n`params` values are defined by the MCP specification.\n
+ */
+export const JSONRPCMessageSchema = z
+  .object({
+    jsonrpc: z.enum(['2.0']).describe('JSON-RPC protocol version. Always `2.0`.'),
+    id: z.optional(
+      z.union([z.int(), z.string()]).describe('Request identifier, echoed on the response. Omitted for notifications.')
+    ),
+    method: z.string().describe('MCP method, such as `initialize`, `tools/list`, or `tools/call`.'),
+    params: z.optional(
+      z.object({}).catchall(z.unknown()).describe('Method parameters as defined by the MCP specification.')
+    )
+  })
+  .describe(
+    'A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a\nresponse; a notification carries `method` without `id` and is not. The `method` and\n`params` values are defined by the MCP specification.\n'
+  );
+
+/**
+ * @description A JSON-RPC 2.0 error. Failures inside a tool are reported in the tool result with `isError`, not here.
+ */
+export const JSONRPCErrorSchema = z
+  .object({
+    code: z.int().describe('JSON-RPC error code.'),
+    message: z.string().describe('Short description of the error.'),
+    data: z.optional(z.unknown().describe('Additional error detail.'))
+  })
+  .describe('A JSON-RPC 2.0 error. Failures inside a tool are reported in the tool result with `isError`, not here.');
+
+/**
+ * @description A JSON-RPC 2.0 response. Exactly one of `result` or `error` is present.
+ */
+export const JSONRPCResponseSchema = z
+  .object({
+    jsonrpc: z.enum(['2.0']).describe('JSON-RPC protocol version. Always `2.0`.'),
+    id: z.union([z.int(), z.string()]).describe('Identifier of the request this responds to.'),
+    result: z.optional(
+      z.object({}).catchall(z.unknown()).describe('Method result as defined by the MCP specification.')
+    ),
+    get error() {
+      return JSONRPCErrorSchema.describe(
+        'A JSON-RPC 2.0 error. Failures inside a tool are reported in the tool result with `isError`, not here.'
+      ).optional();
+    }
+  })
+  .describe('A JSON-RPC 2.0 response. Exactly one of `result` or `error` is present.');
+
+/**
  * @description A GitHub App installation associated with an organization
  */
 export const githubInstallationSchema = z
@@ -2496,6 +2543,68 @@ export const websocket101Schema = z.unknown();
 export const websocket400Schema = z.unknown();
 
 export const websocketQueryResponseSchema = z.unknown();
+
+export const sendMcpRequestHeaderParamsSchema = z.object({
+  Accept: z
+    .string()
+    .default('application/json, text/event-stream')
+    .describe('Must list both `application/json` and `text/event-stream`.'),
+  'MCP-Protocol-Version': z.optional(
+    z
+      .string()
+      .describe(
+        'Protocol revision negotiated during `initialize`, echoed on every subsequent request.\nOmitted on the `initialize` request itself.\n'
+      )
+  )
+});
+
+/**
+ * @description JSON-RPC response to the request
+ */
+export const sendMcpRequest200Schema = z
+  .lazy(() => JSONRPCResponseSchema)
+  .describe('A JSON-RPC 2.0 response. Exactly one of `result` or `error` is present.');
+
+/**
+ * @description Notification or response accepted; no body is returned
+ */
+export const sendMcpRequest202Schema = z.unknown();
+
+/**
+ * @description Malformed message, unsupported `MCP-Protocol-Version`, or an `Accept` header missing one of the required media types
+ */
+export const sendMcpRequest400Schema = z.unknown();
+
+/**
+ * @description Missing or invalid credentials
+ */
+export const sendMcpRequest401Schema = z.unknown();
+
+/**
+ * @description Request body larger than 4 MiB
+ */
+export const sendMcpRequest413Schema = z.unknown();
+
+/**
+ * @description `Content-Type` is not `application/json`
+ */
+export const sendMcpRequest415Schema = z.unknown();
+
+/**
+ * @description Internal server error
+ */
+export const sendMcpRequest500Schema = z.unknown();
+
+export const sendMcpRequestMutationRequestSchema = z
+  .lazy(() => JSONRPCMessageSchema)
+  .describe(
+    'A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a\nresponse; a notification carries `method` without `id` and is not. The `method` and\n`params` values are defined by the MCP specification.\n'
+  );
+
+export const sendMcpRequestMutationResponseSchema = z.union([
+  z.lazy(() => sendMcpRequest200Schema),
+  z.lazy(() => sendMcpRequest202Schema)
+]);
 
 /**
  * @description Webhook received and processed successfully

@@ -915,6 +915,97 @@ export type ErrorResponse = {
   routine?: string | undefined;
 };
 
+export const JSONRPCMessageJsonrpcEnum = {
+  '2.0': '2.0'
+} as const;
+
+export type JSONRPCMessageJsonrpcEnumKey = (typeof JSONRPCMessageJsonrpcEnum)[keyof typeof JSONRPCMessageJsonrpcEnum];
+
+/**
+ * @description A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a\nresponse; a notification carries `method` without `id` and is not. The `method` and\n`params` values are defined by the MCP specification.\n
+ */
+export type JSONRPCMessage = {
+  /**
+   * @description JSON-RPC protocol version. Always `2.0`.
+   * @type string
+   */
+  jsonrpc: JSONRPCMessageJsonrpcEnumKey;
+  /**
+   * @description Request identifier, echoed on the response. Omitted for notifications.
+   */
+  id?: (string | number) | undefined;
+  /**
+   * @description MCP method, such as `initialize`, `tools/list`, or `tools/call`.
+   * @type string
+   */
+  method: string;
+  /**
+   * @description Method parameters as defined by the MCP specification.
+   * @type object | undefined
+   */
+  params?:
+    | {
+        [key: string]: unknown;
+      }
+    | undefined;
+};
+
+/**
+ * @description A JSON-RPC 2.0 error. Failures inside a tool are reported in the tool result with `isError`, not here.
+ */
+export type JSONRPCError = {
+  /**
+   * @description JSON-RPC error code.
+   * @type integer
+   */
+  code: number;
+  /**
+   * @description Short description of the error.
+   * @type string
+   */
+  message: string;
+  /**
+   * @description Additional error detail.
+   */
+  data?: unknown | undefined;
+};
+
+export const JSONRPCResponseJsonrpcEnum = {
+  '2.0': '2.0'
+} as const;
+
+export type JSONRPCResponseJsonrpcEnumKey =
+  (typeof JSONRPCResponseJsonrpcEnum)[keyof typeof JSONRPCResponseJsonrpcEnum];
+
+/**
+ * @description A JSON-RPC 2.0 response. Exactly one of `result` or `error` is present.
+ */
+export type JSONRPCResponse = {
+  /**
+   * @description JSON-RPC protocol version. Always `2.0`.
+   * @type string
+   */
+  jsonrpc: JSONRPCResponseJsonrpcEnumKey;
+  /**
+   * @description Identifier of the request this responds to.
+   */
+  id: string | number;
+  /**
+   * @description Method result as defined by the MCP specification.
+   * @type object | undefined
+   */
+  result?:
+    | {
+        [key: string]: unknown;
+      }
+    | undefined;
+  /**
+   * @description A JSON-RPC 2.0 error. Failures inside a tool are reported in the tool result with `isError`, not here.
+   * @type object | undefined
+   */
+  error?: JSONRPCError | undefined;
+};
+
 /**
  * @description A GitHub App installation associated with an organization
  */
@@ -4786,6 +4877,66 @@ export type WebsocketQueryResponse = any;
 export type WebsocketQuery = {
   Response: any;
   Errors: Websocket400;
+};
+
+export type SendMcpRequestHeaderParams = {
+  /**
+   * @description Must list both `application/json` and `text/event-stream`.
+   * @default "application/json, text/event-stream"
+   * @type string
+   */
+  Accept: string;
+  /**
+   * @description Protocol revision negotiated during `initialize`, echoed on every subsequent request.\nOmitted on the `initialize` request itself.\n
+   * @type string | undefined
+   */
+  'MCP-Protocol-Version'?: string | undefined;
+};
+
+/**
+ * @description JSON-RPC response to the request
+ */
+export type SendMcpRequest200 = JSONRPCResponse;
+
+/**
+ * @description Notification or response accepted; no body is returned
+ */
+export type SendMcpRequest202 = unknown;
+
+/**
+ * @description Malformed message, unsupported `MCP-Protocol-Version`, or an `Accept` header missing one of the required media types
+ */
+export type SendMcpRequest400 = unknown;
+
+/**
+ * @description Missing or invalid credentials
+ */
+export type SendMcpRequest401 = unknown;
+
+/**
+ * @description Request body larger than 4 MiB
+ */
+export type SendMcpRequest413 = unknown;
+
+/**
+ * @description `Content-Type` is not `application/json`
+ */
+export type SendMcpRequest415 = unknown;
+
+/**
+ * @description Internal server error
+ */
+export type SendMcpRequest500 = unknown;
+
+export type SendMcpRequestMutationRequest = JSONRPCMessage;
+
+export type SendMcpRequestMutationResponse = SendMcpRequest200 | SendMcpRequest202;
+
+export type SendMcpRequestMutation = {
+  Response: SendMcpRequest200 | SendMcpRequest202;
+  Request: SendMcpRequestMutationRequest;
+  HeaderParams: SendMcpRequestHeaderParams;
+  Errors: SendMcpRequest400 | SendMcpRequest401 | SendMcpRequest413 | SendMcpRequest415 | SendMcpRequest500;
 };
 
 /**
