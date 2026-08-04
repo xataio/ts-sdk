@@ -1,5 +1,11 @@
 # @xata.io/api
 
+## 0.1.6
+
+### Patch Changes
+
+- [#2830](https://github.com/xataio/frontend/pull/2830) [`43b330b`](https://github.com/xataio/frontend/commit/43b330b14aec26f550403f31f44fc6523a1e4613) Thanks [@xata-bot](https://github.com/xata-bot)! - [Generated] Update API handlers ([#2830](https://github.com/xataio/frontend/issues/2830))
+
 ## 0.1.5
 
 ### Patch Changes
