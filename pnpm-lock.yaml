@@ -244,8 +244,8 @@ packages:
   '@redocly/config@0.53.1':
     resolution: {integrity: sha512-aOldTWynKS3ZM6u8WkL72d94QBobITv9X6UECiZykgVjdLiAqV737bPVLGKJYPWf0Ryf3zSHgUYALjCj66BkdA==}
 
-  '@redocly/openapi-core@2.43.3':
-    resolution: {integrity: sha512-q7TpQQopBO81AwjnjUHYYI0x/F9I2TUTgcayFlGQgj/mqQE8AcHEZ4+59lH6NQ/5wLDQfh8KoYTz60Y34FPDCA==}
+  '@redocly/openapi-core@2.44.1':
+    resolution: {integrity: sha512-cwYkiDAt6o2Gs1e3s4bLIWMBZy9KRWrnXs/2tKeav5W1Sv7AgE/UO/wPksajzu/gbTvY7pyP22e4OQnNIf/jcQ==}
     engines: {node: '>=22.12.0 || >=20.19.0 <21.0.0', npm: '>=10'}
 
   '@rolldown/binding-android-arm64@1.2.2':
@@ -1594,7 +1594,7 @@ snapshots:
       '@kubb/ast': 4.39.2
       '@kubb/core': 4.39.2(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/fabric-core': 0.14.0
-      '@redocly/openapi-core': 2.43.3
+      '@redocly/openapi-core': 2.44.1
       '@stoplight/yaml': 4.3.0
       jsonpointer: 5.0.1
       oas: 31.1.2
@@ -1611,7 +1611,7 @@ snapshots:
       '@kubb/ast': 4.39.2
       '@kubb/core': 4.39.2(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.16.0)
       '@kubb/fabric-core': 0.14.0
-      '@redocly/openapi-core': 2.43.3
+      '@redocly/openapi-core': 2.44.1
       '@stoplight/yaml': 4.3.0
       jsonpointer: 5.0.1
       oas: 31.1.2
@@ -1797,7 +1797,7 @@ snapshots:
     dependencies:
       json-schema-to-ts: 2.7.2
 
-  '@redocly/openapi-core@2.43.3':
+  '@redocly/openapi-core@2.44.1':
     dependencies:
       '@redocly/ajv': 8.18.3
       '@redocly/config': 0.53.1
