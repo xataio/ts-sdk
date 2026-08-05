@@ -1,5 +1,12 @@
 # @xata.io/api
 
+## 0.1.7
+
+### Patch Changes
+
+- Updated dependencies [[`4daa313`](https://github.com/xataio/frontend/commit/4daa313cbb193d695b569b3d58b04be1b41067fc)]:
+  - @xata.io/lang@0.0.4
+
 ## 0.1.6
 
 ### Patch Changes

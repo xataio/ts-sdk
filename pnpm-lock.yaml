@@ -12,8 +12,8 @@ importers:
         specifier: 2.19.0
         version: 2.19.0
       '@xata.io/lang':
-        specifier: 0.0.3
-        version: 0.0.3
+        specifier: 0.0.4
+        version: 0.0.4
       zod:
         specifier: 4.4.3
         version: 4.4.3
@@ -534,8 +534,8 @@ packages:
   '@vitest/utils@4.1.10':
     resolution: {integrity: sha512-fy9am/HWxbaGt/Sawrp90vt6Y6jQwf1RX77cz3uwoJwJVMli/e1IEwRPnMNJ7vKfPTwo0diXifkpPvwH9v7nGA==}
 
-  '@xata.io/lang@0.0.3':
-    resolution: {integrity: sha512-jFhB6sXrL2+4bT9VrasiQ2eM11OOLjoBnc4eTxLLNyBG92tXqB0zd3OafPu9fnyZmM6iAMUzWGGZhjIZbZJUOw==}
+  '@xata.io/lang@0.0.4':
+    resolution: {integrity: sha512-xMjevtGeXJAYRCPSkrvcNVPHqJdM+RMal7RYlxUCR9SuvsLppvVTk3K5gbgKotPmcQ+q5o6uG+SPuXJLOw1l7A==}
 
   '@xata.io/tsconfig@0.0.2':
     resolution: {integrity: sha512-7uY1tUBZbA1g7PTSrJ+DWEo1qOxIpN3DU1W94ttWL7Ns76+DmL1JVYtXOw6i9Ta7SYeEii3pxQZnaOQRLe/EAw==}
@@ -1997,7 +1997,7 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.1
 
-  '@xata.io/lang@0.0.3':
+  '@xata.io/lang@0.0.4':
     dependencies:
       date-fns: 4.4.0
       es-toolkit: 1.50.0
