@@ -4837,6 +4837,26 @@ export type Query400 = ErrorResponse;
 export type Query401 = ErrorResponse;
 
 /**
+ * @description Client IP is not allowed by the branch IP filter
+ */
+export type Query403 = ErrorResponse;
+
+/**
+ * @description Branch not found, it may have been deleted
+ */
+export type Query404 = ErrorResponse;
+
+/**
+ * @description Branch is hibernated, reactivate it before running queries
+ */
+export type Query409 = ErrorResponse;
+
+/**
+ * @description Request body is larger than 64MB
+ */
+export type Query413 = ErrorResponse;
+
+/**
  * @description Internal server error
  */
 export type Query500 = ErrorResponse;
@@ -4859,7 +4879,7 @@ export type QueryMutation = {
   Response: Query200;
   Request: QueryMutationRequest;
   HeaderParams: QueryHeaderParams;
-  Errors: Query400 | Query401 | Query500 | Query504 | Query507;
+  Errors: Query400 | Query401 | Query403 | Query404 | Query409 | Query413 | Query500 | Query504 | Query507;
 };
 
 /**

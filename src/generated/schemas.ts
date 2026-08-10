@@ -2506,6 +2506,34 @@ export const query401Schema = z
   .describe('Error response with PostgreSQL error fields.');
 
 /**
+ * @description Client IP is not allowed by the branch IP filter
+ */
+export const query403Schema = z
+  .lazy(() => errorResponseSchema)
+  .describe('Error response with PostgreSQL error fields.');
+
+/**
+ * @description Branch not found, it may have been deleted
+ */
+export const query404Schema = z
+  .lazy(() => errorResponseSchema)
+  .describe('Error response with PostgreSQL error fields.');
+
+/**
+ * @description Branch is hibernated, reactivate it before running queries
+ */
+export const query409Schema = z
+  .lazy(() => errorResponseSchema)
+  .describe('Error response with PostgreSQL error fields.');
+
+/**
+ * @description Request body is larger than 64MB
+ */
+export const query413Schema = z
+  .lazy(() => errorResponseSchema)
+  .describe('Error response with PostgreSQL error fields.');
+
+/**
  * @description Internal server error
  */
 export const query500Schema = z

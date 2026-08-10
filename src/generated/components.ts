@@ -166,6 +166,10 @@ import type {
   QueryHeaderParams,
   Query400,
   Query401,
+  Query403,
+  Query404,
+  Query409,
+  Query413,
   Query500,
   Query504,
   Query507,
@@ -1241,7 +1245,7 @@ export async function query({
 
   const data = await request<
     QueryMutationResponse,
-    Query400 | Query401 | Query500 | Query504 | Query507,
+    Query400 | Query401 | Query403 | Query404 | Query409 | Query413 | Query500 | Query504 | Query507,
     QueryMutationRequest,
     QueryHeaderParams,
     Record<string, string>,
@@ -2933,7 +2937,7 @@ export type OperationErrorStatus = {
   'apiKeys.listUserAPIKeys': 400 | 401;
   'apiKeys.createUserAPIKey': 400 | 401;
   'apiKeys.deleteUserAPIKeys': 400 | 401 | 404;
-  'gateway.query': 400 | 401 | 500 | 504 | 507;
+  'gateway.query': 400 | 401 | 403 | 404 | 409 | 413 | 500 | 504 | 507;
   'gateway.websocket': 400;
   'mcp.sendMcpRequest': 400 | 401 | 413 | 415 | 500;
   'projectsWebhooks.githubWebhook': 400 | 500;
