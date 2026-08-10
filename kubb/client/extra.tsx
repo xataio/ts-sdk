@@ -126,6 +126,8 @@ export const extraGenerator = createReactGenerator<PluginClient>({
 
         <File.Source>
           {`
+        export const DEFAULT_API_BASE_URL = '${oas.url(0)}';
+
         export const operationsByPath = {
             ${Object.entries(operationsByPath)
               .map(([path, operation]) => `"${path}": ${operation}`)

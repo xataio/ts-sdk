@@ -1,30 +1,52 @@
 import type { RequiredKeys } from '@xata.io/lang';
-import { createDeviceSession, exchangeDeviceCode, type OpenIdClient, type OpenIdToken, refreshToken } from './auth';
+import { z } from 'zod';
 import {
+  createDeviceSession,
+  exchangeDeviceCode,
+  type OpenIdClient,
+  openIdClientSchema,
+  type OpenIdToken,
+  openIdTokenSchema,
+  refreshToken
+} from './auth';
+import {
+  DEFAULT_API_BASE_URL,
   type OperationErrors,
   type OperationErrorStatus,
   type operationsByPath,
   operationsByTag,
   type tagDictionary
 } from './generated/components';
+import { retryOptionsSchema } from './retry';
 import type { FetchImpl } from './utils/fetch';
 import fetchFn, { type FetcherConfig } from './utils/fetcher';
 import { type XataAgentFields, withXataAgentHeader } from './utils/xata-agent';
 
-type Token = string | ({ type: 'oidc'; client: OpenIdClient } & OpenIdToken);
+export { DEFAULT_API_BASE_URL };
 
-type Callbacks = {
-  onTokenRefresh?: (token: OpenIdToken) => void | Promise<void>;
+const callableSchema = <T>() => {
+  return z.custom<T>((value) => {
+    return typeof value === 'function';
+  }, 'must be a function');
 };
 
-export type ApiOptions = {
-  token: Token | null;
-  baseUrl: string;
-  fetch?: FetchImpl;
-  callbacks?: Callbacks;
-  xataAgent?: XataAgentFields;
-  retry?: FetcherConfig['retry'];
-};
+const apiOptionsSchema = z.object({
+  token: z.nullable(
+    z.union([
+      z.string().min(1),
+      z.object({ type: z.literal('oidc'), client: openIdClientSchema }).extend(openIdTokenSchema.shape)
+    ])
+  ),
+  baseUrl: z.url({ protocol: /^https?$/ }).default(DEFAULT_API_BASE_URL),
+  fetch: z.optional(callableSchema<FetchImpl>()),
+  callbacks: z.optional(
+    z.object({ onTokenRefresh: z.optional(callableSchema<(token: OpenIdToken) => void | Promise<void>>()) })
+  ),
+  xataAgent: z.optional(z.record(z.string(), z.optional(z.string()))),
+  retry: z.optional(z.union([z.literal(false), retryOptionsSchema]))
+});
+
+export type ApiOptions = z.input<typeof apiOptionsSchema>;
 
 export type ApiClient = {
   [Tag in keyof typeof operationsByTag]: {
@@ -94,20 +116,26 @@ type RequestEndpointResult<T extends keyof typeof operationsByPath> = ReturnType
 
 export class XataApi {
   baseUrl: string;
-  token: Token | null;
+  token: ApiOptions['token'];
   fetch: FetchImpl;
-  callbacks?: Callbacks;
+  callbacks?: ApiOptions['callbacks'];
   xataAgent: XataAgentFields;
   retry: FetcherConfig['retry'];
 
   constructor(options: ApiOptions) {
-    this.baseUrl = options.baseUrl;
-    this.token = options.token;
-    this.callbacks = options.callbacks;
-    this.xataAgent = options.xataAgent ?? {};
-    this.retry = options.retry;
+    const parsed = apiOptionsSchema.safeParse(options);
+    if (!parsed.success) {
+      throw new Error(`Invalid XataApi options:\n${z.prettifyError(parsed.error)}`);
+    }
 
-    this.fetch = options.fetch || (fetch as FetchImpl);
+    const { baseUrl, token, callbacks, xataAgent, retry, fetch: fetchImpl } = parsed.data;
+    this.baseUrl = baseUrl;
+    this.token = token;
+    this.callbacks = callbacks;
+    this.xataAgent = xataAgent ?? {};
+    this.retry = retry;
+
+    this.fetch = fetchImpl ?? (fetch as FetchImpl);
     if (!this.fetch) throw new Error('Fetch is required');
   }
 

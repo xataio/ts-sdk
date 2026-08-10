@@ -1,16 +1,19 @@
 import { isNetworkError } from '@xata.io/lang';
+import { z } from 'zod';
 import { ApiError, NetworkError } from './errors';
 
-export type RetryOptions = {
+export const retryOptionsSchema = z.object({
   /** Total attempts including the first one. */
-  attempts?: number;
+  attempts: z.optional(z.int().positive()),
   /** HTTP status codes that should be retried. */
-  statuses?: number[];
+  statuses: z.optional(z.array(z.int())),
   /** Request methods that are safe to retry (idempotent). */
-  methods?: string[];
-  baseDelayMs?: number;
-  maxDelayMs?: number;
-};
+  methods: z.optional(z.array(z.string().min(1))),
+  baseDelayMs: z.optional(z.int().nonnegative()),
+  maxDelayMs: z.optional(z.int().nonnegative())
+});
+
+export type RetryOptions = z.infer<typeof retryOptionsSchema>;
 
 export const DEFAULT_RETRY = {
   attempts: 3,

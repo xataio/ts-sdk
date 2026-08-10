@@ -2564,6 +2564,8 @@ export async function stripeWebhook({
   return data;
 }
 
+export const DEFAULT_API_BASE_URL = 'https://api.xata.tech';
+
 export const operationsByPath = {
   'GET /organizations': getOrganizationsList,
   'POST /organizations': createOrganization,

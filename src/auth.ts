@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { SessionExpiredError } from './errors';
 import type { FetchImpl } from './utils/fetch';
 
@@ -114,17 +115,20 @@ export async function exchangeDeviceCode({ issuer, clientId, clientSecret }: Ope
   throw new Error(`HTTP error! status: ${response.status}, error: ${response.statusText}`);
 }
 
-export type OpenIdClient = {
-  issuer: string;
-  clientId: string;
-  clientSecret: string;
-};
+export const openIdClientSchema = z.object({
+  issuer: z.url({ protocol: /^https?$/ }),
+  clientId: z.string().min(1),
+  clientSecret: z.string().min(1)
+});
 
-export type OpenIdToken = {
-  accessToken: string;
-  refreshToken: string;
-  expiresAt: Date;
-};
+export const openIdTokenSchema = z.object({
+  accessToken: z.string().min(1),
+  refreshToken: z.string().min(1),
+  expiresAt: z.date()
+});
+
+export type OpenIdClient = z.infer<typeof openIdClientSchema>;
+export type OpenIdToken = z.infer<typeof openIdTokenSchema>;
 
 type DeviceResponse = {
   device_code: string;
