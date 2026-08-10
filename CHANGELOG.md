@@ -1,5 +1,15 @@
 # @xata.io/api
 
+## 0.1.8
+
+### Patch Changes
+
+- [#2873](https://github.com/xataio/frontend/pull/2873) [`dbb03c4`](https://github.com/xataio/frontend/commit/dbb03c4f5f856afd4e08450a8bebee4363fad733) Thanks [@xata-bot](https://github.com/xata-bot)! - [Webapp|Website]: Upgrade to Next.js 16.3 and drop the TypeScript dual-alias ([#2869](https://github.com/xataio/frontend/issues/2869))
+
+- [#2879](https://github.com/xataio/frontend/pull/2879) [`d102803`](https://github.com/xataio/frontend/commit/d102803c1eb3eb10f38f57935f2eeb57066a8a74) Thanks [@xata-bot](https://github.com/xata-bot)! - [Generated] Update API handlers ([#2879](https://github.com/xataio/frontend/issues/2879))
+
+- [#2874](https://github.com/xataio/frontend/pull/2874) [`81a100d`](https://github.com/xataio/frontend/commit/81a100d389a654e6522c2e72a7e9ce74120d4d12) Thanks [@SferaDev](https://github.com/SferaDev)! - [API]: Validate XataApi options ([#2874](https://github.com/xataio/frontend/issues/2874))
+
 ## 0.1.7
 
 ### Patch Changes
