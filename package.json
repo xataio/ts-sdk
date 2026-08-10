@@ -1,7 +1,7 @@
 {
   "name": "@xata.io/api",
   "private": false,
-  "version": "0.1.7",
+  "version": "0.1.8",
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
@@ -9,24 +9,23 @@
     "./retry": "./src/retry.ts"
   },
   "dependencies": {
-    "@dotenvx/dotenvx": "2.19.0",
+    "@dotenvx/dotenvx": "2.19.2",
     "zod": "4.4.3",
     "@xata.io/lang": "0.0.4"
   },
   "devDependencies": {
-    "@kubb/cli": "4.39.2",
-    "@kubb/core": "4.39.2",
-    "@kubb/oas": "4.39.2",
-    "@kubb/plugin-client": "4.39.2",
-    "@kubb/plugin-oas": "4.39.2",
-    "@kubb/plugin-ts": "4.39.2",
-    "@kubb/plugin-zod": "4.39.2",
+    "@kubb/cli": "4.39.3",
+    "@kubb/core": "4.39.3",
+    "@kubb/oas": "4.39.3",
+    "@kubb/plugin-client": "4.39.3",
+    "@kubb/plugin-oas": "4.39.3",
+    "@kubb/plugin-ts": "4.39.3",
+    "@kubb/plugin-zod": "4.39.3",
     "@kubb/react": "4.3.1",
-    "@kubb/react-fabric": "0.16.0",
-    "@types/node": "26.1.1",
-    "@typescript/native": "npm:typescript@7.0.2",
+    "@kubb/react-fabric": "0.16.1",
+    "@types/node": "26.1.2",
     "case": "1.6.3",
-    "typescript": "npm:@typescript/typescript6@6.0.2",
+    "typescript": "7.0.2",
     "vitest": "4.1.10",
     "@xata.io/tsconfig": "0.0.2"
   },
