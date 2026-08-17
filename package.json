@@ -9,7 +9,7 @@
     "./retry": "./src/retry.ts"
   },
   "dependencies": {
-    "@dotenvx/dotenvx": "2.19.2",
+    "@dotenvx/dotenvx": "2.21.0",
     "zod": "4.4.3",
     "@xata.io/lang": "0.0.4"
   },
@@ -23,7 +23,7 @@
     "@kubb/plugin-zod": "4.39.3",
     "@kubb/react": "4.3.1",
     "@kubb/react-fabric": "0.16.1",
-    "@types/node": "26.1.2",
+    "@types/node": "26.2.0",
     "case": "1.6.3",
     "typescript": "7.0.2",
     "vitest": "4.1.10",
