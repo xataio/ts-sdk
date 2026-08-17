@@ -339,6 +339,17 @@ import type {
   DeleteGithubRepository400,
   DeleteGithubRepository401,
   DeleteGithubRepository404,
+  UpsertInstallationMutationRequest,
+  UpsertInstallationMutationResponse,
+  UpsertInstallationPathParams,
+  UpsertInstallation400,
+  UpsertInstallation403,
+  UpsertInstallation409,
+  DeleteInstallationMutationRequest,
+  DeleteInstallationMutationResponse,
+  DeleteInstallationPathParams,
+  DeleteInstallation403,
+  DeleteInstallation409,
   OrbWebhookMutationRequest,
   OrbWebhookMutationResponse,
   OrbWebhook400,
@@ -361,6 +372,7 @@ import type {
   CreateUserAPIKeyMutation,
   DeleteBranchMutation,
   DeleteGithubRepositoryMutation,
+  DeleteInstallationMutation,
   DeleteOrganizationAPIKeysMutation,
   DeleteOrganizationInvitationMutation,
   DeleteOrganizationMutation,
@@ -411,6 +423,7 @@ import type {
   UpdateGithubRepositoryMutation,
   UpdateOrganizationMutation,
   UpdateProjectMutation,
+  UpsertInstallationMutation,
   WebsocketQuery
 } from './types.ts';
 
@@ -2515,6 +2528,75 @@ export async function deleteGithubRepository({
 }
 
 /**
+ * @description Create or update an installation. Vercel sends this when a customer
+ * installs (or re-sends it idempotently). The acting account is taken from
+ * the signed token claims, not this body. There is one installation per
+ * Vercel team, and an installation can own many Xata organizations.
+ * @summary Upsert a Vercel Marketplace installation
+ * {@link /v1/installations/:installationId}
+ */
+export async function upsertInstallation({
+  pathParams: { installationId },
+  body,
+  config = {}
+}: {
+  pathParams: UpsertInstallationPathParams;
+  body: UpsertInstallationMutationRequest;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!installationId) {
+    throw new Error(`Missing required path parameter: installationId`);
+  }
+
+  const data = await request<
+    UpsertInstallationMutationResponse,
+    UpsertInstallation400 | UpsertInstallation403 | UpsertInstallation409,
+    UpsertInstallationMutationRequest,
+    Record<string, string>,
+    Record<string, string>,
+    UpsertInstallationPathParams
+  >({ method: 'PUT', url: `/v1/installations/${installationId}`, body, ...requestConfig });
+  return data;
+}
+
+/**
+ * @description Begin uninstalling an installation. The installation is marked
+ * 'deleting' so billing can finalize before being soft-deleted; the 204
+ * defers final deletion to Vercel's 24-hour window. (Vercel's contract
+ * also allows a 200 with {"finalized": true} for immediate deletion;
+ * Xata always finalizes asynchronously.)
+ * @summary Delete a Vercel Marketplace installation
+ * {@link /v1/installations/:installationId}
+ */
+export async function deleteInstallation({
+  pathParams: { installationId },
+  body,
+  config = {}
+}: {
+  pathParams: DeleteInstallationPathParams;
+  body?: DeleteInstallationMutationRequest;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!installationId) {
+    throw new Error(`Missing required path parameter: installationId`);
+  }
+
+  const data = await request<
+    DeleteInstallationMutationResponse,
+    DeleteInstallation403 | DeleteInstallation409,
+    DeleteInstallationMutationRequest,
+    Record<string, string>,
+    Record<string, string>,
+    DeleteInstallationPathParams
+  >({ method: 'DELETE', url: `/v1/installations/${installationId}`, body, ...requestConfig });
+  return data;
+}
+
+/**
  * @description Endpoint used by Orb to deliver billing-related webhook events.
  * This endpoint is authenticated via Orb's HMAC signature headers,
  * not via the normal API authentication.
@@ -2640,6 +2722,8 @@ export const operationsByPath = {
     updateGithubRepository,
   'DELETE /organizations/{organizationID}/projects/{projectID}/branches/{branchID}/githubapp/repository':
     deleteGithubRepository,
+  'PUT /v1/installations/{installationId}': upsertInstallation,
+  'DELETE /v1/installations/{installationId}': deleteInstallation,
   'POST /webhooks/orb': orbWebhook,
   'POST /webhooks/stripe': stripeWebhook
 };
@@ -2734,6 +2818,10 @@ export const operationsByTag = {
     updateGithubRepository,
     deleteGithubRepository
   },
+  vercel: {
+    upsertInstallation,
+    deleteInstallation
+  },
   webhooks: {
     orbWebhook,
     stripeWebhook
@@ -2817,6 +2905,10 @@ export const tagDictionary = {
     POST: ['createGithubAppInstallation', 'createGithubRepository'],
     PUT: ['updateGithubAppInstallation', 'updateGithubRepository'],
     DELETE: ['deleteGithubRepository']
+  },
+  vercel: {
+    PUT: ['upsertInstallation'],
+    DELETE: ['deleteInstallation']
   },
   webhooks: {
     POST: ['orbWebhook', 'stripeWebhook']
@@ -2905,6 +2997,8 @@ export type OperationErrors = {
   'githubApp.createGithubRepository': CreateGithubRepositoryMutation['Errors'];
   'githubApp.updateGithubRepository': UpdateGithubRepositoryMutation['Errors'];
   'githubApp.deleteGithubRepository': DeleteGithubRepositoryMutation['Errors'];
+  'vercel.upsertInstallation': UpsertInstallationMutation['Errors'];
+  'vercel.deleteInstallation': DeleteInstallationMutation['Errors'];
   'webhooks.orbWebhook': OrbWebhookMutation['Errors'];
   'webhooks.stripeWebhook': StripeWebhookMutation['Errors'];
 };
@@ -2973,6 +3067,8 @@ export type OperationErrorStatus = {
   'githubApp.createGithubRepository': 400 | 401 | 409;
   'githubApp.updateGithubRepository': 400 | 401 | 404;
   'githubApp.deleteGithubRepository': 400 | 401 | 404;
+  'vercel.upsertInstallation': 400 | 403 | 409;
+  'vercel.deleteInstallation': 403 | 409;
   'webhooks.orbWebhook': 400 | 500;
   'webhooks.stripeWebhook': 400 | 500;
 };

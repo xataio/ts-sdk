@@ -2430,6 +2430,143 @@ export type RestoreDetails = {
   configuration?: ClusterConfiguration | undefined;
 };
 
+export type InstallationCredentials = {
+  /**
+   * @description Installation access token that authenticates our outbound Partner API calls to Vercel. Stored encrypted at rest.
+   * @type string
+   */
+  access_token: string;
+  /**
+   * @description Token type (e.g. \"Bearer\").
+   * @type string
+   */
+  token_type: string;
+};
+
+/**
+ * @description The Vercel account/team installing the integration.
+ */
+export type InstallationAccount = {
+  /**
+   * @description Team name (absent for personal accounts).
+   * @type string | undefined
+   */
+  name?: string | undefined;
+  /**
+   * @description URL of the account on Vercel.
+   * @type string
+   */
+  url: string;
+  /**
+   * @description Contact details for the account.
+   * @type object | undefined
+   */
+  contact?:
+    | {
+        /**
+         * @type string
+         */
+        email: string;
+        /**
+         * @type string | undefined
+         */
+        name?: string | undefined;
+      }
+    | undefined;
+};
+
+export type UpsertInstallationRequest = {
+  /**
+   * @description Scopes granted to the installation.
+   * @type array
+   */
+  scopes: string[];
+  /**
+   * @description Map of policy id to the acceptance timestamp (RFC 3339), e.g. {\"toc\": \"2024-02-28T10:00:00Z\"}.
+   * @type object
+   */
+  acceptedPolicies: {
+    [key: string]: string;
+  };
+  /**
+   * @type object
+   */
+  credentials: InstallationCredentials;
+  /**
+   * @description The Vercel account/team installing the integration.
+   * @type object
+   */
+  account: InstallationAccount;
+};
+
+export type DeleteInstallationRequest = {
+  /**
+   * @description Whether to delete the installation\'s resources along with the installation.
+   * @type boolean | undefined
+   */
+  cascadeResourceDeletion?: boolean | undefined;
+  /**
+   * @description The reason for deleting the installation.
+   * @type string | undefined
+   */
+  reason?: string | undefined;
+};
+
+/**
+ * @description Vercel Partner API error envelope.
+ */
+export type VercelError = {
+  /**
+   * @type object
+   */
+  error: {
+    /**
+     * @description Machine-readable error code (e.g. validation_error, conflict).
+     * @type string
+     */
+    code: string;
+    /**
+     * @description Human-readable (system) error message.
+     * @type string
+     */
+    message: string;
+    /**
+     * @description User-facing error details, if applicable.
+     * @type object | undefined
+     */
+    user?:
+      | {
+          /**
+           * @description User-facing error message.
+           * @type string | undefined
+           */
+          message?: string | undefined;
+          /**
+           * @description URL to a help article or dashboard page for resolution.
+           * @type string | undefined
+           */
+          url?: string | undefined;
+        }
+      | undefined;
+    /**
+     * @description Offending fields, for validation errors.
+     * @type array | undefined
+     */
+    fields?:
+      | {
+          /**
+           * @type string
+           */
+          key: string;
+          /**
+           * @type string | undefined
+           */
+          message?: string | undefined;
+        }[]
+      | undefined;
+  };
+};
+
 export type BadRequestError = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7728,6 +7865,79 @@ export type DeleteGithubRepositoryMutation = {
   Response: DeleteGithubRepository204;
   PathParams: DeleteGithubRepositoryPathParams;
   Errors: DeleteGithubRepository400 | DeleteGithubRepository401 | DeleteGithubRepository404;
+};
+
+export type UpsertInstallationPathParams = {
+  /**
+   * @description Vercel installation id (icfg_...).
+   * @type string
+   */
+  installationId: string;
+};
+
+/**
+ * @description Installation created or updated. No body. (Vercel\'s contract also\nallows a 200 with an installation-level billingPlan/notification\nbody; Xata does not use installation-level billing plans.)\n
+ */
+export type UpsertInstallation204 = unknown;
+
+/**
+ * @description Error response.
+ */
+export type UpsertInstallation400 = VercelError;
+
+/**
+ * @description Error response.
+ */
+export type UpsertInstallation403 = VercelError;
+
+/**
+ * @description Error response.
+ */
+export type UpsertInstallation409 = VercelError;
+
+export type UpsertInstallationMutationRequest = UpsertInstallationRequest;
+
+export type UpsertInstallationMutationResponse = UpsertInstallation204;
+
+export type UpsertInstallationMutation = {
+  Response: UpsertInstallation204;
+  Request: UpsertInstallationMutationRequest;
+  PathParams: UpsertInstallationPathParams;
+  Errors: UpsertInstallation400 | UpsertInstallation403 | UpsertInstallation409;
+};
+
+export type DeleteInstallationPathParams = {
+  /**
+   * @description Vercel installation id (icfg_...).
+   * @type string
+   */
+  installationId: string;
+};
+
+/**
+ * @description Uninstall accepted; deletion finalizes asynchronously. No body.
+ */
+export type DeleteInstallation204 = unknown;
+
+/**
+ * @description Error response.
+ */
+export type DeleteInstallation403 = VercelError;
+
+/**
+ * @description Error response.
+ */
+export type DeleteInstallation409 = VercelError;
+
+export type DeleteInstallationMutationRequest = DeleteInstallationRequest;
+
+export type DeleteInstallationMutationResponse = DeleteInstallation204;
+
+export type DeleteInstallationMutation = {
+  Response: DeleteInstallation204;
+  Request: DeleteInstallationMutationRequest;
+  PathParams: DeleteInstallationPathParams;
+  Errors: DeleteInstallation403 | DeleteInstallation409;
 };
 
 /**

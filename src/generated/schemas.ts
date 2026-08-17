@@ -1232,6 +1232,84 @@ export const restoreDetailsSchema = z
     'Metadata about a backup, used in request to create a restore. If configuration is not provided, the branch will inherit the source branch configuration.'
   );
 
+export const installationCredentialsSchema = z.object({
+  access_token: z
+    .string()
+    .describe(
+      'Installation access token that authenticates our outbound Partner API calls to Vercel. Stored encrypted at rest.'
+    ),
+  token_type: z.string().describe('Token type (e.g. "Bearer").')
+});
+
+/**
+ * @description The Vercel account/team installing the integration.
+ */
+export const installationAccountSchema = z
+  .object({
+    name: z.optional(z.string().describe('Team name (absent for personal accounts).')),
+    url: z.string().describe('URL of the account on Vercel.'),
+    contact: z.optional(
+      z
+        .object({
+          email: z.string(),
+          name: z.optional(z.string())
+        })
+        .describe('Contact details for the account.')
+    )
+  })
+  .describe('The Vercel account/team installing the integration.');
+
+export const upsertInstallationRequestSchema = z.object({
+  scopes: z.array(z.string()).describe('Scopes granted to the installation.'),
+  acceptedPolicies: z
+    .object({})
+    .catchall(z.date())
+    .describe('Map of policy id to the acceptance timestamp (RFC 3339), e.g. {"toc": "2024-02-28T10:00:00Z"}.'),
+  get credentials() {
+    return installationCredentialsSchema;
+  },
+  get account() {
+    return installationAccountSchema.describe('The Vercel account/team installing the integration.');
+  }
+});
+
+export const deleteInstallationRequestSchema = z.object({
+  cascadeResourceDeletion: z.optional(
+    z.boolean().describe("Whether to delete the installation's resources along with the installation.")
+  ),
+  reason: z.optional(z.string().describe('The reason for deleting the installation.'))
+});
+
+/**
+ * @description Vercel Partner API error envelope.
+ */
+export const vercelErrorSchema = z
+  .object({
+    error: z.object({
+      code: z.string().describe('Machine-readable error code (e.g. validation_error, conflict).'),
+      message: z.string().describe('Human-readable (system) error message.'),
+      user: z.optional(
+        z
+          .object({
+            message: z.optional(z.string().describe('User-facing error message.')),
+            url: z.optional(z.string().describe('URL to a help article or dashboard page for resolution.'))
+          })
+          .describe('User-facing error details, if applicable.')
+      ),
+      fields: z.optional(
+        z
+          .array(
+            z.object({
+              key: z.string(),
+              message: z.optional(z.string())
+            })
+          )
+          .describe('Offending fields, for validation errors.')
+      )
+    })
+  })
+  .describe('Vercel Partner API error envelope.');
+
 export const badRequestErrorSchema = z.object({
   id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
   message: z.string().describe('Human-readable error message explaining the issue')
@@ -4260,6 +4338,67 @@ export const deleteGithubRepository5XXSchema = z.unknown();
 export const deleteGithubRepositoryErrorSchema = z.unknown();
 
 export const deleteGithubRepositoryMutationResponseSchema = z.lazy(() => deleteGithubRepository204Schema);
+
+export const upsertInstallationPathParamsSchema = z.object({
+  installationId: z.string().describe('Vercel installation id (icfg_...).')
+});
+
+/**
+ * @description Installation created or updated. No body. (Vercel\'s contract also\nallows a 200 with an installation-level billingPlan/notification\nbody; Xata does not use installation-level billing plans.)\n
+ */
+export const upsertInstallation204Schema = z.unknown();
+
+/**
+ * @description Error response.
+ */
+export const upsertInstallation400Schema = z
+  .lazy(() => vercelErrorSchema)
+  .describe('Vercel Partner API error envelope.');
+
+/**
+ * @description Error response.
+ */
+export const upsertInstallation403Schema = z
+  .lazy(() => vercelErrorSchema)
+  .describe('Vercel Partner API error envelope.');
+
+/**
+ * @description Error response.
+ */
+export const upsertInstallation409Schema = z
+  .lazy(() => vercelErrorSchema)
+  .describe('Vercel Partner API error envelope.');
+
+export const upsertInstallationMutationRequestSchema = z.lazy(() => upsertInstallationRequestSchema);
+
+export const upsertInstallationMutationResponseSchema = z.lazy(() => upsertInstallation204Schema);
+
+export const deleteInstallationPathParamsSchema = z.object({
+  installationId: z.string().describe('Vercel installation id (icfg_...).')
+});
+
+/**
+ * @description Uninstall accepted; deletion finalizes asynchronously. No body.
+ */
+export const deleteInstallation204Schema = z.unknown();
+
+/**
+ * @description Error response.
+ */
+export const deleteInstallation403Schema = z
+  .lazy(() => vercelErrorSchema)
+  .describe('Vercel Partner API error envelope.');
+
+/**
+ * @description Error response.
+ */
+export const deleteInstallation409Schema = z
+  .lazy(() => vercelErrorSchema)
+  .describe('Vercel Partner API error envelope.');
+
+export const deleteInstallationMutationRequestSchema = z.lazy(() => deleteInstallationRequestSchema);
+
+export const deleteInstallationMutationResponseSchema = z.lazy(() => deleteInstallation204Schema);
 
 /**
  * @description Webhook received and processed successfully
