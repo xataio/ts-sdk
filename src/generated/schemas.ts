@@ -113,6 +113,13 @@ export const organizationInvitationSchema = z.object({
   invite_link: z.optional(z.string().describe('URL link to accept the invitation'))
 });
 
+/**
+ * @description How billing payment is collected for the organization.
+ */
+export const billingCollectionMethodSchema = z
+  .enum(['unknown', 'stripe_payment_method', 'marketplace', 'bank_transfer'])
+  .describe('How billing payment is collected for the organization.');
+
 export const billingPaymentMethodCardSchema = z.object({
   brand: z.string(),
   last4: z.string(),
@@ -166,6 +173,12 @@ export const billingCustomerResponseSchema = z.object({
       .describe('Marketplace provider for this organization (e.g. "aws"), if billed through a marketplace')
       .nullable();
   },
+  get collection_method() {
+    return billingCollectionMethodSchema
+      .describe('How billing payment is collected for the organization.')
+      .describe('Read-only collection method configured for the organization.');
+  },
+  can_collect_payment: z.boolean(),
   has_payment_method: z.boolean().describe('True when the customer has a valid Stripe default card payment method.'),
   get default_payment_method() {
     return billingPaymentMethodSchema

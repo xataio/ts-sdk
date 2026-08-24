@@ -225,6 +225,20 @@ export type OrganizationInvitation = {
   invite_link?: string | undefined;
 };
 
+export const billingCollectionMethod = {
+  BillingCollectionMethodUnknown: 'unknown',
+  BillingCollectionMethodStripePaymentMethod: 'stripe_payment_method',
+  BillingCollectionMethodMarketplace: 'marketplace',
+  BillingCollectionMethodBankTransfer: 'bank_transfer'
+} as const;
+
+export type BillingCollectionMethodEnumKey = (typeof billingCollectionMethod)[keyof typeof billingCollectionMethod];
+
+/**
+ * @description How billing payment is collected for the organization.
+ */
+export type BillingCollectionMethod = BillingCollectionMethodEnumKey;
+
 export type BillingPaymentMethodCard = {
   /**
    * @type string
@@ -336,6 +350,14 @@ export type BillingCustomerResponse = {
    * @description Marketplace provider for this organization (e.g. \"aws\"), if billed through a marketplace
    */
   marketplace: OrganizationMarketplaceProvider | null;
+  /**
+   * @description Read-only collection method configured for the organization.
+   */
+  collection_method: BillingCollectionMethod;
+  /**
+   * @type boolean
+   */
+  can_collect_payment: boolean;
   /**
    * @description True when the customer has a valid Stripe default card payment method.
    * @type boolean
