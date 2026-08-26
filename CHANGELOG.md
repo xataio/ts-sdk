@@ -1,5 +1,13 @@
 # @xata.io/api
 
+## 0.1.9
+
+### Patch Changes
+
+- [#2956](https://github.com/xataio/frontend/pull/2956) [`8d1e720`](https://github.com/xataio/frontend/commit/8d1e72045b44d8a8d4c46794468bd4c9761b0f74) Thanks [@xata-bot](https://github.com/xata-bot)! - [Generated] Update API handlers ([#2956](https://github.com/xataio/frontend/issues/2956))
+
+- [#2946](https://github.com/xataio/frontend/pull/2946) [`e82783c`](https://github.com/xataio/frontend/commit/e82783cfdf40783225a36ba2a572ed6d2db409aa) Thanks [@xata-bot](https://github.com/xata-bot)! - [Generated] Update API handlers ([#2946](https://github.com/xataio/frontend/issues/2946))
+
 ## 0.1.8
 
 ### Patch Changes
