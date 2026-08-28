@@ -112,7 +112,7 @@ type RequestEndpointParams<T extends keyof typeof operationsByPath> = Omit<
   headers?: Record<string, string>;
 };
 
-type RequestEndpointResult<T extends keyof typeof operationsByPath> = ReturnType<(typeof operationsByPath)[T]>;
+type RequestEndpointResult<T extends keyof typeof operationsByPath> = Awaited<ReturnType<(typeof operationsByPath)[T]>>;
 
 export class XataApi {
   baseUrl: string;

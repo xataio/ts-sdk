@@ -5,11 +5,14 @@
 
 /**
  * @description User information including email, full name, and profile image
+ * @type object
  */
 export type User = {
   /**
    * @description Email address associated with the user account
-   * @type string, email
+   *
+   * Format: `email`
+   * @type string
    */
   email: string;
   /**
@@ -20,9 +23,9 @@ export type User = {
 };
 
 /**
- * UserID
  * @description Unique identifier for a user account
  * @pattern [a-zA-Z0-9_-~:]+
+ * @type string
  */
 export type UserID = string;
 
@@ -37,6 +40,7 @@ export type UserWithID = User & {
 
 /**
  * @description Request payload for creating a new organization
+ * @type object
  */
 export type CreateOrganizationRequest = {
   /**
@@ -47,8 +51,8 @@ export type CreateOrganizationRequest = {
 };
 
 /**
- * OrganizationID
  * @pattern [a-zA-Z0-9_-~:]+
+ * @type string
  */
 export type OrganizationID = string;
 
@@ -57,7 +61,7 @@ export const organizationStatusStatusEnum = {
   disabled: 'disabled'
 } as const;
 
-export type OrganizationStatusStatusEnumKey =
+export type OrganizationStatusStatusEnum =
   (typeof organizationStatusStatusEnum)[keyof typeof organizationStatusStatusEnum];
 
 export const organizationStatusBillingStatusEnum = {
@@ -68,7 +72,7 @@ export const organizationStatusBillingStatusEnum = {
   deletion_requested: 'deletion_requested'
 } as const;
 
-export type OrganizationStatusBillingStatusEnumKey =
+export type OrganizationStatusBillingStatusEnum =
   (typeof organizationStatusBillingStatusEnum)[keyof typeof organizationStatusBillingStatusEnum];
 
 export const organizationStatusUsageTierEnum = {
@@ -76,7 +80,7 @@ export const organizationStatusUsageTierEnum = {
   t2: 't2'
 } as const;
 
-export type OrganizationStatusUsageTierEnumKey =
+export type OrganizationStatusUsageTierEnum =
   (typeof organizationStatusUsageTierEnum)[keyof typeof organizationStatusUsageTierEnum];
 
 export type OrganizationStatus = {
@@ -84,7 +88,7 @@ export type OrganizationStatus = {
    * @description Indicates whether the organization is active, it\'s computed as `!disabled_by_admin AND billing_status == \'ok\'`
    * @type string
    */
-  status: OrganizationStatusStatusEnumKey;
+  status: OrganizationStatusStatusEnum;
   /**
    * @description Indicates if the organization has been disabled by an admin
    * @type boolean
@@ -99,7 +103,7 @@ export type OrganizationStatus = {
    * @description Indicates the status of the organization from a billing perspective
    * @type string
    */
-  billing_status: OrganizationStatusBillingStatusEnumKey;
+  billing_status: OrganizationStatusBillingStatusEnum;
   /**
    * @description Reason for the current billing status
    * @type string | undefined
@@ -109,15 +113,19 @@ export type OrganizationStatus = {
    * @description Usage tier of the organization. t1 is the default for new organizations, t2 is assigned when a valid payment method is on file.
    * @type string
    */
-  usage_tier: OrganizationStatusUsageTierEnumKey;
+  usage_tier: OrganizationStatusUsageTierEnum;
   /**
    * @description Timestamp of the last update to the organization\'s status
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   last_updated: string;
   /**
    * @description Timestamp when the organization was created
-   * @type string | undefined, date-time
+   *
+   * Format: `date-time`
+   * @type string | undefined
    */
   created_at?: string | undefined;
 };
@@ -126,16 +134,12 @@ export const organizationMarketplaceProvider = {
   OrganizationMarketplaceProviderAWS: 'aws'
 } as const;
 
-export type OrganizationMarketplaceProviderEnumKey =
+export type OrganizationMarketplaceProvider =
   (typeof organizationMarketplaceProvider)[keyof typeof organizationMarketplaceProvider];
 
 /**
- * @description Marketplace provider associated with an organization.
- */
-export type OrganizationMarketplaceProvider = OrganizationMarketplaceProviderEnumKey;
-
-/**
  * @description Organization details including ID and name
+ * @type object
  */
 export type Organization = {
   /**
@@ -163,7 +167,9 @@ export type Organization = {
 export type CreateOrganizationInvitationRequest = {
   /**
    * @description Email address of the user to invite
-   * @type string, email
+   *
+   * Format: `email`
+   * @type string
    */
   email: string;
 };
@@ -173,7 +179,7 @@ export const organizationInvitationStatusEnum = {
   expired: 'expired'
 } as const;
 
-export type OrganizationInvitationStatusEnumKey =
+export type OrganizationInvitationStatusEnum =
   (typeof organizationInvitationStatusEnum)[keyof typeof organizationInvitationStatusEnum];
 
 export type OrganizationInvitation = {
@@ -190,34 +196,40 @@ export type OrganizationInvitation = {
   organization_id: OrganizationID;
   /**
    * @description Email address of the invited user
-   * @type string, email
+   *
+   * Format: `email`
+   * @type string
    */
   email: string;
   /**
    * @description First name of the invited user
-   * @type string
+   * @type string | undefined
    */
   first_name?: (string | null) | undefined;
   /**
    * @description Last name of the invited user
-   * @type string
+   * @type string | undefined
    */
   last_name?: (string | null) | undefined;
   /**
    * @description Timestamp when the invitation was created
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   created_at: string;
   /**
    * @description Timestamp when the invitation expires
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   expires_at: string;
   /**
    * @description Current status of the invitation
    * @type string
    */
-  status: OrganizationInvitationStatusEnumKey;
+  status: OrganizationInvitationStatusEnum;
   /**
    * @description URL link to accept the invitation
    * @type string | undefined
@@ -232,36 +244,16 @@ export const billingCollectionMethod = {
   BillingCollectionMethodBankTransfer: 'bank_transfer'
 } as const;
 
-export type BillingCollectionMethodEnumKey = (typeof billingCollectionMethod)[keyof typeof billingCollectionMethod];
-
-/**
- * @description How billing payment is collected for the organization.
- */
-export type BillingCollectionMethod = BillingCollectionMethodEnumKey;
+export type BillingCollectionMethod = (typeof billingCollectionMethod)[keyof typeof billingCollectionMethod];
 
 export type BillingPaymentMethodCard = {
-  /**
-   * @type string
-   */
   brand: string;
-  /**
-   * @type string
-   */
   last4: string;
-  /**
-   * @type integer
-   */
   expiry_month: number;
-  /**
-   * @type integer
-   */
   expiry_year: number;
 };
 
 export type BillingPaymentMethod = {
-  /**
-   * @type object
-   */
   card: BillingPaymentMethodCard;
 };
 
@@ -270,50 +262,58 @@ export const billingCreditStatusEnum = {
   pending_payment: 'pending_payment'
 } as const;
 
-export type BillingCreditStatusEnumKey = (typeof billingCreditStatusEnum)[keyof typeof billingCreditStatusEnum];
+export type BillingCreditStatusEnum = (typeof billingCreditStatusEnum)[keyof typeof billingCreditStatusEnum];
 
 export type BillingCredit = {
-  /**
-   * @type string
-   */
   id: string;
   /**
    * @description Remaining credit balance.
-   * @type number, double
+   *
+   * Format: `double`
+   * @type number
    */
   balance: number;
   /**
    * @description Date when the credit becomes usable.
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   effective_date: string;
   /**
    * @description Date when the credit expires, or null for credits that do not expire.
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   expiry_date: string | null;
   /**
    * @description Initial credit balance before any usage.
-   * @type number, double
+   *
+   * Format: `double`
+   * @type number
    */
   maximum_initial_balance: number;
-  /**
-   * @type string
-   */
-  status: BillingCreditStatusEnumKey;
+  status: BillingCreditStatusEnum;
 };
 
 export type BillingCreditDetails = {
   /**
-   * @type number, double
+   * @description
+   * Format: `double`
+   * @type number
    */
   total_lifetime_credits: number;
   /**
-   * @type string, date-time
+   * @description
+   * Format: `date-time`
+   * @type string
    */
   last_expiry: string | null;
   /**
-   * @type string, date-time
+   * @description
+   * Format: `date-time`
+   * @type string
    */
   last_expiry_with_balance: string | null;
   /**
@@ -322,11 +322,15 @@ export type BillingCreditDetails = {
    */
   active_credits: BillingCredit[];
   /**
-   * @type string, date-time
+   * @description
+   * Format: `date-time`
+   * @type string
    */
   last_active_credit_expiry: string | null;
   /**
-   * @type number, double
+   * @description
+   * Format: `double`
+   * @type number
    */
   total_active_credits: number;
   /**
@@ -343,7 +347,9 @@ export type BillingCreditDetails = {
 
 export type BillingCustomerResponse = {
   /**
-   * @type string, email
+   * @description
+   * Format: `email`
+   * @type string
    */
   billing_email: string;
   /**
@@ -352,11 +358,9 @@ export type BillingCustomerResponse = {
   marketplace: OrganizationMarketplaceProvider | null;
   /**
    * @description Read-only collection method configured for the organization.
+   * @type string
    */
   collection_method: BillingCollectionMethod;
-  /**
-   * @type boolean
-   */
   can_collect_payment: boolean;
   /**
    * @description True when the customer has a valid Stripe default card payment method.
@@ -367,19 +371,15 @@ export type BillingCustomerResponse = {
    * @description The Stripe default card payment method, when one is configured and retrievable.
    */
   default_payment_method: BillingPaymentMethod | null;
-  /**
-   * @type array
-   */
   credits: BillingCredit[];
-  /**
-   * @type object
-   */
   credit_details: BillingCreditDetails;
 };
 
 export type UpdateBillingCustomerRequest = {
   /**
-   * @type string, email
+   * @description
+   * Format: `email`
+   * @type string
    */
   billing_email: string;
 };
@@ -392,92 +392,78 @@ export const billingInvoiceStatusEnum = {
   synced: 'synced'
 } as const;
 
-export type BillingInvoiceStatusEnumKey = (typeof billingInvoiceStatusEnum)[keyof typeof billingInvoiceStatusEnum];
+export type BillingInvoiceStatusEnum = (typeof billingInvoiceStatusEnum)[keyof typeof billingInvoiceStatusEnum];
 
 export type BillingInvoice = {
-  /**
-   * @type string
-   */
   id: string;
-  /**
-   * @type string
-   */
   invoice_number: string;
   /**
    * @description Decimal amount due.
-   * @type number, double
+   *
+   * Format: `double`
+   * @type number
    */
   amount_due: number;
-  /**
-   * @type string
-   */
   currency: string;
   /**
-   * @type string, date-time
+   * @description
+   * Format: `date-time`
+   * @type string
    */
   invoice_date: string;
-  /**
-   * @type string
-   */
-  status: BillingInvoiceStatusEnumKey;
-  /**
-   * @type string
-   */
+  status: BillingInvoiceStatusEnum;
   invoice_pdf: string | null;
 };
 
 export type PaginationMetadata = {
-  /**
-   * @type boolean
-   */
   has_more: boolean;
-  /**
-   * @type string
-   */
   next_cursor: string | null;
 };
 
 export type BillingInvoicesResponse = {
-  /**
-   * @type array
-   */
   data: BillingInvoice[];
-  /**
-   * @type object
-   */
   pagination_metadata: PaginationMetadata;
 };
 
 export type BillingUpcomingInvoiceResponse = {
   /**
-   * @type string, date-time
+   * @description
+   * Format: `date-time`
+   * @type string
    */
   created_at: string;
   /**
    * @description Decimal amount due.
-   * @type number, double
+   *
+   * Format: `double`
+   * @type number
    */
   amount_due: number;
-  /**
-   * @type string
-   */
   currency: string;
   /**
-   * @type string, date-time
+   * @description
+   * Format: `date-time`
+   * @type string
    */
   target_date: string;
   /**
    * @description Decimal subtotal.
-   * @type number, double
+   *
+   * Format: `double`
+   * @type number
    */
   subtotal: number;
   /**
    * @description Decimal total.
-   * @type number, double
+   *
+   * Format: `double`
+   * @type number
    */
   total: number;
   /**
-   * @type string, uri
+   * @description
+   * Format: `uri`
+   * @type string
    */
   hosted_invoice_url: string | null;
 };
@@ -485,7 +471,9 @@ export type BillingUpcomingInvoiceResponse = {
 export type BillingCheckoutSessionResponse = {
   /**
    * @description Stripe checkout session URL
-   * @type string, uri
+   *
+   * Format: `uri`
+   * @type string
    */
   url: string;
 };
@@ -493,7 +481,9 @@ export type BillingCheckoutSessionResponse = {
 export type BillingPaymentMethodSessionResponse = {
   /**
    * @description Stripe payment method session URL
-   * @type string, uri
+   *
+   * Format: `uri`
+   * @type string
    */
   url: string;
 };
@@ -502,20 +492,17 @@ export const marketplaceRegistrationProvider = {
   MarketplaceRegistrationProviderAWS: 'aws'
 } as const;
 
-export type MarketplaceRegistrationProviderEnumKey =
+export type MarketplaceRegistrationProvider =
   (typeof marketplaceRegistrationProvider)[keyof typeof marketplaceRegistrationProvider];
 
 /**
- * @description Marketplace provider accepted for registration.
- */
-export type MarketplaceRegistrationProvider = MarketplaceRegistrationProviderEnumKey;
-
-/**
  * @description Request to register with a cloud marketplace
+ * @type object
  */
 export type MarketplaceRegisterRequest = {
   /**
    * @description The cloud marketplace provider
+   * @type string
    */
   marketplace: MarketplaceRegistrationProvider;
   /**
@@ -547,13 +534,12 @@ export type MarketplaceRegisterRequest = {
 };
 
 export type CreateAPIKeyRequest = {
-  /**
-   * @type string
-   */
   name: string;
   /**
    * @description Expiration date for the API key, null for no expiry
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string | undefined
    */
   expiry?: (string | null) | undefined;
   /**
@@ -574,21 +560,9 @@ export type CreateAPIKeyRequest = {
 };
 
 export type APIKeyPreview = {
-  /**
-   * @type string
-   */
   id: string;
-  /**
-   * @type string
-   */
   name: string;
-  /**
-   * @type string
-   */
   preview: string;
-  /**
-   * @type array
-   */
   scopes: string[];
   /**
    * @description Projects this API key has access to
@@ -601,47 +575,41 @@ export type APIKeyPreview = {
    */
   branches: string[];
   /**
-   * @type string, date-time
+   * @description
+   * Format: `date-time`
+   * @type string
    */
   created_at: string;
   /**
    * @description Date when the API key expires (null if no expiry)
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   expiry: string | null;
   /**
    * @description Timestamp of the last time the key was used (null if never)
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   last_used: string | null;
   /**
    * @description ID of the user that created this API key
-   * @type string
+   * @type string | undefined
    */
   created_by?: (string | null) | undefined;
   /**
    * @description ID of the API key that created this API key
-   * @type string
+   * @type string | undefined
    */
   created_by_key?: (string | null) | undefined;
 };
 
 export type FullAPIKey = {
-  /**
-   * @type string
-   */
   id: string;
-  /**
-   * @type string
-   */
   name: string;
-  /**
-   * @type string
-   */
   preview: string;
-  /**
-   * @type array
-   */
   scopes: string[];
   /**
    * @description Projects this API key has access to
@@ -654,17 +622,23 @@ export type FullAPIKey = {
    */
   branches: string[];
   /**
-   * @type string, date-time
+   * @description
+   * Format: `date-time`
+   * @type string
    */
   created_at: string;
   /**
    * @description Date when the API key expires (null if no expiry)
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   expiry: string | null;
   /**
    * @description Timestamp of the last time the key was used (null if never)
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   last_used: string | null;
   /**
@@ -674,18 +648,19 @@ export type FullAPIKey = {
   token: string;
   /**
    * @description ID of the user that created this API key
-   * @type string
+   * @type string | undefined
    */
   created_by?: (string | null) | undefined;
   /**
    * @description ID of the API key that created this API key
-   * @type string
+   * @type string | undefined
    */
   created_by_key?: (string | null) | undefined;
 };
 
 /**
  * @description Membership limits for an organization
+ * @type object
  */
 export type OrganizationMembershipLimits = {
   /**
@@ -702,22 +677,18 @@ export type OrganizationMembershipLimits = {
   maxInvites: number;
 };
 
-export const endpointTypeEnum = {
+export const endpointType = {
   rw: 'rw',
   ro: 'ro',
   r: 'r',
   pooled_rw: 'pooled_rw'
 } as const;
 
-export type EndpointTypeEnumKey = (typeof endpointTypeEnum)[keyof typeof endpointTypeEnum];
-
-/**
- * @description Endpoint suffix that determines which PostgreSQL instance receives traffic.\nEncoded as the hostname suffix in the connection string (e.g. `my-branch-ro.example.com`).\n
- */
-export type EndpointType = EndpointTypeEnumKey;
+export type EndpointType = (typeof endpointType)[keyof typeof endpointType];
 
 /**
  * @description A single query within a batch request.
+ * @type object
  */
 export type QueryItem = {
   /**
@@ -739,6 +710,7 @@ export type QueryItem = {
 
 /**
  * @description SQL query request. Provide either `query` for a single query or `queries` for a batch.
+ * @type object
  */
 export type SQLRequest = {
   /**
@@ -765,6 +737,7 @@ export type SQLRequest = {
 
 /**
  * @description PostgreSQL column metadata from the row description message.
+ * @type object
  */
 export type FieldDefinition = {
   /**
@@ -774,27 +747,37 @@ export type FieldDefinition = {
   name: string;
   /**
    * @description OID of the source table (0 if not a table column).
-   * @type integer, int32
+   *
+   * Format: `int32`
+   * @type integer
    */
   tableID: number;
   /**
    * @description Attribute number of the column within the table.
-   * @type integer, int32
+   *
+   * Format: `int32`
+   * @type integer
    */
   columnID: number;
   /**
    * @description OID of the column data type.
-   * @type integer, int32
+   *
+   * Format: `int32`
+   * @type integer
    */
   dataTypeID: number;
   /**
    * @description Data type size (negative for variable-length types).
-   * @type integer, int32
+   *
+   * Format: `int32`
+   * @type integer
    */
   dataTypeSize: number;
   /**
    * @description Type-specific modifier (e.g. precision/scale for numeric types).
-   * @type integer, int32
+   *
+   * Format: `int32`
+   * @type integer
    */
   dataTypeModifier: number;
   /**
@@ -806,6 +789,7 @@ export type FieldDefinition = {
 
 /**
  * @description Result of a single SQL query execution.
+ * @type object
  */
 export type QueryResult = {
   /**
@@ -837,6 +821,7 @@ export type QueryResult = {
 
 /**
  * @description Response for a batch query execution.
+ * @type object
  */
 export type BatchResponse = {
   /**
@@ -848,6 +833,7 @@ export type BatchResponse = {
 
 /**
  * @description Error response with PostgreSQL error fields.
+ * @type object
  */
 export type ErrorResponse = {
   /**
@@ -937,21 +923,16 @@ export type ErrorResponse = {
   routine?: string | undefined;
 };
 
-export const JSONRPCMessageJsonrpcEnum = {
-  '2.0': '2.0'
-} as const;
-
-export type JSONRPCMessageJsonrpcEnumKey = (typeof JSONRPCMessageJsonrpcEnum)[keyof typeof JSONRPCMessageJsonrpcEnum];
-
 /**
  * @description A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a\nresponse; a notification carries `method` without `id` and is not. The `method` and\n`params` values are defined by the MCP specification.\n
+ * @type object
  */
 export type JSONRPCMessage = {
   /**
    * @description JSON-RPC protocol version. Always `2.0`.
    * @type string
    */
-  jsonrpc: JSONRPCMessageJsonrpcEnumKey;
+  jsonrpc: '2.0';
   /**
    * @description Request identifier, echoed on the response. Omitted for notifications.
    */
@@ -974,6 +955,7 @@ export type JSONRPCMessage = {
 
 /**
  * @description A JSON-RPC 2.0 error. Failures inside a tool are reported in the tool result with `isError`, not here.
+ * @type object
  */
 export type JSONRPCError = {
   /**
@@ -988,26 +970,21 @@ export type JSONRPCError = {
   message: string;
   /**
    * @description Additional error detail.
+   * @type unknown | undefined
    */
   data?: unknown | undefined;
 };
 
-export const JSONRPCResponseJsonrpcEnum = {
-  '2.0': '2.0'
-} as const;
-
-export type JSONRPCResponseJsonrpcEnumKey =
-  (typeof JSONRPCResponseJsonrpcEnum)[keyof typeof JSONRPCResponseJsonrpcEnum];
-
 /**
  * @description A JSON-RPC 2.0 response. Exactly one of `result` or `error` is present.
+ * @type object
  */
 export type JSONRPCResponse = {
   /**
    * @description JSON-RPC protocol version. Always `2.0`.
    * @type string
    */
-  jsonrpc: JSONRPCResponseJsonrpcEnumKey;
+  jsonrpc: '2.0';
   /**
    * @description Identifier of the request this responds to.
    */
@@ -1030,6 +1007,7 @@ export type JSONRPCResponse = {
 
 /**
  * @description A GitHub App installation associated with an organization
+ * @type object
  */
 export type GithubInstallation = {
   /**
@@ -1039,7 +1017,9 @@ export type GithubInstallation = {
   id: string;
   /**
    * @description GitHub App installation ID
-   * @type integer, int64
+   *
+   * Format: `int64`
+   * @type integer
    */
   installationId: number;
   /**
@@ -1049,18 +1029,23 @@ export type GithubInstallation = {
   organization: string;
   /**
    * @description Timestamp when the installation was created
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   createdAt: string;
   /**
    * @description Timestamp when the installation was last updated
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   updatedAt: string;
 };
 
 /**
  * @description A mapping between a GitHub repository and a Xata project
+ * @type object
  */
 export type GithubRepository = {
   /**
@@ -1070,7 +1055,9 @@ export type GithubRepository = {
   id: string;
   /**
    * @description GitHub repository ID
-   * @type integer, int64
+   *
+   * Format: `int64`
+   * @type integer
    */
   githubRepositoryID: number;
   /**
@@ -1085,12 +1072,16 @@ export type GithubRepository = {
   rootBranchId: string;
   /**
    * @description Timestamp when the mapping was created
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   createdAt: string;
   /**
    * @description Timestamp when the mapping was last updated
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   updatedAt: string;
 };
@@ -1098,7 +1089,9 @@ export type GithubRepository = {
 export type CreateGithubAppInstallationRequest = {
   /**
    * @description GitHub App installation ID
-   * @type integer, int64
+   *
+   * Format: `int64`
+   * @type integer
    */
   installationId: number;
 };
@@ -1106,7 +1099,9 @@ export type CreateGithubAppInstallationRequest = {
 export type UpdateGithubAppInstallationRequest = {
   /**
    * @description GitHub App installation ID
-   * @type integer, int64
+   *
+   * Format: `int64`
+   * @type integer
    */
   installationId: number;
 };
@@ -1114,7 +1109,9 @@ export type UpdateGithubAppInstallationRequest = {
 export type CreateGithubRepositoryRequest = {
   /**
    * @description GitHub repository ID
-   * @type integer, int64
+   *
+   * Format: `int64`
+   * @type integer
    */
   githubRepositoryID: number;
 };
@@ -1122,7 +1119,9 @@ export type CreateGithubRepositoryRequest = {
 export type UpdateGithubRepositoryRequest = {
   /**
    * @description GitHub repository ID
-   * @type integer, int64
+   *
+   * Format: `int64`
+   * @type integer
    */
   githubRepositoryID: number;
 };
@@ -1133,10 +1132,11 @@ export const extensionTypeEnum = {
   module: 'module'
 } as const;
 
-export type ExtensionTypeEnumKey = (typeof extensionTypeEnum)[keyof typeof extensionTypeEnum];
+export type ExtensionTypeEnum = (typeof extensionTypeEnum)[keyof typeof extensionTypeEnum];
 
 /**
  * @description Details of a postgres extension
+ * @type object
  */
 export type Extension = {
   /**
@@ -1168,11 +1168,12 @@ export type Extension = {
    * @description type of installation
    * @type string
    */
-  type: ExtensionTypeEnumKey;
+  type: ExtensionTypeEnum;
 };
 
 /**
  * @description Details of a postgres image
+ * @type object
  */
 export type Image = {
   /**
@@ -1199,6 +1200,7 @@ export type Image = {
 
 /**
  * @description Configuration for scaling branches to zero when not in use
+ * @type object
  */
 export type ScaleToZeroConfiguration = {
   /**
@@ -1216,6 +1218,7 @@ export type ScaleToZeroConfiguration = {
 
 /**
  * @description Whether the project branches are configured to scale down to zero when not in use
+ * @type object
  */
 export type ProjectScaleToZeroConfiguration = {
   /**
@@ -1248,6 +1251,7 @@ export type CidrEntry = {
 
 /**
  * @description Configuration for IP filtering on project branches
+ * @type object
  */
 export type IPFilteringConfiguration = {
   /**
@@ -1255,14 +1259,12 @@ export type IPFilteringConfiguration = {
    * @type boolean
    */
   enabled: boolean;
-  /**
-   * @type array
-   */
   cidr: CidrEntry[];
 };
 
 /**
  * @description Configuration details for a project, including its scale to zero settings
+ * @type object
  */
 export type ProjectConfiguration = {
   /**
@@ -1279,6 +1281,7 @@ export type ProjectConfiguration = {
 
 /**
  * @description Details of a project including its ID, name, and creation/update timestamps
+ * @type object
  */
 export type Project = {
   /**
@@ -1293,12 +1296,16 @@ export type Project = {
   name: string;
   /**
    * @description Timestamp when the project was created
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   createdAt: string;
   /**
    * @description Timestamp when the project was last updated
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   updatedAt: string;
   /**
@@ -1310,6 +1317,7 @@ export type Project = {
 
 /**
  * @description Partial configuration update for a project
+ * @type object
  */
 export type UpdateProjectConfiguration = {
   /**
@@ -1324,17 +1332,8 @@ export type UpdateProjectConfiguration = {
   ipFiltering?: IPFilteringConfiguration | undefined;
 };
 
-export const branchFromParentModeEnum = {
-  inherit: 'inherit'
-} as const;
-
-export type BranchFromParentModeEnumKey = (typeof branchFromParentModeEnum)[keyof typeof branchFromParentModeEnum];
-
 export type BranchFromParent = {
-  /**
-   * @type string
-   */
-  mode: BranchFromParentModeEnumKey;
+  mode: 'inherit';
   /**
    * @description If present, the branch will inherit the parent branch configuration and data
    * @type string
@@ -1344,6 +1343,7 @@ export type BranchFromParent = {
 
 /**
  * @description Configuration details for a database cluster backing a branch
+ * @type object
  */
 export type ClusterConfiguration = {
   /**
@@ -1353,8 +1353,9 @@ export type ClusterConfiguration = {
   region: string;
   /**
    * @description Branch storage in GiB (gigabytes)
-   * @maxLength 250
-   * @type integer | undefined, int32
+   *
+   * Format: `int32`
+   * @type integer | undefined
    */
   storage?: number | undefined;
   /**
@@ -1369,9 +1370,9 @@ export type ClusterConfiguration = {
   image: string;
   /**
    * @description Number of replicas in the branch. Every child branch is created with no replicas. This can be updated.
-   * @minLength 0
-   * @maxLength 4
-   * @type integer, int32
+   *
+   * Format: `int32`
+   * @type integer
    */
   replicas: number;
   /**
@@ -1390,18 +1391,8 @@ export type ClusterConfiguration = {
   preloadLibraries?: string[] | undefined;
 };
 
-export const branchFromConfigurationModeEnum = {
-  custom: 'custom'
-} as const;
-
-export type BranchFromConfigurationModeEnumKey =
-  (typeof branchFromConfigurationModeEnum)[keyof typeof branchFromConfigurationModeEnum];
-
 export type BranchFromConfiguration = {
-  /**
-   * @type string
-   */
-  mode: BranchFromConfigurationModeEnumKey;
+  mode: 'custom';
   /**
    * @description Configuration details for a database cluster backing a branch
    * @type object
@@ -1411,6 +1402,7 @@ export type BranchFromConfiguration = {
 
 /**
  * @description Basic metadata about a branch, used in response to create/update operations
+ * @type object
  */
 export type BranchShortMetadata = {
   /**
@@ -1430,23 +1422,27 @@ export type BranchShortMetadata = {
   description?: string | undefined;
   /**
    * @description Timestamp when the branch was created
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   createdAt: string;
   /**
    * @description Timestamp when the branch was last updated
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   updatedAt: string;
   /**
    * @description Identifier of the parent branch if this is a derived branch, null otherwise
-   * @type string
+   * @type string | undefined
    */
   parentID?: (string | null) | undefined;
   /**
    * @description Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead. The hostname in this connection string carries a -deprecated marker in its first DNS label.
    * @deprecated
-   * @type string
+   * @type string | undefined
    */
   connectionString?: (string | null) | undefined;
   /**
@@ -1463,6 +1459,7 @@ export type BranchShortMetadata = {
 
 /**
  * @description Metadata about a branch used when listing branches in a project
+ * @type object
  */
 export type BranchListMetadata = {
   /**
@@ -1482,17 +1479,21 @@ export type BranchListMetadata = {
   description?: string | undefined;
   /**
    * @description Timestamp when the branch was created
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   createdAt: string;
   /**
    * @description Timestamp when the branch was last updated
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   updatedAt: string;
   /**
    * @description Identifier of the parent branch if this is a derived branch, null otherwise
-   * @type string
+   * @type string | undefined
    */
   parentID?: (string | null) | undefined;
   /**
@@ -1520,17 +1521,19 @@ export const clusterLifecycleStateEnum = {
   unknown: 'unknown'
 } as const;
 
-export type ClusterLifecycleStateEnumKey = (typeof clusterLifecycleStateEnum)[keyof typeof clusterLifecycleStateEnum];
+export type ClusterLifecycleStateEnum = (typeof clusterLifecycleStateEnum)[keyof typeof clusterLifecycleStateEnum];
 
 /**
  * @description Information about the current lifecycle state of a database cluster
  * @deprecated
+ * @type object
  */
 export type ClusterLifecycle = {
   /**
    * @description Current operational state of the cluster (ready, creating, updating, etc.)
+   * @type string
    */
-  state: ClusterLifecycleStateEnumKey;
+  state: ClusterLifecycleStateEnum;
   /**
    * @description Reason for the current lifecycle state, especially useful for non-ready states
    * @type string | undefined
@@ -1544,8 +1547,8 @@ export type ClusterLifecycle = {
 };
 
 /**
- * Status of an instance in the cluster
  * @description Status information about an individual database instance within a cluster
+ * @type object
  */
 export type InstanceStatus = {
   /**
@@ -1578,11 +1581,11 @@ export const branchStatusStatusTypeEnum = {
   STATUS_TYPE_HIBERNATED: 'STATUS_TYPE_HIBERNATED'
 } as const;
 
-export type BranchStatusStatusTypeEnumKey =
-  (typeof branchStatusStatusTypeEnum)[keyof typeof branchStatusStatusTypeEnum];
+export type BranchStatusStatusTypeEnum = (typeof branchStatusStatusTypeEnum)[keyof typeof branchStatusStatusTypeEnum];
 
 /**
  * @description Detailed status information about a branch and its underlying database cluster
+ * @type object
  */
 export type BranchStatus = {
   /**
@@ -1592,8 +1595,9 @@ export type BranchStatus = {
   status: string;
   /**
    * @description Type of status of the branch
+   * @type string
    */
-  statusType: BranchStatusStatusTypeEnumKey;
+  statusType: BranchStatusStatusTypeEnum;
   /**
    * @description Human-readable message explaining the current status
    * @deprecated
@@ -1602,6 +1606,7 @@ export type BranchStatus = {
   message?: string | undefined;
   /**
    * @description Information about the current lifecycle state of a database cluster
+   * @deprecated
    * @type object | undefined
    */
   lifecycle?: ClusterLifecycle | undefined;
@@ -1628,14 +1633,15 @@ export type BranchStatus = {
 
 /**
  * @description Details about the branch continuous backup configuration
+ * @type object
  */
 export type BackupConfiguration = {
   /**
    * @description how long are we keeping the backups around for
-   * @minLength 2
-   * @maxLength 35
+   *
+   * Format: `int32`
    * @default 2
-   * @type integer | undefined, int32
+   * @type integer | undefined
    */
   retentionPeriod?: number | undefined;
   /**
@@ -1648,6 +1654,7 @@ export type BackupConfiguration = {
 
 /**
  * @description Detailed metadata about a branch, including its status and configuration
+ * @type object
  */
 export type BranchMetadata = {
   /**
@@ -1667,17 +1674,21 @@ export type BranchMetadata = {
   description?: string | undefined;
   /**
    * @description Timestamp when the branch was created
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   createdAt: string;
   /**
    * @description Timestamp when the branch was last updated
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   updatedAt: string;
   /**
    * @description Identifier of the parent branch if this is a derived branch, null otherwise
-   * @type string
+   * @type string | undefined
    */
   parentID?: (string | null) | undefined;
   /**
@@ -1725,6 +1736,7 @@ export type BranchMetadata = {
 
 /**
  * @description metadata about a continuous backup
+ * @type object
  */
 export type BackupMetadata = {
   /**
@@ -1739,12 +1751,16 @@ export type BackupMetadata = {
   branchID: string;
   /**
    * @description the earlies point in time available for restoring the branch
-   * @type string | undefined, date-time
+   *
+   * Format: `date-time`
+   * @type string | undefined
    */
   earliestRestore?: string | undefined;
   /**
    * @description the latest point in time available for restoring the branch
-   * @type string | undefined, date-time
+   *
+   * Format: `date-time`
+   * @type string | undefined
    */
   latestRestore?: string | undefined;
   /**
@@ -1756,6 +1772,7 @@ export type BackupMetadata = {
 
 /**
  * @description Credentials and connection details for accessing a branch
+ * @type object
  */
 export type BranchCredentials = {
   /**
@@ -1792,6 +1809,7 @@ export type BranchCredentials = {
 
 /**
  * @description Request to rotate credentials for a branch database user
+ * @type object
  */
 export type RotateCredentialsRequest = {
   /**
@@ -1801,71 +1819,57 @@ export type RotateCredentialsRequest = {
   username: string;
 };
 
+export const branchCreationDetailsModeEnum = {
+  inherit: 'inherit',
+  custom: 'custom'
+} as const;
+
+export type BranchCreationDetailsModeEnum =
+  (typeof branchCreationDetailsModeEnum)[keyof typeof branchCreationDetailsModeEnum];
+
 /**
  * @description Details required when creating a new branch
  */
-export type BranchCreationDetails =
+export type BranchCreationDetails = (
   | (BranchFromParent & {
-      /**
-       * @description Human-readable name for the new branch
-       * @type string
-       */
-      name: string;
-      /**
-       * @description Optional description for the branch purpose or contents (max 50 characters)
-       * @maxLength 50
-       * @pattern ^[a-zA-Z0-9]+[a-zA-Z0-9- ]*$
-       * @type string | undefined
-       */
-      description?: string | undefined;
-      /**
-       * @description Configuration for scaling branches to zero when not in use
-       * @type object | undefined
-       */
-      scaleToZero?: ScaleToZeroConfiguration | undefined;
-      /**
-       * @description Details about the branch continuous backup configuration
-       * @type object | undefined
-       */
-      backupConfiguration?: BackupConfiguration | undefined;
-      /**
-       * @description The mode used to discriminate between types of branches.
-       * @type string
-       */
       mode: 'inherit';
     })
   | (BranchFromConfiguration & {
-      /**
-       * @description Human-readable name for the new branch
-       * @type string
-       */
-      name: string;
-      /**
-       * @description Optional description for the branch purpose or contents (max 50 characters)
-       * @maxLength 50
-       * @pattern ^[a-zA-Z0-9]+[a-zA-Z0-9- ]*$
-       * @type string | undefined
-       */
-      description?: string | undefined;
-      /**
-       * @description Configuration for scaling branches to zero when not in use
-       * @type object | undefined
-       */
-      scaleToZero?: ScaleToZeroConfiguration | undefined;
-      /**
-       * @description Details about the branch continuous backup configuration
-       * @type object | undefined
-       */
-      backupConfiguration?: BackupConfiguration | undefined;
-      /**
-       * @description The mode used to discriminate between types of branches.
-       * @type string
-       */
       mode: 'custom';
-    });
+    })
+) & {
+  /**
+   * @description Human-readable name for the new branch
+   * @type string
+   */
+  name: string;
+  /**
+   * @description Optional description for the branch purpose or contents (max 50 characters)
+   * @maxLength 50
+   * @pattern ^[a-zA-Z0-9]+[a-zA-Z0-9- ]*$
+   * @type string | undefined
+   */
+  description?: string | undefined;
+  /**
+   * @description Configuration for scaling branches to zero when not in use
+   * @type object | undefined
+   */
+  scaleToZero?: ScaleToZeroConfiguration | undefined;
+  /**
+   * @description Details about the branch continuous backup configuration
+   * @type object | undefined
+   */
+  backupConfiguration?: BackupConfiguration | undefined;
+  /**
+   * @description The mode used to discriminate between types of branches.
+   * @type string
+   */
+  mode: BranchCreationDetailsModeEnum;
+};
 
 /**
  * @description Details that can be updated for an existing branch
+ * @type object
  */
 export type BranchUpdateDetails = {
   /**
@@ -1875,22 +1879,22 @@ export type BranchUpdateDetails = {
   name?: string | undefined;
   /**
    * @description New description for the branch (max 50 characters)
-   * @maxLength 50
    * @pattern ^[a-zA-Z0-9]+[a-zA-Z0-9- ]*$
    * @type string | undefined
    */
   description?: string | undefined;
   /**
    * @description Number of database replicas to scale to
-   * @minLength 0
-   * @maxLength 4
-   * @type integer | undefined, int32
+   *
+   * Format: `int32`
+   * @type integer | undefined
    */
   replicas?: number | undefined;
   /**
    * @description Branch storage in GiB (gigabytes). The maximum allowed value depends on the organization\'s storage limit.
-   * @minLength 1
-   * @type integer | undefined, int32
+   *
+   * Format: `int32`
+   * @type integer | undefined
    */
   storage?: number | undefined;
   /**
@@ -1936,6 +1940,7 @@ export type BranchUpdateDetails = {
 
 /**
  * @description Resource limits and constraints for projects within an organization
+ * @type object
  */
 export type ProjectLimits = {
   /**
@@ -1963,7 +1968,7 @@ export type ProjectLimits = {
   maxBranches: number;
 };
 
-export const branchMetricNameEnum = {
+export const branchMetricName = {
   cpu: 'cpu',
   memory: 'memory',
   disk: 'disk',
@@ -1981,15 +1986,11 @@ export const branchMetricNameEnum = {
   replication_lag_time: 'replication_lag_time'
 } as const;
 
-export type BranchMetricNameEnumKey = (typeof branchMetricNameEnum)[keyof typeof branchMetricNameEnum];
-
-/**
- * @description Name of a branch metric exposed by the API.
- */
-export type BranchMetricName = BranchMetricNameEnumKey;
+export type BranchMetricName = (typeof branchMetricName)[keyof typeof branchMetricName];
 
 /**
  * @description Full set of resource limits applicable to a project and its branches
+ * @type object
  */
 export type EffectiveProjectLimits = {
   /**
@@ -2065,18 +2066,22 @@ export const branchMetricsRequestAggregationsEnum = {
   min: 'min'
 } as const;
 
-export type BranchMetricsRequestAggregationsEnumKey =
+export type BranchMetricsRequestAggregationsEnum =
   (typeof branchMetricsRequestAggregationsEnum)[keyof typeof branchMetricsRequestAggregationsEnum];
 
 export type BranchMetricsRequest = {
   /**
    * @description Start time
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   start: string;
   /**
    * @description End time
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   end: string;
   /**
@@ -2093,7 +2098,7 @@ export type BranchMetricsRequest = {
    * @description List of aggregations to get, this is how the data-points within the interval are aggregated. Each one will generate a separate time-series per metric in the response.
    * @type array
    */
-  aggregations: BranchMetricsRequestAggregationsEnumKey[];
+  aggregations: BranchMetricsRequestAggregationsEnum[];
 };
 
 export const metricSeriesAggregationEnum = {
@@ -2102,11 +2107,12 @@ export const metricSeriesAggregationEnum = {
   min: 'min'
 } as const;
 
-export type MetricSeriesAggregationEnumKey =
+export type MetricSeriesAggregationEnum =
   (typeof metricSeriesAggregationEnum)[keyof typeof metricSeriesAggregationEnum];
 
 /**
  * @description The metric series
+ * @type object
  */
 export type MetricSeries = {
   /**
@@ -2118,24 +2124,21 @@ export type MetricSeries = {
    * @description The aggregation used to generate this time-series
    * @type string
    */
-  aggregation: MetricSeriesAggregationEnumKey;
-  /**
-   * @type array
-   */
+  aggregation: MetricSeriesAggregationEnum;
   values: {
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string
      */
     timestamp: string;
-    /**
-     * @type number
-     */
     value: number;
   }[];
 };
 
 /**
  * @description Time-series for a single metric.
+ * @type object
  */
 export type BranchMetricResult = {
   /**
@@ -2148,22 +2151,24 @@ export type BranchMetricResult = {
    * @type string
    */
   unit: string;
-  /**
-   * @type array
-   */
   series: MetricSeries[];
 };
 
 /**
  * @description A collection of metrics (cpu, memory, disk,...) for each of the instances of a branch
+ * @type object
  */
 export type BranchMetrics = {
   /**
-   * @type string, date-time
+   * @description
+   * Format: `date-time`
+   * @type string
    */
   start: string;
   /**
-   * @type string, date-time
+   * @description
+   * Format: `date-time`
+   * @type string
    */
   end: string;
   /**
@@ -2180,7 +2185,7 @@ export const logFilterFieldEnum = {
   body: 'body'
 } as const;
 
-export type LogFilterFieldEnumKey = (typeof logFilterFieldEnum)[keyof typeof logFilterFieldEnum];
+export type LogFilterFieldEnum = (typeof logFilterFieldEnum)[keyof typeof logFilterFieldEnum];
 
 export const logFilterOpEnum = {
   in: 'in',
@@ -2190,22 +2195,23 @@ export const logFilterOpEnum = {
   iregex: 'iregex'
 } as const;
 
-export type LogFilterOpEnumKey = (typeof logFilterOpEnum)[keyof typeof logFilterOpEnum];
+export type LogFilterOpEnum = (typeof logFilterOpEnum)[keyof typeof logFilterOpEnum];
 
 /**
  * @description A single filter on log entries.
+ * @type object
  */
 export type LogFilter = {
   /**
    * @description Log attribute to filter on.
    * @type string
    */
-  field: LogFilterFieldEnumKey;
+  field: LogFilterFieldEnum;
   /**
    * @description Match operator.
    * @type string
    */
-  op: LogFilterOpEnumKey;
+  op: LogFilterOpEnum;
   /**
    * @description Used with `op: in`.
    * @type array | undefined
@@ -2221,12 +2227,16 @@ export type LogFilter = {
 export type BranchLogsRequest = {
   /**
    * @description Start time
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   start: string;
   /**
    * @description End time
-   * @type string, date-time
+   *
+   * Format: `date-time`
+   * @type string
    */
   end: string;
   /**
@@ -2248,37 +2258,28 @@ export type BranchLogsRequest = {
   cursor?: string | undefined;
 };
 
-export const logLevelEnum = {
+export const logLevel = {
   debug: 'debug',
   info: 'info',
   warning: 'warning',
   error: 'error'
 } as const;
 
-export type LogLevelEnumKey = (typeof logLevelEnum)[keyof typeof logLevelEnum];
-
-/**
- * @description Log level enumeration
- */
-export type LogLevel = LogLevelEnumKey;
+export type LogLevel = (typeof logLevel)[keyof typeof logLevel];
 
 export type LogEntry = {
   /**
-   * @type string, date-time
-   */
-  timestamp: string;
-  /**
+   * @description
+   * Format: `date-time`
    * @type string
    */
+  timestamp: string;
   instanceID: string;
   /**
    * @description Log level enumeration
    * @type string | undefined
    */
   level?: LogLevel | undefined;
-  /**
-   * @type string
-   */
   message: string;
   /**
    * @description Name of the PostgreSQL process that emitted the log
@@ -2289,19 +2290,21 @@ export type LogEntry = {
 
 /**
  * @description A collection of logs for each of the instances of a branch
+ * @type object
  */
 export type BranchLogs = {
   /**
-   * @type string, date-time
+   * @description
+   * Format: `date-time`
+   * @type string
    */
   start: string;
   /**
-   * @type string, date-time
+   * @description
+   * Format: `date-time`
+   * @type string
    */
   end: string;
-  /**
-   * @type array
-   */
   logs: LogEntry[];
   /**
    * @description Pagination cursor for the next page
@@ -2320,7 +2323,7 @@ export const postgresConfigParameterTypeEnum = {
   boolean: 'boolean'
 } as const;
 
-export type PostgresConfigParameterTypeEnumKey =
+export type PostgresConfigParameterTypeEnum =
   (typeof postgresConfigParameterTypeEnum)[keyof typeof postgresConfigParameterTypeEnum];
 
 export const postgresConfigParameterDefaultValueSourceEnum = {
@@ -2328,11 +2331,12 @@ export const postgresConfigParameterDefaultValueSourceEnum = {
   instance_type: 'instance_type'
 } as const;
 
-export type PostgresConfigParameterDefaultValueSourceEnumKey =
+export type PostgresConfigParameterDefaultValueSourceEnum =
   (typeof postgresConfigParameterDefaultValueSourceEnum)[keyof typeof postgresConfigParameterDefaultValueSourceEnum];
 
 /**
  * @description Detailed information about a single PostgreSQL configuration parameter
+ * @type object
  */
 export type PostgresConfigParameter = {
   /**
@@ -2344,7 +2348,7 @@ export type PostgresConfigParameter = {
    * @description The data type of the parameter
    * @type string
    */
-  type: PostgresConfigParameterTypeEnumKey;
+  type: PostgresConfigParameterTypeEnum;
   /**
    * @description Human-readable description of what the parameter controls
    * @type string
@@ -2387,7 +2391,7 @@ export type PostgresConfigParameter = {
    * @description The source of the default value
    * @type string
    */
-  defaultValueSource: PostgresConfigParameterDefaultValueSourceEnumKey;
+  defaultValueSource: PostgresConfigParameterDefaultValueSourceEnum;
   /**
    * @description The current value of this parameter in the branch
    * @type string
@@ -2412,6 +2416,7 @@ export type PostgresConfigParameter = {
 
 /**
  * @description Detailed information about PostgreSQL configuration parameters for a branch
+ * @type object
  */
 export type PostgresConfigDetails = {
   /**
@@ -2423,6 +2428,7 @@ export type PostgresConfigDetails = {
 
 /**
  * @description Metadata about a backup, used in request to create a restore. If configuration is not provided, the branch will inherit the source branch configuration.
+ * @type object
  */
 export type RestoreDetails = {
   /**
@@ -2467,6 +2473,7 @@ export type InstallationCredentials = {
 
 /**
  * @description The Vercel account/team installing the integration.
+ * @type object
  */
 export type InstallationAccount = {
   /**
@@ -2485,13 +2492,7 @@ export type InstallationAccount = {
    */
   contact?:
     | {
-        /**
-         * @type string
-         */
         email: string;
-        /**
-         * @type string | undefined
-         */
         name?: string | undefined;
       }
     | undefined;
@@ -2510,9 +2511,6 @@ export type UpsertInstallationRequest = {
   acceptedPolicies: {
     [key: string]: string;
   };
-  /**
-   * @type object
-   */
   credentials: InstallationCredentials;
   /**
    * @description The Vercel account/team installing the integration.
@@ -2536,11 +2534,9 @@ export type DeleteInstallationRequest = {
 
 /**
  * @description Vercel Partner API error envelope.
+ * @type object
  */
 export type VercelError = {
-  /**
-   * @type object
-   */
   error: {
     /**
      * @description Machine-readable error code (e.g. validation_error, conflict).
@@ -2576,13 +2572,7 @@ export type VercelError = {
      */
     fields?:
       | {
-          /**
-           * @type string
-           */
           key: string;
-          /**
-           * @type string | undefined
-           */
           message?: string | undefined;
         }[]
       | undefined;
@@ -2603,7 +2593,8 @@ export type BadRequestError = {
 };
 
 /**
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type AuthError = {
   /**
@@ -2670,9 +2661,6 @@ export type PreconditionFailedError = {
   message: string;
 };
 
-/**
- * @description OK
- */
 export type GetOrganizationsList200 = {
   /**
    * @description List of organizations the user has access to
@@ -2698,9 +2686,6 @@ export type GetOrganizationsList200 = {
   }[];
 };
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type GetOrganizationsList400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -2715,8 +2700,8 @@ export type GetOrganizationsList400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type GetOrganizationsList401 = {
   /**
@@ -2731,9 +2716,6 @@ export type GetOrganizationsList401 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type GetOrganizationsList404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -2747,26 +2729,39 @@ export type GetOrganizationsList404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type GetOrganizationsList5XX = unknown;
 
-export type GetOrganizationsListQueryResponse = GetOrganizationsList200;
+export type GetOrganizationsListOptions = {
+  body?: never | undefined;
+  path?: never | undefined;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
 
-export type GetOrganizationsListQuery = {
-  Response: GetOrganizationsList200;
-  Errors: GetOrganizationsList400 | GetOrganizationsList401 | GetOrganizationsList404;
+export type GetOrganizationsListResponses = {
+  '200': GetOrganizationsList200;
+  '400': GetOrganizationsList400;
+  '401': GetOrganizationsList401;
+  '404': GetOrganizationsList404;
+  '5XX': GetOrganizationsList5XX;
 };
 
 /**
- * @description Organization successfully created
+ * @description Union of all possible responses
+ */
+export type GetOrganizationsListResponse =
+  | GetOrganizationsList200
+  | GetOrganizationsList400
+  | GetOrganizationsList401
+  | GetOrganizationsList404
+  | GetOrganizationsList5XX;
+
+/**
+ * @description Organization details including ID and name
+ * @type object
  */
 export type CreateOrganization201 = Organization;
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type CreateOrganization400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -2781,8 +2776,8 @@ export type CreateOrganization400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type CreateOrganization401 = {
   /**
@@ -2797,9 +2792,6 @@ export type CreateOrganization401 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type CreateOrganization404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -2813,20 +2805,38 @@ export type CreateOrganization404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type CreateOrganization5XX = unknown;
 
-export type CreateOrganizationMutationRequest = CreateOrganizationRequest;
+/**
+ * @description Request payload for creating a new organization
+ * @type object | undefined
+ */
+export type CreateOrganizationMutationRequest = CreateOrganizationRequest | undefined;
 
-export type CreateOrganizationMutationResponse = CreateOrganization201;
-
-export type CreateOrganizationMutation = {
-  Response: CreateOrganization201;
-  Request: CreateOrganizationMutationRequest;
-  Errors: CreateOrganization400 | CreateOrganization401 | CreateOrganization404;
+export type CreateOrganizationOptions = {
+  body: CreateOrganizationMutationRequest;
+  path?: never | undefined;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type CreateOrganizationResponses = {
+  '201': CreateOrganization201;
+  '400': CreateOrganization400;
+  '401': CreateOrganization401;
+  '404': CreateOrganization404;
+  '5XX': CreateOrganization5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type CreateOrganizationResponse =
+  | CreateOrganization201
+  | CreateOrganization400
+  | CreateOrganization401
+  | CreateOrganization404
+  | CreateOrganization5XX;
 
 export type GetOrganizationPathParams = {
   /**
@@ -2838,13 +2848,11 @@ export type GetOrganizationPathParams = {
 };
 
 /**
- * @description Organization details retrieved successfully
+ * @description Organization details including ID and name
+ * @type object
  */
 export type GetOrganization200 = Organization;
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type GetOrganization400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -2859,8 +2867,8 @@ export type GetOrganization400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type GetOrganization401 = {
   /**
@@ -2876,8 +2884,8 @@ export type GetOrganization401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type GetOrganization403 = {
   /**
@@ -2892,9 +2900,6 @@ export type GetOrganization403 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type GetOrganization404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -2908,18 +2913,34 @@ export type GetOrganization404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type GetOrganization5XX = unknown;
 
-export type GetOrganizationQueryResponse = GetOrganization200;
-
-export type GetOrganizationQuery = {
-  Response: GetOrganization200;
-  PathParams: GetOrganizationPathParams;
-  Errors: GetOrganization400 | GetOrganization401 | GetOrganization403 | GetOrganization404;
+export type GetOrganizationOptions = {
+  body?: never | undefined;
+  path: GetOrganizationPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type GetOrganizationResponses = {
+  '200': GetOrganization200;
+  '400': GetOrganization400;
+  '401': GetOrganization401;
+  '403': GetOrganization403;
+  '404': GetOrganization404;
+  '5XX': GetOrganization5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type GetOrganizationResponse =
+  | GetOrganization200
+  | GetOrganization400
+  | GetOrganization401
+  | GetOrganization403
+  | GetOrganization404
+  | GetOrganization5XX;
 
 export type UpdateOrganizationPathParams = {
   /**
@@ -2931,13 +2952,11 @@ export type UpdateOrganizationPathParams = {
 };
 
 /**
- * @description Organization successfully updated
+ * @description Organization details including ID and name
+ * @type object
  */
 export type UpdateOrganization200 = Organization;
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type UpdateOrganization400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -2952,8 +2971,8 @@ export type UpdateOrganization400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type UpdateOrganization401 = {
   /**
@@ -2969,8 +2988,8 @@ export type UpdateOrganization401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type UpdateOrganization403 = {
   /**
@@ -2985,9 +3004,6 @@ export type UpdateOrganization403 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type UpdateOrganization404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3001,33 +3017,50 @@ export type UpdateOrganization404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type UpdateOrganization5XX = unknown;
 
-export type UpdateOrganizationMutationRequest = {
-  /**
-   * @description Unique identifier for the organization to update
-   * @pattern [a-zA-Z0-9_-~:]+
-   * @type string | undefined
-   */
-  id?: OrganizationID | undefined;
-  /**
-   * @description New name for the organization
-   * @type string | undefined
-   */
-  name?: string | undefined;
+export type UpdateOrganizationMutationRequest =
+  | {
+      /**
+       * @description Unique identifier for the organization to update
+       * @pattern [a-zA-Z0-9_-~:]+
+       * @type string | undefined
+       */
+      id?: OrganizationID | undefined;
+      /**
+       * @description New name for the organization
+       * @type string | undefined
+       */
+      name?: string | undefined;
+    }
+  | undefined;
+
+export type UpdateOrganizationOptions = {
+  body: UpdateOrganizationMutationRequest;
+  path: UpdateOrganizationPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
 
-export type UpdateOrganizationMutationResponse = UpdateOrganization200;
-
-export type UpdateOrganizationMutation = {
-  Response: UpdateOrganization200;
-  Request: UpdateOrganizationMutationRequest;
-  PathParams: UpdateOrganizationPathParams;
-  Errors: UpdateOrganization400 | UpdateOrganization401 | UpdateOrganization403 | UpdateOrganization404;
+export type UpdateOrganizationResponses = {
+  '200': UpdateOrganization200;
+  '400': UpdateOrganization400;
+  '401': UpdateOrganization401;
+  '403': UpdateOrganization403;
+  '404': UpdateOrganization404;
+  '5XX': UpdateOrganization5XX;
 };
+
+/**
+ * @description Union of all possible responses
+ */
+export type UpdateOrganizationResponse =
+  | UpdateOrganization200
+  | UpdateOrganization400
+  | UpdateOrganization401
+  | UpdateOrganization403
+  | UpdateOrganization404
+  | UpdateOrganization5XX;
 
 export type DeleteOrganizationPathParams = {
   /**
@@ -3038,14 +3071,8 @@ export type DeleteOrganizationPathParams = {
   organizationID: OrganizationID;
 };
 
-/**
- * @description Organization successfully deleted
- */
 export type DeleteOrganization204 = unknown;
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type DeleteOrganization400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3060,8 +3087,8 @@ export type DeleteOrganization400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type DeleteOrganization401 = {
   /**
@@ -3077,8 +3104,8 @@ export type DeleteOrganization401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type DeleteOrganization403 = {
   /**
@@ -3093,9 +3120,6 @@ export type DeleteOrganization403 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type DeleteOrganization404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3109,18 +3133,34 @@ export type DeleteOrganization404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type DeleteOrganization5XX = unknown;
 
-export type DeleteOrganizationMutationResponse = DeleteOrganization204;
-
-export type DeleteOrganizationMutation = {
-  Response: DeleteOrganization204;
-  PathParams: DeleteOrganizationPathParams;
-  Errors: DeleteOrganization400 | DeleteOrganization401 | DeleteOrganization403 | DeleteOrganization404;
+export type DeleteOrganizationOptions = {
+  body?: never | undefined;
+  path: DeleteOrganizationPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type DeleteOrganizationResponses = {
+  '204': DeleteOrganization204;
+  '400': DeleteOrganization400;
+  '401': DeleteOrganization401;
+  '403': DeleteOrganization403;
+  '404': DeleteOrganization404;
+  '5XX': DeleteOrganization5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type DeleteOrganizationResponse =
+  | DeleteOrganization204
+  | DeleteOrganization400
+  | DeleteOrganization401
+  | DeleteOrganization403
+  | DeleteOrganization404
+  | DeleteOrganization5XX;
 
 export type ListOrganizationAPIKeysPathParams = {
   /**
@@ -3131,9 +3171,6 @@ export type ListOrganizationAPIKeysPathParams = {
   organizationID: OrganizationID;
 };
 
-/**
- * @description List of API keys retrieved successfully
- */
 export type ListOrganizationAPIKeys200 = {
   /**
    * @description Array of API keys for the organization
@@ -3142,9 +3179,6 @@ export type ListOrganizationAPIKeys200 = {
   keys: APIKeyPreview[];
 };
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type ListOrganizationAPIKeys400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3159,8 +3193,8 @@ export type ListOrganizationAPIKeys400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type ListOrganizationAPIKeys401 = {
   /**
@@ -3176,8 +3210,8 @@ export type ListOrganizationAPIKeys401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type ListOrganizationAPIKeys403 = {
   /**
@@ -3192,9 +3226,6 @@ export type ListOrganizationAPIKeys403 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type ListOrganizationAPIKeys404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3208,22 +3239,34 @@ export type ListOrganizationAPIKeys404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type ListOrganizationAPIKeys5XX = unknown;
 
-export type ListOrganizationAPIKeysQueryResponse = ListOrganizationAPIKeys200;
-
-export type ListOrganizationAPIKeysQuery = {
-  Response: ListOrganizationAPIKeys200;
-  PathParams: ListOrganizationAPIKeysPathParams;
-  Errors:
-    | ListOrganizationAPIKeys400
-    | ListOrganizationAPIKeys401
-    | ListOrganizationAPIKeys403
-    | ListOrganizationAPIKeys404;
+export type ListOrganizationAPIKeysOptions = {
+  body?: never | undefined;
+  path: ListOrganizationAPIKeysPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type ListOrganizationAPIKeysResponses = {
+  '200': ListOrganizationAPIKeys200;
+  '400': ListOrganizationAPIKeys400;
+  '401': ListOrganizationAPIKeys401;
+  '403': ListOrganizationAPIKeys403;
+  '404': ListOrganizationAPIKeys404;
+  '5XX': ListOrganizationAPIKeys5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type ListOrganizationAPIKeysResponse =
+  | ListOrganizationAPIKeys200
+  | ListOrganizationAPIKeys400
+  | ListOrganizationAPIKeys401
+  | ListOrganizationAPIKeys403
+  | ListOrganizationAPIKeys404
+  | ListOrganizationAPIKeys5XX;
 
 export type CreateOrganizationAPIKeyPathParams = {
   /**
@@ -3234,31 +3277,30 @@ export type CreateOrganizationAPIKeyPathParams = {
   organizationID: OrganizationID;
 };
 
-/**
- * @description API Key created
- */
 export type CreateOrganizationAPIKey201 = {
-  /**
-   * @type object
-   */
   key: FullAPIKey;
 };
 
-/**
- * @description API key limit reached or invalid request
- */
 export type CreateOrganizationAPIKey400 = unknown;
 
 export type CreateOrganizationAPIKeyMutationRequest = CreateAPIKeyRequest;
 
-export type CreateOrganizationAPIKeyMutationResponse = CreateOrganizationAPIKey201;
-
-export type CreateOrganizationAPIKeyMutation = {
-  Response: CreateOrganizationAPIKey201;
-  Request: CreateOrganizationAPIKeyMutationRequest;
-  PathParams: CreateOrganizationAPIKeyPathParams;
-  Errors: CreateOrganizationAPIKey400;
+export type CreateOrganizationAPIKeyOptions = {
+  body: CreateOrganizationAPIKeyMutationRequest;
+  path: CreateOrganizationAPIKeyPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type CreateOrganizationAPIKeyResponses = {
+  '201': CreateOrganizationAPIKey201;
+  '400': CreateOrganizationAPIKey400;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type CreateOrganizationAPIKeyResponse = CreateOrganizationAPIKey201 | CreateOrganizationAPIKey400;
 
 export type DeleteOrganizationAPIKeysPathParams = {
   /**
@@ -3269,14 +3311,8 @@ export type DeleteOrganizationAPIKeysPathParams = {
   organizationID: OrganizationID;
 };
 
-/**
- * @description API Keys deleted successfully
- */
 export type DeleteOrganizationAPIKeys204 = unknown;
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type DeleteOrganizationAPIKeys400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3291,8 +3327,8 @@ export type DeleteOrganizationAPIKeys400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type DeleteOrganizationAPIKeys401 = {
   /**
@@ -3307,9 +3343,6 @@ export type DeleteOrganizationAPIKeys401 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type DeleteOrganizationAPIKeys404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3331,14 +3364,28 @@ export type DeleteOrganizationAPIKeysMutationRequest = {
   ids: string[];
 };
 
-export type DeleteOrganizationAPIKeysMutationResponse = DeleteOrganizationAPIKeys204;
-
-export type DeleteOrganizationAPIKeysMutation = {
-  Response: DeleteOrganizationAPIKeys204;
-  Request: DeleteOrganizationAPIKeysMutationRequest;
-  PathParams: DeleteOrganizationAPIKeysPathParams;
-  Errors: DeleteOrganizationAPIKeys400 | DeleteOrganizationAPIKeys401 | DeleteOrganizationAPIKeys404;
+export type DeleteOrganizationAPIKeysOptions = {
+  body: DeleteOrganizationAPIKeysMutationRequest;
+  path: DeleteOrganizationAPIKeysPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type DeleteOrganizationAPIKeysResponses = {
+  '204': DeleteOrganizationAPIKeys204;
+  '400': DeleteOrganizationAPIKeys400;
+  '401': DeleteOrganizationAPIKeys401;
+  '404': DeleteOrganizationAPIKeys404;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type DeleteOrganizationAPIKeysResponse =
+  | DeleteOrganizationAPIKeys204
+  | DeleteOrganizationAPIKeys400
+  | DeleteOrganizationAPIKeys401
+  | DeleteOrganizationAPIKeys404;
 
 export type ListOrganizationMembersPathParams = {
   /**
@@ -3349,23 +3396,25 @@ export type ListOrganizationMembersPathParams = {
   organizationID: OrganizationID;
 };
 
-/**
- * @description OK
- */
 export type ListOrganizationMembers200 = {
-  /**
-   * @type array
-   */
   members: UserWithID[];
 };
 
-export type ListOrganizationMembersQueryResponse = ListOrganizationMembers200;
-
-export type ListOrganizationMembersQuery = {
-  Response: ListOrganizationMembers200;
-  PathParams: ListOrganizationMembersPathParams;
-  Errors: any;
+export type ListOrganizationMembersOptions = {
+  body?: never | undefined;
+  path: ListOrganizationMembersPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type ListOrganizationMembersResponses = {
+  '200': ListOrganizationMembers200;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type ListOrganizationMembersResponse = ListOrganizationMembers200;
 
 export type RemoveOrganizationMemberPathParams = {
   /**
@@ -3375,25 +3424,30 @@ export type RemoveOrganizationMemberPathParams = {
    */
   organizationID: OrganizationID;
   /**
-   * @description Unique identifier for a user account
+   * @description Unique identifier for a specific user account
    * @pattern [a-zA-Z0-9_-~:]+
    * @type string
    */
   userID: UserID;
 };
 
-/**
- * @description Member removed
- */
 export type RemoveOrganizationMember204 = unknown;
 
-export type RemoveOrganizationMemberMutationResponse = RemoveOrganizationMember204;
-
-export type RemoveOrganizationMemberMutation = {
-  Response: RemoveOrganizationMember204;
-  PathParams: RemoveOrganizationMemberPathParams;
-  Errors: any;
+export type RemoveOrganizationMemberOptions = {
+  body?: never | undefined;
+  path: RemoveOrganizationMemberPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type RemoveOrganizationMemberResponses = {
+  '204': RemoveOrganizationMember204;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type RemoveOrganizationMemberResponse = RemoveOrganizationMember204;
 
 export type ListOrganizationInvitationsPathParams = {
   /**
@@ -3404,20 +3458,20 @@ export type ListOrganizationInvitationsPathParams = {
   organizationID: OrganizationID;
 };
 
-export const listOrganizationInvitationsQueryParamsStatusEnum = {
+export const listOrganizationInvitationsStatus = {
   pending: 'pending',
   expired: 'expired'
 } as const;
 
-export type ListOrganizationInvitationsQueryParamsStatusEnumKey =
-  (typeof listOrganizationInvitationsQueryParamsStatusEnum)[keyof typeof listOrganizationInvitationsQueryParamsStatusEnum];
+export type ListOrganizationInvitationsStatus =
+  (typeof listOrganizationInvitationsStatus)[keyof typeof listOrganizationInvitationsStatus];
 
 export type ListOrganizationInvitationsQueryParams = {
   /**
    * @description Filter invitations by status
    * @type string | undefined
    */
-  status?: ListOrganizationInvitationsQueryParamsStatusEnumKey | undefined;
+  status?: ListOrganizationInvitationsStatus | undefined;
   /**
    * @description Filter invitations by email address
    * @type string | undefined
@@ -3455,19 +3509,10 @@ export type ListOrganizationInvitationsQueryParams = {
   max?: number | undefined;
 };
 
-/**
- * @description List of invitations retrieved successfully
- */
 export type ListOrganizationInvitations200 = {
-  /**
-   * @type array
-   */
   invitations: OrganizationInvitation[];
 };
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type ListOrganizationInvitations400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3482,8 +3527,8 @@ export type ListOrganizationInvitations400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type ListOrganizationInvitations401 = {
   /**
@@ -3499,8 +3544,8 @@ export type ListOrganizationInvitations401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type ListOrganizationInvitations403 = {
   /**
@@ -3515,9 +3560,6 @@ export type ListOrganizationInvitations403 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type ListOrganizationInvitations404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3531,23 +3573,34 @@ export type ListOrganizationInvitations404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type ListOrganizationInvitations5XX = unknown;
 
-export type ListOrganizationInvitationsQueryResponse = ListOrganizationInvitations200;
-
-export type ListOrganizationInvitationsQuery = {
-  Response: ListOrganizationInvitations200;
-  PathParams: ListOrganizationInvitationsPathParams;
-  QueryParams: ListOrganizationInvitationsQueryParams;
-  Errors:
-    | ListOrganizationInvitations400
-    | ListOrganizationInvitations401
-    | ListOrganizationInvitations403
-    | ListOrganizationInvitations404;
+export type ListOrganizationInvitationsOptions = {
+  body?: never | undefined;
+  path: ListOrganizationInvitationsPathParams;
+  query?: ListOrganizationInvitationsQueryParams | undefined;
+  headers?: never | undefined;
 };
+
+export type ListOrganizationInvitationsResponses = {
+  '200': ListOrganizationInvitations200;
+  '400': ListOrganizationInvitations400;
+  '401': ListOrganizationInvitations401;
+  '403': ListOrganizationInvitations403;
+  '404': ListOrganizationInvitations404;
+  '5XX': ListOrganizationInvitations5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type ListOrganizationInvitationsResponse =
+  | ListOrganizationInvitations200
+  | ListOrganizationInvitations400
+  | ListOrganizationInvitations401
+  | ListOrganizationInvitations403
+  | ListOrganizationInvitations404
+  | ListOrganizationInvitations5XX;
 
 export type CreateOrganizationInvitationPathParams = {
   /**
@@ -3558,14 +3611,8 @@ export type CreateOrganizationInvitationPathParams = {
   organizationID: OrganizationID;
 };
 
-/**
- * @description Invitation sent successfully
- */
 export type CreateOrganizationInvitation201 = unknown;
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type CreateOrganizationInvitation400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3580,8 +3627,8 @@ export type CreateOrganizationInvitation400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type CreateOrganizationInvitation401 = {
   /**
@@ -3597,8 +3644,8 @@ export type CreateOrganizationInvitation401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type CreateOrganizationInvitation403 = {
   /**
@@ -3613,9 +3660,6 @@ export type CreateOrganizationInvitation403 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type CreateOrganizationInvitation404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3629,9 +3673,6 @@ export type CreateOrganizationInvitation404 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type CreateOrganizationInvitation409 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3645,26 +3686,38 @@ export type CreateOrganizationInvitation409 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type CreateOrganizationInvitation5XX = unknown;
 
 export type CreateOrganizationInvitationMutationRequest = CreateOrganizationInvitationRequest;
 
-export type CreateOrganizationInvitationMutationResponse = CreateOrganizationInvitation201;
-
-export type CreateOrganizationInvitationMutation = {
-  Response: CreateOrganizationInvitation201;
-  Request: CreateOrganizationInvitationMutationRequest;
-  PathParams: CreateOrganizationInvitationPathParams;
-  Errors:
-    | CreateOrganizationInvitation400
-    | CreateOrganizationInvitation401
-    | CreateOrganizationInvitation403
-    | CreateOrganizationInvitation404
-    | CreateOrganizationInvitation409;
+export type CreateOrganizationInvitationOptions = {
+  body: CreateOrganizationInvitationMutationRequest;
+  path: CreateOrganizationInvitationPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type CreateOrganizationInvitationResponses = {
+  '201': CreateOrganizationInvitation201;
+  '400': CreateOrganizationInvitation400;
+  '401': CreateOrganizationInvitation401;
+  '403': CreateOrganizationInvitation403;
+  '404': CreateOrganizationInvitation404;
+  '409': CreateOrganizationInvitation409;
+  '5XX': CreateOrganizationInvitation5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type CreateOrganizationInvitationResponse =
+  | CreateOrganizationInvitation201
+  | CreateOrganizationInvitation400
+  | CreateOrganizationInvitation401
+  | CreateOrganizationInvitation403
+  | CreateOrganizationInvitation404
+  | CreateOrganizationInvitation409
+  | CreateOrganizationInvitation5XX;
 
 export type GetOrganizationInvitationPathParams = {
   /**
@@ -3680,14 +3733,8 @@ export type GetOrganizationInvitationPathParams = {
   invitationID: string;
 };
 
-/**
- * @description Invitation details retrieved successfully
- */
 export type GetOrganizationInvitation200 = OrganizationInvitation;
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type GetOrganizationInvitation400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3702,8 +3749,8 @@ export type GetOrganizationInvitation400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type GetOrganizationInvitation401 = {
   /**
@@ -3719,8 +3766,8 @@ export type GetOrganizationInvitation401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type GetOrganizationInvitation403 = {
   /**
@@ -3735,9 +3782,6 @@ export type GetOrganizationInvitation403 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type GetOrganizationInvitation404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3751,22 +3795,34 @@ export type GetOrganizationInvitation404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type GetOrganizationInvitation5XX = unknown;
 
-export type GetOrganizationInvitationQueryResponse = GetOrganizationInvitation200;
-
-export type GetOrganizationInvitationQuery = {
-  Response: GetOrganizationInvitation200;
-  PathParams: GetOrganizationInvitationPathParams;
-  Errors:
-    | GetOrganizationInvitation400
-    | GetOrganizationInvitation401
-    | GetOrganizationInvitation403
-    | GetOrganizationInvitation404;
+export type GetOrganizationInvitationOptions = {
+  body?: never | undefined;
+  path: GetOrganizationInvitationPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type GetOrganizationInvitationResponses = {
+  '200': GetOrganizationInvitation200;
+  '400': GetOrganizationInvitation400;
+  '401': GetOrganizationInvitation401;
+  '403': GetOrganizationInvitation403;
+  '404': GetOrganizationInvitation404;
+  '5XX': GetOrganizationInvitation5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type GetOrganizationInvitationResponse =
+  | GetOrganizationInvitation200
+  | GetOrganizationInvitation400
+  | GetOrganizationInvitation401
+  | GetOrganizationInvitation403
+  | GetOrganizationInvitation404
+  | GetOrganizationInvitation5XX;
 
 export type DeleteOrganizationInvitationPathParams = {
   /**
@@ -3782,14 +3838,8 @@ export type DeleteOrganizationInvitationPathParams = {
   invitationID: string;
 };
 
-/**
- * @description Invitation deleted successfully
- */
 export type DeleteOrganizationInvitation204 = unknown;
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type DeleteOrganizationInvitation400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3804,8 +3854,8 @@ export type DeleteOrganizationInvitation400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type DeleteOrganizationInvitation401 = {
   /**
@@ -3821,8 +3871,8 @@ export type DeleteOrganizationInvitation401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type DeleteOrganizationInvitation403 = {
   /**
@@ -3837,9 +3887,6 @@ export type DeleteOrganizationInvitation403 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type DeleteOrganizationInvitation404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3853,22 +3900,34 @@ export type DeleteOrganizationInvitation404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type DeleteOrganizationInvitation5XX = unknown;
 
-export type DeleteOrganizationInvitationMutationResponse = DeleteOrganizationInvitation204;
-
-export type DeleteOrganizationInvitationMutation = {
-  Response: DeleteOrganizationInvitation204;
-  PathParams: DeleteOrganizationInvitationPathParams;
-  Errors:
-    | DeleteOrganizationInvitation400
-    | DeleteOrganizationInvitation401
-    | DeleteOrganizationInvitation403
-    | DeleteOrganizationInvitation404;
+export type DeleteOrganizationInvitationOptions = {
+  body?: never | undefined;
+  path: DeleteOrganizationInvitationPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type DeleteOrganizationInvitationResponses = {
+  '204': DeleteOrganizationInvitation204;
+  '400': DeleteOrganizationInvitation400;
+  '401': DeleteOrganizationInvitation401;
+  '403': DeleteOrganizationInvitation403;
+  '404': DeleteOrganizationInvitation404;
+  '5XX': DeleteOrganizationInvitation5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type DeleteOrganizationInvitationResponse =
+  | DeleteOrganizationInvitation204
+  | DeleteOrganizationInvitation400
+  | DeleteOrganizationInvitation401
+  | DeleteOrganizationInvitation403
+  | DeleteOrganizationInvitation404
+  | DeleteOrganizationInvitation5XX;
 
 export type ResendOrganizationInvitationPathParams = {
   /**
@@ -3884,14 +3943,8 @@ export type ResendOrganizationInvitationPathParams = {
   invitationID: string;
 };
 
-/**
- * @description Invitation resent successfully
- */
 export type ResendOrganizationInvitation204 = unknown;
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type ResendOrganizationInvitation400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3906,8 +3959,8 @@ export type ResendOrganizationInvitation400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type ResendOrganizationInvitation401 = {
   /**
@@ -3923,8 +3976,8 @@ export type ResendOrganizationInvitation401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type ResendOrganizationInvitation403 = {
   /**
@@ -3939,9 +3992,6 @@ export type ResendOrganizationInvitation403 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type ResendOrganizationInvitation404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -3955,22 +4005,34 @@ export type ResendOrganizationInvitation404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type ResendOrganizationInvitation5XX = unknown;
 
-export type ResendOrganizationInvitationMutationResponse = ResendOrganizationInvitation204;
-
-export type ResendOrganizationInvitationMutation = {
-  Response: ResendOrganizationInvitation204;
-  PathParams: ResendOrganizationInvitationPathParams;
-  Errors:
-    | ResendOrganizationInvitation400
-    | ResendOrganizationInvitation401
-    | ResendOrganizationInvitation403
-    | ResendOrganizationInvitation404;
+export type ResendOrganizationInvitationOptions = {
+  body?: never | undefined;
+  path: ResendOrganizationInvitationPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type ResendOrganizationInvitationResponses = {
+  '204': ResendOrganizationInvitation204;
+  '400': ResendOrganizationInvitation400;
+  '401': ResendOrganizationInvitation401;
+  '403': ResendOrganizationInvitation403;
+  '404': ResendOrganizationInvitation404;
+  '5XX': ResendOrganizationInvitation5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type ResendOrganizationInvitationResponse =
+  | ResendOrganizationInvitation204
+  | ResendOrganizationInvitation400
+  | ResendOrganizationInvitation401
+  | ResendOrganizationInvitation403
+  | ResendOrganizationInvitation404
+  | ResendOrganizationInvitation5XX;
 
 export type RequestOrganizationDeletionPathParams = {
   /**
@@ -3981,14 +4043,8 @@ export type RequestOrganizationDeletionPathParams = {
   organizationID: OrganizationID;
 };
 
-/**
- * @description Deletion requested — the organization will be removed once all outstanding invoices are settled
- */
 export type RequestOrganizationDeletion202 = unknown;
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type RequestOrganizationDeletion400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -4003,8 +4059,8 @@ export type RequestOrganizationDeletion400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type RequestOrganizationDeletion401 = {
   /**
@@ -4020,8 +4076,8 @@ export type RequestOrganizationDeletion401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type RequestOrganizationDeletion403 = {
   /**
@@ -4036,9 +4092,6 @@ export type RequestOrganizationDeletion403 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type RequestOrganizationDeletion409 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -4052,22 +4105,34 @@ export type RequestOrganizationDeletion409 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type RequestOrganizationDeletion5XX = unknown;
 
-export type RequestOrganizationDeletionMutationResponse = RequestOrganizationDeletion202;
-
-export type RequestOrganizationDeletionMutation = {
-  Response: RequestOrganizationDeletion202;
-  PathParams: RequestOrganizationDeletionPathParams;
-  Errors:
-    | RequestOrganizationDeletion400
-    | RequestOrganizationDeletion401
-    | RequestOrganizationDeletion403
-    | RequestOrganizationDeletion409;
+export type RequestOrganizationDeletionOptions = {
+  body?: never | undefined;
+  path: RequestOrganizationDeletionPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type RequestOrganizationDeletionResponses = {
+  '202': RequestOrganizationDeletion202;
+  '400': RequestOrganizationDeletion400;
+  '401': RequestOrganizationDeletion401;
+  '403': RequestOrganizationDeletion403;
+  '409': RequestOrganizationDeletion409;
+  '5XX': RequestOrganizationDeletion5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type RequestOrganizationDeletionResponse =
+  | RequestOrganizationDeletion202
+  | RequestOrganizationDeletion400
+  | RequestOrganizationDeletion401
+  | RequestOrganizationDeletion403
+  | RequestOrganizationDeletion409
+  | RequestOrganizationDeletion5XX;
 
 export type GetOrganizationMembershipLimitsPathParams = {
   /**
@@ -4079,13 +4144,14 @@ export type GetOrganizationMembershipLimitsPathParams = {
 };
 
 /**
- * @description Membership limits for the organization
+ * @description Membership limits for an organization
+ * @type object
  */
 export type GetOrganizationMembershipLimits200 = OrganizationMembershipLimits;
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type GetOrganizationMembershipLimits401 = {
   /**
@@ -4101,8 +4167,8 @@ export type GetOrganizationMembershipLimits401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type GetOrganizationMembershipLimits403 = {
   /**
@@ -4117,18 +4183,30 @@ export type GetOrganizationMembershipLimits403 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type GetOrganizationMembershipLimits5XX = unknown;
 
-export type GetOrganizationMembershipLimitsQueryResponse = GetOrganizationMembershipLimits200;
-
-export type GetOrganizationMembershipLimitsQuery = {
-  Response: GetOrganizationMembershipLimits200;
-  PathParams: GetOrganizationMembershipLimitsPathParams;
-  Errors: GetOrganizationMembershipLimits401 | GetOrganizationMembershipLimits403;
+export type GetOrganizationMembershipLimitsOptions = {
+  body?: never | undefined;
+  path: GetOrganizationMembershipLimitsPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type GetOrganizationMembershipLimitsResponses = {
+  '200': GetOrganizationMembershipLimits200;
+  '401': GetOrganizationMembershipLimits401;
+  '403': GetOrganizationMembershipLimits403;
+  '5XX': GetOrganizationMembershipLimits5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type GetOrganizationMembershipLimitsResponse =
+  | GetOrganizationMembershipLimits200
+  | GetOrganizationMembershipLimits401
+  | GetOrganizationMembershipLimits403
+  | GetOrganizationMembershipLimits5XX;
 
 export type CreateBillingCheckoutSessionPathParams = {
   /**
@@ -4139,14 +4217,8 @@ export type CreateBillingCheckoutSessionPathParams = {
   organizationID: OrganizationID;
 };
 
-/**
- * @description Billing checkout session created
- */
 export type CreateBillingCheckoutSession200 = BillingCheckoutSessionResponse;
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type CreateBillingCheckoutSession400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -4161,8 +4233,8 @@ export type CreateBillingCheckoutSession400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type CreateBillingCheckoutSession401 = {
   /**
@@ -4178,8 +4250,8 @@ export type CreateBillingCheckoutSession401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type CreateBillingCheckoutSession403 = {
   /**
@@ -4194,18 +4266,32 @@ export type CreateBillingCheckoutSession403 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type CreateBillingCheckoutSession5XX = unknown;
 
-export type CreateBillingCheckoutSessionMutationResponse = CreateBillingCheckoutSession200;
-
-export type CreateBillingCheckoutSessionMutation = {
-  Response: CreateBillingCheckoutSession200;
-  PathParams: CreateBillingCheckoutSessionPathParams;
-  Errors: CreateBillingCheckoutSession400 | CreateBillingCheckoutSession401 | CreateBillingCheckoutSession403;
+export type CreateBillingCheckoutSessionOptions = {
+  body?: never | undefined;
+  path: CreateBillingCheckoutSessionPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type CreateBillingCheckoutSessionResponses = {
+  '200': CreateBillingCheckoutSession200;
+  '400': CreateBillingCheckoutSession400;
+  '401': CreateBillingCheckoutSession401;
+  '403': CreateBillingCheckoutSession403;
+  '5XX': CreateBillingCheckoutSession5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type CreateBillingCheckoutSessionResponse =
+  | CreateBillingCheckoutSession200
+  | CreateBillingCheckoutSession400
+  | CreateBillingCheckoutSession401
+  | CreateBillingCheckoutSession403
+  | CreateBillingCheckoutSession5XX;
 
 export type CreateBillingPaymentMethodSessionPathParams = {
   /**
@@ -4216,14 +4302,8 @@ export type CreateBillingPaymentMethodSessionPathParams = {
   organizationID: OrganizationID;
 };
 
-/**
- * @description Billing payment method session created
- */
 export type CreateBillingPaymentMethodSession200 = BillingPaymentMethodSessionResponse;
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type CreateBillingPaymentMethodSession400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -4238,8 +4318,8 @@ export type CreateBillingPaymentMethodSession400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type CreateBillingPaymentMethodSession401 = {
   /**
@@ -4255,8 +4335,8 @@ export type CreateBillingPaymentMethodSession401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type CreateBillingPaymentMethodSession403 = {
   /**
@@ -4271,21 +4351,32 @@ export type CreateBillingPaymentMethodSession403 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type CreateBillingPaymentMethodSession5XX = unknown;
 
-export type CreateBillingPaymentMethodSessionMutationResponse = CreateBillingPaymentMethodSession200;
-
-export type CreateBillingPaymentMethodSessionMutation = {
-  Response: CreateBillingPaymentMethodSession200;
-  PathParams: CreateBillingPaymentMethodSessionPathParams;
-  Errors:
-    | CreateBillingPaymentMethodSession400
-    | CreateBillingPaymentMethodSession401
-    | CreateBillingPaymentMethodSession403;
+export type CreateBillingPaymentMethodSessionOptions = {
+  body?: never | undefined;
+  path: CreateBillingPaymentMethodSessionPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type CreateBillingPaymentMethodSessionResponses = {
+  '200': CreateBillingPaymentMethodSession200;
+  '400': CreateBillingPaymentMethodSession400;
+  '401': CreateBillingPaymentMethodSession401;
+  '403': CreateBillingPaymentMethodSession403;
+  '5XX': CreateBillingPaymentMethodSession5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type CreateBillingPaymentMethodSessionResponse =
+  | CreateBillingPaymentMethodSession200
+  | CreateBillingPaymentMethodSession400
+  | CreateBillingPaymentMethodSession401
+  | CreateBillingPaymentMethodSession403
+  | CreateBillingPaymentMethodSession5XX;
 
 export type GetBillingCustomerPathParams = {
   /**
@@ -4296,14 +4387,11 @@ export type GetBillingCustomerPathParams = {
   organizationID: OrganizationID;
 };
 
-/**
- * @description Billing customer details
- */
 export type GetBillingCustomer200 = BillingCustomerResponse;
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type GetBillingCustomer401 = {
   /**
@@ -4319,8 +4407,8 @@ export type GetBillingCustomer401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type GetBillingCustomer403 = {
   /**
@@ -4335,9 +4423,6 @@ export type GetBillingCustomer403 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type GetBillingCustomer404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -4351,18 +4436,32 @@ export type GetBillingCustomer404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type GetBillingCustomer5XX = unknown;
 
-export type GetBillingCustomerQueryResponse = GetBillingCustomer200;
-
-export type GetBillingCustomerQuery = {
-  Response: GetBillingCustomer200;
-  PathParams: GetBillingCustomerPathParams;
-  Errors: GetBillingCustomer401 | GetBillingCustomer403 | GetBillingCustomer404;
+export type GetBillingCustomerOptions = {
+  body?: never | undefined;
+  path: GetBillingCustomerPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type GetBillingCustomerResponses = {
+  '200': GetBillingCustomer200;
+  '401': GetBillingCustomer401;
+  '403': GetBillingCustomer403;
+  '404': GetBillingCustomer404;
+  '5XX': GetBillingCustomer5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type GetBillingCustomerResponse =
+  | GetBillingCustomer200
+  | GetBillingCustomer401
+  | GetBillingCustomer403
+  | GetBillingCustomer404
+  | GetBillingCustomer5XX;
 
 export type UpdateBillingCustomerPathParams = {
   /**
@@ -4373,14 +4472,8 @@ export type UpdateBillingCustomerPathParams = {
   organizationID: OrganizationID;
 };
 
-/**
- * @description Billing customer updated
- */
 export type UpdateBillingCustomer200 = BillingCustomerResponse;
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type UpdateBillingCustomer400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -4395,8 +4488,8 @@ export type UpdateBillingCustomer400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type UpdateBillingCustomer401 = {
   /**
@@ -4412,8 +4505,8 @@ export type UpdateBillingCustomer401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type UpdateBillingCustomer403 = {
   /**
@@ -4428,9 +4521,6 @@ export type UpdateBillingCustomer403 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type UpdateBillingCustomer404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -4444,21 +4534,36 @@ export type UpdateBillingCustomer404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type UpdateBillingCustomer5XX = unknown;
 
 export type UpdateBillingCustomerMutationRequest = UpdateBillingCustomerRequest;
 
-export type UpdateBillingCustomerMutationResponse = UpdateBillingCustomer200;
-
-export type UpdateBillingCustomerMutation = {
-  Response: UpdateBillingCustomer200;
-  Request: UpdateBillingCustomerMutationRequest;
-  PathParams: UpdateBillingCustomerPathParams;
-  Errors: UpdateBillingCustomer400 | UpdateBillingCustomer401 | UpdateBillingCustomer403 | UpdateBillingCustomer404;
+export type UpdateBillingCustomerOptions = {
+  body: UpdateBillingCustomerMutationRequest;
+  path: UpdateBillingCustomerPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type UpdateBillingCustomerResponses = {
+  '200': UpdateBillingCustomer200;
+  '400': UpdateBillingCustomer400;
+  '401': UpdateBillingCustomer401;
+  '403': UpdateBillingCustomer403;
+  '404': UpdateBillingCustomer404;
+  '5XX': UpdateBillingCustomer5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type UpdateBillingCustomerResponse =
+  | UpdateBillingCustomer200
+  | UpdateBillingCustomer400
+  | UpdateBillingCustomer401
+  | UpdateBillingCustomer403
+  | UpdateBillingCustomer404
+  | UpdateBillingCustomer5XX;
 
 export type GetBillingInvoicesPathParams = {
   /**
@@ -4485,14 +4590,8 @@ export type GetBillingInvoicesQueryParams = {
   limit?: number | undefined;
 };
 
-/**
- * @description Billing invoices
- */
 export type GetBillingInvoices200 = BillingInvoicesResponse;
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type GetBillingInvoices400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -4507,8 +4606,8 @@ export type GetBillingInvoices400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type GetBillingInvoices401 = {
   /**
@@ -4524,8 +4623,8 @@ export type GetBillingInvoices401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type GetBillingInvoices403 = {
   /**
@@ -4540,9 +4639,6 @@ export type GetBillingInvoices403 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type GetBillingInvoices404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -4556,19 +4652,34 @@ export type GetBillingInvoices404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type GetBillingInvoices5XX = unknown;
 
-export type GetBillingInvoicesQueryResponse = GetBillingInvoices200;
-
-export type GetBillingInvoicesQuery = {
-  Response: GetBillingInvoices200;
-  PathParams: GetBillingInvoicesPathParams;
-  QueryParams: GetBillingInvoicesQueryParams;
-  Errors: GetBillingInvoices400 | GetBillingInvoices401 | GetBillingInvoices403 | GetBillingInvoices404;
+export type GetBillingInvoicesOptions = {
+  body?: never | undefined;
+  path: GetBillingInvoicesPathParams;
+  query?: GetBillingInvoicesQueryParams | undefined;
+  headers?: never | undefined;
 };
+
+export type GetBillingInvoicesResponses = {
+  '200': GetBillingInvoices200;
+  '400': GetBillingInvoices400;
+  '401': GetBillingInvoices401;
+  '403': GetBillingInvoices403;
+  '404': GetBillingInvoices404;
+  '5XX': GetBillingInvoices5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type GetBillingInvoicesResponse =
+  | GetBillingInvoices200
+  | GetBillingInvoices400
+  | GetBillingInvoices401
+  | GetBillingInvoices403
+  | GetBillingInvoices404
+  | GetBillingInvoices5XX;
 
 export type GetBillingUpcomingInvoicePathParams = {
   /**
@@ -4579,14 +4690,11 @@ export type GetBillingUpcomingInvoicePathParams = {
   organizationID: OrganizationID;
 };
 
-/**
- * @description Upcoming billing invoice
- */
 export type GetBillingUpcomingInvoice200 = BillingUpcomingInvoiceResponse;
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type GetBillingUpcomingInvoice401 = {
   /**
@@ -4602,8 +4710,8 @@ export type GetBillingUpcomingInvoice401 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type GetBillingUpcomingInvoice403 = {
   /**
@@ -4618,9 +4726,6 @@ export type GetBillingUpcomingInvoice403 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type GetBillingUpcomingInvoice404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -4634,27 +4739,35 @@ export type GetBillingUpcomingInvoice404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type GetBillingUpcomingInvoice5XX = unknown;
 
-export type GetBillingUpcomingInvoiceQueryResponse = GetBillingUpcomingInvoice200;
+export type GetBillingUpcomingInvoiceOptions = {
+  body?: never | undefined;
+  path: GetBillingUpcomingInvoicePathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
 
-export type GetBillingUpcomingInvoiceQuery = {
-  Response: GetBillingUpcomingInvoice200;
-  PathParams: GetBillingUpcomingInvoicePathParams;
-  Errors: GetBillingUpcomingInvoice401 | GetBillingUpcomingInvoice403 | GetBillingUpcomingInvoice404;
+export type GetBillingUpcomingInvoiceResponses = {
+  '200': GetBillingUpcomingInvoice200;
+  '401': GetBillingUpcomingInvoice401;
+  '403': GetBillingUpcomingInvoice403;
+  '404': GetBillingUpcomingInvoice404;
+  '5XX': GetBillingUpcomingInvoice5XX;
 };
 
 /**
- * @description Marketplace registration successful
+ * @description Union of all possible responses
  */
+export type GetBillingUpcomingInvoiceResponse =
+  | GetBillingUpcomingInvoice200
+  | GetBillingUpcomingInvoice401
+  | GetBillingUpcomingInvoice403
+  | GetBillingUpcomingInvoice404
+  | GetBillingUpcomingInvoice5XX;
+
 export type RegisterMarketplace200 = unknown;
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type RegisterMarketplace400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -4669,8 +4782,8 @@ export type RegisterMarketplace400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type RegisterMarketplace401 = {
   /**
@@ -4685,9 +4798,6 @@ export type RegisterMarketplace401 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type RegisterMarketplace409 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -4701,29 +4811,41 @@ export type RegisterMarketplace409 = {
   message: string;
 };
 
-/**
- * @description Marketplace registration provider failed
- */
 export type RegisterMarketplace502 = {
-  /**
-   * @type string
-   */
   message: string;
 };
 
+/**
+ * @description Request to register with a cloud marketplace
+ * @type object
+ */
 export type RegisterMarketplaceMutationRequest = MarketplaceRegisterRequest;
 
-export type RegisterMarketplaceMutationResponse = RegisterMarketplace200;
+export type RegisterMarketplaceOptions = {
+  body: RegisterMarketplaceMutationRequest;
+  path?: never | undefined;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
 
-export type RegisterMarketplaceMutation = {
-  Response: RegisterMarketplace200;
-  Request: RegisterMarketplaceMutationRequest;
-  Errors: RegisterMarketplace400 | RegisterMarketplace401 | RegisterMarketplace409 | RegisterMarketplace502;
+export type RegisterMarketplaceResponses = {
+  '200': RegisterMarketplace200;
+  '400': RegisterMarketplace400;
+  '401': RegisterMarketplace401;
+  '409': RegisterMarketplace409;
+  '502': RegisterMarketplace502;
 };
 
 /**
- * @description List of API keys retrieved successfully
+ * @description Union of all possible responses
  */
+export type RegisterMarketplaceResponse =
+  | RegisterMarketplace200
+  | RegisterMarketplace400
+  | RegisterMarketplace401
+  | RegisterMarketplace409
+  | RegisterMarketplace502;
+
 export type ListUserAPIKeys200 = {
   /**
    * @description Array of API keys for the user
@@ -4732,9 +4854,6 @@ export type ListUserAPIKeys200 = {
   keys: APIKeyPreview[];
 };
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type ListUserAPIKeys400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -4749,8 +4868,8 @@ export type ListUserAPIKeys400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type ListUserAPIKeys401 = {
   /**
@@ -4765,31 +4884,31 @@ export type ListUserAPIKeys401 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type ListUserAPIKeys5XX = unknown;
 
-export type ListUserAPIKeysQueryResponse = ListUserAPIKeys200;
+export type ListUserAPIKeysOptions = {
+  body?: never | undefined;
+  path?: never | undefined;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
 
-export type ListUserAPIKeysQuery = {
-  Response: ListUserAPIKeys200;
-  Errors: ListUserAPIKeys400 | ListUserAPIKeys401;
+export type ListUserAPIKeysResponses = {
+  '200': ListUserAPIKeys200;
+  '400': ListUserAPIKeys400;
+  '401': ListUserAPIKeys401;
+  '5XX': ListUserAPIKeys5XX;
 };
 
 /**
- * @description API Key created successfully
+ * @description Union of all possible responses
  */
+export type ListUserAPIKeysResponse = ListUserAPIKeys200 | ListUserAPIKeys400 | ListUserAPIKeys401 | ListUserAPIKeys5XX;
+
 export type CreateUserAPIKey201 = {
-  /**
-   * @type object
-   */
   key: FullAPIKey;
 };
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type CreateUserAPIKey400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -4804,8 +4923,8 @@ export type CreateUserAPIKey400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type CreateUserAPIKey401 = {
   /**
@@ -4820,29 +4939,35 @@ export type CreateUserAPIKey401 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type CreateUserAPIKey5XX = unknown;
 
 export type CreateUserAPIKeyMutationRequest = CreateAPIKeyRequest;
 
-export type CreateUserAPIKeyMutationResponse = CreateUserAPIKey201;
+export type CreateUserAPIKeyOptions = {
+  body: CreateUserAPIKeyMutationRequest;
+  path?: never | undefined;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
 
-export type CreateUserAPIKeyMutation = {
-  Response: CreateUserAPIKey201;
-  Request: CreateUserAPIKeyMutationRequest;
-  Errors: CreateUserAPIKey400 | CreateUserAPIKey401;
+export type CreateUserAPIKeyResponses = {
+  '201': CreateUserAPIKey201;
+  '400': CreateUserAPIKey400;
+  '401': CreateUserAPIKey401;
+  '5XX': CreateUserAPIKey5XX;
 };
 
 /**
- * @description API Keys deleted successfully
+ * @description Union of all possible responses
  */
+export type CreateUserAPIKeyResponse =
+  | CreateUserAPIKey201
+  | CreateUserAPIKey400
+  | CreateUserAPIKey401
+  | CreateUserAPIKey5XX;
+
 export type DeleteUserAPIKeys204 = unknown;
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
 export type DeleteUserAPIKeys400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -4857,8 +4982,8 @@ export type DeleteUserAPIKeys400 = {
 };
 
 /**
- * @description Error returned when authentication or authorization fails
- * @example [object Object]
+ * @example {"message":"invalid API key"}
+ * @type object
  */
 export type DeleteUserAPIKeys401 = {
   /**
@@ -4873,9 +4998,6 @@ export type DeleteUserAPIKeys401 = {
   message: string;
 };
 
-/**
- * @description Generic error response
- */
 export type DeleteUserAPIKeys404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -4889,9 +5011,6 @@ export type DeleteUserAPIKeys404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type DeleteUserAPIKeys5XX = unknown;
 
 export type DeleteUserAPIKeysMutationRequest = {
@@ -4902,248 +5021,313 @@ export type DeleteUserAPIKeysMutationRequest = {
   ids: string[];
 };
 
-export type DeleteUserAPIKeysMutationResponse = DeleteUserAPIKeys204;
-
-export type DeleteUserAPIKeysMutation = {
-  Response: DeleteUserAPIKeys204;
-  Request: DeleteUserAPIKeysMutationRequest;
-  Errors: DeleteUserAPIKeys400 | DeleteUserAPIKeys401 | DeleteUserAPIKeys404;
+export type DeleteUserAPIKeysOptions = {
+  body: DeleteUserAPIKeysMutationRequest;
+  path?: never | undefined;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
 
-export const queryHeaderParamsArrayModeEnum = {
+export type DeleteUserAPIKeysResponses = {
+  '204': DeleteUserAPIKeys204;
+  '400': DeleteUserAPIKeys400;
+  '401': DeleteUserAPIKeys401;
+  '404': DeleteUserAPIKeys404;
+  '5XX': DeleteUserAPIKeys5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type DeleteUserAPIKeysResponse =
+  | DeleteUserAPIKeys204
+  | DeleteUserAPIKeys400
+  | DeleteUserAPIKeys401
+  | DeleteUserAPIKeys404
+  | DeleteUserAPIKeys5XX;
+
+export const queryArrayMode = {
   true: 'true',
   false: 'false'
 } as const;
 
-export type QueryHeaderParamsArrayModeEnumKey =
-  (typeof queryHeaderParamsArrayModeEnum)[keyof typeof queryHeaderParamsArrayModeEnum];
+export type QueryArrayMode = (typeof queryArrayMode)[keyof typeof queryArrayMode];
 
-export const queryHeaderParamsRawTextOutputEnum = {
+export const queryRawTextOutput = {
   true: 'true',
   false: 'false'
 } as const;
 
-export type QueryHeaderParamsRawTextOutputEnumKey =
-  (typeof queryHeaderParamsRawTextOutputEnum)[keyof typeof queryHeaderParamsRawTextOutputEnum];
+export type QueryRawTextOutput = (typeof queryRawTextOutput)[keyof typeof queryRawTextOutput];
 
-export const queryHeaderParamsBatchIsolationLevelEnum = {
+export const queryBatchIsolationLevel = {
   ReadCommitted: 'ReadCommitted',
   ReadUncommitted: 'ReadUncommitted',
   RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 } as const;
 
-export type QueryHeaderParamsBatchIsolationLevelEnumKey =
-  (typeof queryHeaderParamsBatchIsolationLevelEnum)[keyof typeof queryHeaderParamsBatchIsolationLevelEnum];
+export type QueryBatchIsolationLevel = (typeof queryBatchIsolationLevel)[keyof typeof queryBatchIsolationLevel];
 
-export const queryHeaderParamsBatchReadOnlyEnum = {
+export const queryBatchReadOnly = {
   true: 'true',
   false: 'false'
 } as const;
 
-export type QueryHeaderParamsBatchReadOnlyEnumKey =
-  (typeof queryHeaderParamsBatchReadOnlyEnum)[keyof typeof queryHeaderParamsBatchReadOnlyEnum];
+export type QueryBatchReadOnly = (typeof queryBatchReadOnly)[keyof typeof queryBatchReadOnly];
 
-export const queryHeaderParamsBatchDeferrableEnum = {
+export const queryBatchDeferrable = {
   true: 'true',
   false: 'false'
 } as const;
 
-export type QueryHeaderParamsBatchDeferrableEnumKey =
-  (typeof queryHeaderParamsBatchDeferrableEnum)[keyof typeof queryHeaderParamsBatchDeferrableEnum];
+export type QueryBatchDeferrable = (typeof queryBatchDeferrable)[keyof typeof queryBatchDeferrable];
 
 export type QueryHeaderParams = {
   /**
    * @description When `true`, return rows as arrays instead of objects.
    * @type string | undefined
    */
-  'Array-Mode'?: QueryHeaderParamsArrayModeEnumKey | undefined;
+  'Array-Mode'?: QueryArrayMode | undefined;
   /**
    * @description When `true`, return all values as strings without type conversion.
    * @type string | undefined
    */
-  'Raw-Text-Output'?: QueryHeaderParamsRawTextOutputEnumKey | undefined;
+  'Raw-Text-Output'?: QueryRawTextOutput | undefined;
   /**
    * @description Transaction isolation level for batch queries.
    * @type string | undefined
    */
-  'Batch-Isolation-Level'?: QueryHeaderParamsBatchIsolationLevelEnumKey | undefined;
+  'Batch-Isolation-Level'?: QueryBatchIsolationLevel | undefined;
   /**
    * @description When `true`, execute the batch transaction in read-only mode.
    * @type string | undefined
    */
-  'Batch-Read-Only'?: QueryHeaderParamsBatchReadOnlyEnumKey | undefined;
+  'Batch-Read-Only'?: QueryBatchReadOnly | undefined;
   /**
    * @description When `true`, execute the batch transaction in deferrable mode.
    * @type string | undefined
    */
-  'Batch-Deferrable'?: QueryHeaderParamsBatchDeferrableEnumKey | undefined;
+  'Batch-Deferrable'?: QueryBatchDeferrable | undefined;
 };
 
-/**
- * @description Query executed successfully
- */
 export type Query200 = QueryResult | BatchResponse;
 
 /**
- * @description Invalid request, SQL error, or query execution timeout
+ * @description Error response with PostgreSQL error fields.
+ * @type object
  */
 export type Query400 = ErrorResponse;
 
 /**
- * @description Missing or invalid connection string
+ * @description Error response with PostgreSQL error fields.
+ * @type object
  */
 export type Query401 = ErrorResponse;
 
 /**
- * @description Client IP is not allowed by the branch IP filter
+ * @description Error response with PostgreSQL error fields.
+ * @type object
  */
 export type Query403 = ErrorResponse;
 
 /**
- * @description Branch not found, it may have been deleted
+ * @description Error response with PostgreSQL error fields.
+ * @type object
  */
 export type Query404 = ErrorResponse;
 
 /**
- * @description Branch is hibernated, reactivate it before running queries
+ * @description Error response with PostgreSQL error fields.
+ * @type object
  */
 export type Query409 = ErrorResponse;
 
 /**
- * @description Request body is larger than 64MB
+ * @description Error response with PostgreSQL error fields.
+ * @type object
  */
 export type Query413 = ErrorResponse;
 
 /**
- * @description Internal server error
+ * @description Error response with PostgreSQL error fields.
+ * @type object
  */
 export type Query500 = ErrorResponse;
 
 /**
- * @description Timed out connecting to the database
+ * @description Error response with PostgreSQL error fields.
+ * @type object
  */
 export type Query504 = ErrorResponse;
 
 /**
- * @description Response too large
+ * @description Error response with PostgreSQL error fields.
+ * @type object
  */
 export type Query507 = ErrorResponse;
 
+/**
+ * @description SQL query request. Provide either `query` for a single query or `queries` for a batch.
+ * @type object
+ */
 export type QueryMutationRequest = SQLRequest;
 
-export type QueryMutationResponse = Query200;
+export type QueryOptions = {
+  body: QueryMutationRequest;
+  path?: never | undefined;
+  query?: never | undefined;
+  headers?: QueryHeaderParams | undefined;
+};
 
-export type QueryMutation = {
-  Response: Query200;
-  Request: QueryMutationRequest;
-  HeaderParams: QueryHeaderParams;
-  Errors: Query400 | Query401 | Query403 | Query404 | Query409 | Query413 | Query500 | Query504 | Query507;
+export type QueryResponses = {
+  '200': Query200;
+  '400': Query400;
+  '401': Query401;
+  '403': Query403;
+  '404': Query404;
+  '409': Query409;
+  '413': Query413;
+  '500': Query500;
+  '504': Query504;
+  '507': Query507;
 };
 
 /**
- * @description Switching Protocols — WebSocket connection established
+ * @description Union of all possible responses
  */
+export type QueryResponse =
+  | Query200
+  | Query400
+  | Query401
+  | Query403
+  | Query404
+  | Query409
+  | Query413
+  | Query500
+  | Query504
+  | Query507;
+
 export type Websocket101 = unknown;
 
-/**
- * @description Bad request — unable to upgrade connection
- */
 export type Websocket400 = unknown;
 
-export type WebsocketQueryResponse = any;
-
-export type WebsocketQuery = {
-  Response: any;
-  Errors: Websocket400;
+export type WebsocketOptions = {
+  body?: never | undefined;
+  path?: never | undefined;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type WebsocketResponses = {
+  '101': Websocket101;
+  '400': Websocket400;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type WebsocketResponse = Websocket101 | Websocket400;
 
 export type SendMcpRequestHeaderParams = {
   /**
    * @description Must list both `application/json` and `text/event-stream`.
-   * @default "application/json, text/event-stream"
+   * @default 'application/json, text/event-stream'
    * @type string
    */
   Accept: string;
   /**
    * @description Protocol revision negotiated during `initialize`, echoed on every subsequent request.\nOmitted on the `initialize` request itself.\n
+   * @example 2025-06-18
    * @type string | undefined
    */
   'MCP-Protocol-Version'?: string | undefined;
 };
 
 /**
- * @description JSON-RPC response to the request
+ * @description A JSON-RPC 2.0 response. Exactly one of `result` or `error` is present.
+ * @type object
  */
 export type SendMcpRequest200 = JSONRPCResponse;
 
-/**
- * @description Notification or response accepted; no body is returned
- */
 export type SendMcpRequest202 = unknown;
 
-/**
- * @description Malformed message, unsupported `MCP-Protocol-Version`, or an `Accept` header missing one of the required media types
- */
 export type SendMcpRequest400 = unknown;
 
-/**
- * @description Missing or invalid credentials
- */
 export type SendMcpRequest401 = unknown;
 
-/**
- * @description Request body larger than 4 MiB
- */
 export type SendMcpRequest413 = unknown;
 
-/**
- * @description `Content-Type` is not `application/json`
- */
 export type SendMcpRequest415 = unknown;
 
-/**
- * @description Internal server error
- */
 export type SendMcpRequest500 = unknown;
 
+/**
+ * @description A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a\nresponse; a notification carries `method` without `id` and is not. The `method` and\n`params` values are defined by the MCP specification.\n
+ * @type object
+ */
 export type SendMcpRequestMutationRequest = JSONRPCMessage;
 
-export type SendMcpRequestMutationResponse = SendMcpRequest200 | SendMcpRequest202;
+export type SendMcpRequestOptions = {
+  body: SendMcpRequestMutationRequest;
+  path?: never | undefined;
+  query?: never | undefined;
+  headers: SendMcpRequestHeaderParams;
+};
 
-export type SendMcpRequestMutation = {
-  Response: SendMcpRequest200 | SendMcpRequest202;
-  Request: SendMcpRequestMutationRequest;
-  HeaderParams: SendMcpRequestHeaderParams;
-  Errors: SendMcpRequest400 | SendMcpRequest401 | SendMcpRequest413 | SendMcpRequest415 | SendMcpRequest500;
+export type SendMcpRequestResponses = {
+  '200': SendMcpRequest200;
+  '202': SendMcpRequest202;
+  '400': SendMcpRequest400;
+  '401': SendMcpRequest401;
+  '413': SendMcpRequest413;
+  '415': SendMcpRequest415;
+  '500': SendMcpRequest500;
 };
 
 /**
- * @description Webhook received and processed successfully
+ * @description Union of all possible responses
  */
+export type SendMcpRequestResponse =
+  | SendMcpRequest200
+  | SendMcpRequest202
+  | SendMcpRequest400
+  | SendMcpRequest401
+  | SendMcpRequest413
+  | SendMcpRequest415
+  | SendMcpRequest500;
+
 export type GithubWebhook200 = unknown;
 
-/**
- * @description Invalid signature or malformed request
- */
 export type GithubWebhook400 = unknown;
 
-/**
- * @description Internal error while handling the webhook
- */
 export type GithubWebhook500 = unknown;
 
+/**
+ * @description GitHub webhook event payload
+ * @type object
+ */
 export type GithubWebhookMutationRequest = {
   [key: string]: unknown;
 };
 
-export type GithubWebhookMutationResponse = GithubWebhook200;
-
-export type GithubWebhookMutation = {
-  Response: GithubWebhook200;
-  Request: GithubWebhookMutationRequest;
-  Errors: GithubWebhook400 | GithubWebhook500;
+export type GithubWebhookOptions = {
+  body: GithubWebhookMutationRequest;
+  path?: never | undefined;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type GithubWebhookResponses = {
+  '200': GithubWebhook200;
+  '400': GithubWebhook400;
+  '500': GithubWebhook500;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type GithubWebhookResponse = GithubWebhook200 | GithubWebhook400 | GithubWebhook500;
 
 export type ListRegionsPathParams = {
   /**
@@ -5154,17 +5338,15 @@ export type ListRegionsPathParams = {
   organizationID: OrganizationID;
 };
 
-export const regionsProviderEnum = {
+export const listRegionsStatus200RegionsProviderEnum = {
   aws: 'aws',
   gcp: 'gcp',
   custom: 'custom'
 } as const;
 
-export type RegionsProviderEnumKey = (typeof regionsProviderEnum)[keyof typeof regionsProviderEnum];
+export type ListRegionsStatus200RegionsProviderEnum =
+  (typeof listRegionsStatus200RegionsProviderEnum)[keyof typeof listRegionsStatus200RegionsProviderEnum];
 
-/**
- * @description List of regions available for the organization
- */
 export type ListRegions200 = {
   /**
    * @description Array of available regions with their properties
@@ -5190,7 +5372,7 @@ export type ListRegions200 = {
      * @description Cloud provider the region runs on
      * @type string
      */
-    provider: RegionsProviderEnumKey;
+    provider: ListRegionsStatus200RegionsProviderEnum;
     /**
      * @description Organization that owns this region, if set the region is only available to this organization
      * @type string
@@ -5199,9 +5381,6 @@ export type ListRegions200 = {
   }[];
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type ListRegions400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5215,9 +5394,6 @@ export type ListRegions400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type ListRegions401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5231,23 +5407,34 @@ export type ListRegions401 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type ListRegions5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type ListRegionsError = unknown;
+export type ListRegionsDefault = unknown;
 
-export type ListRegionsQueryResponse = ListRegions200;
-
-export type ListRegionsQuery = {
-  Response: ListRegions200;
-  PathParams: ListRegionsPathParams;
-  Errors: ListRegions400 | ListRegions401;
+export type ListRegionsOptions = {
+  body?: never | undefined;
+  path: ListRegionsPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type ListRegionsResponses = {
+  '200': ListRegions200;
+  '400': ListRegions400;
+  '401': ListRegions401;
+  '5XX': ListRegions5XX;
+  default: ListRegionsDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type ListRegionsResponse =
+  | ListRegions200
+  | ListRegions400
+  | ListRegions401
+  | ListRegions5XX
+  | ListRegionsDefault;
 
 export type ListInstanceTypesPathParams = {
   /**
@@ -5266,9 +5453,6 @@ export type ListInstanceTypesQueryParams = {
   region: string;
 };
 
-/**
- * @description List of instance types available for the organization
- */
 export type ListInstanceTypes200 = {
   /**
    * @description Array of available instance types with their properties
@@ -5292,12 +5476,16 @@ export type ListInstanceTypes200 = {
     ram: number;
     /**
      * @description price per hour for this instance type and region
-     * @type number, double
+     *
+     * Format: `double`
+     * @type number
      */
     hourlyRate: number;
     /**
      * @description price per month for a GB of storage for this region
-     * @type number, double
+     *
+     * Format: `double`
+     * @type number
      */
     storageMonthlyRate: number;
     /**
@@ -5308,9 +5496,6 @@ export type ListInstanceTypes200 = {
   }[];
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type ListInstanceTypes400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5324,9 +5509,6 @@ export type ListInstanceTypes400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type ListInstanceTypes401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5340,24 +5522,34 @@ export type ListInstanceTypes401 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type ListInstanceTypes5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type ListInstanceTypesError = unknown;
+export type ListInstanceTypesDefault = unknown;
 
-export type ListInstanceTypesQueryResponse = ListInstanceTypes200;
-
-export type ListInstanceTypesQuery = {
-  Response: ListInstanceTypes200;
-  PathParams: ListInstanceTypesPathParams;
-  QueryParams: ListInstanceTypesQueryParams;
-  Errors: ListInstanceTypes400 | ListInstanceTypes401;
+export type ListInstanceTypesOptions = {
+  body?: never | undefined;
+  path: ListInstanceTypesPathParams;
+  query: ListInstanceTypesQueryParams;
+  headers?: never | undefined;
 };
+
+export type ListInstanceTypesResponses = {
+  '200': ListInstanceTypes200;
+  '400': ListInstanceTypes400;
+  '401': ListInstanceTypes401;
+  '5XX': ListInstanceTypes5XX;
+  default: ListInstanceTypesDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type ListInstanceTypesResponse =
+  | ListInstanceTypes200
+  | ListInstanceTypes400
+  | ListInstanceTypes401
+  | ListInstanceTypes5XX
+  | ListInstanceTypesDefault;
 
 export type ListImagesPathParams = {
   /**
@@ -5376,9 +5568,6 @@ export type ListImagesQueryParams = {
   region?: string | undefined;
 };
 
-/**
- * @description List of images available for the organization
- */
 export type ListImages200 = {
   /**
    * @description Array of available images with their properties
@@ -5387,9 +5576,6 @@ export type ListImages200 = {
   images: Image[];
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type ListImages400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5403,9 +5589,6 @@ export type ListImages400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type ListImages401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5419,24 +5602,29 @@ export type ListImages401 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type ListImages5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type ListImagesError = unknown;
+export type ListImagesDefault = unknown;
 
-export type ListImagesQueryResponse = ListImages200;
-
-export type ListImagesQuery = {
-  Response: ListImages200;
-  PathParams: ListImagesPathParams;
-  QueryParams: ListImagesQueryParams;
-  Errors: ListImages400 | ListImages401;
+export type ListImagesOptions = {
+  body?: never | undefined;
+  path: ListImagesPathParams;
+  query?: ListImagesQueryParams | undefined;
+  headers?: never | undefined;
 };
+
+export type ListImagesResponses = {
+  '200': ListImages200;
+  '400': ListImages400;
+  '401': ListImages401;
+  '5XX': ListImages5XX;
+  default: ListImagesDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type ListImagesResponse = ListImages200 | ListImages400 | ListImages401 | ListImages5XX | ListImagesDefault;
 
 export type ListExtensionsPathParams = {
   /**
@@ -5460,9 +5648,6 @@ export type ListExtensionsQueryParams = {
   region?: string | undefined;
 };
 
-/**
- * @description List of extensions available for the image in the organization
- */
 export type ListExtensions200 = {
   /**
    * @description Array of available images with their properties
@@ -5471,9 +5656,6 @@ export type ListExtensions200 = {
   extensions: Extension[];
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type ListExtensions400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5487,9 +5669,6 @@ export type ListExtensions400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type ListExtensions401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5503,24 +5682,34 @@ export type ListExtensions401 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type ListExtensions5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type ListExtensionsError = unknown;
+export type ListExtensionsDefault = unknown;
 
-export type ListExtensionsQueryResponse = ListExtensions200;
-
-export type ListExtensionsQuery = {
-  Response: ListExtensions200;
-  PathParams: ListExtensionsPathParams;
-  QueryParams: ListExtensionsQueryParams;
-  Errors: ListExtensions400 | ListExtensions401;
+export type ListExtensionsOptions = {
+  body?: never | undefined;
+  path: ListExtensionsPathParams;
+  query: ListExtensionsQueryParams;
+  headers?: never | undefined;
 };
+
+export type ListExtensionsResponses = {
+  '200': ListExtensions200;
+  '400': ListExtensions400;
+  '401': ListExtensions401;
+  '5XX': ListExtensions5XX;
+  default: ListExtensionsDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type ListExtensionsResponse =
+  | ListExtensions200
+  | ListExtensions400
+  | ListExtensions401
+  | ListExtensions5XX
+  | ListExtensionsDefault;
 
 export type GetOrganizationLimitsPathParams = {
   /**
@@ -5532,13 +5721,10 @@ export type GetOrganizationLimitsPathParams = {
 };
 
 /**
- * @description Effective resource limits for the organization
+ * @description Effective resource limits for an organization, covering org-level defaults for all projects plus organization-specific constraints
  */
 export type GetOrganizationLimits200 = OrganizationLimits;
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type GetOrganizationLimits401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5552,9 +5738,6 @@ export type GetOrganizationLimits401 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type GetOrganizationLimits403 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5568,18 +5751,30 @@ export type GetOrganizationLimits403 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type GetOrganizationLimits5XX = unknown;
 
-export type GetOrganizationLimitsQueryResponse = GetOrganizationLimits200;
-
-export type GetOrganizationLimitsQuery = {
-  Response: GetOrganizationLimits200;
-  PathParams: GetOrganizationLimitsPathParams;
-  Errors: GetOrganizationLimits401 | GetOrganizationLimits403;
+export type GetOrganizationLimitsOptions = {
+  body?: never | undefined;
+  path: GetOrganizationLimitsPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type GetOrganizationLimitsResponses = {
+  '200': GetOrganizationLimits200;
+  '401': GetOrganizationLimits401;
+  '403': GetOrganizationLimits403;
+  '5XX': GetOrganizationLimits5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type GetOrganizationLimitsResponse =
+  | GetOrganizationLimits200
+  | GetOrganizationLimits401
+  | GetOrganizationLimits403
+  | GetOrganizationLimits5XX;
 
 export type GetDefaultProjectLimitsPathParams = {
   /**
@@ -5591,17 +5786,26 @@ export type GetDefaultProjectLimitsPathParams = {
 };
 
 /**
- * @description Default resource limits for projects in the organization
+ * @description Resource limits and constraints for projects within an organization
+ * @type object
  */
 export type GetDefaultProjectLimits200 = ProjectLimits;
 
-export type GetDefaultProjectLimitsQueryResponse = GetDefaultProjectLimits200;
-
-export type GetDefaultProjectLimitsQuery = {
-  Response: GetDefaultProjectLimits200;
-  PathParams: GetDefaultProjectLimitsPathParams;
-  Errors: any;
+export type GetDefaultProjectLimitsOptions = {
+  body?: never | undefined;
+  path: GetDefaultProjectLimitsPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type GetDefaultProjectLimitsResponses = {
+  '200': GetDefaultProjectLimits200;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type GetDefaultProjectLimitsResponse = GetDefaultProjectLimits200;
 
 export type ListProjectsPathParams = {
   /**
@@ -5612,9 +5816,6 @@ export type ListProjectsPathParams = {
   organizationID: OrganizationID;
 };
 
-/**
- * @description A list of projects within the organization
- */
 export type ListProjects200 = {
   /**
    * @description Array of project objects with their metadata
@@ -5623,9 +5824,6 @@ export type ListProjects200 = {
   projects: Project[];
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type ListProjects400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5639,9 +5837,6 @@ export type ListProjects400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type ListProjects401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5655,23 +5850,34 @@ export type ListProjects401 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type ListProjects5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type ListProjectsError = unknown;
+export type ListProjectsDefault = unknown;
 
-export type ListProjectsQueryResponse = ListProjects200;
-
-export type ListProjectsQuery = {
-  Response: ListProjects200;
-  PathParams: ListProjectsPathParams;
-  Errors: ListProjects400 | ListProjects401;
+export type ListProjectsOptions = {
+  body?: never | undefined;
+  path: ListProjectsPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type ListProjectsResponses = {
+  '200': ListProjects200;
+  '400': ListProjects400;
+  '401': ListProjects401;
+  '5XX': ListProjects5XX;
+  default: ListProjectsDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type ListProjectsResponse =
+  | ListProjects200
+  | ListProjects400
+  | ListProjects401
+  | ListProjects5XX
+  | ListProjectsDefault;
 
 export type CreateProjectPathParams = {
   /**
@@ -5683,13 +5889,11 @@ export type CreateProjectPathParams = {
 };
 
 /**
- * @description Project successfully created
+ * @description Details of a project including its ID, name, and creation/update timestamps
+ * @type object
  */
 export type CreateProject201 = Project;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type CreateProject400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5703,9 +5907,6 @@ export type CreateProject400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type CreateProject401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5719,15 +5920,9 @@ export type CreateProject401 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type CreateProject5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type CreateProjectError = unknown;
+export type CreateProjectDefault = unknown;
 
 export type CreateProjectMutationRequest = {
   /**
@@ -5742,14 +5937,30 @@ export type CreateProjectMutationRequest = {
   configuration?: ProjectConfiguration | undefined;
 };
 
-export type CreateProjectMutationResponse = CreateProject201;
-
-export type CreateProjectMutation = {
-  Response: CreateProject201;
-  Request: CreateProjectMutationRequest;
-  PathParams: CreateProjectPathParams;
-  Errors: CreateProject400 | CreateProject401;
+export type CreateProjectOptions = {
+  body: CreateProjectMutationRequest;
+  path: CreateProjectPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type CreateProjectResponses = {
+  '201': CreateProject201;
+  '400': CreateProject400;
+  '401': CreateProject401;
+  '5XX': CreateProject5XX;
+  default: CreateProjectDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type CreateProjectResponse =
+  | CreateProject201
+  | CreateProject400
+  | CreateProject401
+  | CreateProject5XX
+  | CreateProjectDefault;
 
 export type GetProjectPathParams = {
   /**
@@ -5766,13 +5977,11 @@ export type GetProjectPathParams = {
 };
 
 /**
- * @description Project details retrieved successfully
+ * @description Details of a project including its ID, name, and creation/update timestamps
+ * @type object
  */
 export type GetProject200 = Project;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type GetProject400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5786,9 +5995,6 @@ export type GetProject400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type GetProject401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5802,9 +6008,6 @@ export type GetProject401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type GetProject404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5818,23 +6021,36 @@ export type GetProject404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type GetProject5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type GetProjectError = unknown;
+export type GetProjectDefault = unknown;
 
-export type GetProjectQueryResponse = GetProject200;
-
-export type GetProjectQuery = {
-  Response: GetProject200;
-  PathParams: GetProjectPathParams;
-  Errors: GetProject400 | GetProject401 | GetProject404;
+export type GetProjectOptions = {
+  body?: never | undefined;
+  path: GetProjectPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type GetProjectResponses = {
+  '200': GetProject200;
+  '400': GetProject400;
+  '401': GetProject401;
+  '404': GetProject404;
+  '5XX': GetProject5XX;
+  default: GetProjectDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type GetProjectResponse =
+  | GetProject200
+  | GetProject400
+  | GetProject401
+  | GetProject404
+  | GetProject5XX
+  | GetProjectDefault;
 
 export type UpdateProjectPathParams = {
   /**
@@ -5851,13 +6067,11 @@ export type UpdateProjectPathParams = {
 };
 
 /**
- * @description Project successfully updated
+ * @description Details of a project including its ID, name, and creation/update timestamps
+ * @type object
  */
 export type UpdateProject200 = Project;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type UpdateProject400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5871,9 +6085,6 @@ export type UpdateProject400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type UpdateProject401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5887,9 +6098,6 @@ export type UpdateProject401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type UpdateProject404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5903,15 +6111,9 @@ export type UpdateProject404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type UpdateProject5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type UpdateProjectError = unknown;
+export type UpdateProjectDefault = unknown;
 
 export type UpdateProjectMutationRequest = {
   /**
@@ -5926,14 +6128,32 @@ export type UpdateProjectMutationRequest = {
   configuration?: UpdateProjectConfiguration | undefined;
 };
 
-export type UpdateProjectMutationResponse = UpdateProject200;
-
-export type UpdateProjectMutation = {
-  Response: UpdateProject200;
-  Request: UpdateProjectMutationRequest;
-  PathParams: UpdateProjectPathParams;
-  Errors: UpdateProject400 | UpdateProject401 | UpdateProject404;
+export type UpdateProjectOptions = {
+  body: UpdateProjectMutationRequest;
+  path: UpdateProjectPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type UpdateProjectResponses = {
+  '200': UpdateProject200;
+  '400': UpdateProject400;
+  '401': UpdateProject401;
+  '404': UpdateProject404;
+  '5XX': UpdateProject5XX;
+  default: UpdateProjectDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type UpdateProjectResponse =
+  | UpdateProject200
+  | UpdateProject400
+  | UpdateProject401
+  | UpdateProject404
+  | UpdateProject5XX
+  | UpdateProjectDefault;
 
 export type DeleteProjectPathParams = {
   /**
@@ -5949,14 +6169,8 @@ export type DeleteProjectPathParams = {
   projectID: string;
 };
 
-/**
- * @description Project successfully deleted
- */
 export type DeleteProject204 = unknown;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type DeleteProject400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5970,9 +6184,6 @@ export type DeleteProject400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type DeleteProject401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -5986,9 +6197,6 @@ export type DeleteProject401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type DeleteProject404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6002,23 +6210,36 @@ export type DeleteProject404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type DeleteProject5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type DeleteProjectError = unknown;
+export type DeleteProjectDefault = unknown;
 
-export type DeleteProjectMutationResponse = DeleteProject204;
-
-export type DeleteProjectMutation = {
-  Response: DeleteProject204;
-  PathParams: DeleteProjectPathParams;
-  Errors: DeleteProject400 | DeleteProject401 | DeleteProject404;
+export type DeleteProjectOptions = {
+  body?: never | undefined;
+  path: DeleteProjectPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type DeleteProjectResponses = {
+  '204': DeleteProject204;
+  '400': DeleteProject400;
+  '401': DeleteProject401;
+  '404': DeleteProject404;
+  '5XX': DeleteProject5XX;
+  default: DeleteProjectDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type DeleteProjectResponse =
+  | DeleteProject204
+  | DeleteProject400
+  | DeleteProject401
+  | DeleteProject404
+  | DeleteProject5XX
+  | DeleteProjectDefault;
 
 export type GetProjectLimitsPathParams = {
   /**
@@ -6035,13 +6256,11 @@ export type GetProjectLimitsPathParams = {
 };
 
 /**
- * @description Effective resource limits for the project
+ * @description Full set of resource limits applicable to a project and its branches
+ * @type object
  */
 export type GetProjectLimits200 = EffectiveProjectLimits;
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type GetProjectLimits401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6055,23 +6274,32 @@ export type GetProjectLimits401 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type GetProjectLimits5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type GetProjectLimitsError = unknown;
+export type GetProjectLimitsDefault = unknown;
 
-export type GetProjectLimitsQueryResponse = GetProjectLimits200;
-
-export type GetProjectLimitsQuery = {
-  Response: GetProjectLimits200;
-  PathParams: GetProjectLimitsPathParams;
-  Errors: GetProjectLimits401;
+export type GetProjectLimitsOptions = {
+  body?: never | undefined;
+  path: GetProjectLimitsPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type GetProjectLimitsResponses = {
+  '200': GetProjectLimits200;
+  '401': GetProjectLimits401;
+  '5XX': GetProjectLimits5XX;
+  default: GetProjectLimitsDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type GetProjectLimitsResponse =
+  | GetProjectLimits200
+  | GetProjectLimits401
+  | GetProjectLimits5XX
+  | GetProjectLimitsDefault;
 
 export type ListBackupsPathParams = {
   /**
@@ -6087,9 +6315,6 @@ export type ListBackupsPathParams = {
   projectID: string;
 };
 
-/**
- * @description A list of backups within the project
- */
 export type ListBackups200 = {
   /**
    * @description list of backups within the project
@@ -6098,9 +6323,6 @@ export type ListBackups200 = {
   backups: BackupMetadata[];
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type ListBackups400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6114,9 +6336,6 @@ export type ListBackups400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type ListBackups401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6130,9 +6349,6 @@ export type ListBackups401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type ListBackups404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6146,23 +6362,36 @@ export type ListBackups404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type ListBackups5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type ListBackupsError = unknown;
+export type ListBackupsDefault = unknown;
 
-export type ListBackupsQueryResponse = ListBackups200;
-
-export type ListBackupsQuery = {
-  Response: ListBackups200;
-  PathParams: ListBackupsPathParams;
-  Errors: ListBackups400 | ListBackups401 | ListBackups404;
+export type ListBackupsOptions = {
+  body?: never | undefined;
+  path: ListBackupsPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type ListBackupsResponses = {
+  '200': ListBackups200;
+  '400': ListBackups400;
+  '401': ListBackups401;
+  '404': ListBackups404;
+  '5XX': ListBackups5XX;
+  default: ListBackupsDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type ListBackupsResponse =
+  | ListBackups200
+  | ListBackups400
+  | ListBackups401
+  | ListBackups404
+  | ListBackups5XX
+  | ListBackupsDefault;
 
 export type GetBackupPathParams = {
   /**
@@ -6184,13 +6413,11 @@ export type GetBackupPathParams = {
 };
 
 /**
- * @description The backup metadata
+ * @description metadata about a continuous backup
+ * @type object
  */
 export type GetBackup200 = BackupMetadata;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type GetBackup400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6204,9 +6431,6 @@ export type GetBackup400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type GetBackup401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6220,9 +6444,6 @@ export type GetBackup401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type GetBackup404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6236,23 +6457,36 @@ export type GetBackup404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type GetBackup5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type GetBackupError = unknown;
+export type GetBackupDefault = unknown;
 
-export type GetBackupQueryResponse = GetBackup200;
-
-export type GetBackupQuery = {
-  Response: GetBackup200;
-  PathParams: GetBackupPathParams;
-  Errors: GetBackup400 | GetBackup401 | GetBackup404;
+export type GetBackupOptions = {
+  body?: never | undefined;
+  path: GetBackupPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type GetBackupResponses = {
+  '200': GetBackup200;
+  '400': GetBackup400;
+  '401': GetBackup401;
+  '404': GetBackup404;
+  '5XX': GetBackup5XX;
+  default: GetBackupDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type GetBackupResponse =
+  | GetBackup200
+  | GetBackup400
+  | GetBackup401
+  | GetBackup404
+  | GetBackup5XX
+  | GetBackupDefault;
 
 export type ListBranchesPathParams = {
   /**
@@ -6268,9 +6502,6 @@ export type ListBranchesPathParams = {
   projectID: string;
 };
 
-/**
- * @description List of branches within the project
- */
 export type ListBranches200 = {
   /**
    * @description Array of branch objects with their metadata
@@ -6279,9 +6510,6 @@ export type ListBranches200 = {
   branches: BranchListMetadata[];
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type ListBranches400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6295,9 +6523,6 @@ export type ListBranches400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type ListBranches401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6311,9 +6536,6 @@ export type ListBranches401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type ListBranches404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6327,23 +6549,36 @@ export type ListBranches404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type ListBranches5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type ListBranchesError = unknown;
+export type ListBranchesDefault = unknown;
 
-export type ListBranchesQueryResponse = ListBranches200;
-
-export type ListBranchesQuery = {
-  Response: ListBranches200;
-  PathParams: ListBranchesPathParams;
-  Errors: ListBranches400 | ListBranches401 | ListBranches404;
+export type ListBranchesOptions = {
+  body?: never | undefined;
+  path: ListBranchesPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type ListBranchesResponses = {
+  '200': ListBranches200;
+  '400': ListBranches400;
+  '401': ListBranches401;
+  '404': ListBranches404;
+  '5XX': ListBranches5XX;
+  default: ListBranchesDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type ListBranchesResponse =
+  | ListBranches200
+  | ListBranches400
+  | ListBranches401
+  | ListBranches404
+  | ListBranches5XX
+  | ListBranchesDefault;
 
 export type CreateBranchPathParams = {
   /**
@@ -6360,13 +6595,11 @@ export type CreateBranchPathParams = {
 };
 
 /**
- * @description Branch successfully created
+ * @description Basic metadata about a branch, used in response to create/update operations
+ * @type object
  */
 export type CreateBranch201 = BranchShortMetadata;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type CreateBranch400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6380,9 +6613,6 @@ export type CreateBranch400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type CreateBranch401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6396,9 +6626,6 @@ export type CreateBranch401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type CreateBranch404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6412,9 +6639,6 @@ export type CreateBranch404 = {
   message: string;
 };
 
-/**
- * @description Error response when a precondition for the request is not met
- */
 export type CreateBranch412 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6428,26 +6652,43 @@ export type CreateBranch412 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type CreateBranch5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type CreateBranchError = unknown;
+export type CreateBranchDefault = unknown;
 
+/**
+ * @description Details required when creating a new branch
+ */
 export type CreateBranchMutationRequest = BranchCreationDetails;
 
-export type CreateBranchMutationResponse = CreateBranch201;
-
-export type CreateBranchMutation = {
-  Response: CreateBranch201;
-  Request: CreateBranchMutationRequest;
-  PathParams: CreateBranchPathParams;
-  Errors: CreateBranch400 | CreateBranch401 | CreateBranch404 | CreateBranch412;
+export type CreateBranchOptions = {
+  body: CreateBranchMutationRequest;
+  path: CreateBranchPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type CreateBranchResponses = {
+  '201': CreateBranch201;
+  '400': CreateBranch400;
+  '401': CreateBranch401;
+  '404': CreateBranch404;
+  '412': CreateBranch412;
+  '5XX': CreateBranch5XX;
+  default: CreateBranchDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type CreateBranchResponse =
+  | CreateBranch201
+  | CreateBranch400
+  | CreateBranch401
+  | CreateBranch404
+  | CreateBranch412
+  | CreateBranch5XX
+  | CreateBranchDefault;
 
 export type DescribeBranchPathParams = {
   /**
@@ -6469,13 +6710,11 @@ export type DescribeBranchPathParams = {
 };
 
 /**
- * @description Branch details retrieved successfully
+ * @description Detailed metadata about a branch, including its status and configuration
+ * @type object
  */
 export type DescribeBranch200 = BranchMetadata;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type DescribeBranch400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6489,9 +6728,6 @@ export type DescribeBranch400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type DescribeBranch401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6505,9 +6741,6 @@ export type DescribeBranch401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type DescribeBranch404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6521,23 +6754,36 @@ export type DescribeBranch404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type DescribeBranch5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type DescribeBranchError = unknown;
+export type DescribeBranchDefault = unknown;
 
-export type DescribeBranchQueryResponse = DescribeBranch200;
-
-export type DescribeBranchQuery = {
-  Response: DescribeBranch200;
-  PathParams: DescribeBranchPathParams;
-  Errors: DescribeBranch400 | DescribeBranch401 | DescribeBranch404;
+export type DescribeBranchOptions = {
+  body?: never | undefined;
+  path: DescribeBranchPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type DescribeBranchResponses = {
+  '200': DescribeBranch200;
+  '400': DescribeBranch400;
+  '401': DescribeBranch401;
+  '404': DescribeBranch404;
+  '5XX': DescribeBranch5XX;
+  default: DescribeBranchDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type DescribeBranchResponse =
+  | DescribeBranch200
+  | DescribeBranch400
+  | DescribeBranch401
+  | DescribeBranch404
+  | DescribeBranch5XX
+  | DescribeBranchDefault;
 
 export type UpdateBranchPathParams = {
   /**
@@ -6559,13 +6805,11 @@ export type UpdateBranchPathParams = {
 };
 
 /**
- * @description Branch successfully updated
+ * @description Basic metadata about a branch, used in response to create/update operations
+ * @type object
  */
 export type UpdateBranch200 = BranchShortMetadata;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type UpdateBranch400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6579,9 +6823,6 @@ export type UpdateBranch400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type UpdateBranch401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6595,9 +6836,6 @@ export type UpdateBranch401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type UpdateBranch404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6611,26 +6849,42 @@ export type UpdateBranch404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type UpdateBranch5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type UpdateBranchError = unknown;
+export type UpdateBranchDefault = unknown;
 
+/**
+ * @description Details that can be updated for an existing branch
+ * @type object
+ */
 export type UpdateBranchMutationRequest = BranchUpdateDetails;
 
-export type UpdateBranchMutationResponse = UpdateBranch200;
-
-export type UpdateBranchMutation = {
-  Response: UpdateBranch200;
-  Request: UpdateBranchMutationRequest;
-  PathParams: UpdateBranchPathParams;
-  Errors: UpdateBranch400 | UpdateBranch401 | UpdateBranch404;
+export type UpdateBranchOptions = {
+  body: UpdateBranchMutationRequest;
+  path: UpdateBranchPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type UpdateBranchResponses = {
+  '200': UpdateBranch200;
+  '400': UpdateBranch400;
+  '401': UpdateBranch401;
+  '404': UpdateBranch404;
+  '5XX': UpdateBranch5XX;
+  default: UpdateBranchDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type UpdateBranchResponse =
+  | UpdateBranch200
+  | UpdateBranch400
+  | UpdateBranch401
+  | UpdateBranch404
+  | UpdateBranch5XX
+  | UpdateBranchDefault;
 
 export type DeleteBranchPathParams = {
   /**
@@ -6651,14 +6905,8 @@ export type DeleteBranchPathParams = {
   branchID: string;
 };
 
-/**
- * @description Branch successfully deleted
- */
 export type DeleteBranch204 = unknown;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type DeleteBranch400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6672,9 +6920,6 @@ export type DeleteBranch400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type DeleteBranch401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6688,9 +6933,6 @@ export type DeleteBranch401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type DeleteBranch404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6704,23 +6946,36 @@ export type DeleteBranch404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type DeleteBranch5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type DeleteBranchError = unknown;
+export type DeleteBranchDefault = unknown;
 
-export type DeleteBranchMutationResponse = DeleteBranch204;
-
-export type DeleteBranchMutation = {
-  Response: DeleteBranch204;
-  PathParams: DeleteBranchPathParams;
-  Errors: DeleteBranch400 | DeleteBranch401 | DeleteBranch404;
+export type DeleteBranchOptions = {
+  body?: never | undefined;
+  path: DeleteBranchPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type DeleteBranchResponses = {
+  '204': DeleteBranch204;
+  '400': DeleteBranch400;
+  '401': DeleteBranch401;
+  '404': DeleteBranch404;
+  '5XX': DeleteBranch5XX;
+  default: DeleteBranchDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type DeleteBranchResponse =
+  | DeleteBranch204
+  | DeleteBranch400
+  | DeleteBranch401
+  | DeleteBranch404
+  | DeleteBranch5XX
+  | DeleteBranchDefault;
 
 export type GetBranchCredentialsPathParams = {
   /**
@@ -6728,33 +6983,25 @@ export type GetBranchCredentialsPathParams = {
    * @type string
    */
   organizationID: OrganizationID;
-  /**
-   * @type string
-   */
   projectID: string;
-  /**
-   * @type string
-   */
   branchID: string;
 };
 
 export type GetBranchCredentialsQueryParams = {
   /**
    * @description Username that the credentials requested for, defaults to `xata`
-   * @default "xata"
+   * @default 'xata'
    * @type string | undefined
    */
   username?: string | undefined;
 };
 
 /**
- * @description Credentials for the branch retrieved successfully
+ * @description Credentials and connection details for accessing a branch
+ * @type object
  */
 export type GetBranchCredentials200 = BranchCredentials;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type GetBranchCredentials400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6768,9 +7015,6 @@ export type GetBranchCredentials400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type GetBranchCredentials401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6784,9 +7028,6 @@ export type GetBranchCredentials401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type GetBranchCredentials404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6800,24 +7041,36 @@ export type GetBranchCredentials404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type GetBranchCredentials5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type GetBranchCredentialsError = unknown;
+export type GetBranchCredentialsDefault = unknown;
 
-export type GetBranchCredentialsQueryResponse = GetBranchCredentials200;
-
-export type GetBranchCredentialsQuery = {
-  Response: GetBranchCredentials200;
-  PathParams: GetBranchCredentialsPathParams;
-  QueryParams: GetBranchCredentialsQueryParams;
-  Errors: GetBranchCredentials400 | GetBranchCredentials401 | GetBranchCredentials404;
+export type GetBranchCredentialsOptions = {
+  body?: never | undefined;
+  path: GetBranchCredentialsPathParams;
+  query?: GetBranchCredentialsQueryParams | undefined;
+  headers?: never | undefined;
 };
+
+export type GetBranchCredentialsResponses = {
+  '200': GetBranchCredentials200;
+  '400': GetBranchCredentials400;
+  '401': GetBranchCredentials401;
+  '404': GetBranchCredentials404;
+  '5XX': GetBranchCredentials5XX;
+  default: GetBranchCredentialsDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type GetBranchCredentialsResponse =
+  | GetBranchCredentials200
+  | GetBranchCredentials400
+  | GetBranchCredentials401
+  | GetBranchCredentials404
+  | GetBranchCredentials5XX
+  | GetBranchCredentialsDefault;
 
 export type RotateBranchCredentialsPathParams = {
   /**
@@ -6825,24 +7078,12 @@ export type RotateBranchCredentialsPathParams = {
    * @type string
    */
   organizationID: OrganizationID;
-  /**
-   * @type string
-   */
   projectID: string;
-  /**
-   * @type string
-   */
   branchID: string;
 };
 
-/**
- * @description Credential rotation initiated successfully
- */
 export type RotateBranchCredentials204 = unknown;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type RotateBranchCredentials400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6856,9 +7097,6 @@ export type RotateBranchCredentials400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type RotateBranchCredentials401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6872,9 +7110,6 @@ export type RotateBranchCredentials401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type RotateBranchCredentials404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6888,26 +7123,42 @@ export type RotateBranchCredentials404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type RotateBranchCredentials5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type RotateBranchCredentialsError = unknown;
+export type RotateBranchCredentialsDefault = unknown;
 
+/**
+ * @description Request to rotate credentials for a branch database user
+ * @type object
+ */
 export type RotateBranchCredentialsMutationRequest = RotateCredentialsRequest;
 
-export type RotateBranchCredentialsMutationResponse = RotateBranchCredentials204;
-
-export type RotateBranchCredentialsMutation = {
-  Response: RotateBranchCredentials204;
-  Request: RotateBranchCredentialsMutationRequest;
-  PathParams: RotateBranchCredentialsPathParams;
-  Errors: RotateBranchCredentials400 | RotateBranchCredentials401 | RotateBranchCredentials404;
+export type RotateBranchCredentialsOptions = {
+  body: RotateBranchCredentialsMutationRequest;
+  path: RotateBranchCredentialsPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type RotateBranchCredentialsResponses = {
+  '204': RotateBranchCredentials204;
+  '400': RotateBranchCredentials400;
+  '401': RotateBranchCredentials401;
+  '404': RotateBranchCredentials404;
+  '5XX': RotateBranchCredentials5XX;
+  default: RotateBranchCredentialsDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type RotateBranchCredentialsResponse =
+  | RotateBranchCredentials204
+  | RotateBranchCredentials400
+  | RotateBranchCredentials401
+  | RotateBranchCredentials404
+  | RotateBranchCredentials5XX
+  | RotateBranchCredentialsDefault;
 
 export type BranchMetricsPathParams = {
   /**
@@ -6915,24 +7166,16 @@ export type BranchMetricsPathParams = {
    * @type string
    */
   organizationID: OrganizationID;
-  /**
-   * @type string
-   */
   projectID: string;
-  /**
-   * @type string
-   */
   branchID: string;
 };
 
 /**
- * @description Metrics for a branch
+ * @description A collection of metrics (cpu, memory, disk,...) for each of the instances of a branch
+ * @type object
  */
 export type BranchMetrics200 = BranchMetrics;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type BranchMetrics400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6946,9 +7189,6 @@ export type BranchMetrics400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type BranchMetrics401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6962,9 +7202,6 @@ export type BranchMetrics401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type BranchMetrics404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -6978,26 +7215,38 @@ export type BranchMetrics404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type BranchMetrics5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type BranchMetricsError = unknown;
+export type BranchMetricsDefault = unknown;
 
 export type BranchMetricsMutationRequest = BranchMetricsRequest;
 
-export type BranchMetricsMutationResponse = BranchMetrics200;
-
-export type BranchMetricsMutation = {
-  Response: BranchMetrics200;
-  Request: BranchMetricsMutationRequest;
-  PathParams: BranchMetricsPathParams;
-  Errors: BranchMetrics400 | BranchMetrics401 | BranchMetrics404;
+export type BranchMetricsOptions = {
+  body: BranchMetricsMutationRequest;
+  path: BranchMetricsPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type BranchMetricsResponses = {
+  '200': BranchMetrics200;
+  '400': BranchMetrics400;
+  '401': BranchMetrics401;
+  '404': BranchMetrics404;
+  '5XX': BranchMetrics5XX;
+  default: BranchMetricsDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type BranchMetricsResponse =
+  | BranchMetrics200
+  | BranchMetrics400
+  | BranchMetrics401
+  | BranchMetrics404
+  | BranchMetrics5XX
+  | BranchMetricsDefault;
 
 export type RestoreFromBackupPathParams = {
   /**
@@ -7019,13 +7268,11 @@ export type RestoreFromBackupPathParams = {
 };
 
 /**
- * @description Branch successfully created
+ * @description Basic metadata about a branch, used in response to create/update operations
+ * @type object
  */
 export type RestoreFromBackup201 = BranchShortMetadata;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type RestoreFromBackup400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7039,9 +7286,6 @@ export type RestoreFromBackup400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type RestoreFromBackup401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7055,9 +7299,6 @@ export type RestoreFromBackup401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type RestoreFromBackup404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7071,26 +7312,42 @@ export type RestoreFromBackup404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type RestoreFromBackup5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type RestoreFromBackupError = unknown;
+export type RestoreFromBackupDefault = unknown;
 
+/**
+ * @description Metadata about a backup, used in request to create a restore. If configuration is not provided, the branch will inherit the source branch configuration.
+ * @type object
+ */
 export type RestoreFromBackupMutationRequest = RestoreDetails;
 
-export type RestoreFromBackupMutationResponse = RestoreFromBackup201;
-
-export type RestoreFromBackupMutation = {
-  Response: RestoreFromBackup201;
-  Request: RestoreFromBackupMutationRequest;
-  PathParams: RestoreFromBackupPathParams;
-  Errors: RestoreFromBackup400 | RestoreFromBackup401 | RestoreFromBackup404;
+export type RestoreFromBackupOptions = {
+  body: RestoreFromBackupMutationRequest;
+  path: RestoreFromBackupPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type RestoreFromBackupResponses = {
+  '201': RestoreFromBackup201;
+  '400': RestoreFromBackup400;
+  '401': RestoreFromBackup401;
+  '404': RestoreFromBackup404;
+  '5XX': RestoreFromBackup5XX;
+  default: RestoreFromBackupDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type RestoreFromBackupResponse =
+  | RestoreFromBackup201
+  | RestoreFromBackup400
+  | RestoreFromBackup401
+  | RestoreFromBackup404
+  | RestoreFromBackup5XX
+  | RestoreFromBackupDefault;
 
 export type BranchLogsPathParams = {
   /**
@@ -7098,24 +7355,16 @@ export type BranchLogsPathParams = {
    * @type string
    */
   organizationID: OrganizationID;
-  /**
-   * @type string
-   */
   projectID: string;
-  /**
-   * @type string
-   */
   branchID: string;
 };
 
 /**
- * @description Logs for a branch
+ * @description A collection of logs for each of the instances of a branch
+ * @type object
  */
 export type BranchLogs200 = BranchLogs;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type BranchLogs400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7129,9 +7378,6 @@ export type BranchLogs400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type BranchLogs401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7145,9 +7391,6 @@ export type BranchLogs401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type BranchLogs404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7161,26 +7404,38 @@ export type BranchLogs404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type BranchLogs5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type BranchLogsError = unknown;
+export type BranchLogsDefault = unknown;
 
 export type BranchLogsMutationRequest = BranchLogsRequest;
 
-export type BranchLogsMutationResponse = BranchLogs200;
-
-export type BranchLogsMutation = {
-  Response: BranchLogs200;
-  Request: BranchLogsMutationRequest;
-  PathParams: BranchLogsPathParams;
-  Errors: BranchLogs400 | BranchLogs401 | BranchLogs404;
+export type BranchLogsOptions = {
+  body: BranchLogsMutationRequest;
+  path: BranchLogsPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type BranchLogsResponses = {
+  '200': BranchLogs200;
+  '400': BranchLogs400;
+  '401': BranchLogs401;
+  '404': BranchLogs404;
+  '5XX': BranchLogs5XX;
+  default: BranchLogsDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type BranchLogsResponse =
+  | BranchLogs200
+  | BranchLogs400
+  | BranchLogs401
+  | BranchLogs404
+  | BranchLogs5XX
+  | BranchLogsDefault;
 
 export type GetBranchPostgresConfigPathParams = {
   /**
@@ -7202,13 +7457,11 @@ export type GetBranchPostgresConfigPathParams = {
 };
 
 /**
- * @description PostgreSQL configuration details retrieved successfully
+ * @description Detailed information about PostgreSQL configuration parameters for a branch
+ * @type object
  */
 export type GetBranchPostgresConfig200 = PostgresConfigDetails;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type GetBranchPostgresConfig400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7222,9 +7475,6 @@ export type GetBranchPostgresConfig400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type GetBranchPostgresConfig401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7238,9 +7488,6 @@ export type GetBranchPostgresConfig401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type GetBranchPostgresConfig404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7254,23 +7501,36 @@ export type GetBranchPostgresConfig404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type GetBranchPostgresConfig5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type GetBranchPostgresConfigError = unknown;
+export type GetBranchPostgresConfigDefault = unknown;
 
-export type GetBranchPostgresConfigQueryResponse = GetBranchPostgresConfig200;
-
-export type GetBranchPostgresConfigQuery = {
-  Response: GetBranchPostgresConfig200;
-  PathParams: GetBranchPostgresConfigPathParams;
-  Errors: GetBranchPostgresConfig400 | GetBranchPostgresConfig401 | GetBranchPostgresConfig404;
+export type GetBranchPostgresConfigOptions = {
+  body?: never | undefined;
+  path: GetBranchPostgresConfigPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type GetBranchPostgresConfigResponses = {
+  '200': GetBranchPostgresConfig200;
+  '400': GetBranchPostgresConfig400;
+  '401': GetBranchPostgresConfig401;
+  '404': GetBranchPostgresConfig404;
+  '5XX': GetBranchPostgresConfig5XX;
+  default: GetBranchPostgresConfigDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type GetBranchPostgresConfigResponse =
+  | GetBranchPostgresConfig200
+  | GetBranchPostgresConfig400
+  | GetBranchPostgresConfig401
+  | GetBranchPostgresConfig404
+  | GetBranchPostgresConfig5XX
+  | GetBranchPostgresConfigDefault;
 
 export type ListGithubAppInstallationsPathParams = {
   /**
@@ -7281,9 +7541,6 @@ export type ListGithubAppInstallationsPathParams = {
   organizationID: OrganizationID;
 };
 
-/**
- * @description List of GitHub App installations
- */
 export type ListGithubAppInstallations200 = {
   /**
    * @description Array of GitHub App installations
@@ -7292,9 +7549,6 @@ export type ListGithubAppInstallations200 = {
   installations: GithubInstallation[];
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type ListGithubAppInstallations400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7308,9 +7562,6 @@ export type ListGithubAppInstallations400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type ListGithubAppInstallations401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7324,23 +7575,34 @@ export type ListGithubAppInstallations401 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type ListGithubAppInstallations5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type ListGithubAppInstallationsError = unknown;
+export type ListGithubAppInstallationsDefault = unknown;
 
-export type ListGithubAppInstallationsQueryResponse = ListGithubAppInstallations200;
-
-export type ListGithubAppInstallationsQuery = {
-  Response: ListGithubAppInstallations200;
-  PathParams: ListGithubAppInstallationsPathParams;
-  Errors: ListGithubAppInstallations400 | ListGithubAppInstallations401;
+export type ListGithubAppInstallationsOptions = {
+  body?: never | undefined;
+  path: ListGithubAppInstallationsPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type ListGithubAppInstallationsResponses = {
+  '200': ListGithubAppInstallations200;
+  '400': ListGithubAppInstallations400;
+  '401': ListGithubAppInstallations401;
+  '5XX': ListGithubAppInstallations5XX;
+  default: ListGithubAppInstallationsDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type ListGithubAppInstallationsResponse =
+  | ListGithubAppInstallations200
+  | ListGithubAppInstallations400
+  | ListGithubAppInstallations401
+  | ListGithubAppInstallations5XX
+  | ListGithubAppInstallationsDefault;
 
 export type CreateGithubAppInstallationPathParams = {
   /**
@@ -7352,13 +7614,11 @@ export type CreateGithubAppInstallationPathParams = {
 };
 
 /**
- * @description Installation created successfully
+ * @description A GitHub App installation associated with an organization
+ * @type object
  */
 export type CreateGithubAppInstallation201 = GithubInstallation;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type CreateGithubAppInstallation400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7372,9 +7632,6 @@ export type CreateGithubAppInstallation400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type CreateGithubAppInstallation401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7388,9 +7645,6 @@ export type CreateGithubAppInstallation401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type CreateGithubAppInstallation409 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7404,26 +7658,38 @@ export type CreateGithubAppInstallation409 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type CreateGithubAppInstallation5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type CreateGithubAppInstallationError = unknown;
+export type CreateGithubAppInstallationDefault = unknown;
 
 export type CreateGithubAppInstallationMutationRequest = CreateGithubAppInstallationRequest;
 
-export type CreateGithubAppInstallationMutationResponse = CreateGithubAppInstallation201;
-
-export type CreateGithubAppInstallationMutation = {
-  Response: CreateGithubAppInstallation201;
-  Request: CreateGithubAppInstallationMutationRequest;
-  PathParams: CreateGithubAppInstallationPathParams;
-  Errors: CreateGithubAppInstallation400 | CreateGithubAppInstallation401 | CreateGithubAppInstallation409;
+export type CreateGithubAppInstallationOptions = {
+  body: CreateGithubAppInstallationMutationRequest;
+  path: CreateGithubAppInstallationPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type CreateGithubAppInstallationResponses = {
+  '201': CreateGithubAppInstallation201;
+  '400': CreateGithubAppInstallation400;
+  '401': CreateGithubAppInstallation401;
+  '409': CreateGithubAppInstallation409;
+  '5XX': CreateGithubAppInstallation5XX;
+  default: CreateGithubAppInstallationDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type CreateGithubAppInstallationResponse =
+  | CreateGithubAppInstallation201
+  | CreateGithubAppInstallation400
+  | CreateGithubAppInstallation401
+  | CreateGithubAppInstallation409
+  | CreateGithubAppInstallation5XX
+  | CreateGithubAppInstallationDefault;
 
 export type UpdateGithubAppInstallationPathParams = {
   /**
@@ -7440,13 +7706,11 @@ export type UpdateGithubAppInstallationPathParams = {
 };
 
 /**
- * @description Installation updated successfully
+ * @description A GitHub App installation associated with an organization
+ * @type object
  */
 export type UpdateGithubAppInstallation200 = GithubInstallation;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type UpdateGithubAppInstallation400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7460,9 +7724,6 @@ export type UpdateGithubAppInstallation400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type UpdateGithubAppInstallation401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7476,9 +7737,6 @@ export type UpdateGithubAppInstallation401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type UpdateGithubAppInstallation404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7492,9 +7750,6 @@ export type UpdateGithubAppInstallation404 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type UpdateGithubAppInstallation409 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7508,30 +7763,40 @@ export type UpdateGithubAppInstallation409 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type UpdateGithubAppInstallation5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type UpdateGithubAppInstallationError = unknown;
+export type UpdateGithubAppInstallationDefault = unknown;
 
 export type UpdateGithubAppInstallationMutationRequest = UpdateGithubAppInstallationRequest;
 
-export type UpdateGithubAppInstallationMutationResponse = UpdateGithubAppInstallation200;
-
-export type UpdateGithubAppInstallationMutation = {
-  Response: UpdateGithubAppInstallation200;
-  Request: UpdateGithubAppInstallationMutationRequest;
-  PathParams: UpdateGithubAppInstallationPathParams;
-  Errors:
-    | UpdateGithubAppInstallation400
-    | UpdateGithubAppInstallation401
-    | UpdateGithubAppInstallation404
-    | UpdateGithubAppInstallation409;
+export type UpdateGithubAppInstallationOptions = {
+  body: UpdateGithubAppInstallationMutationRequest;
+  path: UpdateGithubAppInstallationPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type UpdateGithubAppInstallationResponses = {
+  '200': UpdateGithubAppInstallation200;
+  '400': UpdateGithubAppInstallation400;
+  '401': UpdateGithubAppInstallation401;
+  '404': UpdateGithubAppInstallation404;
+  '409': UpdateGithubAppInstallation409;
+  '5XX': UpdateGithubAppInstallation5XX;
+  default: UpdateGithubAppInstallationDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type UpdateGithubAppInstallationResponse =
+  | UpdateGithubAppInstallation200
+  | UpdateGithubAppInstallation400
+  | UpdateGithubAppInstallation401
+  | UpdateGithubAppInstallation404
+  | UpdateGithubAppInstallation409
+  | UpdateGithubAppInstallation5XX
+  | UpdateGithubAppInstallationDefault;
 
 export type GetGithubRepositoryPathParams = {
   /**
@@ -7552,20 +7817,13 @@ export type GetGithubRepositoryPathParams = {
   branchID: string;
 };
 
-/**
- * @description GitHub repository mapping details
- */
 export type GetGithubRepository200 = {
   /**
-   * @description A mapping between a GitHub repository and a Xata project
-   * @type object
+   * @description Repository mapping details, null if no mapping exists
    */
   mapping: GithubRepository | null;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type GetGithubRepository400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7579,9 +7837,6 @@ export type GetGithubRepository400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type GetGithubRepository401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7595,23 +7850,34 @@ export type GetGithubRepository401 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type GetGithubRepository5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type GetGithubRepositoryError = unknown;
+export type GetGithubRepositoryDefault = unknown;
 
-export type GetGithubRepositoryQueryResponse = GetGithubRepository200;
-
-export type GetGithubRepositoryQuery = {
-  Response: GetGithubRepository200;
-  PathParams: GetGithubRepositoryPathParams;
-  Errors: GetGithubRepository400 | GetGithubRepository401;
+export type GetGithubRepositoryOptions = {
+  body?: never | undefined;
+  path: GetGithubRepositoryPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type GetGithubRepositoryResponses = {
+  '200': GetGithubRepository200;
+  '400': GetGithubRepository400;
+  '401': GetGithubRepository401;
+  '5XX': GetGithubRepository5XX;
+  default: GetGithubRepositoryDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type GetGithubRepositoryResponse =
+  | GetGithubRepository200
+  | GetGithubRepository400
+  | GetGithubRepository401
+  | GetGithubRepository5XX
+  | GetGithubRepositoryDefault;
 
 export type CreateGithubRepositoryPathParams = {
   /**
@@ -7633,13 +7899,11 @@ export type CreateGithubRepositoryPathParams = {
 };
 
 /**
- * @description Repository mapping created successfully
+ * @description A mapping between a GitHub repository and a Xata project
+ * @type object
  */
 export type CreateGithubRepository201 = GithubRepository;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type CreateGithubRepository400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7653,9 +7917,6 @@ export type CreateGithubRepository400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type CreateGithubRepository401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7669,9 +7930,6 @@ export type CreateGithubRepository401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type CreateGithubRepository409 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7685,26 +7943,38 @@ export type CreateGithubRepository409 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type CreateGithubRepository5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type CreateGithubRepositoryError = unknown;
+export type CreateGithubRepositoryDefault = unknown;
 
 export type CreateGithubRepositoryMutationRequest = CreateGithubRepositoryRequest;
 
-export type CreateGithubRepositoryMutationResponse = CreateGithubRepository201;
-
-export type CreateGithubRepositoryMutation = {
-  Response: CreateGithubRepository201;
-  Request: CreateGithubRepositoryMutationRequest;
-  PathParams: CreateGithubRepositoryPathParams;
-  Errors: CreateGithubRepository400 | CreateGithubRepository401 | CreateGithubRepository409;
+export type CreateGithubRepositoryOptions = {
+  body: CreateGithubRepositoryMutationRequest;
+  path: CreateGithubRepositoryPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type CreateGithubRepositoryResponses = {
+  '201': CreateGithubRepository201;
+  '400': CreateGithubRepository400;
+  '401': CreateGithubRepository401;
+  '409': CreateGithubRepository409;
+  '5XX': CreateGithubRepository5XX;
+  default: CreateGithubRepositoryDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type CreateGithubRepositoryResponse =
+  | CreateGithubRepository201
+  | CreateGithubRepository400
+  | CreateGithubRepository401
+  | CreateGithubRepository409
+  | CreateGithubRepository5XX
+  | CreateGithubRepositoryDefault;
 
 export type UpdateGithubRepositoryPathParams = {
   /**
@@ -7726,13 +7996,11 @@ export type UpdateGithubRepositoryPathParams = {
 };
 
 /**
- * @description Repository mapping updated successfully
+ * @description A mapping between a GitHub repository and a Xata project
+ * @type object
  */
 export type UpdateGithubRepository200 = GithubRepository;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type UpdateGithubRepository400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7746,9 +8014,6 @@ export type UpdateGithubRepository400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type UpdateGithubRepository401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7762,9 +8027,6 @@ export type UpdateGithubRepository401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type UpdateGithubRepository404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7778,26 +8040,38 @@ export type UpdateGithubRepository404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type UpdateGithubRepository5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type UpdateGithubRepositoryError = unknown;
+export type UpdateGithubRepositoryDefault = unknown;
 
 export type UpdateGithubRepositoryMutationRequest = UpdateGithubRepositoryRequest;
 
-export type UpdateGithubRepositoryMutationResponse = UpdateGithubRepository200;
-
-export type UpdateGithubRepositoryMutation = {
-  Response: UpdateGithubRepository200;
-  Request: UpdateGithubRepositoryMutationRequest;
-  PathParams: UpdateGithubRepositoryPathParams;
-  Errors: UpdateGithubRepository400 | UpdateGithubRepository401 | UpdateGithubRepository404;
+export type UpdateGithubRepositoryOptions = {
+  body: UpdateGithubRepositoryMutationRequest;
+  path: UpdateGithubRepositoryPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type UpdateGithubRepositoryResponses = {
+  '200': UpdateGithubRepository200;
+  '400': UpdateGithubRepository400;
+  '401': UpdateGithubRepository401;
+  '404': UpdateGithubRepository404;
+  '5XX': UpdateGithubRepository5XX;
+  default: UpdateGithubRepositoryDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type UpdateGithubRepositoryResponse =
+  | UpdateGithubRepository200
+  | UpdateGithubRepository400
+  | UpdateGithubRepository401
+  | UpdateGithubRepository404
+  | UpdateGithubRepository5XX
+  | UpdateGithubRepositoryDefault;
 
 export type DeleteGithubRepositoryPathParams = {
   /**
@@ -7818,14 +8092,8 @@ export type DeleteGithubRepositoryPathParams = {
   branchID: string;
 };
 
-/**
- * @description Repository mapping deleted successfully
- */
 export type DeleteGithubRepository204 = unknown;
 
-/**
- * @description Generic error response for most error conditions
- */
 export type DeleteGithubRepository400 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7839,9 +8107,6 @@ export type DeleteGithubRepository400 = {
   message: string;
 };
 
-/**
- * @description Error response when authentication or authorization fails
- */
 export type DeleteGithubRepository401 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7855,9 +8120,6 @@ export type DeleteGithubRepository401 = {
   message: string;
 };
 
-/**
- * @description Generic error response for most error conditions
- */
 export type DeleteGithubRepository404 = {
   /**
    * @description Error identifier for tracking and debugging
@@ -7871,23 +8133,36 @@ export type DeleteGithubRepository404 = {
   message: string;
 };
 
-/**
- * @description Unexpected Error
- */
 export type DeleteGithubRepository5XX = unknown;
 
-/**
- * @description Unexpected Error
- */
-export type DeleteGithubRepositoryError = unknown;
+export type DeleteGithubRepositoryDefault = unknown;
 
-export type DeleteGithubRepositoryMutationResponse = DeleteGithubRepository204;
-
-export type DeleteGithubRepositoryMutation = {
-  Response: DeleteGithubRepository204;
-  PathParams: DeleteGithubRepositoryPathParams;
-  Errors: DeleteGithubRepository400 | DeleteGithubRepository401 | DeleteGithubRepository404;
+export type DeleteGithubRepositoryOptions = {
+  body?: never | undefined;
+  path: DeleteGithubRepositoryPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type DeleteGithubRepositoryResponses = {
+  '204': DeleteGithubRepository204;
+  '400': DeleteGithubRepository400;
+  '401': DeleteGithubRepository401;
+  '404': DeleteGithubRepository404;
+  '5XX': DeleteGithubRepository5XX;
+  default: DeleteGithubRepositoryDefault;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type DeleteGithubRepositoryResponse =
+  | DeleteGithubRepository204
+  | DeleteGithubRepository400
+  | DeleteGithubRepository401
+  | DeleteGithubRepository404
+  | DeleteGithubRepository5XX
+  | DeleteGithubRepositoryDefault;
 
 export type UpsertInstallationPathParams = {
   /**
@@ -7897,36 +8172,50 @@ export type UpsertInstallationPathParams = {
   installationId: string;
 };
 
-/**
- * @description Installation created or updated. No body. (Vercel\'s contract also\nallows a 200 with an installation-level billingPlan/notification\nbody; Xata does not use installation-level billing plans.)\n
- */
 export type UpsertInstallation204 = unknown;
 
 /**
- * @description Error response.
+ * @description Vercel Partner API error envelope.
+ * @type object
  */
 export type UpsertInstallation400 = VercelError;
 
 /**
- * @description Error response.
+ * @description Vercel Partner API error envelope.
+ * @type object
  */
 export type UpsertInstallation403 = VercelError;
 
 /**
- * @description Error response.
+ * @description Vercel Partner API error envelope.
+ * @type object
  */
 export type UpsertInstallation409 = VercelError;
 
 export type UpsertInstallationMutationRequest = UpsertInstallationRequest;
 
-export type UpsertInstallationMutationResponse = UpsertInstallation204;
-
-export type UpsertInstallationMutation = {
-  Response: UpsertInstallation204;
-  Request: UpsertInstallationMutationRequest;
-  PathParams: UpsertInstallationPathParams;
-  Errors: UpsertInstallation400 | UpsertInstallation403 | UpsertInstallation409;
+export type UpsertInstallationOptions = {
+  body: UpsertInstallationMutationRequest;
+  path: UpsertInstallationPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type UpsertInstallationResponses = {
+  '204': UpsertInstallation204;
+  '400': UpsertInstallation400;
+  '403': UpsertInstallation403;
+  '409': UpsertInstallation409;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type UpsertInstallationResponse =
+  | UpsertInstallation204
+  | UpsertInstallation400
+  | UpsertInstallation403
+  | UpsertInstallation409;
 
 export type DeleteInstallationPathParams = {
   /**
@@ -7936,82 +8225,100 @@ export type DeleteInstallationPathParams = {
   installationId: string;
 };
 
-/**
- * @description Uninstall accepted; deletion finalizes asynchronously. No body.
- */
 export type DeleteInstallation204 = unknown;
 
 /**
- * @description Error response.
+ * @description Vercel Partner API error envelope.
+ * @type object
  */
 export type DeleteInstallation403 = VercelError;
 
 /**
- * @description Error response.
+ * @description Vercel Partner API error envelope.
+ * @type object
  */
 export type DeleteInstallation409 = VercelError;
 
-export type DeleteInstallationMutationRequest = DeleteInstallationRequest;
+export type DeleteInstallationMutationRequest = DeleteInstallationRequest | undefined;
 
-export type DeleteInstallationMutationResponse = DeleteInstallation204;
+export type DeleteInstallationOptions = {
+  body: DeleteInstallationMutationRequest;
+  path: DeleteInstallationPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
 
-export type DeleteInstallationMutation = {
-  Response: DeleteInstallation204;
-  Request: DeleteInstallationMutationRequest;
-  PathParams: DeleteInstallationPathParams;
-  Errors: DeleteInstallation403 | DeleteInstallation409;
+export type DeleteInstallationResponses = {
+  '204': DeleteInstallation204;
+  '403': DeleteInstallation403;
+  '409': DeleteInstallation409;
 };
 
 /**
- * @description Webhook received and processed successfully
+ * @description Union of all possible responses
  */
+export type DeleteInstallationResponse = DeleteInstallation204 | DeleteInstallation403 | DeleteInstallation409;
+
 export type OrbWebhook200 = unknown;
 
-/**
- * @description Invalid signature or malformed request
- */
 export type OrbWebhook400 = unknown;
 
-/**
- * @description Internal error while handling the webhook
- */
 export type OrbWebhook500 = unknown;
 
+/**
+ * @description Orb webhook event payload
+ * @type object
+ */
 export type OrbWebhookMutationRequest = {
   [key: string]: unknown;
 };
 
-export type OrbWebhookMutationResponse = OrbWebhook200;
+export type OrbWebhookOptions = {
+  body: OrbWebhookMutationRequest;
+  path?: never | undefined;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
 
-export type OrbWebhookMutation = {
-  Response: OrbWebhook200;
-  Request: OrbWebhookMutationRequest;
-  Errors: OrbWebhook400 | OrbWebhook500;
+export type OrbWebhookResponses = {
+  '200': OrbWebhook200;
+  '400': OrbWebhook400;
+  '500': OrbWebhook500;
 };
 
 /**
- * @description Webhook received and processed successfully
+ * @description Union of all possible responses
  */
+export type OrbWebhookResponse = OrbWebhook200 | OrbWebhook400 | OrbWebhook500;
+
 export type StripeWebhook200 = unknown;
 
-/**
- * @description Invalid signature or malformed request
- */
 export type StripeWebhook400 = unknown;
 
-/**
- * @description Internal error while handling the webhook
- */
 export type StripeWebhook500 = unknown;
 
+/**
+ * @description Stripe webhook event payload
+ * @type object
+ */
 export type StripeWebhookMutationRequest = {
   [key: string]: unknown;
 };
 
-export type StripeWebhookMutationResponse = StripeWebhook200;
-
-export type StripeWebhookMutation = {
-  Response: StripeWebhook200;
-  Request: StripeWebhookMutationRequest;
-  Errors: StripeWebhook400 | StripeWebhook500;
+export type StripeWebhookOptions = {
+  body: StripeWebhookMutationRequest;
+  path?: never | undefined;
+  query?: never | undefined;
+  headers?: never | undefined;
 };
+
+export type StripeWebhookResponses = {
+  '200': StripeWebhook200;
+  '400': StripeWebhook400;
+  '500': StripeWebhook500;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type StripeWebhookResponse = StripeWebhook200 | StripeWebhook400 | StripeWebhook500;

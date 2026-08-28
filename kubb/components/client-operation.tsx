@@ -1,204 +1,145 @@
-import { type Operation, isOptional } from '@kubb/oas';
-import type { PluginClient } from '@kubb/plugin-client';
-import type { OperationSchemas } from '@kubb/plugin-oas';
-import { getComments, getPathParams } from '@kubb/plugin-oas/utils';
-import { File, Function as FunctionDeclaration, FunctionParams } from '@kubb/react-fabric';
-import { toTemplateLiteral } from '../utils';
+import type { ResolverTs } from '@kubb/plugin-ts';
+import { compact, uniq } from '@xata.io/lang';
+import { File, Function as JSXFunction, type KubbReactNode } from 'kubb/jsx';
+import type { ast } from 'kubb/kit';
 
-export function getParams({
-  paramsCasing,
-  typeSchemas
-}: {
-  paramsCasing: PluginClient['resolvedOptions']['paramsCasing'];
-  typeSchemas: OperationSchemas;
-}) {
-  return FunctionParams.factory({
-    data: {
-      mode: 'object',
-      children: {
-        pathParams: typeSchemas.pathParams?.name
-          ? {
-              type: typeSchemas.pathParams?.name,
-              mode: 'object',
-              children: getPathParams(typeSchemas.pathParams, { typed: true, casing: paramsCasing }),
-              optional: isOptional(typeSchemas.pathParams?.schema)
-            }
-          : undefined,
-        body: typeSchemas.request?.name
-          ? {
-              type: typeSchemas.request?.name,
-              optional: isOptional(typeSchemas.request?.schema)
-            }
-          : undefined,
-        queryParams: typeSchemas.queryParams?.name
-          ? {
-              type: typeSchemas.queryParams?.name,
-              optional: isOptional(typeSchemas.queryParams?.schema)
-            }
-          : undefined,
-        headers: typeSchemas.headerParams?.name
-          ? {
-              type: typeSchemas.headerParams?.name,
-              optional: isOptional(typeSchemas.headerParams?.schema)
-            }
-          : undefined,
-        config: {
-          mode: 'inlineSpread',
-          type: 'Partial<FetcherConfig> & { client?: typeof client }',
-          default: '{}',
-          optional: true
-        }
-      }
-    }
+type ParamGroup = { name: string; required: boolean };
+
+export type TypeSchemas = {
+  response: { name: string };
+  request: { name: string } | undefined;
+  errors: Array<{ name: string; statusCode: number }>;
+  path: ParamGroup | undefined;
+  query: ParamGroup | undefined;
+  headers: ParamGroup | undefined;
+};
+
+export function resolveTypeSchemas(node: ast.HttpOperationNode, tsResolver: ResolverTs): TypeSchemas {
+  const successResponse = node.responses.find(isSuccess);
+
+  return {
+    response: {
+      name: successResponse
+        ? tsResolver.response.status(node, successResponse.statusCode)
+        : tsResolver.response.response(node)
+    },
+    request: node.requestBody?.content?.[0]?.schema ? { name: tsResolver.response.body(node) } : undefined,
+    errors: node.responses.filter(isError).map((res) => {
+      return { name: tsResolver.response.status(node, res.statusCode), statusCode: Number(res.statusCode) };
+    }),
+    path: paramGroup(node, 'path', tsResolver),
+    query: paramGroup(node, 'query', tsResolver),
+    headers: paramGroup(node, 'header', tsResolver)
+  };
+}
+
+export function typeNames(typeSchemas: TypeSchemas): string[] {
+  const { response, request, errors, path, query, headers } = typeSchemas;
+  return uniq(
+    compact([response.name, request?.name, path?.name, query?.name, headers?.name, ...errors.map((e) => e.name)])
+  );
+}
+
+type ParamLocation = 'path' | 'query' | 'header';
+
+function paramsAt(node: ast.HttpOperationNode, where: ParamLocation): ast.ParameterNode[] {
+  return node.parameters.filter((param) => {
+    return param.in === where;
   });
 }
 
-export function ClientOperation({
-  name,
-  isExportable = true,
-  isIndexable = true,
-  returnType,
-  typeSchemas,
-  baseURL,
-  parser,
-  zodSchemas,
-  paramsCasing,
-  operation,
-  urlName,
-  children
-}: {
-  /**
-   * Name of the function
-   */
+// `plugin-ts` names a parameter group after its first member, and only emits the aggregated type
+// when the group is non-empty, so the client signature has to follow the same rule.
+function paramGroup(node: ast.HttpOperationNode, where: ParamLocation, tsResolver: ResolverTs): ParamGroup | undefined {
+  const params = paramsAt(node, where);
+  const first = params[0];
+  if (!first) return undefined;
+
+  const resolve = { path: tsResolver.param.path, query: tsResolver.param.query, header: tsResolver.param.headers };
+  return { name: resolve[where].call(tsResolver, node, first), required: params.some((param) => param.required) };
+}
+
+function isSuccess(res: ast.ResponseNode): boolean {
+  const code = Number(res.statusCode);
+  return code >= 200 && code < 300;
+}
+
+function isError(res: ast.ResponseNode): boolean {
+  return Number(res.statusCode) >= 400;
+}
+
+function jsdoc(node: ast.HttpOperationNode): string[] {
+  const lines: string[] = [];
+  if (node.summary) lines.push(`@summary ${node.summary}`);
+  if (node.description) lines.push(`@description ${node.description}`);
+  if (node.deprecated) lines.push('@deprecated');
+  lines.push(`{@link ${node.path.replace(/\{([^}]+)\}/g, ':$1')}}`);
+  return lines;
+}
+
+type Props = {
   name: string;
-  urlName?: string;
-  isExportable?: boolean;
-  isIndexable?: boolean;
-  isConfigurable?: boolean;
-  returnType?: string;
+  node: ast.HttpOperationNode;
+  typeSchemas: TypeSchemas;
+};
 
-  baseURL: string | undefined;
-  paramsCasing: PluginClient['resolvedOptions']['paramsCasing'];
-  parser: PluginClient['resolvedOptions']['parser'] | undefined;
-  typeSchemas: OperationSchemas;
-  zodSchemas: OperationSchemas | undefined;
-  operation: Operation;
-  children?: any;
-}) {
-  const pathTemplate = toTemplateLiteral(operation.path, paramsCasing);
-  const contentType = operation.getContentType();
-  const isFormData = contentType === 'multipart/form-data';
-  const headers = [
-    contentType !== 'application/json' ? `'Content-Type': '${contentType}'` : undefined,
-    typeSchemas.headerParams?.name ? '...headers' : undefined
-  ].filter(Boolean);
+export function ClientOperation({ name, node, typeSchemas }: Props): KubbReactNode {
+  const { response, request, errors, path, query, headers } = typeSchemas;
+  const bodyRequired = node.requestBody?.required ?? false;
 
-  const TError = typeSchemas.errors?.map((item) => item.name).join(' | ') || 'Error';
+  // The URL template and the guards both dereference `pathParams`, so it stays required.
+  const params = compact([
+    path && { key: 'pathParams', field: `pathParams: ${path.name}` },
+    request && { key: 'body', field: `body${bodyRequired ? '' : '?'}: ${request.name}` },
+    query && { key: 'queryParams', field: `queryParams${query.required ? '' : '?'}: ${query.name}` },
+    headers && { key: 'headers', field: `headers${headers.required ? '' : '?'}: ${headers.name}` },
+    { key: 'config = {}', field: 'config?: Partial<FetcherConfig> & { client?: typeof client }' }
+  ]);
+
+  const paramsSignature = `{ ${params.map((p) => p.key).join(', ')} }: { ${params.map((p) => p.field).join('; ')} }`;
 
   const generics = [
-    typeSchemas.response.name,
-    TError,
-    typeSchemas.request?.name || 'null',
-    typeSchemas.headerParams?.name || 'Record<string, string>',
-    typeSchemas.queryParams?.name || 'Record<string, string>',
-    typeSchemas.pathParams?.name || 'Record<string, string>'
+    response.name,
+    errors.length > 0 ? errors.map((e) => e.name).join(' | ') : 'Error',
+    request?.name ?? 'null',
+    headers?.name ?? 'Record<string, string>',
+    query?.name ?? 'Record<string, string>',
+    path?.name ?? 'Record<string, string>'
   ];
-  const params = getParams({ paramsCasing, typeSchemas });
 
-  const clientParams = FunctionParams.factory({
-    config: {
-      mode: 'object',
-      children: {
-        method: {
-          value: JSON.stringify(operation.method.toUpperCase())
-        },
-        url: {
-          value: pathTemplate
-        },
-        baseUrl:
-          baseURL && !urlName
-            ? {
-                value: JSON.stringify(baseURL)
-              }
-            : undefined,
-        queryParams: typeSchemas.queryParams?.name ? {} : undefined,
-        body: typeSchemas.request?.name
-          ? {
-              value:
-                parser === 'zod' && zodSchemas
-                  ? `${zodSchemas.request?.name}.parse(${isFormData ? 'formData' : 'body'})`
-                  : isFormData
-                    ? 'formData'
-                    : undefined
-            }
-          : undefined,
-        requestConfig: {
-          mode: 'inlineSpread'
-        },
-        headers: headers.length
-          ? {
-              value: `{ ${headers.join(', ')}, ...requestConfig.headers }`
-            }
-          : undefined
-      }
-    }
-  });
-
-  const formData = isFormData
-    ? `
-   const formData = new FormData()
-   if(body) {
-    Object.keys(body).forEach((key) => {
-      const value = body[key as keyof typeof body];
-      if (typeof key === "string" && (typeof value === "string" || (value as Blob) instanceof Blob)) {
-        formData.append(key, value as unknown as string);
-      }
+  const guards = paramsAt(node, 'path')
+    .filter((param) => {
+      return param.required;
     })
-   }
-  `
-    : '';
+    .map((param) => {
+      return `if (!pathParams.${param.name}) {
+    throw new Error(\`Missing required path parameter: ${param.name}\`);
+  }`;
+    })
+    .join('\n\n  ');
 
-  const childrenElement = children ? (
-    children
-  ) : (
-    <>
-      {parser === 'zod' && zodSchemas && `return ${zodSchemas.response.name}.parse(data)`}
-      {parser === 'client' && 'return data'}
-    </>
-  );
+  const url = node.path.replace(/\{([^}]+)\}/g, (_, raw: string) => `\${pathParams.${raw}}`);
+
+  const callParts = compact([
+    `method: ${JSON.stringify(node.method)}`,
+    `url: \`${url}\``,
+    query && 'queryParams',
+    request && 'body',
+    '...requestConfig',
+    headers && 'headers: { ...headers, ...requestConfig.headers }'
+  ]);
+
+  const body = `  const { client: request = client, ...requestConfig } = config;
+${guards ? `\n  ${guards}\n` : ''}
+  const data = await request<${generics.join(', ')}>({ ${callParts.join(', ')} });
+
+  return data;`;
 
   return (
-    <File.Source name={name} isExportable={isExportable} isIndexable={isIndexable}>
-      <FunctionDeclaration
-        name={name}
-        async
-        export={isExportable}
-        params={params.toConstructor()}
-        JSDoc={{
-          comments: getComments(operation)
-        }}
-        returnType={returnType}
-      >
-        {'const { client: request = client, ...requestConfig } = config;'}
-        <br />
-        <br />
-        {typeSchemas.pathParams?.schema &&
-          `${Object.keys(typeSchemas.pathParams.schema.properties || {})
-            .map((key) => {
-              return `if (!${key}) {
-              throw new Error(\`Missing required path parameter: ${key}\`);
-            }`;
-            })
-            .join('\n\n')}
-        `}
-        <br />
-        {formData}
-        {`const data = await request<${generics.join(', ')}>(${clientParams.toCall()})`}
-        <br />
-        {childrenElement}
-      </FunctionDeclaration>
+    <File.Source name={name} isExportable isIndexable>
+      <JSXFunction name={name} async export params={paramsSignature} JSDoc={{ comments: jsdoc(node) }}>
+        {body}
+      </JSXFunction>
     </File.Source>
   );
 }
-
-ClientOperation.getParams = getParams;

@@ -5,9 +5,6 @@
 
 import * as z from 'zod';
 
-/**
- * @description User information including email, full name, and profile image
- */
 export const userSchema = z
   .object({
     email: z.email().describe('Email address associated with the user account'),
@@ -15,29 +12,15 @@ export const userSchema = z
   })
   .describe('User information including email, full name, and profile image');
 
-/**
- * @description Unique identifier for a user account
- */
 export const userIDSchema = z
   .string()
   .regex(/[a-zA-Z0-9_-~:]+/)
   .describe('Unique identifier for a user account');
 
-export const userWithIDSchema = z
-  .lazy(() => userSchema)
-  .and(
-    z.object({
-      get id() {
-        return userIDSchema.describe('Unique identifier for a user account');
-      }
-    })
-  )
-  .describe('User information including email, full name, and profile image')
-  .describe('Extended user object that includes the unique user identifier');
+export const userWithIDSchema = userSchema.extend({
+  id: userIDSchema.describe('Unique identifier for a user account')
+});
 
-/**
- * @description Request payload for creating a new organization
- */
 export const createOrganizationRequestSchema = z
   .object({
     name: z.string().describe('Name for the new organization')
@@ -53,45 +36,33 @@ export const organizationStatusSchema = z.object({
       "Indicates whether the organization is active, it's computed as `!disabled_by_admin AND billing_status == 'ok'`"
     ),
   disabled_by_admin: z.boolean().describe('Indicates if the organization has been disabled by an admin'),
-  admin_reason: z.optional(z.string().describe('Reason for the current admin status')),
+  admin_reason: z.string().optional().describe('Reason for the current admin status'),
   billing_status: z
     .enum(['ok', 'no_payment_method', 'invoice_overdue', 'unknown', 'deletion_requested'])
     .describe('Indicates the status of the organization from a billing perspective'),
-  billing_reason: z.optional(z.string().describe('Reason for the current billing status')),
+  billing_reason: z.string().optional().describe('Reason for the current billing status'),
   usage_tier: z
     .enum(['t1', 't2'])
     .describe(
       'Usage tier of the organization. t1 is the default for new organizations, t2 is assigned when a valid payment method is on file.'
     ),
-  last_updated: z.date().describe("Timestamp of the last update to the organization's status"),
-  created_at: z.optional(z.date().describe('Timestamp when the organization was created'))
+  last_updated: z.iso.datetime().describe("Timestamp of the last update to the organization's status"),
+  created_at: z.iso.datetime().optional().describe('Timestamp when the organization was created')
 });
 
-/**
- * @description Marketplace provider associated with an organization.
- */
 export const organizationMarketplaceProviderSchema = z
-  .enum(['aws'])
+  .literal('aws')
   .describe('Marketplace provider associated with an organization.');
 
-/**
- * @description Organization details including ID and name
- */
 export const organizationSchema = z
   .object({
-    get id() {
-      return organizationIDSchema.describe('Unique identifier for the organization');
-    },
+    id: organizationIDSchema.describe('Unique identifier for the organization'),
     name: z.string().describe('Human-readable name of the organization'),
-    get status() {
-      return organizationStatusSchema.describe('Current status of the organization');
-    },
-    get marketplace() {
-      return organizationMarketplaceProviderSchema
-        .describe('Marketplace provider associated with an organization.')
-        .describe('Marketplace provider for this organization (e.g. "aws"), if billed through a marketplace')
-        .nullish();
-    }
+    status: organizationStatusSchema.describe('Current status of the organization'),
+    marketplace: z
+      .union([organizationMarketplaceProviderSchema, z.null()])
+      .optional()
+      .describe('Marketplace provider for this organization (e.g. "aws"), if billed through a marketplace')
   })
   .describe('Organization details including ID and name');
 
@@ -101,23 +72,23 @@ export const createOrganizationInvitationRequestSchema = z.object({
 
 export const organizationInvitationSchema = z.object({
   id: z.string().describe('Unique identifier for the invitation'),
-  get organization_id() {
-    return organizationIDSchema.describe('ID of the organization the invitation is for');
-  },
+  organization_id: organizationIDSchema.describe('ID of the organization the invitation is for'),
   email: z.email().describe('Email address of the invited user'),
-  first_name: z.string().describe('First name of the invited user').nullish(),
-  last_name: z.string().describe('Last name of the invited user').nullish(),
-  created_at: z.date().describe('Timestamp when the invitation was created'),
-  expires_at: z.date().describe('Timestamp when the invitation expires'),
+  first_name: z.string().nullish().describe('First name of the invited user'),
+  last_name: z.string().nullish().describe('Last name of the invited user'),
+  created_at: z.iso.datetime().describe('Timestamp when the invitation was created'),
+  expires_at: z.iso.datetime().describe('Timestamp when the invitation expires'),
   status: z.enum(['pending', 'expired']).describe('Current status of the invitation'),
-  invite_link: z.optional(z.string().describe('URL link to accept the invitation'))
+  invite_link: z.string().optional().describe('URL link to accept the invitation')
 });
 
-/**
- * @description How billing payment is collected for the organization.
- */
 export const billingCollectionMethodSchema = z
-  .enum(['unknown', 'stripe_payment_method', 'marketplace', 'bank_transfer'])
+  .union([
+    z.literal('unknown'),
+    z.literal('stripe_payment_method'),
+    z.literal('marketplace'),
+    z.literal('bank_transfer')
+  ])
   .describe('How billing payment is collected for the organization.');
 
 export const billingPaymentMethodCardSchema = z.object({
@@ -128,69 +99,57 @@ export const billingPaymentMethodCardSchema = z.object({
 });
 
 export const billingPaymentMethodSchema = z.object({
-  get card() {
-    return billingPaymentMethodCardSchema;
-  }
+  card: billingPaymentMethodCardSchema
 });
 
 export const billingCreditSchema = z.object({
   id: z.string(),
   balance: z.number().describe('Remaining credit balance.'),
-  effective_date: z.date().describe('Date when the credit becomes usable.'),
-  expiry_date: z.nullable(z.date().describe('Date when the credit expires, or null for credits that do not expire.')),
+  effective_date: z.iso.datetime().describe('Date when the credit becomes usable.'),
+  expiry_date: z.iso
+    .datetime()
+    .nullable()
+    .describe('Date when the credit expires, or null for credits that do not expire.'),
   maximum_initial_balance: z.number().describe('Initial credit balance before any usage.'),
   status: z.enum(['active', 'pending_payment'])
 });
 
 export const billingCreditDetailsSchema = z.object({
   total_lifetime_credits: z.number(),
-  last_expiry: z.nullable(z.date()),
-  last_expiry_with_balance: z.nullable(z.date()),
-  get active_credits() {
-    return z
-      .array(billingCreditSchema)
-      .describe('Credits with active status, a reached effective date, positive balance, and no past expiry.');
-  },
-  last_active_credit_expiry: z.nullable(z.date()),
+  last_expiry: z.iso.datetime().nullable(),
+  last_expiry_with_balance: z.iso.datetime().nullable(),
+  active_credits: z
+    .array(billingCreditSchema)
+    .describe('Credits with active status, a reached effective date, positive balance, and no past expiry.'),
+  last_active_credit_expiry: z.iso.datetime().nullable(),
   total_active_credits: z.number(),
-  days_until_last_active_credit_expiry: z.nullable(
-    z.int().describe('Days until the last active credit expiry, or null when there is no future active credit expiry.')
-  ),
-  days_until_last_expiry_with_balance: z.nullable(
-    z
-      .int()
-      .describe(
-        'Days until the last positive-balance credit expiry, or null when there is no future positive-balance credit expiry.'
-      )
-  )
+  days_until_last_active_credit_expiry: z
+    .int()
+    .nullable()
+    .describe('Days until the last active credit expiry, or null when there is no future active credit expiry.'),
+  days_until_last_expiry_with_balance: z
+    .int()
+    .nullable()
+    .describe(
+      'Days until the last positive-balance credit expiry, or null when there is no future positive-balance credit expiry.'
+    )
 });
 
 export const billingCustomerResponseSchema = z.object({
   billing_email: z.email(),
-  get marketplace() {
-    return organizationMarketplaceProviderSchema
-      .describe('Marketplace provider associated with an organization.')
-      .describe('Marketplace provider for this organization (e.g. "aws"), if billed through a marketplace')
-      .nullable();
-  },
-  get collection_method() {
-    return billingCollectionMethodSchema
-      .describe('How billing payment is collected for the organization.')
-      .describe('Read-only collection method configured for the organization.');
-  },
+  marketplace: z
+    .union([organizationMarketplaceProviderSchema, z.null()])
+    .describe('Marketplace provider for this organization (e.g. "aws"), if billed through a marketplace'),
+  collection_method: billingCollectionMethodSchema.describe(
+    'Read-only collection method configured for the organization.'
+  ),
   can_collect_payment: z.boolean(),
   has_payment_method: z.boolean().describe('True when the customer has a valid Stripe default card payment method.'),
-  get default_payment_method() {
-    return billingPaymentMethodSchema
-      .describe('The Stripe default card payment method, when one is configured and retrievable.')
-      .nullable();
-  },
-  get credits() {
-    return z.array(billingCreditSchema);
-  },
-  get credit_details() {
-    return billingCreditDetailsSchema;
-  }
+  default_payment_method: z
+    .union([billingPaymentMethodSchema, z.null()])
+    .describe('The Stripe default card payment method, when one is configured and retrievable.'),
+  credits: z.array(billingCreditSchema),
+  credit_details: billingCreditDetailsSchema
 });
 
 export const updateBillingCustomerRequestSchema = z.object({
@@ -202,33 +161,29 @@ export const billingInvoiceSchema = z.object({
   invoice_number: z.string(),
   amount_due: z.number().describe('Decimal amount due.'),
   currency: z.string(),
-  invoice_date: z.date(),
+  invoice_date: z.iso.datetime(),
   status: z.enum(['draft', 'issued', 'paid', 'void', 'synced']),
-  invoice_pdf: z.nullable(z.string())
+  invoice_pdf: z.string().nullable()
 });
 
 export const paginationMetadataSchema = z.object({
   has_more: z.boolean(),
-  next_cursor: z.nullable(z.string())
+  next_cursor: z.string().nullable()
 });
 
 export const billingInvoicesResponseSchema = z.object({
-  get data() {
-    return z.array(billingInvoiceSchema);
-  },
-  get pagination_metadata() {
-    return paginationMetadataSchema;
-  }
+  data: z.array(billingInvoiceSchema),
+  pagination_metadata: paginationMetadataSchema
 });
 
 export const billingUpcomingInvoiceResponseSchema = z.object({
-  created_at: z.date(),
+  created_at: z.iso.datetime(),
   amount_due: z.number().describe('Decimal amount due.'),
   currency: z.string(),
-  target_date: z.date(),
+  target_date: z.iso.datetime(),
   subtotal: z.number().describe('Decimal subtotal.'),
   total: z.number().describe('Decimal total.'),
-  hosted_invoice_url: z.nullable(z.url())
+  hosted_invoice_url: z.url().nullable()
 });
 
 export const billingCheckoutSessionResponseSchema = z.object({
@@ -239,23 +194,13 @@ export const billingPaymentMethodSessionResponseSchema = z.object({
   url: z.url().describe('Stripe payment method session URL')
 });
 
-/**
- * @description Marketplace provider accepted for registration.
- */
 export const marketplaceRegistrationProviderSchema = z
-  .enum(['aws'])
+  .literal('aws')
   .describe('Marketplace provider accepted for registration.');
 
-/**
- * @description Request to register with a cloud marketplace
- */
 export const marketplaceRegisterRequestSchema = z
   .object({
-    get marketplace() {
-      return marketplaceRegistrationProviderSchema
-        .describe('Marketplace provider accepted for registration.')
-        .describe('The cloud marketplace provider');
-    },
+    marketplace: marketplaceRegistrationProviderSchema.describe('The cloud marketplace provider'),
     company_name: z.string().describe('Company name for the marketplace registration'),
     aws: z
       .object({
@@ -269,10 +214,10 @@ export const marketplaceRegisterRequestSchema = z
 
 export const createAPIKeyRequestSchema = z.object({
   name: z.string(),
-  expiry: z.date().describe('Expiration date for the API key, null for no expiry').nullish(),
-  scopes: z.optional(z.array(z.string()).max(50).describe('Optional scopes assigned to the API key')),
-  projects: z.optional(z.array(z.string()).max(50).describe('Limit access to these projects')),
-  branches: z.optional(z.array(z.string()).max(50).describe('Limit access to these branches'))
+  expiry: z.iso.datetime().nullish().describe('Expiration date for the API key, null for no expiry'),
+  scopes: z.array(z.string()).max(50).optional().describe('Optional scopes assigned to the API key'),
+  projects: z.array(z.string()).max(50).optional().describe('Limit access to these projects'),
+  branches: z.array(z.string()).max(50).optional().describe('Limit access to these branches')
 });
 
 export const APIKeyPreviewSchema = z.object({
@@ -282,11 +227,11 @@ export const APIKeyPreviewSchema = z.object({
   scopes: z.array(z.string()),
   projects: z.array(z.string()).describe('Projects this API key has access to'),
   branches: z.array(z.string()).describe('Branches this API key has access to'),
-  created_at: z.date(),
-  expiry: z.nullable(z.date().describe('Date when the API key expires (null if no expiry)')),
-  last_used: z.nullable(z.date().describe('Timestamp of the last time the key was used (null if never)')),
-  created_by: z.string().describe('ID of the user that created this API key').nullish(),
-  created_by_key: z.string().describe('ID of the API key that created this API key').nullish()
+  created_at: z.iso.datetime(),
+  expiry: z.iso.datetime().nullable().describe('Date when the API key expires (null if no expiry)'),
+  last_used: z.iso.datetime().nullable().describe('Timestamp of the last time the key was used (null if never)'),
+  created_by: z.string().nullish().describe('ID of the user that created this API key'),
+  created_by_key: z.string().nullish().describe('ID of the API key that created this API key')
 });
 
 export const fullAPIKeySchema = z.object({
@@ -296,17 +241,14 @@ export const fullAPIKeySchema = z.object({
   scopes: z.array(z.string()),
   projects: z.array(z.string()).describe('Projects this API key has access to'),
   branches: z.array(z.string()).describe('Branches this API key has access to'),
-  created_at: z.date(),
-  expiry: z.nullable(z.date().describe('Date when the API key expires (null if no expiry)')),
-  last_used: z.nullable(z.date().describe('Timestamp of the last time the key was used (null if never)')),
+  created_at: z.iso.datetime(),
+  expiry: z.iso.datetime().nullable().describe('Date when the API key expires (null if no expiry)'),
+  last_used: z.iso.datetime().nullable().describe('Timestamp of the last time the key was used (null if never)'),
   token: z.string().describe('The actual API key token'),
-  created_by: z.string().describe('ID of the user that created this API key').nullish(),
-  created_by_key: z.string().describe('ID of the API key that created this API key').nullish()
+  created_by: z.string().nullish().describe('ID of the user that created this API key'),
+  created_by_key: z.string().nullish().describe('ID of the API key that created this API key')
 });
 
-/**
- * @description Membership limits for an organization
- */
 export const organizationMembershipLimitsSchema = z
   .object({
     maxMembers: z.int().min(1).describe('Maximum number of members allowed in the organization'),
@@ -314,46 +256,32 @@ export const organizationMembershipLimitsSchema = z
   })
   .describe('Membership limits for an organization');
 
-/**
- * @description Endpoint suffix that determines which PostgreSQL instance receives traffic.\nEncoded as the hostname suffix in the connection string (e.g. `my-branch-ro.example.com`).\n
- */
 export const endpointTypeSchema = z
   .enum(['rw', 'ro', 'r', 'pooled_rw'])
   .describe(
     'Endpoint suffix that determines which PostgreSQL instance receives traffic.\nEncoded as the hostname suffix in the connection string (e.g. `my-branch-ro.example.com`).\n'
   );
 
-/**
- * @description A single query within a batch request.
- */
 export const queryItemSchema = z
   .object({
     query: z.string().describe('SQL query to execute.'),
-    params: z.optional(z.array(z.unknown()).describe('Positional parameters for the query.')),
-    arrayMode: z.optional(z.boolean().describe('Override array mode for this individual query.'))
+    params: z.array(z.unknown()).optional().describe('Positional parameters for the query.'),
+    arrayMode: z.boolean().optional().describe('Override array mode for this individual query.')
   })
   .describe('A single query within a batch request.');
 
-/**
- * @description SQL query request. Provide either `query` for a single query or `queries` for a batch.
- */
 export const SQLRequestSchema = z
   .object({
-    query: z.optional(z.string().describe('SQL query to execute (single query mode).')),
-    params: z.optional(z.array(z.unknown()).describe('Positional parameters for the query (`$1`, `$2`, ...).')),
-    get queries() {
-      return z
-        .array(queryItemSchema.describe('A single query within a batch request.'))
-        .describe('Array of queries for batch execution within a single transaction.')
-        .optional();
-    },
-    arrayMode: z.optional(z.boolean().describe('Override array mode for this query (single query mode only).'))
+    query: z.string().optional().describe('SQL query to execute (single query mode).'),
+    params: z.array(z.unknown()).optional().describe('Positional parameters for the query (`$1`, `$2`, ...).'),
+    queries: z
+      .array(queryItemSchema)
+      .optional()
+      .describe('Array of queries for batch execution within a single transaction.'),
+    arrayMode: z.boolean().optional().describe('Override array mode for this query (single query mode only).')
   })
   .describe('SQL query request. Provide either `query` for a single query or `queries` for a batch.');
 
-/**
- * @description PostgreSQL column metadata from the row description message.
- */
 export const fieldDefinitionSchema = z
   .object({
     name: z.string().describe('Column name.'),
@@ -366,18 +294,11 @@ export const fieldDefinitionSchema = z
   })
   .describe('PostgreSQL column metadata from the row description message.');
 
-/**
- * @description Result of a single SQL query execution.
- */
 export const queryResultSchema = z
   .object({
-    get fields() {
-      return z
-        .array(fieldDefinitionSchema.describe('PostgreSQL column metadata from the row description message.'))
-        .describe('Column metadata for the result set.');
-    },
+    fields: z.array(fieldDefinitionSchema).describe('Column metadata for the result set.'),
     command: z.string().describe('PostgreSQL command tag (e.g. `SELECT`, `INSERT`, `UPDATE`, `DELETE`).'),
-    rowCount: z.nullable(z.int().describe('Number of rows affected by the command.')),
+    rowCount: z.int().nullable().describe('Number of rows affected by the command.'),
     rows: z
       .array(z.unknown())
       .describe('Result rows. Each row is an object (column-name keys) or an array (when array mode is enabled).'),
@@ -385,115 +306,93 @@ export const queryResultSchema = z
   })
   .describe('Result of a single SQL query execution.');
 
-/**
- * @description Response for a batch query execution.
- */
 export const batchResponseSchema = z
   .object({
-    get results() {
-      return z
-        .array(queryResultSchema.describe('Result of a single SQL query execution.'))
-        .describe('Results for each query in the batch, in order.');
-    }
+    results: z.array(queryResultSchema).describe('Results for each query in the batch, in order.')
   })
   .describe('Response for a batch query execution.');
 
-/**
- * @description Error response with PostgreSQL error fields.
- */
 export const errorResponseSchema = z
   .object({
     message: z.string().describe('Human-readable error message.'),
-    code: z.optional(z.string().describe('PostgreSQL error code (SQLSTATE) or application error code.')),
-    severity: z.optional(z.string().describe('PostgreSQL error severity (e.g. `ERROR`, `FATAL`).')),
-    detail: z.optional(z.string().describe('Optional detail message.')),
-    hint: z.optional(z.string().describe('Optional hint for resolving the error.')),
-    position: z.optional(z.string().describe('Character position in the query where the error occurred.')),
-    internalPosition: z.optional(z.string().describe('Position in an internally-generated query.')),
-    internalQuery: z.optional(z.string().describe('Text of the internally-generated query.')),
-    where: z.optional(z.string().describe('Context in which the error occurred.')),
-    schema: z.optional(z.string().describe('Schema name related to the error.')),
-    table: z.optional(z.string().describe('Table name related to the error.')),
-    column: z.optional(z.string().describe('Column name related to the error.')),
-    dataType: z.optional(z.string().describe('Data type name related to the error.')),
-    constraint: z.optional(z.string().describe('Constraint name related to the error.')),
-    file: z.optional(z.string().describe('Source file where the error was reported (server-side).')),
-    line: z.optional(z.string().describe('Source line where the error was reported (server-side).')),
-    routine: z.optional(z.string().describe('Source routine where the error was reported (server-side).'))
+    code: z.string().optional().describe('PostgreSQL error code (SQLSTATE) or application error code.'),
+    severity: z.string().optional().describe('PostgreSQL error severity (e.g. `ERROR`, `FATAL`).'),
+    detail: z.string().optional().describe('Optional detail message.'),
+    hint: z.string().optional().describe('Optional hint for resolving the error.'),
+    position: z.string().optional().describe('Character position in the query where the error occurred.'),
+    internalPosition: z.string().optional().describe('Position in an internally-generated query.'),
+    internalQuery: z.string().optional().describe('Text of the internally-generated query.'),
+    where: z.string().optional().describe('Context in which the error occurred.'),
+    schema: z.string().optional().describe('Schema name related to the error.'),
+    table: z.string().optional().describe('Table name related to the error.'),
+    column: z.string().optional().describe('Column name related to the error.'),
+    dataType: z.string().optional().describe('Data type name related to the error.'),
+    constraint: z.string().optional().describe('Constraint name related to the error.'),
+    file: z.string().optional().describe('Source file where the error was reported (server-side).'),
+    line: z.string().optional().describe('Source line where the error was reported (server-side).'),
+    routine: z.string().optional().describe('Source routine where the error was reported (server-side).')
   })
   .describe('Error response with PostgreSQL error fields.');
 
-/**
- * @description A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a\nresponse; a notification carries `method` without `id` and is not. The `method` and\n`params` values are defined by the MCP specification.\n
- */
 export const JSONRPCMessageSchema = z
   .object({
     jsonrpc: z.enum(['2.0']).describe('JSON-RPC protocol version. Always `2.0`.'),
-    id: z.optional(
-      z.union([z.int(), z.string()]).describe('Request identifier, echoed on the response. Omitted for notifications.')
-    ),
+    id: z
+      .union([z.string(), z.int()])
+      .optional()
+      .describe('Request identifier, echoed on the response. Omitted for notifications.'),
     method: z.string().describe('MCP method, such as `initialize`, `tools/list`, or `tools/call`.'),
-    params: z.optional(
-      z.object({}).catchall(z.unknown()).describe('Method parameters as defined by the MCP specification.')
-    )
+    params: z
+      .object({})
+      .catchall(z.unknown())
+      .optional()
+      .describe('Method parameters as defined by the MCP specification.')
   })
   .describe(
     'A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a\nresponse; a notification carries `method` without `id` and is not. The `method` and\n`params` values are defined by the MCP specification.\n'
   );
 
-/**
- * @description A JSON-RPC 2.0 error. Failures inside a tool are reported in the tool result with `isError`, not here.
- */
 export const JSONRPCErrorSchema = z
   .object({
     code: z.int().describe('JSON-RPC error code.'),
     message: z.string().describe('Short description of the error.'),
-    data: z.optional(z.unknown().describe('Additional error detail.'))
+    data: z.unknown().optional().describe('Additional error detail.')
   })
   .describe('A JSON-RPC 2.0 error. Failures inside a tool are reported in the tool result with `isError`, not here.');
 
-/**
- * @description A JSON-RPC 2.0 response. Exactly one of `result` or `error` is present.
- */
 export const JSONRPCResponseSchema = z
   .object({
     jsonrpc: z.enum(['2.0']).describe('JSON-RPC protocol version. Always `2.0`.'),
-    id: z.union([z.int(), z.string()]).describe('Identifier of the request this responds to.'),
-    result: z.optional(
-      z.object({}).catchall(z.unknown()).describe('Method result as defined by the MCP specification.')
-    ),
-    get error() {
-      return JSONRPCErrorSchema.describe(
-        'A JSON-RPC 2.0 error. Failures inside a tool are reported in the tool result with `isError`, not here.'
-      ).optional();
-    }
+    id: z.union([z.string(), z.int()]).describe('Identifier of the request this responds to.'),
+    result: z
+      .object({})
+      .catchall(z.unknown())
+      .optional()
+      .describe('Method result as defined by the MCP specification.'),
+    error: JSONRPCErrorSchema.optional().describe(
+      'A JSON-RPC 2.0 error. Failures inside a tool are reported in the tool result with `isError`, not here.'
+    )
   })
   .describe('A JSON-RPC 2.0 response. Exactly one of `result` or `error` is present.');
 
-/**
- * @description A GitHub App installation associated with an organization
- */
 export const githubInstallationSchema = z
   .object({
     id: z.string().describe('Unique identifier of the installation record'),
     installationId: z.int().describe('GitHub App installation ID'),
     organization: z.string().describe('Organization ID this installation belongs to'),
-    createdAt: z.date().describe('Timestamp when the installation was created'),
-    updatedAt: z.date().describe('Timestamp when the installation was last updated')
+    createdAt: z.iso.datetime().describe('Timestamp when the installation was created'),
+    updatedAt: z.iso.datetime().describe('Timestamp when the installation was last updated')
   })
   .describe('A GitHub App installation associated with an organization');
 
-/**
- * @description A mapping between a GitHub repository and a Xata project
- */
 export const githubRepositorySchema = z
   .object({
     id: z.string().describe('Unique identifier of the mapping record'),
     githubRepositoryID: z.int().describe('GitHub repository ID'),
     project: z.string().describe('Project ID this mapping is associated with'),
     rootBranchId: z.string().describe('ID of the root Xata branch mapped to this repository'),
-    createdAt: z.date().describe('Timestamp when the mapping was created'),
-    updatedAt: z.date().describe('Timestamp when the mapping was last updated')
+    createdAt: z.iso.datetime().describe('Timestamp when the mapping was created'),
+    updatedAt: z.iso.datetime().describe('Timestamp when the mapping was last updated')
   })
   .describe('A mapping between a GitHub repository and a Xata project');
 
@@ -513,9 +412,6 @@ export const updateGithubRepositoryRequestSchema = z.object({
   githubRepositoryID: z.int().describe('GitHub repository ID')
 });
 
-/**
- * @description Details of a postgres extension
- */
 export const extensionSchema = z
   .object({
     name: z.string().describe('Extension name'),
@@ -527,21 +423,15 @@ export const extensionSchema = z
   })
   .describe('Details of a postgres extension');
 
-/**
- * @description Details of a postgres image
- */
 export const imageSchema = z
   .object({
     name: z.string().describe('Image name'),
     majorVersion: z.string().describe('major postgres version'),
     fullVersion: z.string().describe('full postgres version'),
-    region: z.optional(z.array(z.string().min(1)).describe('region where this instance type is available'))
+    region: z.array(z.string()).optional().describe('region where this instance type is available')
   })
   .describe('Details of a postgres image');
 
-/**
- * @description Configuration for scaling branches to zero when not in use
- */
 export const scaleToZeroConfigurationSchema = z
   .object({
     enabled: z.boolean().describe('Whether scale to zero is enabled'),
@@ -552,83 +442,56 @@ export const scaleToZeroConfigurationSchema = z
   })
   .describe('Configuration for scaling branches to zero when not in use');
 
-/**
- * @description Whether the project branches are configured to scale down to zero when not in use
- */
 export const projectScaleToZeroConfigurationSchema = z
   .object({
-    get baseBranches() {
-      return scaleToZeroConfigurationSchema.describe('Configuration for scaling branches to zero when not in use');
-    },
-    get childBranches() {
-      return scaleToZeroConfigurationSchema.describe('Configuration for scaling branches to zero when not in use');
-    }
+    baseBranches: scaleToZeroConfigurationSchema.describe('Configuration for scaling branches to zero when not in use'),
+    childBranches: scaleToZeroConfigurationSchema.describe('Configuration for scaling branches to zero when not in use')
   })
   .describe('Whether the project branches are configured to scale down to zero when not in use');
 
 export const cidrEntrySchema = z.object({
   cidr: z.string().min(1).max(64).describe('IP address or CIDR block (e.g., "192.168.0.0/24")'),
-  description: z.optional(z.string().max(100).describe('Optional label for the CIDR entry'))
+  description: z.string().max(100).optional().describe('Optional label for the CIDR entry')
 });
 
-/**
- * @description Configuration for IP filtering on project branches
- */
 export const IPFilteringConfigurationSchema = z
   .object({
     enabled: z.boolean().describe('Whether IP filtering is enabled'),
-    get cidr() {
-      return z.array(cidrEntrySchema).max(64);
-    }
+    cidr: z.array(cidrEntrySchema).max(64)
   })
   .describe('Configuration for IP filtering on project branches');
 
-/**
- * @description Configuration details for a project, including its scale to zero settings
- */
 export const projectConfigurationSchema = z
   .object({
-    get scaleToZero() {
-      return projectScaleToZeroConfigurationSchema.describe(
-        'Whether the project branches are configured to scale down to zero when not in use'
-      );
-    },
-    get ipFiltering() {
-      return IPFilteringConfigurationSchema.describe('Configuration for IP filtering on project branches').optional();
-    }
+    scaleToZero: projectScaleToZeroConfigurationSchema.describe(
+      'Whether the project branches are configured to scale down to zero when not in use'
+    ),
+    ipFiltering: IPFilteringConfigurationSchema.optional().describe(
+      'Configuration for IP filtering on project branches'
+    )
   })
   .describe('Configuration details for a project, including its scale to zero settings');
 
-/**
- * @description Details of a project including its ID, name, and creation/update timestamps
- */
 export const projectSchema = z
   .object({
     id: z.string().describe('Unique identifier for the project'),
     name: z.string().describe('Human-readable name of the project'),
-    createdAt: z.date().describe('Timestamp when the project was created'),
-    updatedAt: z.date().describe('Timestamp when the project was last updated'),
-    get configuration() {
-      return projectConfigurationSchema.describe(
-        'Configuration details for a project, including its scale to zero settings'
-      );
-    }
+    createdAt: z.iso.datetime().describe('Timestamp when the project was created'),
+    updatedAt: z.iso.datetime().describe('Timestamp when the project was last updated'),
+    configuration: projectConfigurationSchema.describe(
+      'Configuration details for a project, including its scale to zero settings'
+    )
   })
   .describe('Details of a project including its ID, name, and creation/update timestamps');
 
-/**
- * @description Partial configuration update for a project
- */
 export const updateProjectConfigurationSchema = z
   .object({
-    get scaleToZero() {
-      return projectScaleToZeroConfigurationSchema
-        .describe('Whether the project branches are configured to scale down to zero when not in use')
-        .optional();
-    },
-    get ipFiltering() {
-      return IPFilteringConfigurationSchema.describe('Configuration for IP filtering on project branches').optional();
-    }
+    scaleToZero: projectScaleToZeroConfigurationSchema
+      .optional()
+      .describe('Whether the project branches are configured to scale down to zero when not in use'),
+    ipFiltering: IPFilteringConfigurationSchema.optional().describe(
+      'Configuration for IP filtering on project branches'
+    )
   })
   .describe('Partial configuration update for a project');
 
@@ -637,99 +500,83 @@ export const branchFromParentSchema = z.object({
   parentID: z.string().describe('If present, the branch will inherit the parent branch configuration and data')
 });
 
-/**
- * @description Configuration details for a database cluster backing a branch
- */
 export const clusterConfigurationSchema = z
   .object({
     region: z.string().describe('Geographic region where the cluster will be deployed'),
-    storage: z.optional(z.int().max(250).describe('Branch storage in GiB (gigabytes)')),
+    storage: z.int().optional().describe('Branch storage in GiB (gigabytes)'),
     instanceType: z.string().describe('The instance type according to the xata instance types available'),
     image: z.string().describe('PostgreSQL image to use for the database instances'),
     replicas: z
       .int()
-      .min(0)
-      .max(4)
       .describe(
         'Number of replicas in the branch. Every child branch is created with no replicas. This can be updated.'
       ),
-    postgresConfigurationParameters: z.optional(
-      z.object({}).catchall(z.string()).describe('Arbitrary PostgreSQL configuration parameters for the cluster')
-    ),
-    preloadLibraries: z.optional(z.array(z.string()).describe('List of PostgreSQL extensions and libraries to preload'))
+    postgresConfigurationParameters: z
+      .object({})
+      .catchall(z.string())
+      .optional()
+      .describe('Arbitrary PostgreSQL configuration parameters for the cluster'),
+    preloadLibraries: z.array(z.string()).optional().describe('List of PostgreSQL extensions and libraries to preload')
   })
   .describe('Configuration details for a database cluster backing a branch');
 
 export const branchFromConfigurationSchema = z.object({
   mode: z.enum(['custom']),
-  get configuration() {
-    return clusterConfigurationSchema.describe('Configuration details for a database cluster backing a branch');
-  }
+  configuration: clusterConfigurationSchema.describe('Configuration details for a database cluster backing a branch')
 });
 
-/**
- * @description Basic metadata about a branch, used in response to create/update operations
- */
 export const branchShortMetadataSchema = z
   .object({
     id: z.string().describe('Unique identifier for the branch'),
     name: z.string().describe('Human-readable name of the branch'),
-    description: z.optional(z.string().describe('Optional description of the branch purpose or contents')),
-    createdAt: z.date().describe('Timestamp when the branch was created'),
-    updatedAt: z.date().describe('Timestamp when the branch was last updated'),
+    description: z.string().optional().describe('Optional description of the branch purpose or contents'),
+    createdAt: z.iso.datetime().describe('Timestamp when the branch was created'),
+    updatedAt: z.iso.datetime().describe('Timestamp when the branch was last updated'),
     parentID: z
       .string()
-      .describe('Identifier of the parent branch if this is a derived branch, null otherwise')
-      .nullish(),
+      .nullish()
+      .describe('Identifier of the parent branch if this is a derived branch, null otherwise'),
     connectionString: z
       .string()
+      .nullish()
       .describe(
         'Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead. The hostname in this connection string carries a -deprecated marker in its first DNS label.'
-      )
-      .nullish(),
+      ),
     region: z.string().describe('Geographic region where the branch is deployed'),
     publicAccess: z.boolean().describe('Whether the branch allows public access without authentication')
   })
   .describe('Basic metadata about a branch, used in response to create/update operations');
 
-/**
- * @description Metadata about a branch used when listing branches in a project
- */
 export const branchListMetadataSchema = z
   .object({
     id: z.string().describe('Unique identifier for the branch'),
     name: z.string().describe('Human-readable name of the branch'),
-    description: z.optional(z.string().describe('Optional description of the branch purpose or contents')),
-    createdAt: z.date().describe('Timestamp when the branch was created'),
-    updatedAt: z.date().describe('Timestamp when the branch was last updated'),
+    description: z.string().optional().describe('Optional description of the branch purpose or contents'),
+    createdAt: z.iso.datetime().describe('Timestamp when the branch was created'),
+    updatedAt: z.iso.datetime().describe('Timestamp when the branch was last updated'),
     parentID: z
       .string()
-      .describe('Identifier of the parent branch if this is a derived branch, null otherwise')
-      .nullish(),
+      .nullish()
+      .describe('Identifier of the parent branch if this is a derived branch, null otherwise'),
     region: z.string().describe('Geographic region where the branch is deployed'),
     publicAccess: z.boolean().describe('Whether the branch allows public access without authentication'),
     backupsEnabled: z.boolean().describe('Whether the branch is in a region that supports backups')
   })
   .describe('Metadata about a branch used when listing branches in a project');
 
-/**
- * @description Information about the current lifecycle state of a database cluster
- */
 export const clusterLifecycleSchema = z
   .object({
     state: z
       .enum(['ready', 'creating', 'updating', 'upgrading', 'unknown'])
       .describe('Current operational state of the cluster (ready, creating, updating, etc.)'),
-    reason: z.optional(
-      z.string().describe('Reason for the current lifecycle state, especially useful for non-ready states')
-    ),
+    reason: z
+      .string()
+      .optional()
+      .describe('Reason for the current lifecycle state, especially useful for non-ready states'),
     phase: z.string().describe('Current phase within the lifecycle process')
   })
   .describe('Information about the current lifecycle state of a database cluster');
 
-/**
- * @description Status information about an individual database instance within a cluster
- */
 export const instanceStatusSchema = z
   .object({
     id: z.string().describe('Unique identifier for the database instance'),
@@ -739,9 +586,6 @@ export const instanceStatusSchema = z
   })
   .describe('Status information about an individual database instance within a cluster');
 
-/**
- * @description Detailed status information about a branch and its underlying database cluster
- */
 export const branchStatusSchema = z
   .object({
     status: z.string().describe('Status indicator for the branch according to CNPG'),
@@ -754,98 +598,71 @@ export const branchStatusSchema = z
         'STATUS_TYPE_HIBERNATED'
       ])
       .describe('Type of status of the branch'),
-    message: z.optional(z.string().describe('Human-readable message explaining the current status')),
-    get lifecycle() {
-      return clusterLifecycleSchema
-        .describe('Information about the current lifecycle state of a database cluster')
-        .optional();
-    },
+    message: z.string().optional().describe('Human-readable message explaining the current status'),
+    lifecycle: clusterLifecycleSchema
+      .optional()
+      .describe('Information about the current lifecycle state of a database cluster'),
     instanceCount: z.int().min(1).max(5).describe('Total number of database instances in the cluster'),
     instanceReadyCount: z.int().min(0).max(5).describe('Number of database instances that are ready and operational'),
-    get instances() {
-      return z
-        .array(
-          instanceStatusSchema.describe('Status information about an individual database instance within a cluster')
-        )
-        .describe('Details about each individual database instance in the cluster');
-    }
+    instances: z.array(instanceStatusSchema).describe('Details about each individual database instance in the cluster')
   })
   .describe('Detailed status information about a branch and its underlying database cluster');
 
-/**
- * @description Details about the branch continuous backup configuration
- */
 export const backupConfigurationSchema = z
   .object({
-    retentionPeriod: z.optional(
-      z.int().min(2).max(35).default(2).describe('how long are we keeping the backups around for')
-    ),
-    backupTime: z.optional(
-      z
-        .string()
-        .regex(/^(\*|[0-6]):(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/)
-        .describe('time of day/week when we are taking a full backup')
-    )
+    retentionPeriod: z.int().optional().default(2).describe('how long are we keeping the backups around for'),
+    backupTime: z
+      .string()
+      .regex(/^(\*|[0-6]):(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/)
+      .optional()
+      .describe('time of day/week when we are taking a full backup')
   })
   .describe('Details about the branch continuous backup configuration');
 
-/**
- * @description Detailed metadata about a branch, including its status and configuration
- */
 export const branchMetadataSchema = z
   .object({
     id: z.string().describe('Unique identifier for the branch'),
     name: z.string().describe('Human-readable name of the branch'),
-    description: z.optional(z.string().describe('Optional description of the branch purpose or contents')),
-    createdAt: z.date().describe('Timestamp when the branch was created'),
-    updatedAt: z.date().describe('Timestamp when the branch was last updated'),
+    description: z.string().optional().describe('Optional description of the branch purpose or contents'),
+    createdAt: z.iso.datetime().describe('Timestamp when the branch was created'),
+    updatedAt: z.iso.datetime().describe('Timestamp when the branch was last updated'),
     parentID: z
       .string()
-      .describe('Identifier of the parent branch if this is a derived branch, null otherwise')
-      .nullish(),
+      .nullish()
+      .describe('Identifier of the parent branch if this is a derived branch, null otherwise'),
     region: z.string().describe('Geographic region where the branch is deployed'),
-    get status() {
-      return branchStatusSchema.describe(
-        'Detailed status information about a branch and its underlying database cluster'
-      );
-    },
-    connectionString: z.nullable(
-      z
-        .string()
-        .describe(
-          'Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead. The hostname in this connection string carries a -deprecated marker in its first DNS label.'
-        )
+    status: branchStatusSchema.describe(
+      'Detailed status information about a branch and its underlying database cluster'
     ),
+    connectionString: z
+      .string()
+      .nullable()
+      .describe(
+        'Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead. The hostname in this connection string carries a -deprecated marker in its first DNS label.'
+      ),
     publicAccess: z.boolean().describe('Whether the branch allows public access without authentication'),
     backupsEnabled: z.boolean().describe('Whether the branch is in a region that supports backups'),
-    get scaleToZero() {
-      return scaleToZeroConfigurationSchema.describe('Configuration for scaling branches to zero when not in use');
-    },
-    get configuration() {
-      return clusterConfigurationSchema.describe('Configuration details for a database cluster backing a branch');
-    },
-    get backupConfiguration() {
-      return backupConfigurationSchema.describe('Details about the branch continuous backup configuration').optional();
-    }
+    scaleToZero: scaleToZeroConfigurationSchema.describe('Configuration for scaling branches to zero when not in use'),
+    configuration: clusterConfigurationSchema.describe('Configuration details for a database cluster backing a branch'),
+    backupConfiguration: backupConfigurationSchema
+      .optional()
+      .describe('Details about the branch continuous backup configuration')
   })
   .describe('Detailed metadata about a branch, including its status and configuration');
 
-/**
- * @description metadata about a continuous backup
- */
 export const backupMetadataSchema = z
   .object({
     id: z.string().describe('unique identifier for the backup'),
     branchID: z.string().describe('the branchID the branch associated with the backup'),
-    earliestRestore: z.optional(z.date().describe('the earlies point in time available for restoring the branch')),
-    latestRestore: z.optional(z.date().describe('the latest point in time available for restoring the branch')),
+    earliestRestore: z.iso
+      .datetime()
+      .optional()
+      .describe('the earlies point in time available for restoring the branch'),
+    latestRestore: z.iso.datetime().optional().describe('the latest point in time available for restoring the branch'),
     description: z.string().describe('description of the backup')
   })
   .describe('metadata about a continuous backup');
 
-/**
- * @description Credentials and connection details for accessing a branch
- */
 export const branchCredentialsSchema = z
   .object({
     username: z.string().describe('Username for accessing the branch database'),
@@ -861,120 +678,77 @@ export const branchCredentialsSchema = z
   })
   .describe('Credentials and connection details for accessing a branch');
 
-/**
- * @description Request to rotate credentials for a branch database user
- */
 export const rotateCredentialsRequestSchema = z
   .object({
     username: z.string().describe('Database username to rotate credentials for')
   })
   .describe('Request to rotate credentials for a branch database user');
 
-/**
- * @description Details required when creating a new branch
- */
 export const branchCreationDetailsSchema = z
-  .union([
-    z
-      .lazy(() => branchFromParentSchema)
-      .and(
-        z.object({
-          name: z.string().describe('Human-readable name for the new branch'),
-          description: z.optional(
-            z
-              .string()
-              .max(50)
-              .regex(/^[a-zA-Z0-9]+[a-zA-Z0-9- ]*$/)
-              .describe('Optional description for the branch purpose or contents (max 50 characters)')
-          ),
-          get scaleToZero() {
-            return scaleToZeroConfigurationSchema
-              .describe('Configuration for scaling branches to zero when not in use')
-              .optional();
-          },
-          get backupConfiguration() {
-            return backupConfigurationSchema
-              .describe('Details about the branch continuous backup configuration')
-              .optional();
-          },
-          mode: z.literal('inherit').describe('The mode used to discriminate between types of branches.')
-        })
-      ),
-    z
-      .lazy(() => branchFromConfigurationSchema)
-      .and(
-        z.object({
-          name: z.string().describe('Human-readable name for the new branch'),
-          description: z.optional(
-            z
-              .string()
-              .max(50)
-              .regex(/^[a-zA-Z0-9]+[a-zA-Z0-9- ]*$/)
-              .describe('Optional description for the branch purpose or contents (max 50 characters)')
-          ),
-          get scaleToZero() {
-            return scaleToZeroConfigurationSchema
-              .describe('Configuration for scaling branches to zero when not in use')
-              .optional();
-          },
-          get backupConfiguration() {
-            return backupConfigurationSchema
-              .describe('Details about the branch continuous backup configuration')
-              .optional();
-          },
-          mode: z.literal('custom').describe('The mode used to discriminate between types of branches.')
-        })
-      )
+  .discriminatedUnion('mode', [
+    branchFromParentSchema.extend({
+      mode: z.enum(['inherit'])
+    }),
+    branchFromConfigurationSchema.extend({
+      mode: z.enum(['custom'])
+    })
   ])
-  .describe('Details required when creating a new branch');
-
-/**
- * @description Details that can be updated for an existing branch
- */
-export const branchUpdateDetailsSchema = z
-  .object({
-    name: z.optional(z.string().describe('New name for the branch')),
-    description: z.optional(
-      z
+  .and(
+    z.object({
+      name: z.string().describe('Human-readable name for the new branch'),
+      description: z
         .string()
         .max(50)
         .regex(/^[a-zA-Z0-9]+[a-zA-Z0-9- ]*$/)
-        .describe('New description for the branch (max 50 characters)')
-    ),
-    replicas: z.optional(z.int().min(0).max(4).describe('Number of database replicas to scale to')),
-    storage: z.optional(
-      z
-        .int()
-        .min(1)
-        .describe(
-          "Branch storage in GiB (gigabytes). The maximum allowed value depends on the organization's storage limit."
-        )
-    ),
-    instanceType: z.optional(z.string().describe('New instance type for the branch')),
-    get backupConfiguration() {
-      return backupConfigurationSchema.describe('Details about the branch continuous backup configuration').optional();
-    },
-    hibernate: z.optional(
-      z.boolean().describe('Enabled when the branch should be hibernated, disabled if it needs to be reactivated.')
-    ),
-    get scaleToZero() {
-      return scaleToZeroConfigurationSchema
-        .describe('Configuration for scaling branches to zero when not in use')
-        .optional();
-    },
-    postgresConfigurationParameters: z.optional(
-      z.object({}).catchall(z.string()).describe('Arbitrary PostgreSQL configuration parameters for the cluster')
-    ),
-    preloadLibraries: z.optional(
-      z.array(z.string()).describe('List of PostgreSQL extensions and libraries to preload')
-    ),
-    image: z.optional(z.string().describe('PostgreSQL image to use for the database instances'))
+        .optional()
+        .describe('Optional description for the branch purpose or contents (max 50 characters)'),
+      scaleToZero: scaleToZeroConfigurationSchema
+        .optional()
+        .describe('Configuration for scaling branches to zero when not in use'),
+      backupConfiguration: backupConfigurationSchema
+        .optional()
+        .describe('Details about the branch continuous backup configuration'),
+      mode: z.enum(['inherit', 'custom']).describe('The mode used to discriminate between types of branches.')
+    })
+  )
+  .describe('Details required when creating a new branch');
+
+export const branchUpdateDetailsSchema = z
+  .object({
+    name: z.string().optional().describe('New name for the branch'),
+    description: z
+      .string()
+      .regex(/^[a-zA-Z0-9]+[a-zA-Z0-9- ]*$/)
+      .optional()
+      .describe('New description for the branch (max 50 characters)'),
+    replicas: z.int().optional().describe('Number of database replicas to scale to'),
+    storage: z
+      .int()
+      .optional()
+      .describe(
+        "Branch storage in GiB (gigabytes). The maximum allowed value depends on the organization's storage limit."
+      ),
+    instanceType: z.string().optional().describe('New instance type for the branch'),
+    backupConfiguration: backupConfigurationSchema
+      .optional()
+      .describe('Details about the branch continuous backup configuration'),
+    hibernate: z
+      .boolean()
+      .optional()
+      .describe('Enabled when the branch should be hibernated, disabled if it needs to be reactivated.'),
+    scaleToZero: scaleToZeroConfigurationSchema
+      .optional()
+      .describe('Configuration for scaling branches to zero when not in use'),
+    postgresConfigurationParameters: z
+      .object({})
+      .catchall(z.string())
+      .optional()
+      .describe('Arbitrary PostgreSQL configuration parameters for the cluster'),
+    preloadLibraries: z.array(z.string()).optional().describe('List of PostgreSQL extensions and libraries to preload'),
+    image: z.string().optional().describe('PostgreSQL image to use for the database instances')
   })
   .describe('Details that can be updated for an existing branch');
 
-/**
- * @description Resource limits and constraints for projects within an organization
- */
 export const projectLimitsSchema = z
   .object({
     maxInstances: z.int().min(1).describe('Maximum number of database instances allowed per branch'),
@@ -984,9 +758,6 @@ export const projectLimitsSchema = z
   })
   .describe('Resource limits and constraints for projects within an organization');
 
-/**
- * @description Name of a branch metric exposed by the API.
- */
 export const branchMetricNameSchema = z
   .enum([
     'cpu',
@@ -1007,9 +778,6 @@ export const branchMetricNameSchema = z
   ])
   .describe('Name of a branch metric exposed by the API.');
 
-/**
- * @description Full set of resource limits applicable to a project and its branches
- */
 export const effectiveProjectLimitsSchema = z
   .object({
     maxDescriptionLength: z.int().min(25).describe('Maximum character length allowed for project descriptions'),
@@ -1033,40 +801,27 @@ export const effectiveProjectLimitsSchema = z
   })
   .describe('Full set of resource limits applicable to a project and its branches');
 
-/**
- * @description Effective resource limits for an organization, covering org-level defaults for all projects plus organization-specific constraints
- */
-export const organizationLimitsSchema = z
-  .lazy(() => effectiveProjectLimitsSchema)
-  .and(
-    z.object({
-      maxProjects: z.int().min(1).describe('Maximum number of projects allowed in the organization'),
-      maxProjectsPerHour: z
-        .int()
-        .min(1)
-        .describe('Maximum number of projects that can be created in a rolling one-hour window'),
-      maxBranchesPerOrg: z
-        .int()
-        .min(1)
-        .describe('Maximum number of active branches allowed across all projects in the organization')
-    })
-  )
-  .describe('Full set of resource limits applicable to a project and its branches')
+export const organizationLimitsSchema = effectiveProjectLimitsSchema
+  .extend({
+    maxProjects: z.int().min(1).describe('Maximum number of projects allowed in the organization'),
+    maxProjectsPerHour: z
+      .int()
+      .min(1)
+      .describe('Maximum number of projects that can be created in a rolling one-hour window'),
+    maxBranchesPerOrg: z
+      .int()
+      .min(1)
+      .describe('Maximum number of active branches allowed across all projects in the organization')
+  })
   .describe(
     'Effective resource limits for an organization, covering org-level defaults for all projects plus organization-specific constraints'
   );
 
 export const branchMetricsRequestSchema = z.object({
-  start: z.date().describe('Start time'),
-  end: z.date().describe('End time'),
-  get metrics() {
-    return z
-      .array(branchMetricNameSchema.describe('Name of a branch metric exposed by the API.'))
-      .min(1)
-      .max(15)
-      .describe('List of metric names to query.');
-  },
-  instances: z.optional(z.array(z.string()).describe('List of instance IDs to query')),
+  start: z.iso.datetime().describe('Start time'),
+  end: z.iso.datetime().describe('End time'),
+  metrics: z.array(branchMetricNameSchema).min(1).max(15).describe('List of metric names to query.'),
+  instances: z.array(z.string()).optional().describe('List of instance IDs to query'),
   aggregations: z
     .array(z.enum(['avg', 'max', 'min']))
     .describe(
@@ -1074,107 +829,76 @@ export const branchMetricsRequestSchema = z.object({
     )
 });
 
-/**
- * @description The metric series
- */
 export const metricSeriesSchema = z
   .object({
     instanceID: z.string().describe('ID of the instance'),
     aggregation: z.enum(['avg', 'max', 'min']).describe('The aggregation used to generate this time-series'),
     values: z.array(
       z.object({
-        timestamp: z.date(),
+        timestamp: z.iso.datetime(),
         value: z.number()
       })
     )
   })
   .describe('The metric series');
 
-/**
- * @description Time-series for a single metric.
- */
 export const branchMetricResultSchema = z
   .object({
     metric: z.string().describe('Name of the queried metric.'),
     unit: z.string().describe('Unit of the metric (percentage, bytes, ms, etc.)'),
-    get series() {
-      return z.array(metricSeriesSchema.describe('The metric series'));
-    }
+    series: z.array(metricSeriesSchema)
   })
   .describe('Time-series for a single metric.');
 
-/**
- * @description A collection of metrics (cpu, memory, disk,...) for each of the instances of a branch
- */
 export const branchMetricsSchema = z
   .object({
-    start: z.date(),
-    end: z.date(),
-    get results() {
-      return z
-        .array(branchMetricResultSchema.describe('Time-series for a single metric.'))
-        .describe('One entry per requested metric, in the order the metrics were requested.');
-    }
+    start: z.iso.datetime(),
+    end: z.iso.datetime(),
+    results: z
+      .array(branchMetricResultSchema)
+      .describe('One entry per requested metric, in the order the metrics were requested.')
   })
   .describe('A collection of metrics (cpu, memory, disk,...) for each of the instances of a branch');
 
-/**
- * @description A single filter on log entries.
- */
 export const logFilterSchema = z
   .object({
     field: z.enum(['instance', 'level', 'process', 'body']).describe('Log attribute to filter on.'),
     op: z.enum(['in', 'contains', 'icontains', 'regex', 'iregex']).describe('Match operator.'),
-    values: z.optional(z.array(z.string()).describe('Used with `op: in`.')),
-    value: z.optional(z.string().describe('Used with the body operators.'))
+    values: z.array(z.string()).optional().describe('Used with `op: in`.'),
+    value: z.string().optional().describe('Used with the body operators.')
   })
   .describe('A single filter on log entries.');
 
 export const branchLogsRequestSchema = z.object({
-  start: z.date().describe('Start time'),
-  end: z.date().describe('End time'),
-  get filters() {
-    return z
-      .array(logFilterSchema.describe('A single filter on log entries.'))
-      .describe('Filters applied to log entries. Multiple filters are combined with AND.')
-      .optional();
-  },
-  limit: z.optional(z.int().min(1).max(200).default(100)),
-  cursor: z.optional(z.string().describe('Pagination cursor from a previous response'))
+  start: z.iso.datetime().describe('Start time'),
+  end: z.iso.datetime().describe('End time'),
+  filters: z
+    .array(logFilterSchema)
+    .optional()
+    .describe('Filters applied to log entries. Multiple filters are combined with AND.'),
+  limit: z.int().min(1).max(200).optional().default(100),
+  cursor: z.string().optional().describe('Pagination cursor from a previous response')
 });
 
-/**
- * @description Log level enumeration
- */
 export const logLevelSchema = z.enum(['debug', 'info', 'warning', 'error']).describe('Log level enumeration');
 
 export const logEntrySchema = z.object({
-  timestamp: z.date(),
+  timestamp: z.iso.datetime(),
   instanceID: z.string(),
-  get level() {
-    return logLevelSchema.describe('Log level enumeration').optional();
-  },
+  level: logLevelSchema.optional().describe('Log level enumeration'),
   message: z.string(),
-  process: z.optional(z.string().describe('Name of the PostgreSQL process that emitted the log'))
+  process: z.string().optional().describe('Name of the PostgreSQL process that emitted the log')
 });
 
-/**
- * @description A collection of logs for each of the instances of a branch
- */
 export const branchLogsSchema = z
   .object({
-    start: z.date(),
-    end: z.date(),
-    get logs() {
-      return z.array(logEntrySchema);
-    },
-    nextCursor: z.nullable(z.string().describe('Pagination cursor for the next page'))
+    start: z.iso.datetime(),
+    end: z.iso.datetime(),
+    logs: z.array(logEntrySchema),
+    nextCursor: z.string().nullable().describe('Pagination cursor for the next page')
   })
   .describe('A collection of logs for each of the instances of a branch');
 
-/**
- * @description Detailed information about a single PostgreSQL configuration parameter
- */
 export const postgresConfigParameterSchema = z
   .object({
     name: z.string().describe('The name of the PostgreSQL parameter'),
@@ -1183,63 +907,47 @@ export const postgresConfigParameterSchema = z
       .describe('The data type of the parameter'),
     description: z.string().describe('Human-readable description of what the parameter controls'),
     section: z.string().describe('The section/category this parameter belongs to'),
-    acceptableRange: z.optional(
-      z
-        .object({
-          minValue: z.optional(z.string().describe('Minimum allowed value (if applicable)')),
-          maxValue: z.optional(z.string().describe('Maximum allowed value (if applicable)')),
-          enumValues: z.optional(z.array(z.string()).describe('List of allowed enum values (if applicable)'))
-        })
-        .describe('Information about the acceptable range of values for this parameter')
-    ),
+    acceptableRange: z
+      .object({
+        minValue: z.string().optional().describe('Minimum allowed value (if applicable)'),
+        maxValue: z.string().optional().describe('Maximum allowed value (if applicable)'),
+        enumValues: z.array(z.string()).optional().describe('List of allowed enum values (if applicable)')
+      })
+      .optional()
+      .describe('Information about the acceptable range of values for this parameter'),
     defaultValue: z.string().describe('The default value for this parameter'),
     defaultValueSource: z.enum(['postgres', 'instance_type']).describe('The source of the default value'),
     currentValue: z.string().describe('The current value of this parameter in the branch'),
     documentationLink: z.string().describe('Link to PostgreSQL documentation for this parameter'),
     recommendation: z.string().describe('Optional recommendation for this parameter (currently empty)'),
-    restartRequired: z.optional(
-      z.boolean().describe('Whether a database restart is required for this parameter change to take effect')
-    )
+    restartRequired: z
+      .boolean()
+      .optional()
+      .describe('Whether a database restart is required for this parameter change to take effect')
   })
   .describe('Detailed information about a single PostgreSQL configuration parameter');
 
-/**
- * @description Detailed information about PostgreSQL configuration parameters for a branch
- */
 export const postgresConfigDetailsSchema = z
   .object({
-    get parameters() {
-      return z
-        .array(
-          postgresConfigParameterSchema.describe(
-            'Detailed information about a single PostgreSQL configuration parameter'
-          )
-        )
-        .describe('Array of PostgreSQL configuration parameters with detailed information');
-    }
+    parameters: z
+      .array(postgresConfigParameterSchema)
+      .describe('Array of PostgreSQL configuration parameters with detailed information')
   })
   .describe('Detailed information about PostgreSQL configuration parameters for a branch');
 
-/**
- * @description Metadata about a backup, used in request to create a restore. If configuration is not provided, the branch will inherit the source branch configuration.
- */
 export const restoreDetailsSchema = z
   .object({
     name: z.string().describe('Human-readable name of the branch'),
-    description: z.optional(z.string().describe('Optional description of the branch purpose or contents')),
-    get scaleToZero() {
-      return scaleToZeroConfigurationSchema
-        .describe('Configuration for scaling branches to zero when not in use')
-        .optional();
-    },
-    get backupConfiguration() {
-      return backupConfigurationSchema.describe('Details about the branch continuous backup configuration').optional();
-    },
-    get configuration() {
-      return clusterConfigurationSchema
-        .describe('Configuration details for a database cluster backing a branch')
-        .optional();
-    }
+    description: z.string().optional().describe('Optional description of the branch purpose or contents'),
+    scaleToZero: scaleToZeroConfigurationSchema
+      .optional()
+      .describe('Configuration for scaling branches to zero when not in use'),
+    backupConfiguration: backupConfigurationSchema
+      .optional()
+      .describe('Details about the branch continuous backup configuration'),
+    configuration: clusterConfigurationSchema
+      .optional()
+      .describe('Configuration details for a database cluster backing a branch')
   })
   .describe(
     'Metadata about a backup, used in request to create a restore. If configuration is not provided, the branch will inherit the source branch configuration.'
@@ -1254,21 +962,17 @@ export const installationCredentialsSchema = z.object({
   token_type: z.string().describe('Token type (e.g. "Bearer").')
 });
 
-/**
- * @description The Vercel account/team installing the integration.
- */
 export const installationAccountSchema = z
   .object({
-    name: z.optional(z.string().describe('Team name (absent for personal accounts).')),
+    name: z.string().optional().describe('Team name (absent for personal accounts).'),
     url: z.string().describe('URL of the account on Vercel.'),
-    contact: z.optional(
-      z
-        .object({
-          email: z.string(),
-          name: z.optional(z.string())
-        })
-        .describe('Contact details for the account.')
-    )
+    contact: z
+      .object({
+        email: z.string(),
+        name: z.string().optional()
+      })
+      .optional()
+      .describe('Contact details for the account.')
   })
   .describe('The Vercel account/team installing the integration.');
 
@@ -1276,1487 +980,1249 @@ export const upsertInstallationRequestSchema = z.object({
   scopes: z.array(z.string()).describe('Scopes granted to the installation.'),
   acceptedPolicies: z
     .object({})
-    .catchall(z.date())
+    .catchall(z.iso.datetime())
     .describe('Map of policy id to the acceptance timestamp (RFC 3339), e.g. {"toc": "2024-02-28T10:00:00Z"}.'),
-  get credentials() {
-    return installationCredentialsSchema;
-  },
-  get account() {
-    return installationAccountSchema.describe('The Vercel account/team installing the integration.');
-  }
+  credentials: installationCredentialsSchema,
+  account: installationAccountSchema.describe('The Vercel account/team installing the integration.')
 });
 
 export const deleteInstallationRequestSchema = z.object({
-  cascadeResourceDeletion: z.optional(
-    z.boolean().describe("Whether to delete the installation's resources along with the installation.")
-  ),
-  reason: z.optional(z.string().describe('The reason for deleting the installation.'))
+  cascadeResourceDeletion: z
+    .boolean()
+    .optional()
+    .describe("Whether to delete the installation's resources along with the installation."),
+  reason: z.string().optional().describe('The reason for deleting the installation.')
 });
 
-/**
- * @description Vercel Partner API error envelope.
- */
 export const vercelErrorSchema = z
   .object({
     error: z.object({
       code: z.string().describe('Machine-readable error code (e.g. validation_error, conflict).'),
       message: z.string().describe('Human-readable (system) error message.'),
-      user: z.optional(
-        z
-          .object({
-            message: z.optional(z.string().describe('User-facing error message.')),
-            url: z.optional(z.string().describe('URL to a help article or dashboard page for resolution.'))
+      user: z
+        .object({
+          message: z.string().optional().describe('User-facing error message.'),
+          url: z.string().optional().describe('URL to a help article or dashboard page for resolution.')
+        })
+        .optional()
+        .describe('User-facing error details, if applicable.'),
+      fields: z
+        .array(
+          z.object({
+            key: z.string(),
+            message: z.string().optional()
           })
-          .describe('User-facing error details, if applicable.')
-      ),
-      fields: z.optional(
-        z
-          .array(
-            z.object({
-              key: z.string(),
-              message: z.optional(z.string())
-            })
-          )
-          .describe('Offending fields, for validation errors.')
-      )
+        )
+        .optional()
+        .describe('Offending fields, for validation errors.')
     })
   })
   .describe('Vercel Partner API error envelope.');
 
 export const badRequestErrorSchema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const authErrorSchema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
+export const authErrorSchema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
 
 export const simpleErrorSchema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
 export const genericErrorSchema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
 export const authorizationErrorSchema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
 export const preconditionFailedErrorSchema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the precondition failure')
 });
 
-/**
- * @description OK
- */
-export const getOrganizationsList200Schema = z.object({
+export const getOrganizationsListStatus200Schema = z.object({
   organizations: z
     .array(
       z.object({
-        get id() {
-          return organizationIDSchema.describe('Unique identifier for the organization');
-        },
+        id: organizationIDSchema.describe('Unique identifier for the organization'),
         name: z.string().describe('Human-readable name of the organization'),
-        get status() {
-          return organizationStatusSchema.describe('Current status of the organization');
-        }
+        status: organizationStatusSchema.describe('Current status of the organization')
       })
     )
     .describe('List of organizations the user has access to')
 });
 
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const getOrganizationsList400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getOrganizationsListStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const getOrganizationsList401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getOrganizationsListStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getOrganizationsListStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Generic error response
- */
-export const getOrganizationsList404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getOrganizationsListStatus5XXSchema = z.unknown();
+
+export const getOrganizationsListResponseSchema = getOrganizationsListStatus200Schema;
+
+export const getOrganizationsListErrorSchema = z.union([
+  getOrganizationsListStatus400Schema,
+  getOrganizationsListStatus401Schema,
+  getOrganizationsListStatus404Schema,
+  getOrganizationsListStatus5XXSchema
+]);
+
+export const createOrganizationStatus201Schema = organizationSchema.describe(
+  'Organization details including ID and name'
+);
+
+export const createOrganizationStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const getOrganizationsList5XXSchema = z.unknown();
+export const createOrganizationStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
 
-export const getOrganizationsListQueryResponseSchema = z.lazy(() => getOrganizationsList200Schema);
-
-/**
- * @description Organization successfully created
- */
-export const createOrganization201Schema = z
-  .lazy(() => organizationSchema)
-  .describe('Organization details including ID and name');
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const createOrganization400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const createOrganizationStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const createOrganization401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
+export const createOrganizationStatus5XXSchema = z.unknown();
 
-/**
- * @description Generic error response
- */
-export const createOrganization404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
+export const createOrganizationResponseSchema = createOrganizationStatus201Schema;
 
-/**
- * @description Unexpected Error
- */
-export const createOrganization5XXSchema = z.unknown();
+export const createOrganizationErrorSchema = z.union([
+  createOrganizationStatus400Schema,
+  createOrganizationStatus401Schema,
+  createOrganizationStatus404Schema,
+  createOrganizationStatus5XXSchema
+]);
 
-export const createOrganizationMutationRequestSchema = z
-  .lazy(() => createOrganizationRequestSchema)
+export const createOrganizationBodySchema = createOrganizationRequestSchema
+  .optional()
   .describe('Request payload for creating a new organization');
 
-export const createOrganizationMutationResponseSchema = z.lazy(() => createOrganization201Schema);
-
-export const getOrganizationPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-/**
- * @description Organization details retrieved successfully
- */
-export const getOrganization200Schema = z
-  .lazy(() => organizationSchema)
-  .describe('Organization details including ID and name');
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const getOrganization400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const getOrganization401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const getOrganization403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const getOrganization404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const getOrganization5XXSchema = z.unknown();
-
-export const getOrganizationQueryResponseSchema = z.lazy(() => getOrganization200Schema);
-
-export const updateOrganizationPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-/**
- * @description Organization successfully updated
- */
-export const updateOrganization200Schema = z
-  .lazy(() => organizationSchema)
-  .describe('Organization details including ID and name');
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const updateOrganization400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const updateOrganization401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const updateOrganization403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const updateOrganization404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const updateOrganization5XXSchema = z.unknown();
-
-export const updateOrganizationMutationRequestSchema = z.object({
-  get id() {
-    return organizationIDSchema.describe('Unique identifier for the organization to update').optional();
-  },
-  name: z.optional(z.string().describe('New name for the organization'))
-});
-
-export const updateOrganizationMutationResponseSchema = z.lazy(() => updateOrganization200Schema);
-
-export const deleteOrganizationPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-/**
- * @description Organization successfully deleted
- */
-export const deleteOrganization204Schema = z.unknown();
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const deleteOrganization400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const deleteOrganization401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const deleteOrganization403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const deleteOrganization404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const deleteOrganization5XXSchema = z.unknown();
-
-export const deleteOrganizationMutationResponseSchema = z.lazy(() => deleteOrganization204Schema);
-
-export const listOrganizationAPIKeysPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-/**
- * @description List of API keys retrieved successfully
- */
-export const listOrganizationAPIKeys200Schema = z.object({
-  get keys() {
-    return z.array(APIKeyPreviewSchema).describe('Array of API keys for the organization');
-  }
-});
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const listOrganizationAPIKeys400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const listOrganizationAPIKeys401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const listOrganizationAPIKeys403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const listOrganizationAPIKeys404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const listOrganizationAPIKeys5XXSchema = z.unknown();
-
-export const listOrganizationAPIKeysQueryResponseSchema = z.lazy(() => listOrganizationAPIKeys200Schema);
-
-export const createOrganizationAPIKeyPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-/**
- * @description API Key created
- */
-export const createOrganizationAPIKey201Schema = z.object({
-  get key() {
-    return fullAPIKeySchema;
-  }
-});
-
-/**
- * @description API key limit reached or invalid request
- */
-export const createOrganizationAPIKey400Schema = z.unknown();
-
-export const createOrganizationAPIKeyMutationRequestSchema = z.lazy(() => createAPIKeyRequestSchema);
-
-export const createOrganizationAPIKeyMutationResponseSchema = z.lazy(() => createOrganizationAPIKey201Schema);
-
-export const deleteOrganizationAPIKeysPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-/**
- * @description API Keys deleted successfully
- */
-export const deleteOrganizationAPIKeys204Schema = z.unknown();
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const deleteOrganizationAPIKeys400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const deleteOrganizationAPIKeys401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const deleteOrganizationAPIKeys404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const deleteOrganizationAPIKeysMutationRequestSchema = z.object({
-  ids: z.array(z.string()).max(50).describe('Array of API key IDs to delete')
-});
-
-export const deleteOrganizationAPIKeysMutationResponseSchema = z.lazy(() => deleteOrganizationAPIKeys204Schema);
-
-export const listOrganizationMembersPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-/**
- * @description OK
- */
-export const listOrganizationMembers200Schema = z.object({
-  get members() {
-    return z.array(userWithIDSchema);
-  }
-});
-
-export const listOrganizationMembersQueryResponseSchema = z.lazy(() => listOrganizationMembers200Schema);
-
-export const removeOrganizationMemberPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  },
-  get userID() {
-    return userIDSchema.describe('Unique identifier for a user account');
-  }
-});
-
-/**
- * @description Member removed
- */
-export const removeOrganizationMember204Schema = z.unknown();
-
-export const removeOrganizationMemberMutationResponseSchema = z.lazy(() => removeOrganizationMember204Schema);
-
-export const listOrganizationInvitationsPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-export const listOrganizationInvitationsQueryParamsSchema = z.object({
-  status: z.optional(z.enum(['pending', 'expired']).describe('Filter invitations by status')),
-  email: z.optional(z.string().describe('Filter invitations by email address')),
-  first_name: z.optional(z.string().describe('Filter invitations by first name')),
-  last_name: z.optional(z.string().describe('Filter invitations by last name')),
-  search: z.optional(z.string().describe('Search invitations by email or name')),
-  first: z.coerce
-    .number()
-    .int()
-    .min(0)
-    .default(0)
-    .describe('Index of the first result to return (0-based offset for pagination)'),
-  max: z.coerce.number().int().min(1).max(100).default(100).describe('Maximum number of results to return')
-});
-
-/**
- * @description List of invitations retrieved successfully
- */
-export const listOrganizationInvitations200Schema = z.object({
-  get invitations() {
-    return z.array(organizationInvitationSchema);
-  }
-});
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const listOrganizationInvitations400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const listOrganizationInvitations401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const listOrganizationInvitations403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const listOrganizationInvitations404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const listOrganizationInvitations5XXSchema = z.unknown();
-
-export const listOrganizationInvitationsQueryResponseSchema = z.lazy(() => listOrganizationInvitations200Schema);
-
-export const createOrganizationInvitationPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-/**
- * @description Invitation sent successfully
- */
-export const createOrganizationInvitation201Schema = z.unknown();
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const createOrganizationInvitation400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const createOrganizationInvitation401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const createOrganizationInvitation403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const createOrganizationInvitation404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const createOrganizationInvitation409Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const createOrganizationInvitation5XXSchema = z.unknown();
-
-export const createOrganizationInvitationMutationRequestSchema = z.lazy(
-  () => createOrganizationInvitationRequestSchema
+export const getOrganizationPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
 );
 
-export const createOrganizationInvitationMutationResponseSchema = z.lazy(() => createOrganizationInvitation201Schema);
+export const getOrganizationStatus200Schema = organizationSchema.describe('Organization details including ID and name');
 
-export const getOrganizationInvitationPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  },
-  invitationID: z.string().describe('Unique identifier for an invitation')
-});
-
-/**
- * @description Invitation details retrieved successfully
- */
-export const getOrganizationInvitation200Schema = z.lazy(() => organizationInvitationSchema);
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const getOrganizationInvitation400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getOrganizationStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const getOrganizationInvitation401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const getOrganizationInvitation403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const getOrganizationInvitation404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const getOrganizationInvitation5XXSchema = z.unknown();
-
-export const getOrganizationInvitationQueryResponseSchema = z.lazy(() => getOrganizationInvitation200Schema);
-
-export const deleteOrganizationInvitationPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  },
-  invitationID: z.string().describe('Unique identifier for an invitation')
-});
-
-/**
- * @description Invitation deleted successfully
- */
-export const deleteOrganizationInvitation204Schema = z.unknown();
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const deleteOrganizationInvitation400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const deleteOrganizationInvitation401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const deleteOrganizationInvitation403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const deleteOrganizationInvitation404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const deleteOrganizationInvitation5XXSchema = z.unknown();
-
-export const deleteOrganizationInvitationMutationResponseSchema = z.lazy(() => deleteOrganizationInvitation204Schema);
-
-export const resendOrganizationInvitationPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  },
-  invitationID: z.string().describe('Unique identifier for an invitation')
-});
-
-/**
- * @description Invitation resent successfully
- */
-export const resendOrganizationInvitation204Schema = z.unknown();
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const resendOrganizationInvitation400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const resendOrganizationInvitation401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const resendOrganizationInvitation403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const resendOrganizationInvitation404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const resendOrganizationInvitation5XXSchema = z.unknown();
-
-export const resendOrganizationInvitationMutationResponseSchema = z.lazy(() => resendOrganizationInvitation204Schema);
-
-export const requestOrganizationDeletionPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-/**
- * @description Deletion requested — the organization will be removed once all outstanding invoices are settled
- */
-export const requestOrganizationDeletion202Schema = z.unknown();
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const requestOrganizationDeletion400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const requestOrganizationDeletion401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const requestOrganizationDeletion403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const requestOrganizationDeletion409Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const requestOrganizationDeletion5XXSchema = z.unknown();
-
-export const requestOrganizationDeletionMutationResponseSchema = z.lazy(() => requestOrganizationDeletion202Schema);
-
-export const getOrganizationMembershipLimitsPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-/**
- * @description Membership limits for the organization
- */
-export const getOrganizationMembershipLimits200Schema = z
-  .lazy(() => organizationMembershipLimitsSchema)
-  .describe('Membership limits for an organization');
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const getOrganizationMembershipLimits401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const getOrganizationMembershipLimits403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const getOrganizationMembershipLimits5XXSchema = z.unknown();
-
-export const getOrganizationMembershipLimitsQueryResponseSchema = z.lazy(
-  () => getOrganizationMembershipLimits200Schema
-);
-
-export const createBillingCheckoutSessionPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-/**
- * @description Billing checkout session created
- */
-export const createBillingCheckoutSession200Schema = z.lazy(() => billingCheckoutSessionResponseSchema);
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const createBillingCheckoutSession400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const createBillingCheckoutSession401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const createBillingCheckoutSession403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const createBillingCheckoutSession5XXSchema = z.unknown();
-
-export const createBillingCheckoutSessionMutationResponseSchema = z.lazy(() => createBillingCheckoutSession200Schema);
-
-export const createBillingPaymentMethodSessionPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-/**
- * @description Billing payment method session created
- */
-export const createBillingPaymentMethodSession200Schema = z.lazy(() => billingPaymentMethodSessionResponseSchema);
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const createBillingPaymentMethodSession400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const createBillingPaymentMethodSession401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const createBillingPaymentMethodSession403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const createBillingPaymentMethodSession5XXSchema = z.unknown();
-
-export const createBillingPaymentMethodSessionMutationResponseSchema = z.lazy(
-  () => createBillingPaymentMethodSession200Schema
-);
-
-export const getBillingCustomerPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-/**
- * @description Billing customer details
- */
-export const getBillingCustomer200Schema = z.lazy(() => billingCustomerResponseSchema);
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const getBillingCustomer401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const getBillingCustomer403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const getBillingCustomer404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const getBillingCustomer5XXSchema = z.unknown();
-
-export const getBillingCustomerQueryResponseSchema = z.lazy(() => getBillingCustomer200Schema);
-
-export const updateBillingCustomerPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-/**
- * @description Billing customer updated
- */
-export const updateBillingCustomer200Schema = z.lazy(() => billingCustomerResponseSchema);
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const updateBillingCustomer400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const updateBillingCustomer401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const updateBillingCustomer403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const updateBillingCustomer404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const updateBillingCustomer5XXSchema = z.unknown();
-
-export const updateBillingCustomerMutationRequestSchema = z.lazy(() => updateBillingCustomerRequestSchema);
-
-export const updateBillingCustomerMutationResponseSchema = z.lazy(() => updateBillingCustomer200Schema);
-
-export const getBillingInvoicesPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-export const getBillingInvoicesQueryParamsSchema = z.object({
-  cursor: z.optional(z.string().describe('Pagination cursor from a previous response')),
-  limit: z.coerce.number().int().min(1).max(100).default(20).describe('Number of invoices to fetch')
-});
-
-/**
- * @description Billing invoices
- */
-export const getBillingInvoices200Schema = z.lazy(() => billingInvoicesResponseSchema);
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const getBillingInvoices400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const getBillingInvoices401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const getBillingInvoices403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const getBillingInvoices404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const getBillingInvoices5XXSchema = z.unknown();
-
-export const getBillingInvoicesQueryResponseSchema = z.lazy(() => getBillingInvoices200Schema);
-
-export const getBillingUpcomingInvoicePathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier for a specific organization');
-  }
-});
-
-/**
- * @description Upcoming billing invoice
- */
-export const getBillingUpcomingInvoice200Schema = z.lazy(() => billingUpcomingInvoiceResponseSchema);
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const getBillingUpcomingInvoice401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const getBillingUpcomingInvoice403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const getBillingUpcomingInvoice404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const getBillingUpcomingInvoice5XXSchema = z.unknown();
-
-export const getBillingUpcomingInvoiceQueryResponseSchema = z.lazy(() => getBillingUpcomingInvoice200Schema);
-
-/**
- * @description Marketplace registration successful
- */
-export const registerMarketplace200Schema = z.unknown();
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const registerMarketplace400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const registerMarketplace401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const registerMarketplace409Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Marketplace registration provider failed
- */
-export const registerMarketplace502Schema = z.object({
-  message: z.string()
-});
-
-export const registerMarketplaceMutationRequestSchema = z
-  .lazy(() => marketplaceRegisterRequestSchema)
-  .describe('Request to register with a cloud marketplace');
-
-export const registerMarketplaceMutationResponseSchema = z.lazy(() => registerMarketplace200Schema);
-
-/**
- * @description List of API keys retrieved successfully
- */
-export const listUserAPIKeys200Schema = z.object({
-  get keys() {
-    return z.array(APIKeyPreviewSchema).describe('Array of API keys for the user');
-  }
-});
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const listUserAPIKeys400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const listUserAPIKeys401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const listUserAPIKeys5XXSchema = z.unknown();
-
-export const listUserAPIKeysQueryResponseSchema = z.lazy(() => listUserAPIKeys200Schema);
-
-/**
- * @description API Key created successfully
- */
-export const createUserAPIKey201Schema = z.object({
-  get key() {
-    return fullAPIKeySchema;
-  }
-});
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const createUserAPIKey400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const createUserAPIKey401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const createUserAPIKey5XXSchema = z.unknown();
-
-export const createUserAPIKeyMutationRequestSchema = z.lazy(() => createAPIKeyRequestSchema);
-
-export const createUserAPIKeyMutationResponseSchema = z.lazy(() => createUserAPIKey201Schema);
-
-/**
- * @description API Keys deleted successfully
- */
-export const deleteUserAPIKeys204Schema = z.unknown();
-
-/**
- * @description Error returned when the request is malformed or contains invalid parameters
- */
-export const deleteUserAPIKeys400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Error returned when authentication or authorization fails
- */
-export const deleteUserAPIKeys401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Generic error response
- */
-export const deleteUserAPIKeys404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-/**
- * @description Unexpected Error
- */
-export const deleteUserAPIKeys5XXSchema = z.unknown();
-
-export const deleteUserAPIKeysMutationRequestSchema = z.object({
-  ids: z.array(z.string()).max(50).describe('Array of API key IDs to delete (maximum 50 keys per request)')
-});
-
-export const deleteUserAPIKeysMutationResponseSchema = z.lazy(() => deleteUserAPIKeys204Schema);
-
-export const queryHeaderParamsSchema = z
+export const getOrganizationStatus401Schema = z
   .object({
-    'Array-Mode': z.optional(
-      z.enum(['true', 'false']).describe('When `true`, return rows as arrays instead of objects.')
-    ),
-    'Raw-Text-Output': z.optional(
-      z.enum(['true', 'false']).describe('When `true`, return all values as strings without type conversion.')
-    ),
-    'Batch-Isolation-Level': z.optional(
-      z
-        .enum(['ReadCommitted', 'ReadUncommitted', 'RepeatableRead', 'Serializable'])
-        .describe('Transaction isolation level for batch queries.')
-    ),
-    'Batch-Read-Only': z.optional(
-      z.enum(['true', 'false']).describe('When `true`, execute the batch transaction in read-only mode.')
-    ),
-    'Batch-Deferrable': z.optional(
-      z.enum(['true', 'false']).describe('When `true`, execute the batch transaction in deferrable mode.')
-    )
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getOrganizationStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getOrganizationStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const getOrganizationStatus5XXSchema = z.unknown();
+
+export const getOrganizationResponseSchema = getOrganizationStatus200Schema;
+
+export const getOrganizationErrorSchema = z.union([
+  getOrganizationStatus400Schema,
+  getOrganizationStatus401Schema,
+  getOrganizationStatus403Schema,
+  getOrganizationStatus404Schema,
+  getOrganizationStatus5XXSchema
+]);
+
+export const updateOrganizationPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const updateOrganizationStatus200Schema = organizationSchema.describe(
+  'Organization details including ID and name'
+);
+
+export const updateOrganizationStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const updateOrganizationStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const updateOrganizationStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const updateOrganizationStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const updateOrganizationStatus5XXSchema = z.unknown();
+
+export const updateOrganizationResponseSchema = updateOrganizationStatus200Schema;
+
+export const updateOrganizationErrorSchema = z.union([
+  updateOrganizationStatus400Schema,
+  updateOrganizationStatus401Schema,
+  updateOrganizationStatus403Schema,
+  updateOrganizationStatus404Schema,
+  updateOrganizationStatus5XXSchema
+]);
+
+export const updateOrganizationBodySchema = z
+  .object({
+    id: organizationIDSchema.optional().describe('Unique identifier for the organization to update'),
+    name: z.string().optional().describe('New name for the organization')
   })
   .optional();
 
-/**
- * @description Query executed successfully
- */
-export const query200Schema = z.union([z.lazy(() => queryResultSchema), z.lazy(() => batchResponseSchema)]);
+export const deleteOrganizationPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
 
-/**
- * @description Invalid request, SQL error, or query execution timeout
- */
-export const query400Schema = z
-  .lazy(() => errorResponseSchema)
-  .describe('Error response with PostgreSQL error fields.');
+export const deleteOrganizationStatus204Schema = z.unknown();
 
-/**
- * @description Missing or invalid connection string
- */
-export const query401Schema = z
-  .lazy(() => errorResponseSchema)
-  .describe('Error response with PostgreSQL error fields.');
-
-/**
- * @description Client IP is not allowed by the branch IP filter
- */
-export const query403Schema = z
-  .lazy(() => errorResponseSchema)
-  .describe('Error response with PostgreSQL error fields.');
-
-/**
- * @description Branch not found, it may have been deleted
- */
-export const query404Schema = z
-  .lazy(() => errorResponseSchema)
-  .describe('Error response with PostgreSQL error fields.');
-
-/**
- * @description Branch is hibernated, reactivate it before running queries
- */
-export const query409Schema = z
-  .lazy(() => errorResponseSchema)
-  .describe('Error response with PostgreSQL error fields.');
-
-/**
- * @description Request body is larger than 64MB
- */
-export const query413Schema = z
-  .lazy(() => errorResponseSchema)
-  .describe('Error response with PostgreSQL error fields.');
-
-/**
- * @description Internal server error
- */
-export const query500Schema = z
-  .lazy(() => errorResponseSchema)
-  .describe('Error response with PostgreSQL error fields.');
-
-/**
- * @description Timed out connecting to the database
- */
-export const query504Schema = z
-  .lazy(() => errorResponseSchema)
-  .describe('Error response with PostgreSQL error fields.');
-
-/**
- * @description Response too large
- */
-export const query507Schema = z
-  .lazy(() => errorResponseSchema)
-  .describe('Error response with PostgreSQL error fields.');
-
-export const queryMutationRequestSchema = z
-  .lazy(() => SQLRequestSchema)
-  .describe('SQL query request. Provide either `query` for a single query or `queries` for a batch.');
-
-export const queryMutationResponseSchema = z.lazy(() => query200Schema);
-
-/**
- * @description Switching Protocols — WebSocket connection established
- */
-export const websocket101Schema = z.unknown();
-
-/**
- * @description Bad request — unable to upgrade connection
- */
-export const websocket400Schema = z.unknown();
-
-export const websocketQueryResponseSchema = z.unknown();
-
-export const sendMcpRequestHeaderParamsSchema = z.object({
-  Accept: z
-    .string()
-    .default('application/json, text/event-stream')
-    .describe('Must list both `application/json` and `text/event-stream`.'),
-  'MCP-Protocol-Version': z.optional(
-    z
-      .string()
-      .describe(
-        'Protocol revision negotiated during `initialize`, echoed on every subsequent request.\nOmitted on the `initialize` request itself.\n'
-      )
-  )
+export const deleteOrganizationStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description JSON-RPC response to the request
- */
-export const sendMcpRequest200Schema = z
-  .lazy(() => JSONRPCResponseSchema)
-  .describe('A JSON-RPC 2.0 response. Exactly one of `result` or `error` is present.');
+export const deleteOrganizationStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
 
-/**
- * @description Notification or response accepted; no body is returned
- */
-export const sendMcpRequest202Schema = z.unknown();
+export const deleteOrganizationStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
 
-/**
- * @description Malformed message, unsupported `MCP-Protocol-Version`, or an `Accept` header missing one of the required media types
- */
-export const sendMcpRequest400Schema = z.unknown();
+export const deleteOrganizationStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
 
-/**
- * @description Missing or invalid credentials
- */
-export const sendMcpRequest401Schema = z.unknown();
+export const deleteOrganizationStatus5XXSchema = z.unknown();
 
-/**
- * @description Request body larger than 4 MiB
- */
-export const sendMcpRequest413Schema = z.unknown();
+export const deleteOrganizationResponseSchema = deleteOrganizationStatus204Schema;
 
-/**
- * @description `Content-Type` is not `application/json`
- */
-export const sendMcpRequest415Schema = z.unknown();
-
-/**
- * @description Internal server error
- */
-export const sendMcpRequest500Schema = z.unknown();
-
-export const sendMcpRequestMutationRequestSchema = z
-  .lazy(() => JSONRPCMessageSchema)
-  .describe(
-    'A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a\nresponse; a notification carries `method` without `id` and is not. The `method` and\n`params` values are defined by the MCP specification.\n'
-  );
-
-export const sendMcpRequestMutationResponseSchema = z.union([
-  z.lazy(() => sendMcpRequest200Schema),
-  z.lazy(() => sendMcpRequest202Schema)
+export const deleteOrganizationErrorSchema = z.union([
+  deleteOrganizationStatus400Schema,
+  deleteOrganizationStatus401Schema,
+  deleteOrganizationStatus403Schema,
+  deleteOrganizationStatus404Schema,
+  deleteOrganizationStatus5XXSchema
 ]);
 
-/**
- * @description Webhook received and processed successfully
- */
-export const githubWebhook200Schema = z.unknown();
+export const listOrganizationAPIKeysPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
 
-/**
- * @description Invalid signature or malformed request
- */
-export const githubWebhook400Schema = z.unknown();
-
-/**
- * @description Internal error while handling the webhook
- */
-export const githubWebhook500Schema = z.unknown();
-
-export const githubWebhookMutationRequestSchema = z
-  .object({})
-  .catchall(z.unknown())
-  .describe('GitHub webhook event payload');
-
-export const githubWebhookMutationResponseSchema = z.lazy(() => githubWebhook200Schema);
-
-export const listRegionsPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization to check region availability for');
-  }
+export const listOrganizationAPIKeysStatus200Schema = z.object({
+  keys: z.array(APIKeyPreviewSchema).describe('Array of API keys for the organization')
 });
 
-/**
- * @description List of regions available for the organization
- */
-export const listRegions200Schema = z.object({
+export const listOrganizationAPIKeysStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const listOrganizationAPIKeysStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const listOrganizationAPIKeysStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const listOrganizationAPIKeysStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const listOrganizationAPIKeysStatus5XXSchema = z.unknown();
+
+export const listOrganizationAPIKeysResponseSchema = listOrganizationAPIKeysStatus200Schema;
+
+export const listOrganizationAPIKeysErrorSchema = z.union([
+  listOrganizationAPIKeysStatus400Schema,
+  listOrganizationAPIKeysStatus401Schema,
+  listOrganizationAPIKeysStatus403Schema,
+  listOrganizationAPIKeysStatus404Schema,
+  listOrganizationAPIKeysStatus5XXSchema
+]);
+
+export const createOrganizationAPIKeyPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const createOrganizationAPIKeyStatus201Schema = z.object({
+  key: fullAPIKeySchema
+});
+
+export const createOrganizationAPIKeyStatus400Schema = z.unknown();
+
+export const createOrganizationAPIKeyResponseSchema = createOrganizationAPIKeyStatus201Schema;
+
+export const createOrganizationAPIKeyErrorSchema = createOrganizationAPIKeyStatus400Schema;
+
+export const createOrganizationAPIKeyBodySchema = createAPIKeyRequestSchema;
+
+export const deleteOrganizationAPIKeysPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const deleteOrganizationAPIKeysStatus204Schema = z.unknown();
+
+export const deleteOrganizationAPIKeysStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const deleteOrganizationAPIKeysStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const deleteOrganizationAPIKeysStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const deleteOrganizationAPIKeysResponseSchema = deleteOrganizationAPIKeysStatus204Schema;
+
+export const deleteOrganizationAPIKeysErrorSchema = z.union([
+  deleteOrganizationAPIKeysStatus400Schema,
+  deleteOrganizationAPIKeysStatus401Schema,
+  deleteOrganizationAPIKeysStatus404Schema
+]);
+
+export const deleteOrganizationAPIKeysBodySchema = z.object({
+  ids: z.array(z.string()).max(50).describe('Array of API key IDs to delete')
+});
+
+export const listOrganizationMembersPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const listOrganizationMembersStatus200Schema = z.object({
+  members: z.array(userWithIDSchema)
+});
+
+export const listOrganizationMembersResponseSchema = listOrganizationMembersStatus200Schema;
+
+export const removeOrganizationMemberPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const removeOrganizationMemberPathUserIDSchema = userIDSchema.describe(
+  'Unique identifier for a specific user account'
+);
+
+export const removeOrganizationMemberStatus204Schema = z.unknown();
+
+export const removeOrganizationMemberResponseSchema = removeOrganizationMemberStatus204Schema;
+
+export const listOrganizationInvitationsPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const listOrganizationInvitationsQueryStatusSchema = z
+  .enum(['pending', 'expired'])
+  .optional()
+  .describe('Filter invitations by status');
+
+export const listOrganizationInvitationsQueryEmailSchema = z
+  .string()
+  .optional()
+  .describe('Filter invitations by email address');
+
+export const listOrganizationInvitationsQueryFirstNameSchema = z
+  .string()
+  .optional()
+  .describe('Filter invitations by first name');
+
+export const listOrganizationInvitationsQueryLastNameSchema = z
+  .string()
+  .optional()
+  .describe('Filter invitations by last name');
+
+export const listOrganizationInvitationsQuerySearchSchema = z
+  .string()
+  .optional()
+  .describe('Search invitations by email or name');
+
+export const listOrganizationInvitationsQueryFirstSchema = z
+  .int()
+  .min(0)
+  .optional()
+  .default(0)
+  .describe('Index of the first result to return (0-based offset for pagination)');
+
+export const listOrganizationInvitationsQueryMaxSchema = z
+  .int()
+  .min(1)
+  .max(100)
+  .optional()
+  .default(100)
+  .describe('Maximum number of results to return');
+
+export const listOrganizationInvitationsStatus200Schema = z.object({
+  invitations: z.array(organizationInvitationSchema)
+});
+
+export const listOrganizationInvitationsStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const listOrganizationInvitationsStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const listOrganizationInvitationsStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const listOrganizationInvitationsStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const listOrganizationInvitationsStatus5XXSchema = z.unknown();
+
+export const listOrganizationInvitationsResponseSchema = listOrganizationInvitationsStatus200Schema;
+
+export const listOrganizationInvitationsErrorSchema = z.union([
+  listOrganizationInvitationsStatus400Schema,
+  listOrganizationInvitationsStatus401Schema,
+  listOrganizationInvitationsStatus403Schema,
+  listOrganizationInvitationsStatus404Schema,
+  listOrganizationInvitationsStatus5XXSchema
+]);
+
+export const createOrganizationInvitationPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const createOrganizationInvitationStatus201Schema = z.unknown();
+
+export const createOrganizationInvitationStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const createOrganizationInvitationStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const createOrganizationInvitationStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const createOrganizationInvitationStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const createOrganizationInvitationStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const createOrganizationInvitationStatus5XXSchema = z.unknown();
+
+export const createOrganizationInvitationResponseSchema = createOrganizationInvitationStatus201Schema;
+
+export const createOrganizationInvitationErrorSchema = z.union([
+  createOrganizationInvitationStatus400Schema,
+  createOrganizationInvitationStatus401Schema,
+  createOrganizationInvitationStatus403Schema,
+  createOrganizationInvitationStatus404Schema,
+  createOrganizationInvitationStatus409Schema,
+  createOrganizationInvitationStatus5XXSchema
+]);
+
+export const createOrganizationInvitationBodySchema = createOrganizationInvitationRequestSchema;
+
+export const getOrganizationInvitationPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const getOrganizationInvitationPathInvitationIDSchema = z
+  .string()
+  .describe('Unique identifier for an invitation');
+
+export const getOrganizationInvitationStatus200Schema = organizationInvitationSchema;
+
+export const getOrganizationInvitationStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const getOrganizationInvitationStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getOrganizationInvitationStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getOrganizationInvitationStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const getOrganizationInvitationStatus5XXSchema = z.unknown();
+
+export const getOrganizationInvitationResponseSchema = getOrganizationInvitationStatus200Schema;
+
+export const getOrganizationInvitationErrorSchema = z.union([
+  getOrganizationInvitationStatus400Schema,
+  getOrganizationInvitationStatus401Schema,
+  getOrganizationInvitationStatus403Schema,
+  getOrganizationInvitationStatus404Schema,
+  getOrganizationInvitationStatus5XXSchema
+]);
+
+export const deleteOrganizationInvitationPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const deleteOrganizationInvitationPathInvitationIDSchema = z
+  .string()
+  .describe('Unique identifier for an invitation');
+
+export const deleteOrganizationInvitationStatus204Schema = z.unknown();
+
+export const deleteOrganizationInvitationStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const deleteOrganizationInvitationStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const deleteOrganizationInvitationStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const deleteOrganizationInvitationStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const deleteOrganizationInvitationStatus5XXSchema = z.unknown();
+
+export const deleteOrganizationInvitationResponseSchema = deleteOrganizationInvitationStatus204Schema;
+
+export const deleteOrganizationInvitationErrorSchema = z.union([
+  deleteOrganizationInvitationStatus400Schema,
+  deleteOrganizationInvitationStatus401Schema,
+  deleteOrganizationInvitationStatus403Schema,
+  deleteOrganizationInvitationStatus404Schema,
+  deleteOrganizationInvitationStatus5XXSchema
+]);
+
+export const resendOrganizationInvitationPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const resendOrganizationInvitationPathInvitationIDSchema = z
+  .string()
+  .describe('Unique identifier for an invitation');
+
+export const resendOrganizationInvitationStatus204Schema = z.unknown();
+
+export const resendOrganizationInvitationStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const resendOrganizationInvitationStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const resendOrganizationInvitationStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const resendOrganizationInvitationStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const resendOrganizationInvitationStatus5XXSchema = z.unknown();
+
+export const resendOrganizationInvitationResponseSchema = resendOrganizationInvitationStatus204Schema;
+
+export const resendOrganizationInvitationErrorSchema = z.union([
+  resendOrganizationInvitationStatus400Schema,
+  resendOrganizationInvitationStatus401Schema,
+  resendOrganizationInvitationStatus403Schema,
+  resendOrganizationInvitationStatus404Schema,
+  resendOrganizationInvitationStatus5XXSchema
+]);
+
+export const requestOrganizationDeletionPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const requestOrganizationDeletionStatus202Schema = z.unknown();
+
+export const requestOrganizationDeletionStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const requestOrganizationDeletionStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const requestOrganizationDeletionStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const requestOrganizationDeletionStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const requestOrganizationDeletionStatus5XXSchema = z.unknown();
+
+export const requestOrganizationDeletionResponseSchema = requestOrganizationDeletionStatus202Schema;
+
+export const requestOrganizationDeletionErrorSchema = z.union([
+  requestOrganizationDeletionStatus400Schema,
+  requestOrganizationDeletionStatus401Schema,
+  requestOrganizationDeletionStatus403Schema,
+  requestOrganizationDeletionStatus409Schema,
+  requestOrganizationDeletionStatus5XXSchema
+]);
+
+export const getOrganizationMembershipLimitsPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const getOrganizationMembershipLimitsStatus200Schema = organizationMembershipLimitsSchema.describe(
+  'Membership limits for an organization'
+);
+
+export const getOrganizationMembershipLimitsStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getOrganizationMembershipLimitsStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getOrganizationMembershipLimitsStatus5XXSchema = z.unknown();
+
+export const getOrganizationMembershipLimitsResponseSchema = getOrganizationMembershipLimitsStatus200Schema;
+
+export const getOrganizationMembershipLimitsErrorSchema = z.union([
+  getOrganizationMembershipLimitsStatus401Schema,
+  getOrganizationMembershipLimitsStatus403Schema,
+  getOrganizationMembershipLimitsStatus5XXSchema
+]);
+
+export const createBillingCheckoutSessionPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const createBillingCheckoutSessionStatus200Schema = billingCheckoutSessionResponseSchema;
+
+export const createBillingCheckoutSessionStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const createBillingCheckoutSessionStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const createBillingCheckoutSessionStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const createBillingCheckoutSessionStatus5XXSchema = z.unknown();
+
+export const createBillingCheckoutSessionResponseSchema = createBillingCheckoutSessionStatus200Schema;
+
+export const createBillingCheckoutSessionErrorSchema = z.union([
+  createBillingCheckoutSessionStatus400Schema,
+  createBillingCheckoutSessionStatus401Schema,
+  createBillingCheckoutSessionStatus403Schema,
+  createBillingCheckoutSessionStatus5XXSchema
+]);
+
+export const createBillingPaymentMethodSessionPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const createBillingPaymentMethodSessionStatus200Schema = billingPaymentMethodSessionResponseSchema;
+
+export const createBillingPaymentMethodSessionStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const createBillingPaymentMethodSessionStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const createBillingPaymentMethodSessionStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const createBillingPaymentMethodSessionStatus5XXSchema = z.unknown();
+
+export const createBillingPaymentMethodSessionResponseSchema = createBillingPaymentMethodSessionStatus200Schema;
+
+export const createBillingPaymentMethodSessionErrorSchema = z.union([
+  createBillingPaymentMethodSessionStatus400Schema,
+  createBillingPaymentMethodSessionStatus401Schema,
+  createBillingPaymentMethodSessionStatus403Schema,
+  createBillingPaymentMethodSessionStatus5XXSchema
+]);
+
+export const getBillingCustomerPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const getBillingCustomerStatus200Schema = billingCustomerResponseSchema;
+
+export const getBillingCustomerStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getBillingCustomerStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getBillingCustomerStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const getBillingCustomerStatus5XXSchema = z.unknown();
+
+export const getBillingCustomerResponseSchema = getBillingCustomerStatus200Schema;
+
+export const getBillingCustomerErrorSchema = z.union([
+  getBillingCustomerStatus401Schema,
+  getBillingCustomerStatus403Schema,
+  getBillingCustomerStatus404Schema,
+  getBillingCustomerStatus5XXSchema
+]);
+
+export const updateBillingCustomerPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const updateBillingCustomerStatus200Schema = billingCustomerResponseSchema;
+
+export const updateBillingCustomerStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const updateBillingCustomerStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const updateBillingCustomerStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const updateBillingCustomerStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const updateBillingCustomerStatus5XXSchema = z.unknown();
+
+export const updateBillingCustomerResponseSchema = updateBillingCustomerStatus200Schema;
+
+export const updateBillingCustomerErrorSchema = z.union([
+  updateBillingCustomerStatus400Schema,
+  updateBillingCustomerStatus401Schema,
+  updateBillingCustomerStatus403Schema,
+  updateBillingCustomerStatus404Schema,
+  updateBillingCustomerStatus5XXSchema
+]);
+
+export const updateBillingCustomerBodySchema = updateBillingCustomerRequestSchema;
+
+export const getBillingInvoicesPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const getBillingInvoicesQueryCursorSchema = z
+  .string()
+  .optional()
+  .describe('Pagination cursor from a previous response');
+
+export const getBillingInvoicesQueryLimitSchema = z
+  .int()
+  .min(1)
+  .max(100)
+  .optional()
+  .default(20)
+  .describe('Number of invoices to fetch');
+
+export const getBillingInvoicesStatus200Schema = billingInvoicesResponseSchema;
+
+export const getBillingInvoicesStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const getBillingInvoicesStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getBillingInvoicesStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getBillingInvoicesStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const getBillingInvoicesStatus5XXSchema = z.unknown();
+
+export const getBillingInvoicesResponseSchema = getBillingInvoicesStatus200Schema;
+
+export const getBillingInvoicesErrorSchema = z.union([
+  getBillingInvoicesStatus400Schema,
+  getBillingInvoicesStatus401Schema,
+  getBillingInvoicesStatus403Schema,
+  getBillingInvoicesStatus404Schema,
+  getBillingInvoicesStatus5XXSchema
+]);
+
+export const getBillingUpcomingInvoicePathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const getBillingUpcomingInvoiceStatus200Schema = billingUpcomingInvoiceResponseSchema;
+
+export const getBillingUpcomingInvoiceStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getBillingUpcomingInvoiceStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getBillingUpcomingInvoiceStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const getBillingUpcomingInvoiceStatus5XXSchema = z.unknown();
+
+export const getBillingUpcomingInvoiceResponseSchema = getBillingUpcomingInvoiceStatus200Schema;
+
+export const getBillingUpcomingInvoiceErrorSchema = z.union([
+  getBillingUpcomingInvoiceStatus401Schema,
+  getBillingUpcomingInvoiceStatus403Schema,
+  getBillingUpcomingInvoiceStatus404Schema,
+  getBillingUpcomingInvoiceStatus5XXSchema
+]);
+
+export const registerMarketplaceStatus200Schema = z.unknown();
+
+export const registerMarketplaceStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const registerMarketplaceStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const registerMarketplaceStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const registerMarketplaceStatus502Schema = z.object({
+  message: z.string()
+});
+
+export const registerMarketplaceResponseSchema = registerMarketplaceStatus200Schema;
+
+export const registerMarketplaceErrorSchema = z.union([
+  registerMarketplaceStatus400Schema,
+  registerMarketplaceStatus401Schema,
+  registerMarketplaceStatus409Schema,
+  registerMarketplaceStatus502Schema
+]);
+
+export const registerMarketplaceBodySchema = marketplaceRegisterRequestSchema.describe(
+  'Request to register with a cloud marketplace'
+);
+
+export const listUserAPIKeysStatus200Schema = z.object({
+  keys: z.array(APIKeyPreviewSchema).describe('Array of API keys for the user')
+});
+
+export const listUserAPIKeysStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const listUserAPIKeysStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const listUserAPIKeysStatus5XXSchema = z.unknown();
+
+export const listUserAPIKeysResponseSchema = listUserAPIKeysStatus200Schema;
+
+export const listUserAPIKeysErrorSchema = z.union([
+  listUserAPIKeysStatus400Schema,
+  listUserAPIKeysStatus401Schema,
+  listUserAPIKeysStatus5XXSchema
+]);
+
+export const createUserAPIKeyStatus201Schema = z.object({
+  key: fullAPIKeySchema
+});
+
+export const createUserAPIKeyStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const createUserAPIKeyStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const createUserAPIKeyStatus5XXSchema = z.unknown();
+
+export const createUserAPIKeyResponseSchema = createUserAPIKeyStatus201Schema;
+
+export const createUserAPIKeyErrorSchema = z.union([
+  createUserAPIKeyStatus400Schema,
+  createUserAPIKeyStatus401Schema,
+  createUserAPIKeyStatus5XXSchema
+]);
+
+export const createUserAPIKeyBodySchema = createAPIKeyRequestSchema;
+
+export const deleteUserAPIKeysStatus204Schema = z.unknown();
+
+export const deleteUserAPIKeysStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const deleteUserAPIKeysStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const deleteUserAPIKeysStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const deleteUserAPIKeysStatus5XXSchema = z.unknown();
+
+export const deleteUserAPIKeysResponseSchema = deleteUserAPIKeysStatus204Schema;
+
+export const deleteUserAPIKeysErrorSchema = z.union([
+  deleteUserAPIKeysStatus400Schema,
+  deleteUserAPIKeysStatus401Schema,
+  deleteUserAPIKeysStatus404Schema,
+  deleteUserAPIKeysStatus5XXSchema
+]);
+
+export const deleteUserAPIKeysBodySchema = z.object({
+  ids: z.array(z.string()).max(50).describe('Array of API key IDs to delete (maximum 50 keys per request)')
+});
+
+export const queryHeaderArrayModeSchema = z
+  .enum(['true', 'false'])
+  .optional()
+  .describe('When `true`, return rows as arrays instead of objects.');
+
+export const queryHeaderRawTextOutputSchema = z
+  .enum(['true', 'false'])
+  .optional()
+  .describe('When `true`, return all values as strings without type conversion.');
+
+export const queryHeaderBatchIsolationLevelSchema = z
+  .enum(['ReadCommitted', 'ReadUncommitted', 'RepeatableRead', 'Serializable'])
+  .optional()
+  .describe('Transaction isolation level for batch queries.');
+
+export const queryHeaderBatchReadOnlySchema = z
+  .enum(['true', 'false'])
+  .optional()
+  .describe('When `true`, execute the batch transaction in read-only mode.');
+
+export const queryHeaderBatchDeferrableSchema = z
+  .enum(['true', 'false'])
+  .optional()
+  .describe('When `true`, execute the batch transaction in deferrable mode.');
+
+export const queryStatus200Schema = z.union([queryResultSchema.strict(), batchResponseSchema.strict()]);
+
+export const queryStatus400Schema = errorResponseSchema.describe('Error response with PostgreSQL error fields.');
+
+export const queryStatus401Schema = errorResponseSchema.describe('Error response with PostgreSQL error fields.');
+
+export const queryStatus403Schema = errorResponseSchema.describe('Error response with PostgreSQL error fields.');
+
+export const queryStatus404Schema = errorResponseSchema.describe('Error response with PostgreSQL error fields.');
+
+export const queryStatus409Schema = errorResponseSchema.describe('Error response with PostgreSQL error fields.');
+
+export const queryStatus413Schema = errorResponseSchema.describe('Error response with PostgreSQL error fields.');
+
+export const queryStatus500Schema = errorResponseSchema.describe('Error response with PostgreSQL error fields.');
+
+export const queryStatus504Schema = errorResponseSchema.describe('Error response with PostgreSQL error fields.');
+
+export const queryStatus507Schema = errorResponseSchema.describe('Error response with PostgreSQL error fields.');
+
+export const queryResponseSchema = queryStatus200Schema;
+
+export const queryErrorSchema = z.union([
+  queryStatus400Schema,
+  queryStatus401Schema,
+  queryStatus403Schema,
+  queryStatus404Schema,
+  queryStatus409Schema,
+  queryStatus413Schema,
+  queryStatus500Schema,
+  queryStatus504Schema,
+  queryStatus507Schema
+]);
+
+export const queryBodySchema = SQLRequestSchema.describe(
+  'SQL query request. Provide either `query` for a single query or `queries` for a batch.'
+);
+
+export const websocketStatus101Schema = z.unknown();
+
+export const websocketStatus400Schema = z.unknown();
+
+export const websocketResponseSchema = z.unknown();
+
+export const websocketErrorSchema = z.union([websocketStatus101Schema, websocketStatus400Schema]);
+
+export const sendMcpRequestHeaderAcceptSchema = z
+  .string()
+  .default('application/json, text/event-stream')
+  .describe('Must list both `application/json` and `text/event-stream`.');
+
+export const sendMcpRequestHeaderMCPProtocolVersionSchema = z
+  .string()
+  .optional()
+  .describe(
+    'Protocol revision negotiated during `initialize`, echoed on every subsequent request.\nOmitted on the `initialize` request itself.\n'
+  )
+  .meta({ examples: ['2025-06-18'] });
+
+export const sendMcpRequestStatus200Schema = JSONRPCResponseSchema.describe(
+  'A JSON-RPC 2.0 response. Exactly one of `result` or `error` is present.'
+);
+
+export const sendMcpRequestStatus202Schema = z.unknown();
+
+export const sendMcpRequestStatus400Schema = z.unknown();
+
+export const sendMcpRequestStatus401Schema = z.unknown();
+
+export const sendMcpRequestStatus413Schema = z.unknown();
+
+export const sendMcpRequestStatus415Schema = z.unknown();
+
+export const sendMcpRequestStatus500Schema = z.unknown();
+
+export const sendMcpRequestResponseSchema = z.union([sendMcpRequestStatus200Schema, sendMcpRequestStatus202Schema]);
+
+export const sendMcpRequestErrorSchema = z.union([
+  sendMcpRequestStatus400Schema,
+  sendMcpRequestStatus401Schema,
+  sendMcpRequestStatus413Schema,
+  sendMcpRequestStatus415Schema,
+  sendMcpRequestStatus500Schema
+]);
+
+export const sendMcpRequestBodySchema = JSONRPCMessageSchema.describe(
+  'A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a\nresponse; a notification carries `method` without `id` and is not. The `method` and\n`params` values are defined by the MCP specification.\n'
+);
+
+export const githubWebhookStatus200Schema = z.unknown();
+
+export const githubWebhookStatus400Schema = z.unknown();
+
+export const githubWebhookStatus500Schema = z.unknown();
+
+export const githubWebhookResponseSchema = githubWebhookStatus200Schema;
+
+export const githubWebhookErrorSchema = z.union([githubWebhookStatus400Schema, githubWebhookStatus500Schema]);
+
+export const githubWebhookBodySchema = z.object({}).catchall(z.unknown()).describe('GitHub webhook event payload');
+
+export const listRegionsPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization to check region availability for'
+);
+
+export const listRegionsStatus200Schema = z.object({
   regions: z
     .array(
       z.object({
@@ -2764,60 +2230,45 @@ export const listRegions200Schema = z.object({
         publicAccess: z.boolean().describe('Whether data plane is public-facing to the internet in this region'),
         backupsEnabled: z.boolean().describe('Whether backups are enabled for branches created in this region'),
         provider: z.enum(['aws', 'gcp', 'custom']).describe('Cloud provider the region runs on'),
-        organizationId: z.nullable(
-          z
-            .string()
-            .describe('Organization that owns this region, if set the region is only available to this organization')
-        )
+        organizationId: z
+          .string()
+          .nullable()
+          .describe('Organization that owns this region, if set the region is only available to this organization')
       })
     )
     .describe('Array of available regions with their properties')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const listRegions400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listRegionsStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const listRegions401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listRegionsStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const listRegions5XXSchema = z.unknown();
+export const listRegionsStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const listRegionsErrorSchema = z.unknown();
+export const listRegionsStatusDefaultSchema = z.unknown();
 
-export const listRegionsQueryResponseSchema = z.lazy(() => listRegions200Schema);
+export const listRegionsResponseSchema = listRegionsStatus200Schema;
 
-export const listInstanceTypesPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe(
-      'Unique identifier of the organization to check instance type availability for'
-    );
-  }
-});
+export const listRegionsErrorSchema = z.union([
+  listRegionsStatus400Schema,
+  listRegionsStatus401Schema,
+  listRegionsStatus5XXSchema,
+  listRegionsStatusDefaultSchema
+]);
 
-export const listInstanceTypesQueryParamsSchema = z.object({
-  region: z.string().describe('Region to check instance type availability for')
-});
+export const listInstanceTypesPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization to check instance type availability for'
+);
 
-/**
- * @description List of instance types available for the organization
- */
-export const listInstanceTypes200Schema = z.object({
+export const listInstanceTypesQueryRegionSchema = z.string().describe('Region to check instance type availability for');
+
+export const listInstanceTypesStatus200Schema = z.object({
   instanceTypes: z
     .array(
       z.object({
@@ -2832,1624 +2283,1261 @@ export const listInstanceTypes200Schema = z.object({
     .describe('Array of available instance types with their properties')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const listInstanceTypes400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listInstanceTypesStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const listInstanceTypes401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listInstanceTypesStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const listInstanceTypes5XXSchema = z.unknown();
+export const listInstanceTypesStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const listInstanceTypesErrorSchema = z.unknown();
+export const listInstanceTypesStatusDefaultSchema = z.unknown();
 
-export const listInstanceTypesQueryResponseSchema = z.lazy(() => listInstanceTypes200Schema);
+export const listInstanceTypesResponseSchema = listInstanceTypesStatus200Schema;
 
-export const listImagesPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization to check image availability');
-  }
+export const listInstanceTypesErrorSchema = z.union([
+  listInstanceTypesStatus400Schema,
+  listInstanceTypesStatus401Schema,
+  listInstanceTypesStatus5XXSchema,
+  listInstanceTypesStatusDefaultSchema
+]);
+
+export const listImagesPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization to check image availability'
+);
+
+export const listImagesQueryRegionSchema = z
+  .string()
+  .optional()
+  .describe('Region to check image availability for organization');
+
+export const listImagesStatus200Schema = z.object({
+  images: z.array(imageSchema).describe('Array of available images with their properties')
 });
 
-export const listImagesQueryParamsSchema = z
-  .object({
-    region: z.optional(z.string().describe('Region to check image availability for organization'))
-  })
-  .optional();
-
-/**
- * @description List of images available for the organization
- */
-export const listImages200Schema = z.object({
-  get images() {
-    return z
-      .array(imageSchema.describe('Details of a postgres image'))
-      .describe('Array of available images with their properties');
-  }
-});
-
-/**
- * @description Generic error response for most error conditions
- */
-export const listImages400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listImagesStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const listImages401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listImagesStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const listImages5XXSchema = z.unknown();
+export const listImagesStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const listImagesErrorSchema = z.unknown();
+export const listImagesStatusDefaultSchema = z.unknown();
 
-export const listImagesQueryResponseSchema = z.lazy(() => listImages200Schema);
+export const listImagesResponseSchema = listImagesStatus200Schema;
 
-export const listExtensionsPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe(
-      'Unique identifier of the organization to check instance type availability for'
-    );
-  }
+export const listImagesErrorSchema = z.union([
+  listImagesStatus400Schema,
+  listImagesStatus401Schema,
+  listImagesStatus5XXSchema,
+  listImagesStatusDefaultSchema
+]);
+
+export const listExtensionsPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization to check instance type availability for'
+);
+
+export const listExtensionsQueryImageSchema = z.string().describe('Image for which we list extensions');
+
+export const listExtensionsQueryRegionSchema = z.string().optional().describe('Region to list extensions for image in');
+
+export const listExtensionsStatus200Schema = z.object({
+  extensions: z.array(extensionSchema).describe('Array of available images with their properties')
 });
 
-export const listExtensionsQueryParamsSchema = z.object({
-  image: z.string().describe('Image for which we list extensions'),
-  region: z.optional(z.string().describe('Region to list extensions for image in'))
-});
-
-/**
- * @description List of extensions available for the image in the organization
- */
-export const listExtensions200Schema = z.object({
-  get extensions() {
-    return z
-      .array(extensionSchema.describe('Details of a postgres extension'))
-      .describe('Array of available images with their properties');
-  }
-});
-
-/**
- * @description Generic error response for most error conditions
- */
-export const listExtensions400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listExtensionsStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const listExtensions401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listExtensionsStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const listExtensions5XXSchema = z.unknown();
+export const listExtensionsStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const listExtensionsErrorSchema = z.unknown();
+export const listExtensionsStatusDefaultSchema = z.unknown();
 
-export const listExtensionsQueryResponseSchema = z.lazy(() => listExtensions200Schema);
+export const listExtensionsResponseSchema = listExtensionsStatus200Schema;
 
-export const getOrganizationLimitsPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization');
-  }
-});
+export const listExtensionsErrorSchema = z.union([
+  listExtensionsStatus400Schema,
+  listExtensionsStatus401Schema,
+  listExtensionsStatus5XXSchema,
+  listExtensionsStatusDefaultSchema
+]);
 
-/**
- * @description Effective resource limits for the organization
- */
-export const getOrganizationLimits200Schema = z
-  .lazy(() => organizationLimitsSchema)
-  .describe(
-    'Effective resource limits for an organization, covering org-level defaults for all projects plus organization-specific constraints'
-  );
+export const getOrganizationLimitsPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization'
+);
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const getOrganizationLimits401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getOrganizationLimitsStatus200Schema = organizationLimitsSchema.describe(
+  'Effective resource limits for an organization, covering org-level defaults for all projects plus organization-specific constraints'
+);
+
+export const getOrganizationLimitsStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const getOrganizationLimits403Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getOrganizationLimitsStatus403Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const getOrganizationLimits5XXSchema = z.unknown();
+export const getOrganizationLimitsStatus5XXSchema = z.unknown();
 
-export const getOrganizationLimitsQueryResponseSchema = z.lazy(() => getOrganizationLimits200Schema);
+export const getOrganizationLimitsResponseSchema = getOrganizationLimitsStatus200Schema;
 
-export const getDefaultProjectLimitsPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization to get project limits for');
-  }
+export const getOrganizationLimitsErrorSchema = z.union([
+  getOrganizationLimitsStatus401Schema,
+  getOrganizationLimitsStatus403Schema,
+  getOrganizationLimitsStatus5XXSchema
+]);
+
+export const getDefaultProjectLimitsPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization to get project limits for'
+);
+
+export const getDefaultProjectLimitsStatus200Schema = projectLimitsSchema.describe(
+  'Resource limits and constraints for projects within an organization'
+);
+
+export const getDefaultProjectLimitsResponseSchema = getDefaultProjectLimitsStatus200Schema;
+
+export const listProjectsPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization to list projects from'
+);
+
+export const listProjectsStatus200Schema = z.object({
+  projects: z.array(projectSchema).describe('Array of project objects with their metadata')
 });
 
-/**
- * @description Default resource limits for projects in the organization
- */
-export const getDefaultProjectLimits200Schema = z
-  .lazy(() => projectLimitsSchema)
-  .describe('Resource limits and constraints for projects within an organization');
-
-export const getDefaultProjectLimitsQueryResponseSchema = z.lazy(() => getDefaultProjectLimits200Schema);
-
-export const listProjectsPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization to list projects from');
-  }
-});
-
-/**
- * @description A list of projects within the organization
- */
-export const listProjects200Schema = z.object({
-  get projects() {
-    return z
-      .array(projectSchema.describe('Details of a project including its ID, name, and creation/update timestamps'))
-      .describe('Array of project objects with their metadata');
-  }
-});
-
-/**
- * @description Generic error response for most error conditions
- */
-export const listProjects400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listProjectsStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const listProjects401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listProjectsStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const listProjects5XXSchema = z.unknown();
+export const listProjectsStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const listProjectsErrorSchema = z.unknown();
+export const listProjectsStatusDefaultSchema = z.unknown();
 
-export const listProjectsQueryResponseSchema = z.lazy(() => listProjects200Schema);
+export const listProjectsResponseSchema = listProjectsStatus200Schema;
 
-export const createProjectPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization to create the project in');
-  }
-});
+export const listProjectsErrorSchema = z.union([
+  listProjectsStatus400Schema,
+  listProjectsStatus401Schema,
+  listProjectsStatus5XXSchema,
+  listProjectsStatusDefaultSchema
+]);
 
-/**
- * @description Project successfully created
- */
-export const createProject201Schema = z
-  .lazy(() => projectSchema)
-  .describe('Details of a project including its ID, name, and creation/update timestamps');
+export const createProjectPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization to create the project in'
+);
 
-/**
- * @description Generic error response for most error conditions
- */
-export const createProject400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const createProjectStatus201Schema = projectSchema.describe(
+  'Details of a project including its ID, name, and creation/update timestamps'
+);
+
+export const createProjectStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const createProject401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const createProjectStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const createProject5XXSchema = z.unknown();
+export const createProjectStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const createProjectErrorSchema = z.unknown();
+export const createProjectStatusDefaultSchema = z.unknown();
 
-export const createProjectMutationRequestSchema = z.object({
+export const createProjectResponseSchema = createProjectStatus201Schema;
+
+export const createProjectErrorSchema = z.union([
+  createProjectStatus400Schema,
+  createProjectStatus401Schema,
+  createProjectStatus5XXSchema,
+  createProjectStatusDefaultSchema
+]);
+
+export const createProjectBodySchema = z.object({
   name: z.string().describe('Human-readable name for the new project'),
-  get configuration() {
-    return projectConfigurationSchema
-      .describe('Configuration details for a project, including its scale to zero settings')
-      .optional();
-  }
+  configuration: projectConfigurationSchema
+    .optional()
+    .describe('Configuration details for a project, including its scale to zero settings')
 });
 
-export const createProjectMutationResponseSchema = z.lazy(() => createProject201Schema);
+export const getProjectPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization containing the project'
+);
 
-export const getProjectPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization containing the project');
-  },
-  projectID: z.string().describe('Unique identifier of the project to retrieve')
-});
+export const getProjectPathProjectIDSchema = z.string().describe('Unique identifier of the project to retrieve');
 
-/**
- * @description Project details retrieved successfully
- */
-export const getProject200Schema = z
-  .lazy(() => projectSchema)
-  .describe('Details of a project including its ID, name, and creation/update timestamps');
+export const getProjectStatus200Schema = projectSchema.describe(
+  'Details of a project including its ID, name, and creation/update timestamps'
+);
 
-/**
- * @description Generic error response for most error conditions
- */
-export const getProject400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getProjectStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const getProject401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getProjectStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const getProject404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getProjectStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const getProject5XXSchema = z.unknown();
+export const getProjectStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const getProjectErrorSchema = z.unknown();
+export const getProjectStatusDefaultSchema = z.unknown();
 
-export const getProjectQueryResponseSchema = z.lazy(() => getProject200Schema);
+export const getProjectResponseSchema = getProjectStatus200Schema;
 
-export const updateProjectPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization containing the project');
-  },
-  projectID: z.string().describe('Unique identifier of the project to update')
-});
+export const getProjectErrorSchema = z.union([
+  getProjectStatus400Schema,
+  getProjectStatus401Schema,
+  getProjectStatus404Schema,
+  getProjectStatus5XXSchema,
+  getProjectStatusDefaultSchema
+]);
 
-/**
- * @description Project successfully updated
- */
-export const updateProject200Schema = z
-  .lazy(() => projectSchema)
-  .describe('Details of a project including its ID, name, and creation/update timestamps');
+export const updateProjectPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization containing the project'
+);
 
-/**
- * @description Generic error response for most error conditions
- */
-export const updateProject400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const updateProjectPathProjectIDSchema = z.string().describe('Unique identifier of the project to update');
+
+export const updateProjectStatus200Schema = projectSchema.describe(
+  'Details of a project including its ID, name, and creation/update timestamps'
+);
+
+export const updateProjectStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const updateProject401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const updateProjectStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const updateProject404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const updateProjectStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const updateProject5XXSchema = z.unknown();
+export const updateProjectStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const updateProjectErrorSchema = z.unknown();
+export const updateProjectStatusDefaultSchema = z.unknown();
 
-export const updateProjectMutationRequestSchema = z.object({
-  name: z.optional(z.string().describe('New name for the project')),
-  get configuration() {
-    return updateProjectConfigurationSchema.describe('Partial configuration update for a project').optional();
-  }
+export const updateProjectResponseSchema = updateProjectStatus200Schema;
+
+export const updateProjectErrorSchema = z.union([
+  updateProjectStatus400Schema,
+  updateProjectStatus401Schema,
+  updateProjectStatus404Schema,
+  updateProjectStatus5XXSchema,
+  updateProjectStatusDefaultSchema
+]);
+
+export const updateProjectBodySchema = z.object({
+  name: z.string().optional().describe('New name for the project'),
+  configuration: updateProjectConfigurationSchema.optional().describe('Partial configuration update for a project')
 });
 
-export const updateProjectMutationResponseSchema = z.lazy(() => updateProject200Schema);
+export const deleteProjectPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization containing the project'
+);
 
-export const deleteProjectPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization containing the project');
-  },
-  projectID: z.string().describe('Unique identifier of the project to delete')
-});
+export const deleteProjectPathProjectIDSchema = z.string().describe('Unique identifier of the project to delete');
 
-/**
- * @description Project successfully deleted
- */
-export const deleteProject204Schema = z.unknown();
+export const deleteProjectStatus204Schema = z.unknown();
 
-/**
- * @description Generic error response for most error conditions
- */
-export const deleteProject400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const deleteProjectStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const deleteProject401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const deleteProjectStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const deleteProject404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const deleteProjectStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const deleteProject5XXSchema = z.unknown();
+export const deleteProjectStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const deleteProjectErrorSchema = z.unknown();
+export const deleteProjectStatusDefaultSchema = z.unknown();
 
-export const deleteProjectMutationResponseSchema = z.lazy(() => deleteProject204Schema);
+export const deleteProjectResponseSchema = deleteProjectStatus204Schema;
 
-export const getProjectLimitsPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization');
-  },
-  projectID: z.string().describe('Unique identifier of the project to get limits for')
-});
+export const deleteProjectErrorSchema = z.union([
+  deleteProjectStatus400Schema,
+  deleteProjectStatus401Schema,
+  deleteProjectStatus404Schema,
+  deleteProjectStatus5XXSchema,
+  deleteProjectStatusDefaultSchema
+]);
 
-/**
- * @description Effective resource limits for the project
- */
-export const getProjectLimits200Schema = z
-  .lazy(() => effectiveProjectLimitsSchema)
-  .describe('Full set of resource limits applicable to a project and its branches');
+export const getProjectLimitsPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization'
+);
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const getProjectLimits401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getProjectLimitsPathProjectIDSchema = z
+  .string()
+  .describe('Unique identifier of the project to get limits for');
+
+export const getProjectLimitsStatus200Schema = effectiveProjectLimitsSchema.describe(
+  'Full set of resource limits applicable to a project and its branches'
+);
+
+export const getProjectLimitsStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const getProjectLimits5XXSchema = z.unknown();
+export const getProjectLimitsStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const getProjectLimitsErrorSchema = z.unknown();
+export const getProjectLimitsStatusDefaultSchema = z.unknown();
 
-export const getProjectLimitsQueryResponseSchema = z.lazy(() => getProjectLimits200Schema);
+export const getProjectLimitsResponseSchema = getProjectLimitsStatus200Schema;
 
-export const listBackupsPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization containing the project');
-  },
-  projectID: z.string().describe('Unique identifier of the project to retrieve backups for')
+export const getProjectLimitsErrorSchema = z.union([
+  getProjectLimitsStatus401Schema,
+  getProjectLimitsStatus5XXSchema,
+  getProjectLimitsStatusDefaultSchema
+]);
+
+export const listBackupsPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization containing the project'
+);
+
+export const listBackupsPathProjectIDSchema = z
+  .string()
+  .describe('Unique identifier of the project to retrieve backups for');
+
+export const listBackupsStatus200Schema = z.object({
+  backups: z.array(backupMetadataSchema).describe('list of backups within the project')
 });
 
-/**
- * @description A list of backups within the project
- */
-export const listBackups200Schema = z.object({
-  get backups() {
-    return z
-      .array(backupMetadataSchema.describe('metadata about a continuous backup'))
-      .describe('list of backups within the project');
-  }
-});
-
-/**
- * @description Generic error response for most error conditions
- */
-export const listBackups400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listBackupsStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const listBackups401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listBackupsStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const listBackups404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listBackupsStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const listBackups5XXSchema = z.unknown();
+export const listBackupsStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const listBackupsErrorSchema = z.unknown();
+export const listBackupsStatusDefaultSchema = z.unknown();
 
-export const listBackupsQueryResponseSchema = z.lazy(() => listBackups200Schema);
+export const listBackupsResponseSchema = listBackupsStatus200Schema;
 
-export const getBackupPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization containing the project');
-  },
-  projectID: z.string().describe('Unique identifier of the project to retrieve backups for'),
-  backupID: z.string().describe('Unique identifier of the backup for the project')
-});
+export const listBackupsErrorSchema = z.union([
+  listBackupsStatus400Schema,
+  listBackupsStatus401Schema,
+  listBackupsStatus404Schema,
+  listBackupsStatus5XXSchema,
+  listBackupsStatusDefaultSchema
+]);
 
-/**
- * @description The backup metadata
- */
-export const getBackup200Schema = z.lazy(() => backupMetadataSchema).describe('metadata about a continuous backup');
+export const getBackupPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization containing the project'
+);
 
-/**
- * @description Generic error response for most error conditions
- */
-export const getBackup400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getBackupPathProjectIDSchema = z
+  .string()
+  .describe('Unique identifier of the project to retrieve backups for');
+
+export const getBackupPathBackupIDSchema = z.string().describe('Unique identifier of the backup for the project');
+
+export const getBackupStatus200Schema = backupMetadataSchema.describe('metadata about a continuous backup');
+
+export const getBackupStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const getBackup401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getBackupStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const getBackup404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getBackupStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const getBackup5XXSchema = z.unknown();
+export const getBackupStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const getBackupErrorSchema = z.unknown();
+export const getBackupStatusDefaultSchema = z.unknown();
 
-export const getBackupQueryResponseSchema = z.lazy(() => getBackup200Schema);
+export const getBackupResponseSchema = getBackupStatus200Schema;
 
-export const listBranchesPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization containing the project');
-  },
-  projectID: z.string().describe('Unique identifier of the project to list branches from')
+export const getBackupErrorSchema = z.union([
+  getBackupStatus400Schema,
+  getBackupStatus401Schema,
+  getBackupStatus404Schema,
+  getBackupStatus5XXSchema,
+  getBackupStatusDefaultSchema
+]);
+
+export const listBranchesPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization containing the project'
+);
+
+export const listBranchesPathProjectIDSchema = z
+  .string()
+  .describe('Unique identifier of the project to list branches from');
+
+export const listBranchesStatus200Schema = z.object({
+  branches: z.array(branchListMetadataSchema).describe('Array of branch objects with their metadata')
 });
 
-/**
- * @description List of branches within the project
- */
-export const listBranches200Schema = z.object({
-  get branches() {
-    return z
-      .array(branchListMetadataSchema.describe('Metadata about a branch used when listing branches in a project'))
-      .describe('Array of branch objects with their metadata');
-  }
-});
-
-/**
- * @description Generic error response for most error conditions
- */
-export const listBranches400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listBranchesStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const listBranches401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listBranchesStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const listBranches404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listBranchesStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const listBranches5XXSchema = z.unknown();
+export const listBranchesStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const listBranchesErrorSchema = z.unknown();
+export const listBranchesStatusDefaultSchema = z.unknown();
 
-export const listBranchesQueryResponseSchema = z.lazy(() => listBranches200Schema);
+export const listBranchesResponseSchema = listBranchesStatus200Schema;
 
-export const createBranchPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization containing the project');
-  },
-  projectID: z.string().describe('Unique identifier of the project to create the branch in')
-});
+export const listBranchesErrorSchema = z.union([
+  listBranchesStatus400Schema,
+  listBranchesStatus401Schema,
+  listBranchesStatus404Schema,
+  listBranchesStatus5XXSchema,
+  listBranchesStatusDefaultSchema
+]);
 
-/**
- * @description Branch successfully created
- */
-export const createBranch201Schema = z
-  .lazy(() => branchShortMetadataSchema)
-  .describe('Basic metadata about a branch, used in response to create/update operations');
+export const createBranchPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization containing the project'
+);
 
-/**
- * @description Generic error response for most error conditions
- */
-export const createBranch400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const createBranchPathProjectIDSchema = z
+  .string()
+  .describe('Unique identifier of the project to create the branch in');
+
+export const createBranchStatus201Schema = branchShortMetadataSchema.describe(
+  'Basic metadata about a branch, used in response to create/update operations'
+);
+
+export const createBranchStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const createBranch401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const createBranchStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const createBranch404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const createBranchStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when a precondition for the request is not met
- */
-export const createBranch412Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const createBranchStatus412Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the precondition failure')
 });
 
-/**
- * @description Unexpected Error
- */
-export const createBranch5XXSchema = z.unknown();
+export const createBranchStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const createBranchErrorSchema = z.unknown();
+export const createBranchStatusDefaultSchema = z.unknown();
 
-export const createBranchMutationRequestSchema = z
-  .lazy(() => branchCreationDetailsSchema)
-  .describe('Details required when creating a new branch');
+export const createBranchResponseSchema = createBranchStatus201Schema;
 
-export const createBranchMutationResponseSchema = z.lazy(() => createBranch201Schema);
+export const createBranchErrorSchema = z.union([
+  createBranchStatus400Schema,
+  createBranchStatus401Schema,
+  createBranchStatus404Schema,
+  createBranchStatus412Schema,
+  createBranchStatus5XXSchema,
+  createBranchStatusDefaultSchema
+]);
 
-export const describeBranchPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization containing the project');
-  },
-  projectID: z.string().describe('Unique identifier of the project containing the branch'),
-  branchID: z.string().describe('Unique identifier of the branch to retrieve details for')
-});
+export const createBranchBodySchema = branchCreationDetailsSchema.describe(
+  'Details required when creating a new branch'
+);
 
-/**
- * @description Branch details retrieved successfully
- */
-export const describeBranch200Schema = z
-  .lazy(() => branchMetadataSchema)
-  .describe('Detailed metadata about a branch, including its status and configuration');
+export const describeBranchPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization containing the project'
+);
 
-/**
- * @description Generic error response for most error conditions
- */
-export const describeBranch400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const describeBranchPathProjectIDSchema = z
+  .string()
+  .describe('Unique identifier of the project containing the branch');
+
+export const describeBranchPathBranchIDSchema = z
+  .string()
+  .describe('Unique identifier of the branch to retrieve details for');
+
+export const describeBranchStatus200Schema = branchMetadataSchema.describe(
+  'Detailed metadata about a branch, including its status and configuration'
+);
+
+export const describeBranchStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const describeBranch401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const describeBranchStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const describeBranch404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const describeBranchStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const describeBranch5XXSchema = z.unknown();
+export const describeBranchStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const describeBranchErrorSchema = z.unknown();
+export const describeBranchStatusDefaultSchema = z.unknown();
 
-export const describeBranchQueryResponseSchema = z.lazy(() => describeBranch200Schema);
+export const describeBranchResponseSchema = describeBranchStatus200Schema;
 
-export const updateBranchPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization containing the project');
-  },
-  projectID: z.string().describe('Unique identifier of the project containing the branch'),
-  branchID: z.string().describe('Unique identifier of the branch to update')
-});
+export const describeBranchErrorSchema = z.union([
+  describeBranchStatus400Schema,
+  describeBranchStatus401Schema,
+  describeBranchStatus404Schema,
+  describeBranchStatus5XXSchema,
+  describeBranchStatusDefaultSchema
+]);
 
-/**
- * @description Branch successfully updated
- */
-export const updateBranch200Schema = z
-  .lazy(() => branchShortMetadataSchema)
-  .describe('Basic metadata about a branch, used in response to create/update operations');
+export const updateBranchPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization containing the project'
+);
 
-/**
- * @description Generic error response for most error conditions
- */
-export const updateBranch400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const updateBranchPathProjectIDSchema = z
+  .string()
+  .describe('Unique identifier of the project containing the branch');
+
+export const updateBranchPathBranchIDSchema = z.string().describe('Unique identifier of the branch to update');
+
+export const updateBranchStatus200Schema = branchShortMetadataSchema.describe(
+  'Basic metadata about a branch, used in response to create/update operations'
+);
+
+export const updateBranchStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const updateBranch401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const updateBranchStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const updateBranch404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const updateBranchStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const updateBranch5XXSchema = z.unknown();
+export const updateBranchStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const updateBranchErrorSchema = z.unknown();
+export const updateBranchStatusDefaultSchema = z.unknown();
 
-export const updateBranchMutationRequestSchema = z
-  .lazy(() => branchUpdateDetailsSchema)
-  .describe('Details that can be updated for an existing branch');
+export const updateBranchResponseSchema = updateBranchStatus200Schema;
 
-export const updateBranchMutationResponseSchema = z.lazy(() => updateBranch200Schema);
+export const updateBranchErrorSchema = z.union([
+  updateBranchStatus400Schema,
+  updateBranchStatus401Schema,
+  updateBranchStatus404Schema,
+  updateBranchStatus5XXSchema,
+  updateBranchStatusDefaultSchema
+]);
 
-export const deleteBranchPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization containing the project');
-  },
-  projectID: z.string().describe('Unique identifier of the project containing the branch'),
-  branchID: z.string().describe('Unique identifier of the branch to delete')
-});
+export const updateBranchBodySchema = branchUpdateDetailsSchema.describe(
+  'Details that can be updated for an existing branch'
+);
 
-/**
- * @description Branch successfully deleted
- */
-export const deleteBranch204Schema = z.unknown();
+export const deleteBranchPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization containing the project'
+);
 
-/**
- * @description Generic error response for most error conditions
- */
-export const deleteBranch400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const deleteBranchPathProjectIDSchema = z
+  .string()
+  .describe('Unique identifier of the project containing the branch');
+
+export const deleteBranchPathBranchIDSchema = z.string().describe('Unique identifier of the branch to delete');
+
+export const deleteBranchStatus204Schema = z.unknown();
+
+export const deleteBranchStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const deleteBranch401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const deleteBranchStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const deleteBranch404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const deleteBranchStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const deleteBranch5XXSchema = z.unknown();
+export const deleteBranchStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const deleteBranchErrorSchema = z.unknown();
+export const deleteBranchStatusDefaultSchema = z.unknown();
 
-export const deleteBranchMutationResponseSchema = z.lazy(() => deleteBranch204Schema);
+export const deleteBranchResponseSchema = deleteBranchStatus204Schema;
 
-export const getBranchCredentialsPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema;
-  },
-  projectID: z.string(),
-  branchID: z.string()
-});
+export const deleteBranchErrorSchema = z.union([
+  deleteBranchStatus400Schema,
+  deleteBranchStatus401Schema,
+  deleteBranchStatus404Schema,
+  deleteBranchStatus5XXSchema,
+  deleteBranchStatusDefaultSchema
+]);
 
-export const getBranchCredentialsQueryParamsSchema = z.object({
-  username: z.string().default('xata').describe('Username that the credentials requested for, defaults to `xata`')
-});
+export const getBranchCredentialsPathOrganizationIDSchema = organizationIDSchema;
 
-/**
- * @description Credentials for the branch retrieved successfully
- */
-export const getBranchCredentials200Schema = z
-  .lazy(() => branchCredentialsSchema)
-  .describe('Credentials and connection details for accessing a branch');
+export const getBranchCredentialsPathProjectIDSchema = z.string();
 
-/**
- * @description Generic error response for most error conditions
- */
-export const getBranchCredentials400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getBranchCredentialsPathBranchIDSchema = z.string();
+
+export const getBranchCredentialsQueryUsernameSchema = z
+  .string()
+  .optional()
+  .default('xata')
+  .describe('Username that the credentials requested for, defaults to `xata`');
+
+export const getBranchCredentialsStatus200Schema = branchCredentialsSchema.describe(
+  'Credentials and connection details for accessing a branch'
+);
+
+export const getBranchCredentialsStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const getBranchCredentials401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getBranchCredentialsStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const getBranchCredentials404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getBranchCredentialsStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const getBranchCredentials5XXSchema = z.unknown();
+export const getBranchCredentialsStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const getBranchCredentialsErrorSchema = z.unknown();
+export const getBranchCredentialsStatusDefaultSchema = z.unknown();
 
-export const getBranchCredentialsQueryResponseSchema = z.lazy(() => getBranchCredentials200Schema);
+export const getBranchCredentialsResponseSchema = getBranchCredentialsStatus200Schema;
 
-export const rotateBranchCredentialsPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema;
-  },
-  projectID: z.string(),
-  branchID: z.string()
-});
+export const getBranchCredentialsErrorSchema = z.union([
+  getBranchCredentialsStatus400Schema,
+  getBranchCredentialsStatus401Schema,
+  getBranchCredentialsStatus404Schema,
+  getBranchCredentialsStatus5XXSchema,
+  getBranchCredentialsStatusDefaultSchema
+]);
 
-/**
- * @description Credential rotation initiated successfully
- */
-export const rotateBranchCredentials204Schema = z.unknown();
+export const rotateBranchCredentialsPathOrganizationIDSchema = organizationIDSchema;
 
-/**
- * @description Generic error response for most error conditions
- */
-export const rotateBranchCredentials400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const rotateBranchCredentialsPathProjectIDSchema = z.string();
+
+export const rotateBranchCredentialsPathBranchIDSchema = z.string();
+
+export const rotateBranchCredentialsStatus204Schema = z.unknown();
+
+export const rotateBranchCredentialsStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const rotateBranchCredentials401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const rotateBranchCredentialsStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const rotateBranchCredentials404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const rotateBranchCredentialsStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const rotateBranchCredentials5XXSchema = z.unknown();
+export const rotateBranchCredentialsStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const rotateBranchCredentialsErrorSchema = z.unknown();
+export const rotateBranchCredentialsStatusDefaultSchema = z.unknown();
 
-export const rotateBranchCredentialsMutationRequestSchema = z
-  .lazy(() => rotateCredentialsRequestSchema)
-  .describe('Request to rotate credentials for a branch database user');
+export const rotateBranchCredentialsResponseSchema = rotateBranchCredentialsStatus204Schema;
 
-export const rotateBranchCredentialsMutationResponseSchema = z.lazy(() => rotateBranchCredentials204Schema);
+export const rotateBranchCredentialsErrorSchema = z.union([
+  rotateBranchCredentialsStatus400Schema,
+  rotateBranchCredentialsStatus401Schema,
+  rotateBranchCredentialsStatus404Schema,
+  rotateBranchCredentialsStatus5XXSchema,
+  rotateBranchCredentialsStatusDefaultSchema
+]);
 
-export const branchMetricsPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema;
-  },
-  projectID: z.string(),
-  branchID: z.string()
-});
+export const rotateBranchCredentialsBodySchema = rotateCredentialsRequestSchema.describe(
+  'Request to rotate credentials for a branch database user'
+);
 
-/**
- * @description Metrics for a branch
- */
-export const branchMetrics200Schema = z
-  .lazy(() => branchMetricsSchema)
-  .describe('A collection of metrics (cpu, memory, disk,...) for each of the instances of a branch');
+export const branchMetricsPathOrganizationIDSchema = organizationIDSchema;
 
-/**
- * @description Generic error response for most error conditions
- */
-export const branchMetrics400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const branchMetricsPathProjectIDSchema = z.string();
+
+export const branchMetricsPathBranchIDSchema = z.string();
+
+export const branchMetricsStatus200Schema = branchMetricsSchema.describe(
+  'A collection of metrics (cpu, memory, disk,...) for each of the instances of a branch'
+);
+
+export const branchMetricsStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const branchMetrics401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const branchMetricsStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const branchMetrics404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const branchMetricsStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const branchMetrics5XXSchema = z.unknown();
+export const branchMetricsStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const branchMetricsErrorSchema = z.unknown();
+export const branchMetricsStatusDefaultSchema = z.unknown();
 
-export const branchMetricsMutationRequestSchema = z.lazy(() => branchMetricsRequestSchema);
+export const branchMetricsResponseSchema = branchMetricsStatus200Schema;
 
-export const branchMetricsMutationResponseSchema = z.lazy(() => branchMetrics200Schema);
+export const branchMetricsErrorSchema = z.union([
+  branchMetricsStatus400Schema,
+  branchMetricsStatus401Schema,
+  branchMetricsStatus404Schema,
+  branchMetricsStatus5XXSchema,
+  branchMetricsStatusDefaultSchema
+]);
 
-export const restoreFromBackupPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization containing the project');
-  },
-  projectID: z.string().describe('Unique identifier of the project containing the source branch'),
-  branchID: z.string().describe('Unique identifier of the source branch of the backup')
-});
+export const branchMetricsBodySchema = branchMetricsRequestSchema;
 
-/**
- * @description Branch successfully created
- */
-export const restoreFromBackup201Schema = z
-  .lazy(() => branchShortMetadataSchema)
-  .describe('Basic metadata about a branch, used in response to create/update operations');
+export const restoreFromBackupPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization containing the project'
+);
 
-/**
- * @description Generic error response for most error conditions
- */
-export const restoreFromBackup400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const restoreFromBackupPathProjectIDSchema = z
+  .string()
+  .describe('Unique identifier of the project containing the source branch');
+
+export const restoreFromBackupPathBranchIDSchema = z
+  .string()
+  .describe('Unique identifier of the source branch of the backup');
+
+export const restoreFromBackupStatus201Schema = branchShortMetadataSchema.describe(
+  'Basic metadata about a branch, used in response to create/update operations'
+);
+
+export const restoreFromBackupStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const restoreFromBackup401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const restoreFromBackupStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const restoreFromBackup404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const restoreFromBackupStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const restoreFromBackup5XXSchema = z.unknown();
+export const restoreFromBackupStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const restoreFromBackupErrorSchema = z.unknown();
+export const restoreFromBackupStatusDefaultSchema = z.unknown();
 
-export const restoreFromBackupMutationRequestSchema = z
-  .lazy(() => restoreDetailsSchema)
-  .describe(
-    'Metadata about a backup, used in request to create a restore. If configuration is not provided, the branch will inherit the source branch configuration.'
-  );
+export const restoreFromBackupResponseSchema = restoreFromBackupStatus201Schema;
 
-export const restoreFromBackupMutationResponseSchema = z.lazy(() => restoreFromBackup201Schema);
+export const restoreFromBackupErrorSchema = z.union([
+  restoreFromBackupStatus400Schema,
+  restoreFromBackupStatus401Schema,
+  restoreFromBackupStatus404Schema,
+  restoreFromBackupStatus5XXSchema,
+  restoreFromBackupStatusDefaultSchema
+]);
 
-export const branchLogsPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema;
-  },
-  projectID: z.string(),
-  branchID: z.string()
-});
+export const restoreFromBackupBodySchema = restoreDetailsSchema.describe(
+  'Metadata about a backup, used in request to create a restore. If configuration is not provided, the branch will inherit the source branch configuration.'
+);
 
-/**
- * @description Logs for a branch
- */
-export const branchLogs200Schema = z
-  .lazy(() => branchLogsSchema)
-  .describe('A collection of logs for each of the instances of a branch');
+export const branchLogsPathOrganizationIDSchema = organizationIDSchema;
 
-/**
- * @description Generic error response for most error conditions
- */
-export const branchLogs400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const branchLogsPathProjectIDSchema = z.string();
+
+export const branchLogsPathBranchIDSchema = z.string();
+
+export const branchLogsStatus200Schema = branchLogsSchema.describe(
+  'A collection of logs for each of the instances of a branch'
+);
+
+export const branchLogsStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const branchLogs401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const branchLogsStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const branchLogs404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const branchLogsStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const branchLogs5XXSchema = z.unknown();
+export const branchLogsStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const branchLogsErrorSchema = z.unknown();
+export const branchLogsStatusDefaultSchema = z.unknown();
 
-export const branchLogsMutationRequestSchema = z.lazy(() => branchLogsRequestSchema);
+export const branchLogsResponseSchema = branchLogsStatus200Schema;
 
-export const branchLogsMutationResponseSchema = z.lazy(() => branchLogs200Schema);
+export const branchLogsErrorSchema = z.union([
+  branchLogsStatus400Schema,
+  branchLogsStatus401Schema,
+  branchLogsStatus404Schema,
+  branchLogsStatus5XXSchema,
+  branchLogsStatusDefaultSchema
+]);
 
-export const getBranchPostgresConfigPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization containing the project');
-  },
-  projectID: z.string().describe('Unique identifier of the project containing the branch'),
-  branchID: z.string().describe('Unique identifier of the branch to retrieve PostgreSQL configuration for')
-});
+export const branchLogsBodySchema = branchLogsRequestSchema;
 
-/**
- * @description PostgreSQL configuration details retrieved successfully
- */
-export const getBranchPostgresConfig200Schema = z
-  .lazy(() => postgresConfigDetailsSchema)
-  .describe('Detailed information about PostgreSQL configuration parameters for a branch');
+export const getBranchPostgresConfigPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization containing the project'
+);
 
-/**
- * @description Generic error response for most error conditions
- */
-export const getBranchPostgresConfig400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getBranchPostgresConfigPathProjectIDSchema = z
+  .string()
+  .describe('Unique identifier of the project containing the branch');
+
+export const getBranchPostgresConfigPathBranchIDSchema = z
+  .string()
+  .describe('Unique identifier of the branch to retrieve PostgreSQL configuration for');
+
+export const getBranchPostgresConfigStatus200Schema = postgresConfigDetailsSchema.describe(
+  'Detailed information about PostgreSQL configuration parameters for a branch'
+);
+
+export const getBranchPostgresConfigStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const getBranchPostgresConfig401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getBranchPostgresConfigStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const getBranchPostgresConfig404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getBranchPostgresConfigStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const getBranchPostgresConfig5XXSchema = z.unknown();
+export const getBranchPostgresConfigStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const getBranchPostgresConfigErrorSchema = z.unknown();
+export const getBranchPostgresConfigStatusDefaultSchema = z.unknown();
 
-export const getBranchPostgresConfigQueryResponseSchema = z.lazy(() => getBranchPostgresConfig200Schema);
+export const getBranchPostgresConfigResponseSchema = getBranchPostgresConfigStatus200Schema;
 
-export const listGithubAppInstallationsPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization');
-  }
+export const getBranchPostgresConfigErrorSchema = z.union([
+  getBranchPostgresConfigStatus400Schema,
+  getBranchPostgresConfigStatus401Schema,
+  getBranchPostgresConfigStatus404Schema,
+  getBranchPostgresConfigStatus5XXSchema,
+  getBranchPostgresConfigStatusDefaultSchema
+]);
+
+export const listGithubAppInstallationsPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization'
+);
+
+export const listGithubAppInstallationsStatus200Schema = z.object({
+  installations: z.array(githubInstallationSchema).describe('Array of GitHub App installations')
 });
 
-/**
- * @description List of GitHub App installations
- */
-export const listGithubAppInstallations200Schema = z.object({
-  get installations() {
-    return z
-      .array(githubInstallationSchema.describe('A GitHub App installation associated with an organization'))
-      .describe('Array of GitHub App installations');
-  }
-});
-
-/**
- * @description Generic error response for most error conditions
- */
-export const listGithubAppInstallations400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listGithubAppInstallationsStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const listGithubAppInstallations401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const listGithubAppInstallationsStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const listGithubAppInstallations5XXSchema = z.unknown();
+export const listGithubAppInstallationsStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const listGithubAppInstallationsErrorSchema = z.unknown();
+export const listGithubAppInstallationsStatusDefaultSchema = z.unknown();
 
-export const listGithubAppInstallationsQueryResponseSchema = z.lazy(() => listGithubAppInstallations200Schema);
+export const listGithubAppInstallationsResponseSchema = listGithubAppInstallationsStatus200Schema;
 
-export const createGithubAppInstallationPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization');
-  }
-});
+export const listGithubAppInstallationsErrorSchema = z.union([
+  listGithubAppInstallationsStatus400Schema,
+  listGithubAppInstallationsStatus401Schema,
+  listGithubAppInstallationsStatus5XXSchema,
+  listGithubAppInstallationsStatusDefaultSchema
+]);
 
-/**
- * @description Installation created successfully
- */
-export const createGithubAppInstallation201Schema = z
-  .lazy(() => githubInstallationSchema)
-  .describe('A GitHub App installation associated with an organization');
+export const createGithubAppInstallationPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization'
+);
 
-/**
- * @description Generic error response for most error conditions
- */
-export const createGithubAppInstallation400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const createGithubAppInstallationStatus201Schema = githubInstallationSchema.describe(
+  'A GitHub App installation associated with an organization'
+);
+
+export const createGithubAppInstallationStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const createGithubAppInstallation401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const createGithubAppInstallationStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const createGithubAppInstallation409Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const createGithubAppInstallationStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const createGithubAppInstallation5XXSchema = z.unknown();
+export const createGithubAppInstallationStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const createGithubAppInstallationErrorSchema = z.unknown();
+export const createGithubAppInstallationStatusDefaultSchema = z.unknown();
 
-export const createGithubAppInstallationMutationRequestSchema = z.lazy(() => createGithubAppInstallationRequestSchema);
+export const createGithubAppInstallationResponseSchema = createGithubAppInstallationStatus201Schema;
 
-export const createGithubAppInstallationMutationResponseSchema = z.lazy(() => createGithubAppInstallation201Schema);
+export const createGithubAppInstallationErrorSchema = z.union([
+  createGithubAppInstallationStatus400Schema,
+  createGithubAppInstallationStatus401Schema,
+  createGithubAppInstallationStatus409Schema,
+  createGithubAppInstallationStatus5XXSchema,
+  createGithubAppInstallationStatusDefaultSchema
+]);
 
-export const updateGithubAppInstallationPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization');
-  },
-  githubInstallationID: z.string().describe('Unique identifier of the GitHub installation record')
-});
+export const createGithubAppInstallationBodySchema = createGithubAppInstallationRequestSchema;
 
-/**
- * @description Installation updated successfully
- */
-export const updateGithubAppInstallation200Schema = z
-  .lazy(() => githubInstallationSchema)
-  .describe('A GitHub App installation associated with an organization');
+export const updateGithubAppInstallationPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization'
+);
 
-/**
- * @description Generic error response for most error conditions
- */
-export const updateGithubAppInstallation400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const updateGithubAppInstallationPathGithubInstallationIDSchema = z
+  .string()
+  .describe('Unique identifier of the GitHub installation record');
+
+export const updateGithubAppInstallationStatus200Schema = githubInstallationSchema.describe(
+  'A GitHub App installation associated with an organization'
+);
+
+export const updateGithubAppInstallationStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const updateGithubAppInstallation401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const updateGithubAppInstallationStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const updateGithubAppInstallation404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const updateGithubAppInstallationStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const updateGithubAppInstallation409Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const updateGithubAppInstallationStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const updateGithubAppInstallation5XXSchema = z.unknown();
+export const updateGithubAppInstallationStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const updateGithubAppInstallationErrorSchema = z.unknown();
+export const updateGithubAppInstallationStatusDefaultSchema = z.unknown();
 
-export const updateGithubAppInstallationMutationRequestSchema = z.lazy(() => updateGithubAppInstallationRequestSchema);
+export const updateGithubAppInstallationResponseSchema = updateGithubAppInstallationStatus200Schema;
 
-export const updateGithubAppInstallationMutationResponseSchema = z.lazy(() => updateGithubAppInstallation200Schema);
+export const updateGithubAppInstallationErrorSchema = z.union([
+  updateGithubAppInstallationStatus400Schema,
+  updateGithubAppInstallationStatus401Schema,
+  updateGithubAppInstallationStatus404Schema,
+  updateGithubAppInstallationStatus409Schema,
+  updateGithubAppInstallationStatus5XXSchema,
+  updateGithubAppInstallationStatusDefaultSchema
+]);
 
-export const getGithubRepositoryPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization');
-  },
-  projectID: z.string().describe('Unique identifier of the project'),
-  branchID: z.string().describe('Unique identifier of the branch')
+export const updateGithubAppInstallationBodySchema = updateGithubAppInstallationRequestSchema;
+
+export const getGithubRepositoryPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization'
+);
+
+export const getGithubRepositoryPathProjectIDSchema = z.string().describe('Unique identifier of the project');
+
+export const getGithubRepositoryPathBranchIDSchema = z.string().describe('Unique identifier of the branch');
+
+export const getGithubRepositoryStatus200Schema = z.object({
+  mapping: z.union([githubRepositorySchema, z.null()]).describe('Repository mapping details, null if no mapping exists')
 });
 
-/**
- * @description GitHub repository mapping details
- */
-export const getGithubRepository200Schema = z.object({
-  get mapping() {
-    return githubRepositorySchema.describe('A mapping between a GitHub repository and a Xata project').nullable();
-  }
-});
-
-/**
- * @description Generic error response for most error conditions
- */
-export const getGithubRepository400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getGithubRepositoryStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const getGithubRepository401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const getGithubRepositoryStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const getGithubRepository5XXSchema = z.unknown();
+export const getGithubRepositoryStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const getGithubRepositoryErrorSchema = z.unknown();
+export const getGithubRepositoryStatusDefaultSchema = z.unknown();
 
-export const getGithubRepositoryQueryResponseSchema = z.lazy(() => getGithubRepository200Schema);
+export const getGithubRepositoryResponseSchema = getGithubRepositoryStatus200Schema;
 
-export const createGithubRepositoryPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization');
-  },
-  projectID: z.string().describe('Unique identifier of the project'),
-  branchID: z.string().describe('Unique identifier of the branch')
-});
+export const getGithubRepositoryErrorSchema = z.union([
+  getGithubRepositoryStatus400Schema,
+  getGithubRepositoryStatus401Schema,
+  getGithubRepositoryStatus5XXSchema,
+  getGithubRepositoryStatusDefaultSchema
+]);
 
-/**
- * @description Repository mapping created successfully
- */
-export const createGithubRepository201Schema = z
-  .lazy(() => githubRepositorySchema)
-  .describe('A mapping between a GitHub repository and a Xata project');
+export const createGithubRepositoryPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization'
+);
 
-/**
- * @description Generic error response for most error conditions
- */
-export const createGithubRepository400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const createGithubRepositoryPathProjectIDSchema = z.string().describe('Unique identifier of the project');
+
+export const createGithubRepositoryPathBranchIDSchema = z.string().describe('Unique identifier of the branch');
+
+export const createGithubRepositoryStatus201Schema = githubRepositorySchema.describe(
+  'A mapping between a GitHub repository and a Xata project'
+);
+
+export const createGithubRepositoryStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const createGithubRepository401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const createGithubRepositoryStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const createGithubRepository409Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const createGithubRepositoryStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const createGithubRepository5XXSchema = z.unknown();
+export const createGithubRepositoryStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const createGithubRepositoryErrorSchema = z.unknown();
+export const createGithubRepositoryStatusDefaultSchema = z.unknown();
 
-export const createGithubRepositoryMutationRequestSchema = z.lazy(() => createGithubRepositoryRequestSchema);
+export const createGithubRepositoryResponseSchema = createGithubRepositoryStatus201Schema;
 
-export const createGithubRepositoryMutationResponseSchema = z.lazy(() => createGithubRepository201Schema);
+export const createGithubRepositoryErrorSchema = z.union([
+  createGithubRepositoryStatus400Schema,
+  createGithubRepositoryStatus401Schema,
+  createGithubRepositoryStatus409Schema,
+  createGithubRepositoryStatus5XXSchema,
+  createGithubRepositoryStatusDefaultSchema
+]);
 
-export const updateGithubRepositoryPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization');
-  },
-  projectID: z.string().describe('Unique identifier of the project'),
-  branchID: z.string().describe('Unique identifier of the branch')
-});
+export const createGithubRepositoryBodySchema = createGithubRepositoryRequestSchema;
 
-/**
- * @description Repository mapping updated successfully
- */
-export const updateGithubRepository200Schema = z
-  .lazy(() => githubRepositorySchema)
-  .describe('A mapping between a GitHub repository and a Xata project');
+export const updateGithubRepositoryPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization'
+);
 
-/**
- * @description Generic error response for most error conditions
- */
-export const updateGithubRepository400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const updateGithubRepositoryPathProjectIDSchema = z.string().describe('Unique identifier of the project');
+
+export const updateGithubRepositoryPathBranchIDSchema = z.string().describe('Unique identifier of the branch');
+
+export const updateGithubRepositoryStatus200Schema = githubRepositorySchema.describe(
+  'A mapping between a GitHub repository and a Xata project'
+);
+
+export const updateGithubRepositoryStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const updateGithubRepository401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const updateGithubRepositoryStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const updateGithubRepository404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const updateGithubRepositoryStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const updateGithubRepository5XXSchema = z.unknown();
+export const updateGithubRepositoryStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const updateGithubRepositoryErrorSchema = z.unknown();
+export const updateGithubRepositoryStatusDefaultSchema = z.unknown();
 
-export const updateGithubRepositoryMutationRequestSchema = z.lazy(() => updateGithubRepositoryRequestSchema);
+export const updateGithubRepositoryResponseSchema = updateGithubRepositoryStatus200Schema;
 
-export const updateGithubRepositoryMutationResponseSchema = z.lazy(() => updateGithubRepository200Schema);
+export const updateGithubRepositoryErrorSchema = z.union([
+  updateGithubRepositoryStatus400Schema,
+  updateGithubRepositoryStatus401Schema,
+  updateGithubRepositoryStatus404Schema,
+  updateGithubRepositoryStatus5XXSchema,
+  updateGithubRepositoryStatusDefaultSchema
+]);
 
-export const deleteGithubRepositoryPathParamsSchema = z.object({
-  get organizationID() {
-    return organizationIDSchema.describe('Unique identifier of the organization');
-  },
-  projectID: z.string().describe('Unique identifier of the project'),
-  branchID: z.string().describe('Unique identifier of the branch')
-});
+export const updateGithubRepositoryBodySchema = updateGithubRepositoryRequestSchema;
 
-/**
- * @description Repository mapping deleted successfully
- */
-export const deleteGithubRepository204Schema = z.unknown();
+export const deleteGithubRepositoryPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier of the organization'
+);
 
-/**
- * @description Generic error response for most error conditions
- */
-export const deleteGithubRepository400Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const deleteGithubRepositoryPathProjectIDSchema = z.string().describe('Unique identifier of the project');
+
+export const deleteGithubRepositoryPathBranchIDSchema = z.string().describe('Unique identifier of the branch');
+
+export const deleteGithubRepositoryStatus204Schema = z.unknown();
+
+export const deleteGithubRepositoryStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Error response when authentication or authorization fails
- */
-export const deleteGithubRepository401Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const deleteGithubRepositoryStatus401Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-/**
- * @description Generic error response for most error conditions
- */
-export const deleteGithubRepository404Schema = z.object({
-  id: z.optional(z.string().describe('Error identifier for tracking and debugging')),
+export const deleteGithubRepositoryStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-/**
- * @description Unexpected Error
- */
-export const deleteGithubRepository5XXSchema = z.unknown();
+export const deleteGithubRepositoryStatus5XXSchema = z.unknown();
 
-/**
- * @description Unexpected Error
- */
-export const deleteGithubRepositoryErrorSchema = z.unknown();
+export const deleteGithubRepositoryStatusDefaultSchema = z.unknown();
 
-export const deleteGithubRepositoryMutationResponseSchema = z.lazy(() => deleteGithubRepository204Schema);
+export const deleteGithubRepositoryResponseSchema = deleteGithubRepositoryStatus204Schema;
 
-export const upsertInstallationPathParamsSchema = z.object({
-  installationId: z.string().describe('Vercel installation id (icfg_...).')
-});
+export const deleteGithubRepositoryErrorSchema = z.union([
+  deleteGithubRepositoryStatus400Schema,
+  deleteGithubRepositoryStatus401Schema,
+  deleteGithubRepositoryStatus404Schema,
+  deleteGithubRepositoryStatus5XXSchema,
+  deleteGithubRepositoryStatusDefaultSchema
+]);
 
-/**
- * @description Installation created or updated. No body. (Vercel\'s contract also\nallows a 200 with an installation-level billingPlan/notification\nbody; Xata does not use installation-level billing plans.)\n
- */
-export const upsertInstallation204Schema = z.unknown();
+export const upsertInstallationPathInstallationIdSchema = z.string().describe('Vercel installation id (icfg_...).');
 
-/**
- * @description Error response.
- */
-export const upsertInstallation400Schema = z
-  .lazy(() => vercelErrorSchema)
-  .describe('Vercel Partner API error envelope.');
+export const upsertInstallationStatus204Schema = z.unknown();
 
-/**
- * @description Error response.
- */
-export const upsertInstallation403Schema = z
-  .lazy(() => vercelErrorSchema)
-  .describe('Vercel Partner API error envelope.');
+export const upsertInstallationStatus400Schema = vercelErrorSchema.describe('Vercel Partner API error envelope.');
 
-/**
- * @description Error response.
- */
-export const upsertInstallation409Schema = z
-  .lazy(() => vercelErrorSchema)
-  .describe('Vercel Partner API error envelope.');
+export const upsertInstallationStatus403Schema = vercelErrorSchema.describe('Vercel Partner API error envelope.');
 
-export const upsertInstallationMutationRequestSchema = z.lazy(() => upsertInstallationRequestSchema);
+export const upsertInstallationStatus409Schema = vercelErrorSchema.describe('Vercel Partner API error envelope.');
 
-export const upsertInstallationMutationResponseSchema = z.lazy(() => upsertInstallation204Schema);
+export const upsertInstallationResponseSchema = upsertInstallationStatus204Schema;
 
-export const deleteInstallationPathParamsSchema = z.object({
-  installationId: z.string().describe('Vercel installation id (icfg_...).')
-});
+export const upsertInstallationErrorSchema = z.union([
+  upsertInstallationStatus400Schema,
+  upsertInstallationStatus403Schema,
+  upsertInstallationStatus409Schema
+]);
 
-/**
- * @description Uninstall accepted; deletion finalizes asynchronously. No body.
- */
-export const deleteInstallation204Schema = z.unknown();
+export const upsertInstallationBodySchema = upsertInstallationRequestSchema;
 
-/**
- * @description Error response.
- */
-export const deleteInstallation403Schema = z
-  .lazy(() => vercelErrorSchema)
-  .describe('Vercel Partner API error envelope.');
+export const deleteInstallationPathInstallationIdSchema = z.string().describe('Vercel installation id (icfg_...).');
 
-/**
- * @description Error response.
- */
-export const deleteInstallation409Schema = z
-  .lazy(() => vercelErrorSchema)
-  .describe('Vercel Partner API error envelope.');
+export const deleteInstallationStatus204Schema = z.unknown();
 
-export const deleteInstallationMutationRequestSchema = z.lazy(() => deleteInstallationRequestSchema);
+export const deleteInstallationStatus403Schema = vercelErrorSchema.describe('Vercel Partner API error envelope.');
 
-export const deleteInstallationMutationResponseSchema = z.lazy(() => deleteInstallation204Schema);
+export const deleteInstallationStatus409Schema = vercelErrorSchema.describe('Vercel Partner API error envelope.');
 
-/**
- * @description Webhook received and processed successfully
- */
-export const orbWebhook200Schema = z.unknown();
+export const deleteInstallationResponseSchema = deleteInstallationStatus204Schema;
 
-/**
- * @description Invalid signature or malformed request
- */
-export const orbWebhook400Schema = z.unknown();
+export const deleteInstallationErrorSchema = z.union([
+  deleteInstallationStatus403Schema,
+  deleteInstallationStatus409Schema
+]);
 
-/**
- * @description Internal error while handling the webhook
- */
-export const orbWebhook500Schema = z.unknown();
+export const deleteInstallationBodySchema = deleteInstallationRequestSchema.optional();
 
-export const orbWebhookMutationRequestSchema = z.object({}).catchall(z.unknown()).describe('Orb webhook event payload');
+export const orbWebhookStatus200Schema = z.unknown();
 
-export const orbWebhookMutationResponseSchema = z.lazy(() => orbWebhook200Schema);
+export const orbWebhookStatus400Schema = z.unknown();
 
-/**
- * @description Webhook received and processed successfully
- */
-export const stripeWebhook200Schema = z.unknown();
+export const orbWebhookStatus500Schema = z.unknown();
 
-/**
- * @description Invalid signature or malformed request
- */
-export const stripeWebhook400Schema = z.unknown();
+export const orbWebhookResponseSchema = orbWebhookStatus200Schema;
 
-/**
- * @description Internal error while handling the webhook
- */
-export const stripeWebhook500Schema = z.unknown();
+export const orbWebhookErrorSchema = z.union([orbWebhookStatus400Schema, orbWebhookStatus500Schema]);
 
-export const stripeWebhookMutationRequestSchema = z
-  .object({})
-  .catchall(z.unknown())
-  .describe('Stripe webhook event payload');
+export const orbWebhookBodySchema = z.object({}).catchall(z.unknown()).describe('Orb webhook event payload');
 
-export const stripeWebhookMutationResponseSchema = z.lazy(() => stripeWebhook200Schema);
+export const stripeWebhookStatus200Schema = z.unknown();
+
+export const stripeWebhookStatus400Schema = z.unknown();
+
+export const stripeWebhookStatus500Schema = z.unknown();
+
+export const stripeWebhookResponseSchema = stripeWebhookStatus200Schema;
+
+export const stripeWebhookErrorSchema = z.union([stripeWebhookStatus400Schema, stripeWebhookStatus500Schema]);
+
+export const stripeWebhookBodySchema = z.object({}).catchall(z.unknown()).describe('Stripe webhook event payload');

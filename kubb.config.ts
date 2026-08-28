@@ -1,66 +1,78 @@
-import { defineConfig } from '@kubb/core';
-import { pluginClient } from '@kubb/plugin-client';
-import { pluginOas } from '@kubb/plugin-oas';
+import { adapterOas } from '@kubb/adapter-oas';
 import { pluginTs } from '@kubb/plugin-ts';
 import { pluginZod } from '@kubb/plugin-zod';
+import { defineConfig } from 'kubb';
+import { ast } from 'kubb/kit';
 import { env } from './env';
-import { extraGenerator } from './kubb/client/extra';
-import { clientGenerator } from './kubb/client/operations';
+import { pluginClient } from './kubb/plugin';
+
+function bodySuffix(node: ast.OperationNode): string {
+  return ast.isHttpOperationNode(node) && node.method === 'GET' ? 'QueryRequest' : 'MutationRequest';
+}
 
 export default defineConfig(() => {
   return {
     root: '.',
-    input: {
-      path: `${env.NEXT_PUBLIC_BACKEND_API_URL}/openapi.json`
-    },
+    input: `${env.NEXT_PUBLIC_BACKEND_API_URL}/openapi.json`,
+    adapter: adapterOas({
+      validate: true,
+      server: { index: 0 },
+      contentType: 'application/json',
+      dateType: 'string',
+      integerType: 'number',
+      unknownType: 'unknown',
+      enumSuffix: 'Enum'
+    }),
     output: {
       path: './src/generated',
       format: 'biome',
       lint: false,
-      clean: true
+      clean: true,
+      barrel: false
     },
     plugins: [
-      pluginOas({
-        validate: true,
-        output: {
-          path: './json',
-          barrelType: false
-        },
-        serverIndex: 0,
-        contentType: 'application/json'
-      }),
       pluginTs({
         output: {
           path: './types.ts',
-          barrelType: false
+          mode: 'file'
         },
-        enumType: 'asConst',
-        enumSuffix: 'Enum',
-        dateType: 'string',
-        unknownType: 'unknown',
-        optionalType: 'questionTokenAndUndefined'
+        enum: { type: 'asConst', typeSuffix: '' },
+        optionalType: 'questionTokenAndUndefined',
+        resolver: {
+          param: {
+            path(node) {
+              return this.name(`${node.operationId} PathParams`);
+            },
+            query(node) {
+              return this.name(`${node.operationId} QueryParams`);
+            },
+            headers(node) {
+              return this.name(`${node.operationId} HeaderParams`);
+            }
+          },
+          response: {
+            status(node, statusCode) {
+              return this.name(`${node.operationId} ${statusCode}`);
+            },
+            body(node) {
+              return this.name(`${node.operationId} ${bodySuffix(node)}`);
+            }
+          }
+        }
       }),
       pluginClient({
         output: {
           path: './components.ts',
-          barrelType: false
+          mode: 'file'
         },
-        dataReturnType: 'data',
-        pathParamsType: 'object',
-        paramsType: 'object',
-        urlType: 'export',
-        importPath: '../utils/fetcher',
-        generators: [clientGenerator, extraGenerator] as any[] // Workaround for generator mismatches
+        importPath: '../utils/fetcher'
       }),
       pluginZod({
         output: {
           path: './schemas.ts',
-          barrelType: false
+          mode: 'file'
         },
-        dateType: 'date',
-        unknownType: 'unknown',
-        importPath: 'zod',
-        version: '4'
+        importPath: 'zod'
       })
     ]
   };

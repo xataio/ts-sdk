@@ -1,167 +1,121 @@
-import { usePluginManager } from '@kubb/core/hooks';
-import type { PluginClient } from '@kubb/plugin-client';
-import { createReactGenerator } from '@kubb/plugin-oas/generators';
-import { useOas, useOperationManager } from '@kubb/plugin-oas/hooks';
-import { getBanner, getFooter } from '@kubb/plugin-oas/utils';
+import type { Document } from '@kubb/adapter-oas';
 import { pluginTsName } from '@kubb/plugin-ts';
-import { File } from '@kubb/react-fabric';
-import c from 'case';
+import { camelCase, uniq } from '@xata.io/lang';
+import { ast, defineGenerator } from 'kubb/kit';
+import { File, jsxRenderer } from 'kubb/jsx';
+import { resolveTypeSchemas } from '../components/client-operation';
+import type { PluginClient } from '../plugin';
+import { type ClientContext, clientFile, fileBanner, operationName, typesFile } from '../utils';
 
-export const extraGenerator = createReactGenerator<PluginClient>({
+type SecuredOperations = Record<string, { security?: Array<Record<string, string[] | undefined>> } | undefined>;
+
+// The AST drops OAS `security`, so the xata scopes have to be read back off the source document.
+function xataScopes(node: ast.HttpOperationNode, document: Document | null): string[] {
+  const pathItem = document?.paths?.[node.path] as SecuredOperations | undefined;
+  const security = pathItem?.[node.method.toLowerCase()]?.security ?? [];
+  return security.flatMap((entry) => {
+    return entry.xata ?? [];
+  });
+}
+
+// Lowercased first so a tag like "GitHub App" keys as `githubApp` rather than `gitHubApp`.
+function tagOf(name: string): string {
+  return camelCase(name.toLowerCase());
+}
+
+function namesByMethod(ctx: ClientContext, nodes: ast.HttpOperationNode[]): Record<string, string[]> {
+  const methods = uniq(nodes.map((node) => node.method.toUpperCase()));
+  return Object.fromEntries(
+    methods.map((method) => {
+      const tagged = nodes.filter((node) => node.method.toUpperCase() === method);
+      return [method, tagged.map((node) => operationName(ctx, node))];
+    })
+  );
+}
+
+export const extraGenerator = defineGenerator<PluginClient>({
   name: 'extra',
-  Operations({ operations, generator, plugin }) {
-    const pluginManager = usePluginManager();
-    const oas = useOas();
-    const { getFile, getName, getSchemas } = useOperationManager(generator);
+  renderer: jsxRenderer,
+  operations(nodes, ctx) {
+    const { adapter, meta, resolver, root } = ctx;
+    const { output } = ctx.options;
+    const tsResolver = ctx.getResolver(pluginTsName);
 
-    const fileName = 'extra';
-    const file = pluginManager.getFile({ name: fileName, extname: '.ts', pluginKey: plugin.key });
+    if (!meta.baseURL) throw new Error('The OpenAPI document has no server URL to derive DEFAULT_API_BASE_URL from');
 
-    const imports = operations.map((operation) => {
-      const name = getName(operation, {
-        type: 'function'
-      });
+    const file = resolver.file({ name: 'extra', extname: '.ts', root, output });
+    const document = adapter.document as Document | null;
 
-      return <File.Import key={name} name={[name]} root={file.path} path={getFile(operation).path} />;
+    const httpNodes = nodes.filter(ast.isHttpOperationNode);
+    const byTag = uniq(httpNodes.flatMap((node) => node.tags)).map((tag) => {
+      return { key: tagOf(tag), nodes: httpNodes.filter((node) => node.tags.includes(tag)) };
     });
 
-    const tags = Array.from(
-      new Set(operations.flatMap((operation) => operation.getTags().map((tag: { name: string }) => tag.name)))
-    );
+    const scopes = uniq(httpNodes.flatMap((node) => xataScopes(node, document)));
 
-    const operationsByPath = Object.fromEntries(
-      operations
-        .filter(
-          (operation) =>
-            ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].includes(operation.method.toUpperCase()) &&
-            operation.getOperationId() !== undefined
-        )
-        .map((operation) => [`${operation.method.toUpperCase()} ${operation.path}`, operation.getOperationId()])
-    );
+    const errorEntries = httpNodes.map((node) => {
+      const { errors } = resolveTypeSchemas(node, tsResolver);
+      const statusCodes = uniq(errors.map((error) => error.statusCode)).sort((a, b) => a - b);
+      return {
+        key: `${tagOf(node.tags[0] ?? 'default')}.${node.operationId}`,
+        names: errors.map((error) => error.name),
+        statusUnion: statusCodes.length > 0 ? statusCodes.join(' | ') : 'never'
+      };
+    });
 
-    const operationsByTag = Object.fromEntries(
-      tags.map((name) => [
-        c.camel(name.toLowerCase()),
-        operations
-          .filter((operation) => {
-            return operation
-              .getTags()
-              .map((tag: { name: string }) => tag.name)
-              .includes(name);
-          })
-          .map((operation) => operation.getOperationId())
-      ])
-    );
+    const errorImports = uniq(errorEntries.flatMap((entry) => entry.names)).sort();
+    const firstNode = httpNodes[0];
+    const typesPath = firstNode ? typesFile(ctx, firstNode).path : undefined;
 
-    const tagDictionary = Object.fromEntries(
-      tags.map((name) => [
-        c.camel(name.toLowerCase()),
-        operations.reduce(
-          (acc, operation) => {
-            const upperMethod = operation.method.toUpperCase();
-            if (
-              operation
-                .getTags()
-                .map((tag: { name: string }) => tag.name)
-                .includes(name) &&
-              ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].includes(upperMethod) &&
-              operation?.getOperationId() !== undefined
-            ) {
-              acc[upperMethod] = acc[upperMethod] ?? [];
-              acc[upperMethod].push(operation.getOperationId());
-            }
+    const byPathSource = httpNodes.map((node) => {
+      return `  "${node.method.toUpperCase()} ${node.path}": ${operationName(ctx, node)}`;
+    });
 
-            return acc;
-          },
-          {} as Record<string, string[]>
-        )
-      ])
-    );
+    const byTagSource = byTag.map(({ key, nodes: tagged }) => {
+      const names = tagged.map((node) => `    ${operationName(ctx, node)}`);
+      return `  "${key}": {\n${names.join(',\n')}\n  }`;
+    });
 
-    const xataScopes = Array.from(
-      new Set(
-        operations.flatMap((operation) =>
-          operation.schema.security ? operation.schema.security.flatMap((security) => security.xata ?? []) : []
-        )
-      )
-    );
-
-    const operationErrorEntries = operations
-      .filter((operation) => {
-        const upperMethod = operation.method.toUpperCase();
-        return (
-          ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].includes(upperMethod) &&
-          operation.getOperationId() !== undefined &&
-          operation.getTags().length > 0
-        );
-      })
-      .map((operation) => {
-        const tagName = operation.getTags()[0]?.name ?? '';
-        const tag = c.camel(tagName.toLowerCase());
-        const opId = operation.getOperationId()!;
-        const pascalOp = c.pascal(opId);
-        const suffix = operation.method.toUpperCase() === 'GET' ? 'Query' : 'Mutation';
-        const schemas = getSchemas(operation, { pluginKey: [pluginTsName], type: 'type' });
-        const statusCodes = Array.from(
-          new Set((schemas.errors ?? []).map((e) => e.statusCode).filter((s): s is number => typeof s === 'number'))
-        ).sort((a, b) => a - b);
-        const statusUnion = statusCodes.length > 0 ? statusCodes.join(' | ') : 'never';
-        return { key: `${tag}.${opId}`, typeName: `${pascalOp}${suffix}`, statusUnion };
-      });
-
-    const operationErrorTypeNames = Array.from(new Set(operationErrorEntries.map((entry) => entry.typeName))).sort();
-
-    const typesFile = operations[0] ? getFile(operations[0], { pluginKey: [pluginTsName] }) : { path: './types.ts' };
+    const tagDictionarySource = byTag.map(({ key, nodes: tagged }) => {
+      return `  "${key}": ${JSON.stringify(namesByMethod(ctx, tagged), null, 2)}`;
+    });
 
     return (
-      <File
-        baseName={file.baseName}
-        path={file.path}
-        meta={file.meta}
-        banner={getBanner({ oas, output: plugin.options.output, config: pluginManager.config })}
-        footer={getFooter({ oas, output: plugin.options.output })}
-      >
-        {imports}
-        <File.Import name={operationErrorTypeNames} root={file.path} path={typesFile.path} isTypeOnly />
+      <File baseName={file.baseName} path={file.path} meta={file.meta} {...fileBanner(ctx, file)}>
+        {httpNodes.map((node) => {
+          const name = operationName(ctx, node);
+          return <File.Import key={name} name={[name]} root={file.path} path={clientFile(ctx, node).path} />;
+        })}
+        {typesPath && errorImports.length > 0 && (
+          <File.Import name={errorImports} root={file.path} path={typesPath} isTypeOnly />
+        )}
 
         <File.Source>
           {`
-        export const DEFAULT_API_BASE_URL = '${oas.url(0)}';
+export const DEFAULT_API_BASE_URL = '${meta.baseURL}';
 
-        export const operationsByPath = {
-            ${Object.entries(operationsByPath)
-              .map(([path, operation]) => `"${path}": ${operation}`)
-              .join(',\n')}
-        };
+export const operationsByPath = {
+${byPathSource.join(',\n')}
+};
 
-        export const operationsByTag = {
-            ${Object.entries(operationsByTag)
-              .map(
-                ([tag, operations]) => `"${tag}": {
-                ${operations.join(',\n')}
-              }`
-              )
-              .join(',\n')}
-        };
+export const operationsByTag = {
+${byTagSource.join(',\n')}
+};
 
-        export const tagDictionary = {
-            ${Object.entries(tagDictionary)
-              .map(([tag, operations]) => `"${tag}": ${JSON.stringify(operations, null, 2)}`)
-              .join(',\n')}
-        } as const;
+export const tagDictionary = {
+${tagDictionarySource.join(',\n')}
+} as const;
 
-        export const Scopes = ${JSON.stringify(xataScopes)} as const;
+export const Scopes = ${JSON.stringify(scopes)} as const;
 
-        export type OperationErrors = {
-            ${operationErrorEntries
-              .map((entry) => `'${entry.key}': ${entry.typeName}['Errors'];`)
-              .join('\n            ')}
-        };
+export type OperationErrors = {
+${errorEntries.map((entry) => `  '${entry.key}': ${entry.names.length > 0 ? entry.names.join(' | ') : 'never'};`).join('\n')}
+};
 
-        export type OperationErrorStatus = {
-            ${operationErrorEntries.map((entry) => `'${entry.key}': ${entry.statusUnion};`).join('\n            ')}
-        };
-        `}
+export type OperationErrorStatus = {
+${errorEntries.map((entry) => `  '${entry.key}': ${entry.statusUnion};`).join('\n')}
+};
+`}
         </File.Source>
       </File>
     );

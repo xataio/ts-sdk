@@ -6,163 +6,163 @@
 import client from '../utils/fetcher';
 import type { FetcherConfig } from '../utils/fetcher';
 import type {
+  BranchLogs200,
   BranchLogsMutationRequest,
-  BranchLogsMutationResponse,
   BranchLogsPathParams,
   BranchLogs400,
   BranchLogs401,
   BranchLogs404,
+  BranchMetrics200,
   BranchMetricsMutationRequest,
-  BranchMetricsMutationResponse,
   BranchMetricsPathParams,
   BranchMetrics400,
   BranchMetrics401,
   BranchMetrics404,
-  CreateBillingCheckoutSessionMutationResponse,
+  CreateBillingCheckoutSession200,
   CreateBillingCheckoutSessionPathParams,
   CreateBillingCheckoutSession400,
   CreateBillingCheckoutSession401,
   CreateBillingCheckoutSession403,
+  CreateOrganization201,
   CreateOrganizationMutationRequest,
-  CreateOrganizationMutationResponse,
   CreateOrganization400,
   CreateOrganization401,
   CreateOrganization404,
-  GetOrganizationsListQueryResponse,
+  GetOrganizationsList200,
   GetOrganizationsList400,
   GetOrganizationsList401,
   GetOrganizationsList404,
-  GetOrganizationQueryResponse,
+  GetOrganization200,
   GetOrganizationPathParams,
   GetOrganization400,
   GetOrganization401,
   GetOrganization403,
   GetOrganization404,
+  UpdateOrganization200,
   UpdateOrganizationMutationRequest,
-  UpdateOrganizationMutationResponse,
   UpdateOrganizationPathParams,
   UpdateOrganization400,
   UpdateOrganization401,
   UpdateOrganization403,
   UpdateOrganization404,
-  DeleteOrganizationMutationResponse,
+  DeleteOrganization204,
   DeleteOrganizationPathParams,
   DeleteOrganization400,
   DeleteOrganization401,
   DeleteOrganization403,
   DeleteOrganization404,
-  ListOrganizationAPIKeysQueryResponse,
+  ListOrganizationAPIKeys200,
   ListOrganizationAPIKeysPathParams,
   ListOrganizationAPIKeys400,
   ListOrganizationAPIKeys401,
   ListOrganizationAPIKeys403,
   ListOrganizationAPIKeys404,
+  CreateOrganizationAPIKey201,
   CreateOrganizationAPIKeyMutationRequest,
-  CreateOrganizationAPIKeyMutationResponse,
   CreateOrganizationAPIKeyPathParams,
   CreateOrganizationAPIKey400,
+  DeleteOrganizationAPIKeys204,
   DeleteOrganizationAPIKeysMutationRequest,
-  DeleteOrganizationAPIKeysMutationResponse,
   DeleteOrganizationAPIKeysPathParams,
   DeleteOrganizationAPIKeys400,
   DeleteOrganizationAPIKeys401,
   DeleteOrganizationAPIKeys404,
-  ListOrganizationMembersQueryResponse,
+  ListOrganizationMembers200,
   ListOrganizationMembersPathParams,
-  RemoveOrganizationMemberMutationResponse,
+  RemoveOrganizationMember204,
   RemoveOrganizationMemberPathParams,
-  ListOrganizationInvitationsQueryResponse,
+  ListOrganizationInvitations200,
   ListOrganizationInvitationsPathParams,
   ListOrganizationInvitationsQueryParams,
   ListOrganizationInvitations400,
   ListOrganizationInvitations401,
   ListOrganizationInvitations403,
   ListOrganizationInvitations404,
+  CreateOrganizationInvitation201,
   CreateOrganizationInvitationMutationRequest,
-  CreateOrganizationInvitationMutationResponse,
   CreateOrganizationInvitationPathParams,
   CreateOrganizationInvitation400,
   CreateOrganizationInvitation401,
   CreateOrganizationInvitation403,
   CreateOrganizationInvitation404,
   CreateOrganizationInvitation409,
-  GetOrganizationInvitationQueryResponse,
+  GetOrganizationInvitation200,
   GetOrganizationInvitationPathParams,
   GetOrganizationInvitation400,
   GetOrganizationInvitation401,
   GetOrganizationInvitation403,
   GetOrganizationInvitation404,
-  DeleteOrganizationInvitationMutationResponse,
+  DeleteOrganizationInvitation204,
   DeleteOrganizationInvitationPathParams,
   DeleteOrganizationInvitation400,
   DeleteOrganizationInvitation401,
   DeleteOrganizationInvitation403,
   DeleteOrganizationInvitation404,
-  ResendOrganizationInvitationMutationResponse,
+  ResendOrganizationInvitation204,
   ResendOrganizationInvitationPathParams,
   ResendOrganizationInvitation400,
   ResendOrganizationInvitation401,
   ResendOrganizationInvitation403,
   ResendOrganizationInvitation404,
-  RequestOrganizationDeletionMutationResponse,
+  RequestOrganizationDeletion202,
   RequestOrganizationDeletionPathParams,
   RequestOrganizationDeletion400,
   RequestOrganizationDeletion401,
   RequestOrganizationDeletion403,
   RequestOrganizationDeletion409,
-  GetOrganizationMembershipLimitsQueryResponse,
+  GetOrganizationMembershipLimits200,
   GetOrganizationMembershipLimitsPathParams,
   GetOrganizationMembershipLimits401,
   GetOrganizationMembershipLimits403,
-  CreateBillingPaymentMethodSessionMutationResponse,
+  CreateBillingPaymentMethodSession200,
   CreateBillingPaymentMethodSessionPathParams,
   CreateBillingPaymentMethodSession400,
   CreateBillingPaymentMethodSession401,
   CreateBillingPaymentMethodSession403,
-  GetBillingCustomerQueryResponse,
+  GetBillingCustomer200,
   GetBillingCustomerPathParams,
   GetBillingCustomer401,
   GetBillingCustomer403,
   GetBillingCustomer404,
+  UpdateBillingCustomer200,
   UpdateBillingCustomerMutationRequest,
-  UpdateBillingCustomerMutationResponse,
   UpdateBillingCustomerPathParams,
   UpdateBillingCustomer400,
   UpdateBillingCustomer401,
   UpdateBillingCustomer403,
   UpdateBillingCustomer404,
-  GetBillingInvoicesQueryResponse,
+  GetBillingInvoices200,
   GetBillingInvoicesPathParams,
   GetBillingInvoicesQueryParams,
   GetBillingInvoices400,
   GetBillingInvoices401,
   GetBillingInvoices403,
   GetBillingInvoices404,
-  GetBillingUpcomingInvoiceQueryResponse,
+  GetBillingUpcomingInvoice200,
   GetBillingUpcomingInvoicePathParams,
   GetBillingUpcomingInvoice401,
   GetBillingUpcomingInvoice403,
   GetBillingUpcomingInvoice404,
+  RegisterMarketplace200,
   RegisterMarketplaceMutationRequest,
-  RegisterMarketplaceMutationResponse,
   RegisterMarketplace400,
   RegisterMarketplace401,
   RegisterMarketplace409,
   RegisterMarketplace502,
-  ListUserAPIKeysQueryResponse,
+  ListUserAPIKeys200,
   ListUserAPIKeys400,
   ListUserAPIKeys401,
+  CreateUserAPIKey201,
   CreateUserAPIKeyMutationRequest,
-  CreateUserAPIKeyMutationResponse,
   CreateUserAPIKey400,
   CreateUserAPIKey401,
+  DeleteUserAPIKeys204,
   DeleteUserAPIKeysMutationRequest,
-  DeleteUserAPIKeysMutationResponse,
   DeleteUserAPIKeys400,
   DeleteUserAPIKeys401,
   DeleteUserAPIKeys404,
+  Query200,
   QueryMutationRequest,
-  QueryMutationResponse,
   QueryHeaderParams,
   Query400,
   Query401,
@@ -173,263 +173,196 @@ import type {
   Query500,
   Query504,
   Query507,
-  WebsocketQueryResponse,
+  WebsocketResponse,
   Websocket400,
+  SendMcpRequest200,
   SendMcpRequestMutationRequest,
-  SendMcpRequestMutationResponse,
   SendMcpRequestHeaderParams,
   SendMcpRequest400,
   SendMcpRequest401,
   SendMcpRequest413,
   SendMcpRequest415,
   SendMcpRequest500,
+  GithubWebhook200,
   GithubWebhookMutationRequest,
-  GithubWebhookMutationResponse,
   GithubWebhook400,
   GithubWebhook500,
-  ListRegionsQueryResponse,
+  ListRegions200,
   ListRegionsPathParams,
   ListRegions400,
   ListRegions401,
-  ListInstanceTypesQueryResponse,
+  ListInstanceTypes200,
   ListInstanceTypesPathParams,
   ListInstanceTypesQueryParams,
   ListInstanceTypes400,
   ListInstanceTypes401,
-  ListImagesQueryResponse,
+  ListImages200,
   ListImagesPathParams,
   ListImagesQueryParams,
   ListImages400,
   ListImages401,
-  ListExtensionsQueryResponse,
+  ListExtensions200,
   ListExtensionsPathParams,
   ListExtensionsQueryParams,
   ListExtensions400,
   ListExtensions401,
-  GetOrganizationLimitsQueryResponse,
+  GetOrganizationLimits200,
   GetOrganizationLimitsPathParams,
   GetOrganizationLimits401,
   GetOrganizationLimits403,
-  GetDefaultProjectLimitsQueryResponse,
+  GetDefaultProjectLimits200,
   GetDefaultProjectLimitsPathParams,
-  ListProjectsQueryResponse,
+  ListProjects200,
   ListProjectsPathParams,
   ListProjects400,
   ListProjects401,
+  CreateProject201,
   CreateProjectMutationRequest,
-  CreateProjectMutationResponse,
   CreateProjectPathParams,
   CreateProject400,
   CreateProject401,
-  GetProjectQueryResponse,
+  GetProject200,
   GetProjectPathParams,
   GetProject400,
   GetProject401,
   GetProject404,
+  UpdateProject200,
   UpdateProjectMutationRequest,
-  UpdateProjectMutationResponse,
   UpdateProjectPathParams,
   UpdateProject400,
   UpdateProject401,
   UpdateProject404,
-  DeleteProjectMutationResponse,
+  DeleteProject204,
   DeleteProjectPathParams,
   DeleteProject400,
   DeleteProject401,
   DeleteProject404,
-  GetProjectLimitsQueryResponse,
+  GetProjectLimits200,
   GetProjectLimitsPathParams,
   GetProjectLimits401,
-  ListBackupsQueryResponse,
+  ListBackups200,
   ListBackupsPathParams,
   ListBackups400,
   ListBackups401,
   ListBackups404,
-  GetBackupQueryResponse,
+  GetBackup200,
   GetBackupPathParams,
   GetBackup400,
   GetBackup401,
   GetBackup404,
-  ListBranchesQueryResponse,
+  ListBranches200,
   ListBranchesPathParams,
   ListBranches400,
   ListBranches401,
   ListBranches404,
+  CreateBranch201,
   CreateBranchMutationRequest,
-  CreateBranchMutationResponse,
   CreateBranchPathParams,
   CreateBranch400,
   CreateBranch401,
   CreateBranch404,
   CreateBranch412,
-  DescribeBranchQueryResponse,
+  DescribeBranch200,
   DescribeBranchPathParams,
   DescribeBranch400,
   DescribeBranch401,
   DescribeBranch404,
+  UpdateBranch200,
   UpdateBranchMutationRequest,
-  UpdateBranchMutationResponse,
   UpdateBranchPathParams,
   UpdateBranch400,
   UpdateBranch401,
   UpdateBranch404,
-  DeleteBranchMutationResponse,
+  DeleteBranch204,
   DeleteBranchPathParams,
   DeleteBranch400,
   DeleteBranch401,
   DeleteBranch404,
-  GetBranchCredentialsQueryResponse,
+  GetBranchCredentials200,
   GetBranchCredentialsPathParams,
   GetBranchCredentialsQueryParams,
   GetBranchCredentials400,
   GetBranchCredentials401,
   GetBranchCredentials404,
+  RotateBranchCredentials204,
   RotateBranchCredentialsMutationRequest,
-  RotateBranchCredentialsMutationResponse,
   RotateBranchCredentialsPathParams,
   RotateBranchCredentials400,
   RotateBranchCredentials401,
   RotateBranchCredentials404,
+  RestoreFromBackup201,
   RestoreFromBackupMutationRequest,
-  RestoreFromBackupMutationResponse,
   RestoreFromBackupPathParams,
   RestoreFromBackup400,
   RestoreFromBackup401,
   RestoreFromBackup404,
-  GetBranchPostgresConfigQueryResponse,
+  GetBranchPostgresConfig200,
   GetBranchPostgresConfigPathParams,
   GetBranchPostgresConfig400,
   GetBranchPostgresConfig401,
   GetBranchPostgresConfig404,
-  ListGithubAppInstallationsQueryResponse,
+  ListGithubAppInstallations200,
   ListGithubAppInstallationsPathParams,
   ListGithubAppInstallations400,
   ListGithubAppInstallations401,
+  CreateGithubAppInstallation201,
   CreateGithubAppInstallationMutationRequest,
-  CreateGithubAppInstallationMutationResponse,
   CreateGithubAppInstallationPathParams,
   CreateGithubAppInstallation400,
   CreateGithubAppInstallation401,
   CreateGithubAppInstallation409,
+  UpdateGithubAppInstallation200,
   UpdateGithubAppInstallationMutationRequest,
-  UpdateGithubAppInstallationMutationResponse,
   UpdateGithubAppInstallationPathParams,
   UpdateGithubAppInstallation400,
   UpdateGithubAppInstallation401,
   UpdateGithubAppInstallation404,
   UpdateGithubAppInstallation409,
-  GetGithubRepositoryQueryResponse,
+  GetGithubRepository200,
   GetGithubRepositoryPathParams,
   GetGithubRepository400,
   GetGithubRepository401,
+  CreateGithubRepository201,
   CreateGithubRepositoryMutationRequest,
-  CreateGithubRepositoryMutationResponse,
   CreateGithubRepositoryPathParams,
   CreateGithubRepository400,
   CreateGithubRepository401,
   CreateGithubRepository409,
+  UpdateGithubRepository200,
   UpdateGithubRepositoryMutationRequest,
-  UpdateGithubRepositoryMutationResponse,
   UpdateGithubRepositoryPathParams,
   UpdateGithubRepository400,
   UpdateGithubRepository401,
   UpdateGithubRepository404,
-  DeleteGithubRepositoryMutationResponse,
+  DeleteGithubRepository204,
   DeleteGithubRepositoryPathParams,
   DeleteGithubRepository400,
   DeleteGithubRepository401,
   DeleteGithubRepository404,
+  UpsertInstallation204,
   UpsertInstallationMutationRequest,
-  UpsertInstallationMutationResponse,
   UpsertInstallationPathParams,
   UpsertInstallation400,
   UpsertInstallation403,
   UpsertInstallation409,
+  DeleteInstallation204,
   DeleteInstallationMutationRequest,
-  DeleteInstallationMutationResponse,
   DeleteInstallationPathParams,
   DeleteInstallation403,
   DeleteInstallation409,
+  OrbWebhook200,
   OrbWebhookMutationRequest,
-  OrbWebhookMutationResponse,
   OrbWebhook400,
   OrbWebhook500,
+  StripeWebhook200,
   StripeWebhookMutationRequest,
-  StripeWebhookMutationResponse,
   StripeWebhook400,
-  StripeWebhook500,
-  BranchLogsMutation,
-  BranchMetricsMutation,
-  CreateBillingCheckoutSessionMutation,
-  CreateBillingPaymentMethodSessionMutation,
-  CreateBranchMutation,
-  CreateGithubAppInstallationMutation,
-  CreateGithubRepositoryMutation,
-  CreateOrganizationAPIKeyMutation,
-  CreateOrganizationInvitationMutation,
-  CreateOrganizationMutation,
-  CreateProjectMutation,
-  CreateUserAPIKeyMutation,
-  DeleteBranchMutation,
-  DeleteGithubRepositoryMutation,
-  DeleteInstallationMutation,
-  DeleteOrganizationAPIKeysMutation,
-  DeleteOrganizationInvitationMutation,
-  DeleteOrganizationMutation,
-  DeleteProjectMutation,
-  DeleteUserAPIKeysMutation,
-  DescribeBranchQuery,
-  GetBackupQuery,
-  GetBillingCustomerQuery,
-  GetBillingInvoicesQuery,
-  GetBillingUpcomingInvoiceQuery,
-  GetBranchCredentialsQuery,
-  GetBranchPostgresConfigQuery,
-  GetDefaultProjectLimitsQuery,
-  GetGithubRepositoryQuery,
-  GetOrganizationInvitationQuery,
-  GetOrganizationLimitsQuery,
-  GetOrganizationMembershipLimitsQuery,
-  GetOrganizationQuery,
-  GetOrganizationsListQuery,
-  GetProjectLimitsQuery,
-  GetProjectQuery,
-  GithubWebhookMutation,
-  ListBackupsQuery,
-  ListBranchesQuery,
-  ListExtensionsQuery,
-  ListGithubAppInstallationsQuery,
-  ListImagesQuery,
-  ListInstanceTypesQuery,
-  ListOrganizationAPIKeysQuery,
-  ListOrganizationInvitationsQuery,
-  ListOrganizationMembersQuery,
-  ListProjectsQuery,
-  ListRegionsQuery,
-  ListUserAPIKeysQuery,
-  OrbWebhookMutation,
-  QueryMutation,
-  RegisterMarketplaceMutation,
-  RemoveOrganizationMemberMutation,
-  RequestOrganizationDeletionMutation,
-  ResendOrganizationInvitationMutation,
-  RestoreFromBackupMutation,
-  RotateBranchCredentialsMutation,
-  SendMcpRequestMutation,
-  StripeWebhookMutation,
-  UpdateBillingCustomerMutation,
-  UpdateBranchMutation,
-  UpdateGithubAppInstallationMutation,
-  UpdateGithubRepositoryMutation,
-  UpdateOrganizationMutation,
-  UpdateProjectMutation,
-  UpsertInstallationMutation,
-  WebsocketQuery
-} from './types.ts';
+  StripeWebhook500
+} from './types';
 
 /**
- * @description Retrieve the list of all organizations the authenticated user belongs to, including their IDs and names. This endpoint allows users to view all organizations they have access to.
  * @summary Get list of organizations
+ * @description Retrieve the list of all organizations the authenticated user belongs to, including their IDs and names. This endpoint allows users to view all organizations they have access to.
  * {@link /organizations}
  */
 export async function getOrganizationsList({
@@ -440,48 +373,50 @@ export async function getOrganizationsList({
   const { client: request = client, ...requestConfig } = config;
 
   const data = await request<
-    GetOrganizationsListQueryResponse,
+    GetOrganizationsList200,
     GetOrganizationsList400 | GetOrganizationsList401 | GetOrganizationsList404,
     null,
     Record<string, string>,
     Record<string, string>,
     Record<string, string>
   >({ method: 'GET', url: `/organizations`, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Creates a new organization with the authenticated user as its single owner.
  * @summary Create a new organization
+ * @description Creates a new organization with the authenticated user as its single owner.
  * {@link /organizations}
  */
 export async function createOrganization({
   body,
   config = {}
 }: {
-  body: CreateOrganizationMutationRequest;
+  body?: CreateOrganizationMutationRequest;
   config?: Partial<FetcherConfig> & { client?: typeof client };
 }) {
   const { client: request = client, ...requestConfig } = config;
 
   const data = await request<
-    CreateOrganizationMutationResponse,
+    CreateOrganization201,
     CreateOrganization400 | CreateOrganization401 | CreateOrganization404,
     CreateOrganizationMutationRequest,
     Record<string, string>,
     Record<string, string>,
     Record<string, string>
   >({ method: 'POST', url: `/organizations`, body, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Retrieve detailed information about a specific organization by its ID.
  * @summary Get organization details
+ * @description Retrieve detailed information about a specific organization by its ID.
  * {@link /organizations/:organizationID}
  */
 export async function getOrganization({
-  pathParams: { organizationID },
+  pathParams,
   config = {}
 }: {
   pathParams: GetOrganizationPathParams;
@@ -489,28 +424,29 @@ export async function getOrganization({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    GetOrganizationQueryResponse,
+    GetOrganization200,
     GetOrganization400 | GetOrganization401 | GetOrganization403 | GetOrganization404,
     null,
     Record<string, string>,
     Record<string, string>,
     GetOrganizationPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}`, ...requestConfig });
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}`, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Update information for an existing organization, such as its name.
  * @summary Update organization details
+ * @description Update information for an existing organization, such as its name.
  * {@link /organizations/:organizationID}
  */
 export async function updateOrganization({
-  pathParams: { organizationID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -520,28 +456,29 @@ export async function updateOrganization({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    UpdateOrganizationMutationResponse,
+    UpdateOrganization200,
     UpdateOrganization400 | UpdateOrganization401 | UpdateOrganization403 | UpdateOrganization404,
     UpdateOrganizationMutationRequest,
     Record<string, string>,
     Record<string, string>,
     UpdateOrganizationPathParams
-  >({ method: 'PUT', url: `/organizations/${organizationID}`, body, ...requestConfig });
+  >({ method: 'PUT', url: `/organizations/${pathParams.organizationID}`, body, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description [Not implemented yet] Permanently delete an organization. This action cannot be undone.
  * @summary Delete an organization
+ * @description [Not implemented yet] Permanently delete an organization. This action cannot be undone.
  * {@link /organizations/:organizationID}
  */
 export async function deleteOrganization({
-  pathParams: { organizationID },
+  pathParams,
   config = {}
 }: {
   pathParams: DeleteOrganizationPathParams;
@@ -549,28 +486,29 @@ export async function deleteOrganization({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    DeleteOrganizationMutationResponse,
+    DeleteOrganization204,
     DeleteOrganization400 | DeleteOrganization401 | DeleteOrganization403 | DeleteOrganization404,
     null,
     Record<string, string>,
     Record<string, string>,
     DeleteOrganizationPathParams
-  >({ method: 'DELETE', url: `/organizations/${organizationID}`, ...requestConfig });
+  >({ method: 'DELETE', url: `/organizations/${pathParams.organizationID}`, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Retrieve a list of API keys for a specific organization.
  * @summary List API Keys for an organization
+ * @description Retrieve a list of API keys for a specific organization.
  * {@link /organizations/:organizationID/api-keys}
  */
 export async function listOrganizationAPIKeys({
-  pathParams: { organizationID },
+  pathParams,
   config = {}
 }: {
   pathParams: ListOrganizationAPIKeysPathParams;
@@ -578,28 +516,29 @@ export async function listOrganizationAPIKeys({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    ListOrganizationAPIKeysQueryResponse,
+    ListOrganizationAPIKeys200,
     ListOrganizationAPIKeys400 | ListOrganizationAPIKeys401 | ListOrganizationAPIKeys403 | ListOrganizationAPIKeys404,
     null,
     Record<string, string>,
     Record<string, string>,
     ListOrganizationAPIKeysPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/api-keys`, ...requestConfig });
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/api-keys`, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Create a new API key for an organization.
  * @summary Create an Organization API Key
+ * @description Create a new API key for an organization.
  * {@link /organizations/:organizationID/api-keys}
  */
 export async function createOrganizationAPIKey({
-  pathParams: { organizationID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -609,28 +548,29 @@ export async function createOrganizationAPIKey({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    CreateOrganizationAPIKeyMutationResponse,
+    CreateOrganizationAPIKey201,
     CreateOrganizationAPIKey400,
     CreateOrganizationAPIKeyMutationRequest,
     Record<string, string>,
     Record<string, string>,
     CreateOrganizationAPIKeyPathParams
-  >({ method: 'POST', url: `/organizations/${organizationID}/api-keys`, body, ...requestConfig });
+  >({ method: 'POST', url: `/organizations/${pathParams.organizationID}/api-keys`, body, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Delete multiple API keys in a single request.
  * @summary Bulk delete API Keys for an organization
+ * @description Delete multiple API keys in a single request.
  * {@link /organizations/:organizationID/api-keys}
  */
 export async function deleteOrganizationAPIKeys({
-  pathParams: { organizationID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -640,18 +580,19 @@ export async function deleteOrganizationAPIKeys({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    DeleteOrganizationAPIKeysMutationResponse,
+    DeleteOrganizationAPIKeys204,
     DeleteOrganizationAPIKeys400 | DeleteOrganizationAPIKeys401 | DeleteOrganizationAPIKeys404,
     DeleteOrganizationAPIKeysMutationRequest,
     Record<string, string>,
     Record<string, string>,
     DeleteOrganizationAPIKeysPathParams
-  >({ method: 'DELETE', url: `/organizations/${organizationID}/api-keys`, body, ...requestConfig });
+  >({ method: 'DELETE', url: `/organizations/${pathParams.organizationID}/api-keys`, body, ...requestConfig });
+
   return data;
 }
 
@@ -660,7 +601,7 @@ export async function deleteOrganizationAPIKeys({
  * {@link /organizations/:organizationID/members}
  */
 export async function listOrganizationMembers({
-  pathParams: { organizationID },
+  pathParams,
   config = {}
 }: {
   pathParams: ListOrganizationMembersPathParams;
@@ -668,18 +609,19 @@ export async function listOrganizationMembers({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    ListOrganizationMembersQueryResponse,
+    ListOrganizationMembers200,
     Error,
     null,
     Record<string, string>,
     Record<string, string>,
     ListOrganizationMembersPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/members`, ...requestConfig });
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/members`, ...requestConfig });
+
   return data;
 }
 
@@ -688,7 +630,7 @@ export async function listOrganizationMembers({
  * {@link /organizations/:organizationID/members/:userID}
  */
 export async function removeOrganizationMember({
-  pathParams: { organizationID, userID },
+  pathParams,
   config = {}
 }: {
   pathParams: RemoveOrganizationMemberPathParams;
@@ -696,32 +638,37 @@ export async function removeOrganizationMember({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!userID) {
+  if (!pathParams.userID) {
     throw new Error(`Missing required path parameter: userID`);
   }
 
   const data = await request<
-    RemoveOrganizationMemberMutationResponse,
+    RemoveOrganizationMember204,
     Error,
     null,
     Record<string, string>,
     Record<string, string>,
     RemoveOrganizationMemberPathParams
-  >({ method: 'DELETE', url: `/organizations/${organizationID}/members/${userID}`, ...requestConfig });
+  >({
+    method: 'DELETE',
+    url: `/organizations/${pathParams.organizationID}/members/${pathParams.userID}`,
+    ...requestConfig
+  });
+
   return data;
 }
 
 /**
- * @description Retrieve all invitations for an organization with optional filtering by status, email, and name.
  * @summary List invitations for an organization
+ * @description Retrieve all invitations for an organization with optional filtering by status, email, and name.
  * {@link /organizations/:organizationID/invitations}
  */
 export async function listOrganizationInvitations({
-  pathParams: { organizationID },
+  pathParams,
   queryParams,
   config = {}
 }: {
@@ -731,12 +678,12 @@ export async function listOrganizationInvitations({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    ListOrganizationInvitationsQueryResponse,
+    ListOrganizationInvitations200,
     | ListOrganizationInvitations400
     | ListOrganizationInvitations401
     | ListOrganizationInvitations403
@@ -745,17 +692,18 @@ export async function listOrganizationInvitations({
     Record<string, string>,
     ListOrganizationInvitationsQueryParams,
     ListOrganizationInvitationsPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/invitations`, queryParams, ...requestConfig });
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/invitations`, queryParams, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Send an invitation email to a user to join an organization.
  * @summary Send an invitation to join an organization
+ * @description Send an invitation email to a user to join an organization.
  * {@link /organizations/:organizationID/invitations}
  */
 export async function createOrganizationInvitation({
-  pathParams: { organizationID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -765,12 +713,12 @@ export async function createOrganizationInvitation({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    CreateOrganizationInvitationMutationResponse,
+    CreateOrganizationInvitation201,
     | CreateOrganizationInvitation400
     | CreateOrganizationInvitation401
     | CreateOrganizationInvitation403
@@ -780,17 +728,18 @@ export async function createOrganizationInvitation({
     Record<string, string>,
     Record<string, string>,
     CreateOrganizationInvitationPathParams
-  >({ method: 'POST', url: `/organizations/${organizationID}/invitations`, body, ...requestConfig });
+  >({ method: 'POST', url: `/organizations/${pathParams.organizationID}/invitations`, body, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Retrieve detailed information about a specific invitation by its ID.
  * @summary Get details of a specific invitation
+ * @description Retrieve detailed information about a specific invitation by its ID.
  * {@link /organizations/:organizationID/invitations/:invitationID}
  */
 export async function getOrganizationInvitation({
-  pathParams: { organizationID, invitationID },
+  pathParams,
   config = {}
 }: {
   pathParams: GetOrganizationInvitationPathParams;
@@ -798,16 +747,16 @@ export async function getOrganizationInvitation({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!invitationID) {
+  if (!pathParams.invitationID) {
     throw new Error(`Missing required path parameter: invitationID`);
   }
 
   const data = await request<
-    GetOrganizationInvitationQueryResponse,
+    GetOrganizationInvitation200,
     | GetOrganizationInvitation400
     | GetOrganizationInvitation401
     | GetOrganizationInvitation403
@@ -816,17 +765,22 @@ export async function getOrganizationInvitation({
     Record<string, string>,
     Record<string, string>,
     GetOrganizationInvitationPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/invitations/${invitationID}`, ...requestConfig });
+  >({
+    method: 'GET',
+    url: `/organizations/${pathParams.organizationID}/invitations/${pathParams.invitationID}`,
+    ...requestConfig
+  });
+
   return data;
 }
 
 /**
- * @description Permanently delete an invitation record.
  * @summary Delete an invitation
+ * @description Permanently delete an invitation record.
  * {@link /organizations/:organizationID/invitations/:invitationID}
  */
 export async function deleteOrganizationInvitation({
-  pathParams: { organizationID, invitationID },
+  pathParams,
   config = {}
 }: {
   pathParams: DeleteOrganizationInvitationPathParams;
@@ -834,16 +788,16 @@ export async function deleteOrganizationInvitation({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!invitationID) {
+  if (!pathParams.invitationID) {
     throw new Error(`Missing required path parameter: invitationID`);
   }
 
   const data = await request<
-    DeleteOrganizationInvitationMutationResponse,
+    DeleteOrganizationInvitation204,
     | DeleteOrganizationInvitation400
     | DeleteOrganizationInvitation401
     | DeleteOrganizationInvitation403
@@ -852,17 +806,22 @@ export async function deleteOrganizationInvitation({
     Record<string, string>,
     Record<string, string>,
     DeleteOrganizationInvitationPathParams
-  >({ method: 'DELETE', url: `/organizations/${organizationID}/invitations/${invitationID}`, ...requestConfig });
+  >({
+    method: 'DELETE',
+    url: `/organizations/${pathParams.organizationID}/invitations/${pathParams.invitationID}`,
+    ...requestConfig
+  });
+
   return data;
 }
 
 /**
- * @description Resend a pending invitation with a fresh expiration time.
  * @summary Resend an invitation
+ * @description Resend a pending invitation with a fresh expiration time.
  * {@link /organizations/:organizationID/invitations/:invitationID/resend}
  */
 export async function resendOrganizationInvitation({
-  pathParams: { organizationID, invitationID },
+  pathParams,
   config = {}
 }: {
   pathParams: ResendOrganizationInvitationPathParams;
@@ -870,16 +829,16 @@ export async function resendOrganizationInvitation({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!invitationID) {
+  if (!pathParams.invitationID) {
     throw new Error(`Missing required path parameter: invitationID`);
   }
 
   const data = await request<
-    ResendOrganizationInvitationMutationResponse,
+    ResendOrganizationInvitation204,
     | ResendOrganizationInvitation400
     | ResendOrganizationInvitation401
     | ResendOrganizationInvitation403
@@ -888,19 +847,24 @@ export async function resendOrganizationInvitation({
     Record<string, string>,
     Record<string, string>,
     ResendOrganizationInvitationPathParams
-  >({ method: 'POST', url: `/organizations/${organizationID}/invitations/${invitationID}/resend`, ...requestConfig });
+  >({
+    method: 'POST',
+    url: `/organizations/${pathParams.organizationID}/invitations/${pathParams.invitationID}/resend`,
+    ...requestConfig
+  });
+
   return data;
 }
 
 /**
+ * @summary Request organization deletion
  * @description Flags the organization for deletion. The request is rejected if the organization still has active projects.
  * The subscription is cancelled immediately and any outstanding invoices are collected automatically after a grace period that prevents missing delayed usage reports.
  * Deletion completes asynchronously once all invoices are issued and settled.
- * @summary Request organization deletion
  * {@link /organizations/:organizationID/deletion-request}
  */
 export async function requestOrganizationDeletion({
-  pathParams: { organizationID },
+  pathParams,
   config = {}
 }: {
   pathParams: RequestOrganizationDeletionPathParams;
@@ -908,12 +872,12 @@ export async function requestOrganizationDeletion({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    RequestOrganizationDeletionMutationResponse,
+    RequestOrganizationDeletion202,
     | RequestOrganizationDeletion400
     | RequestOrganizationDeletion401
     | RequestOrganizationDeletion403
@@ -922,17 +886,18 @@ export async function requestOrganizationDeletion({
     Record<string, string>,
     Record<string, string>,
     RequestOrganizationDeletionPathParams
-  >({ method: 'POST', url: `/organizations/${organizationID}/deletion-request`, ...requestConfig });
+  >({ method: 'POST', url: `/organizations/${pathParams.organizationID}/deletion-request`, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Retrieves the membership limits for the specified organization (maximum members and invitations).
  * @summary Get organization membership limits
+ * @description Retrieves the membership limits for the specified organization (maximum members and invitations).
  * {@link /organizations/:organizationID/membership-limits}
  */
 export async function getOrganizationMembershipLimits({
-  pathParams: { organizationID },
+  pathParams,
   config = {}
 }: {
   pathParams: GetOrganizationMembershipLimitsPathParams;
@@ -940,28 +905,29 @@ export async function getOrganizationMembershipLimits({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    GetOrganizationMembershipLimitsQueryResponse,
+    GetOrganizationMembershipLimits200,
     GetOrganizationMembershipLimits401 | GetOrganizationMembershipLimits403,
     null,
     Record<string, string>,
     Record<string, string>,
     GetOrganizationMembershipLimitsPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/membership-limits`, ...requestConfig });
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/membership-limits`, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Creates a Stripe checkout session used to activate card billing for an organization.
  * @summary Create a billing checkout session
+ * @description Creates a Stripe checkout session used to activate card billing for an organization.
  * {@link /organizations/:organizationID/billing/checkout-session}
  */
 export async function createBillingCheckoutSession({
-  pathParams: { organizationID },
+  pathParams,
   config = {}
 }: {
   pathParams: CreateBillingCheckoutSessionPathParams;
@@ -969,28 +935,29 @@ export async function createBillingCheckoutSession({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    CreateBillingCheckoutSessionMutationResponse,
+    CreateBillingCheckoutSession200,
     CreateBillingCheckoutSession400 | CreateBillingCheckoutSession401 | CreateBillingCheckoutSession403,
     null,
     Record<string, string>,
     Record<string, string>,
     CreateBillingCheckoutSessionPathParams
-  >({ method: 'POST', url: `/organizations/${organizationID}/billing/checkout-session`, ...requestConfig });
+  >({ method: 'POST', url: `/organizations/${pathParams.organizationID}/billing/checkout-session`, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Creates a Stripe setup-mode checkout session used to add or update an organization payment method.
  * @summary Create a billing payment method session
+ * @description Creates a Stripe setup-mode checkout session used to add or update an organization payment method.
  * {@link /organizations/:organizationID/billing/payment-method-session}
  */
 export async function createBillingPaymentMethodSession({
-  pathParams: { organizationID },
+  pathParams,
   config = {}
 }: {
   pathParams: CreateBillingPaymentMethodSessionPathParams;
@@ -998,28 +965,33 @@ export async function createBillingPaymentMethodSession({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    CreateBillingPaymentMethodSessionMutationResponse,
+    CreateBillingPaymentMethodSession200,
     CreateBillingPaymentMethodSession400 | CreateBillingPaymentMethodSession401 | CreateBillingPaymentMethodSession403,
     null,
     Record<string, string>,
     Record<string, string>,
     CreateBillingPaymentMethodSessionPathParams
-  >({ method: 'POST', url: `/organizations/${organizationID}/billing/payment-method-session`, ...requestConfig });
+  >({
+    method: 'POST',
+    url: `/organizations/${pathParams.organizationID}/billing/payment-method-session`,
+    ...requestConfig
+  });
+
   return data;
 }
 
 /**
- * @description Retrieves billing customer details for the specified organization.
  * @summary Get billing customer details
+ * @description Retrieves billing customer details for the specified organization.
  * {@link /organizations/:organizationID/billing/customer}
  */
 export async function getBillingCustomer({
-  pathParams: { organizationID },
+  pathParams,
   config = {}
 }: {
   pathParams: GetBillingCustomerPathParams;
@@ -1027,28 +999,29 @@ export async function getBillingCustomer({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    GetBillingCustomerQueryResponse,
+    GetBillingCustomer200,
     GetBillingCustomer401 | GetBillingCustomer403 | GetBillingCustomer404,
     null,
     Record<string, string>,
     Record<string, string>,
     GetBillingCustomerPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/billing/customer`, ...requestConfig });
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/billing/customer`, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Updates billing customer details for the specified organization.
  * @summary Update billing customer details
+ * @description Updates billing customer details for the specified organization.
  * {@link /organizations/:organizationID/billing/customer}
  */
 export async function updateBillingCustomer({
-  pathParams: { organizationID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -1058,28 +1031,29 @@ export async function updateBillingCustomer({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    UpdateBillingCustomerMutationResponse,
+    UpdateBillingCustomer200,
     UpdateBillingCustomer400 | UpdateBillingCustomer401 | UpdateBillingCustomer403 | UpdateBillingCustomer404,
     UpdateBillingCustomerMutationRequest,
     Record<string, string>,
     Record<string, string>,
     UpdateBillingCustomerPathParams
-  >({ method: 'PATCH', url: `/organizations/${organizationID}/billing/customer`, body, ...requestConfig });
+  >({ method: 'PATCH', url: `/organizations/${pathParams.organizationID}/billing/customer`, body, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Retrieves billing invoices for the specified organization.
  * @summary List billing invoices
+ * @description Retrieves billing invoices for the specified organization.
  * {@link /organizations/:organizationID/billing/invoices}
  */
 export async function getBillingInvoices({
-  pathParams: { organizationID },
+  pathParams,
   queryParams,
   config = {}
 }: {
@@ -1089,28 +1063,34 @@ export async function getBillingInvoices({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    GetBillingInvoicesQueryResponse,
+    GetBillingInvoices200,
     GetBillingInvoices400 | GetBillingInvoices401 | GetBillingInvoices403 | GetBillingInvoices404,
     null,
     Record<string, string>,
     GetBillingInvoicesQueryParams,
     GetBillingInvoicesPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/billing/invoices`, queryParams, ...requestConfig });
+  >({
+    method: 'GET',
+    url: `/organizations/${pathParams.organizationID}/billing/invoices`,
+    queryParams,
+    ...requestConfig
+  });
+
   return data;
 }
 
 /**
- * @description Retrieves the upcoming billing invoice for the specified organization's active subscription. Organizations are expected to have at most one active subscription.
  * @summary Get upcoming billing invoice
+ * @description Retrieves the upcoming billing invoice for the specified organization's active subscription. Organizations are expected to have at most one active subscription.
  * {@link /organizations/:organizationID/billing/invoices/upcoming}
  */
 export async function getBillingUpcomingInvoice({
-  pathParams: { organizationID },
+  pathParams,
   config = {}
 }: {
   pathParams: GetBillingUpcomingInvoicePathParams;
@@ -1118,24 +1098,25 @@ export async function getBillingUpcomingInvoice({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    GetBillingUpcomingInvoiceQueryResponse,
+    GetBillingUpcomingInvoice200,
     GetBillingUpcomingInvoice401 | GetBillingUpcomingInvoice403 | GetBillingUpcomingInvoice404,
     null,
     Record<string, string>,
     Record<string, string>,
     GetBillingUpcomingInvoicePathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/billing/invoices/upcoming`, ...requestConfig });
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/billing/invoices/upcoming`, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Links the authenticated user to a cloud marketplace subscription. Only one marketplace registration is allowed per user.
  * @summary Register with a cloud marketplace
+ * @description Links the authenticated user to a cloud marketplace subscription. Only one marketplace registration is allowed per user.
  * {@link /marketplace/register}
  */
 export async function registerMarketplace({
@@ -1148,19 +1129,20 @@ export async function registerMarketplace({
   const { client: request = client, ...requestConfig } = config;
 
   const data = await request<
-    RegisterMarketplaceMutationResponse,
+    RegisterMarketplace200,
     RegisterMarketplace400 | RegisterMarketplace401 | RegisterMarketplace409 | RegisterMarketplace502,
     RegisterMarketplaceMutationRequest,
     Record<string, string>,
     Record<string, string>,
     Record<string, string>
   >({ method: 'POST', url: `/marketplace/register`, body, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Retrieve a list of API keys for the authenticated user.
  * @summary List API Keys for the authenticated user
+ * @description Retrieve a list of API keys for the authenticated user.
  * {@link /api-keys}
  */
 export async function listUserAPIKeys({
@@ -1171,19 +1153,20 @@ export async function listUserAPIKeys({
   const { client: request = client, ...requestConfig } = config;
 
   const data = await request<
-    ListUserAPIKeysQueryResponse,
+    ListUserAPIKeys200,
     ListUserAPIKeys400 | ListUserAPIKeys401,
     null,
     Record<string, string>,
     Record<string, string>,
     Record<string, string>
   >({ method: 'GET', url: `/api-keys`, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Create a new API key for the authenticated user.
  * @summary Create a User API Key
+ * @description Create a new API key for the authenticated user.
  * {@link /api-keys}
  */
 export async function createUserAPIKey({
@@ -1196,19 +1179,20 @@ export async function createUserAPIKey({
   const { client: request = client, ...requestConfig } = config;
 
   const data = await request<
-    CreateUserAPIKeyMutationResponse,
+    CreateUserAPIKey201,
     CreateUserAPIKey400 | CreateUserAPIKey401,
     CreateUserAPIKeyMutationRequest,
     Record<string, string>,
     Record<string, string>,
     Record<string, string>
   >({ method: 'POST', url: `/api-keys`, body, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Delete multiple API keys in a single request.
  * @summary Bulk delete API Keys for the authenticated user
+ * @description Delete multiple API keys in a single request.
  * {@link /api-keys}
  */
 export async function deleteUserAPIKeys({
@@ -1221,17 +1205,19 @@ export async function deleteUserAPIKeys({
   const { client: request = client, ...requestConfig } = config;
 
   const data = await request<
-    DeleteUserAPIKeysMutationResponse,
+    DeleteUserAPIKeys204,
     DeleteUserAPIKeys400 | DeleteUserAPIKeys401 | DeleteUserAPIKeys404,
     DeleteUserAPIKeysMutationRequest,
     Record<string, string>,
     Record<string, string>,
     Record<string, string>
   >({ method: 'DELETE', url: `/api-keys`, body, ...requestConfig });
+
   return data;
 }
 
 /**
+ * @summary Execute SQL query
  * @description Execute a single SQL query or a batch of queries against a PostgreSQL branch.
  * **Authentication:** send the branch's PostgreSQL connection string in the
  * `Connection-String` header. The control-plane API key (Bearer token) is
@@ -1242,7 +1228,6 @@ export async function deleteUserAPIKeys({
  * **Single query:** provide `query` (and optional `params`) at the top level.
  * **Batch:** provide `queries` as an array of query objects, or send the request body
  * as a JSON array. Batch queries execute within a single transaction.
- * @summary Execute SQL query
  * {@link /sql}
  */
 export async function query({
@@ -1257,41 +1242,44 @@ export async function query({
   const { client: request = client, ...requestConfig } = config;
 
   const data = await request<
-    QueryMutationResponse,
+    Query200,
     Query400 | Query401 | Query403 | Query404 | Query409 | Query413 | Query500 | Query504 | Query507,
     QueryMutationRequest,
     QueryHeaderParams,
     Record<string, string>,
     Record<string, string>
   >({ method: 'POST', url: `/sql`, body, ...requestConfig, headers: { ...headers, ...requestConfig.headers } });
+
   return data;
 }
 
 /**
+ * @summary WebSocket wire protocol proxy
  * @description Upgrade to a WebSocket connection that proxies the PostgreSQL wire protocol.
  * The client sends and receives PostgreSQL protocol messages over binary WebSocket frames.
  * **Authentication:** the same branch connection string credential as the
  * HTTP SQL endpoint is used, but it is supplied via the PostgreSQL startup
  * message inside the wire protocol rather than an HTTP header. The
  * control-plane API key (Bearer token) is not accepted.
- * @summary WebSocket wire protocol proxy
  * {@link /v2}
  */
 export async function websocket({ config = {} }: { config?: Partial<FetcherConfig> & { client?: typeof client } }) {
   const { client: request = client, ...requestConfig } = config;
 
   const data = await request<
-    WebsocketQueryResponse,
+    WebsocketResponse,
     Websocket400,
     null,
     Record<string, string>,
     Record<string, string>,
     Record<string, string>
   >({ method: 'GET', url: `/v2`, ...requestConfig });
+
   return data;
 }
 
 /**
+ * @summary Send an MCP message
  * @description Handle a single JSON-RPC 2.0 message from an MCP client, per the MCP
  * [Streamable HTTP transport](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports).
  * The server is stateless: every request is self-contained and carries the caller's
@@ -1301,7 +1289,6 @@ export async function websocket({ config = {} }: { config?: Partial<FetcherConfi
  * `application/json` or as a `text/event-stream` carrying the response and any notifications
  * emitted while it runs. Requests must accept both. **Notifications and responses**
  * (messages without an `id`) are answered with `202 Accepted` and an empty body.
- * @summary Send an MCP message
  * {@link /mcp}
  */
 export async function sendMcpRequest({
@@ -1316,21 +1303,22 @@ export async function sendMcpRequest({
   const { client: request = client, ...requestConfig } = config;
 
   const data = await request<
-    SendMcpRequestMutationResponse,
+    SendMcpRequest200,
     SendMcpRequest400 | SendMcpRequest401 | SendMcpRequest413 | SendMcpRequest415 | SendMcpRequest500,
     SendMcpRequestMutationRequest,
     SendMcpRequestHeaderParams,
     Record<string, string>,
     Record<string, string>
   >({ method: 'POST', url: `/mcp`, body, ...requestConfig, headers: { ...headers, ...requestConfig.headers } });
+
   return data;
 }
 
 /**
+ * @summary GitHub App webhook
  * @description Endpoint used by GitHub to deliver App webhook events.
  * This endpoint is authenticated via GitHub's HMAC-SHA256 signature header,
  * not via the normal API authentication.
- * @summary GitHub App webhook
  * {@link /webhooks/github}
  */
 export async function githubWebhook({
@@ -1343,23 +1331,24 @@ export async function githubWebhook({
   const { client: request = client, ...requestConfig } = config;
 
   const data = await request<
-    GithubWebhookMutationResponse,
+    GithubWebhook200,
     GithubWebhook400 | GithubWebhook500,
     GithubWebhookMutationRequest,
     Record<string, string>,
     Record<string, string>,
     Record<string, string>
   >({ method: 'POST', url: `/webhooks/github`, body, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Retrieves a list of all regions where new branches can be deployed for the specified organization.
  * @summary Get available regions
+ * @description Retrieves a list of all regions where new branches can be deployed for the specified organization.
  * {@link /organizations/:organizationID/regions}
  */
 export async function listRegions({
-  pathParams: { organizationID },
+  pathParams,
   config = {}
 }: {
   pathParams: ListRegionsPathParams;
@@ -1367,28 +1356,29 @@ export async function listRegions({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    ListRegionsQueryResponse,
+    ListRegions200,
     ListRegions400 | ListRegions401,
     null,
     Record<string, string>,
     Record<string, string>,
     ListRegionsPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/regions`, ...requestConfig });
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/regions`, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Retrieves a list of all instance types for the specified organization and region
  * @summary Get available instance types
+ * @description Retrieves a list of all instance types for the specified organization and region
  * {@link /organizations/:organizationID/instanceTypes}
  */
 export async function listInstanceTypes({
-  pathParams: { organizationID },
+  pathParams,
   queryParams,
   config = {}
 }: {
@@ -1398,28 +1388,29 @@ export async function listInstanceTypes({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    ListInstanceTypesQueryResponse,
+    ListInstanceTypes200,
     ListInstanceTypes400 | ListInstanceTypes401,
     null,
     Record<string, string>,
     ListInstanceTypesQueryParams,
     ListInstanceTypesPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/instanceTypes`, queryParams, ...requestConfig });
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/instanceTypes`, queryParams, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Retrieves a list of all images for the specified organization and region
  * @summary Get available images
+ * @description Retrieves a list of all images for the specified organization and region
  * {@link /organizations/:organizationID/images}
  */
 export async function listImages({
-  pathParams: { organizationID },
+  pathParams,
   queryParams,
   config = {}
 }: {
@@ -1429,28 +1420,29 @@ export async function listImages({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    ListImagesQueryResponse,
+    ListImages200,
     ListImages400 | ListImages401,
     null,
     Record<string, string>,
     ListImagesQueryParams,
     ListImagesPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/images`, queryParams, ...requestConfig });
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/images`, queryParams, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Retrieves a list of all extensions for the specified image in the organization and region given
  * @summary Get available extensions for image
+ * @description Retrieves a list of all extensions for the specified image in the organization and region given
  * {@link /organizations/:organizationID/extensions}
  */
 export async function listExtensions({
-  pathParams: { organizationID },
+  pathParams,
   queryParams,
   config = {}
 }: {
@@ -1460,28 +1452,29 @@ export async function listExtensions({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    ListExtensionsQueryResponse,
+    ListExtensions200,
     ListExtensions400 | ListExtensions401,
     null,
     Record<string, string>,
     ListExtensionsQueryParams,
     ListExtensionsPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/extensions`, queryParams, ...requestConfig });
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/extensions`, queryParams, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Retrieves the effective org-level limits, including project creation limits and branch configuration defaults. Project-specific overrides are not applied here.
  * @summary Get organization resource limits
+ * @description Retrieves the effective org-level limits, including project creation limits and branch configuration defaults. Project-specific overrides are not applied here.
  * {@link /organizations/:organizationID/limits}
  */
 export async function getOrganizationLimits({
-  pathParams: { organizationID },
+  pathParams,
   config = {}
 }: {
   pathParams: GetOrganizationLimitsPathParams;
@@ -1489,28 +1482,29 @@ export async function getOrganizationLimits({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    GetOrganizationLimitsQueryResponse,
+    GetOrganizationLimits200,
     GetOrganizationLimits401 | GetOrganizationLimits403,
     null,
     Record<string, string>,
     Record<string, string>,
     GetOrganizationLimitsPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/limits`, ...requestConfig });
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/limits`, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Retrieves the default resource limits for projects in the specified organization, including maximum instances, storage, and allowed regions.
  * @summary Get project resource limits
+ * @description Retrieves the default resource limits for projects in the specified organization, including maximum instances, storage, and allowed regions.
  * {@link /organizations/:organizationID/projects/limits}
  */
 export async function getDefaultProjectLimits({
-  pathParams: { organizationID },
+  pathParams,
   config = {}
 }: {
   pathParams: GetDefaultProjectLimitsPathParams;
@@ -1518,28 +1512,29 @@ export async function getDefaultProjectLimits({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    GetDefaultProjectLimitsQueryResponse,
+    GetDefaultProjectLimits200,
     Error,
     null,
     Record<string, string>,
     Record<string, string>,
     GetDefaultProjectLimitsPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/projects/limits`, ...requestConfig });
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/projects/limits`, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Retrieves a list of all projects within the specified organization that the authenticated user has access to.
  * @summary List all projects
+ * @description Retrieves a list of all projects within the specified organization that the authenticated user has access to.
  * {@link /organizations/:organizationID/projects}
  */
 export async function listProjects({
-  pathParams: { organizationID },
+  pathParams,
   config = {}
 }: {
   pathParams: ListProjectsPathParams;
@@ -1547,28 +1542,29 @@ export async function listProjects({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    ListProjectsQueryResponse,
+    ListProjects200,
     ListProjects400 | ListProjects401,
     null,
     Record<string, string>,
     Record<string, string>,
     ListProjectsPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/projects`, ...requestConfig });
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/projects`, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Creates a new project within the specified organization. Projects are containers for database branches and resources.
  * @summary Create a new project
+ * @description Creates a new project within the specified organization. Projects are containers for database branches and resources.
  * {@link /organizations/:organizationID/projects}
  */
 export async function createProject({
-  pathParams: { organizationID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -1578,28 +1574,29 @@ export async function createProject({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    CreateProjectMutationResponse,
+    CreateProject201,
     CreateProject400 | CreateProject401,
     CreateProjectMutationRequest,
     Record<string, string>,
     Record<string, string>,
     CreateProjectPathParams
-  >({ method: 'POST', url: `/organizations/${organizationID}/projects`, body, ...requestConfig });
+  >({ method: 'POST', url: `/organizations/${pathParams.organizationID}/projects`, body, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Retrieves detailed information about a specific project by its ID within the specified organization.
  * @summary Get project details
+ * @description Retrieves detailed information about a specific project by its ID within the specified organization.
  * {@link /organizations/:organizationID/projects/:projectID}
  */
 export async function getProject({
-  pathParams: { organizationID, projectID },
+  pathParams,
   config = {}
 }: {
   pathParams: GetProjectPathParams;
@@ -1607,32 +1604,37 @@ export async function getProject({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
   const data = await request<
-    GetProjectQueryResponse,
+    GetProject200,
     GetProject400 | GetProject401 | GetProject404,
     null,
     Record<string, string>,
     Record<string, string>,
     GetProjectPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/projects/${projectID}`, ...requestConfig });
+  >({
+    method: 'GET',
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}`,
+    ...requestConfig
+  });
+
   return data;
 }
 
 /**
- * @description Updates the details of a specific project by its ID, such as changing its name.
  * @summary Update project details
+ * @description Updates the details of a specific project by its ID, such as changing its name.
  * {@link /organizations/:organizationID/projects/:projectID}
  */
 export async function updateProject({
-  pathParams: { organizationID, projectID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -1642,32 +1644,38 @@ export async function updateProject({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
   const data = await request<
-    UpdateProjectMutationResponse,
+    UpdateProject200,
     UpdateProject400 | UpdateProject401 | UpdateProject404,
     UpdateProjectMutationRequest,
     Record<string, string>,
     Record<string, string>,
     UpdateProjectPathParams
-  >({ method: 'PATCH', url: `/organizations/${organizationID}/projects/${projectID}`, body, ...requestConfig });
+  >({
+    method: 'PATCH',
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}`,
+    body,
+    ...requestConfig
+  });
+
   return data;
 }
 
 /**
- * @description Permanently deletes a specific project by its ID and all associated resources including branches and databases. This action cannot be undone.
  * @summary Delete a project
+ * @description Permanently deletes a specific project by its ID and all associated resources including branches and databases. This action cannot be undone.
  * {@link /organizations/:organizationID/projects/:projectID}
  */
 export async function deleteProject({
-  pathParams: { organizationID, projectID },
+  pathParams,
   config = {}
 }: {
   pathParams: DeleteProjectPathParams;
@@ -1675,32 +1683,37 @@ export async function deleteProject({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
   const data = await request<
-    DeleteProjectMutationResponse,
+    DeleteProject204,
     DeleteProject400 | DeleteProject401 | DeleteProject404,
     null,
     Record<string, string>,
     Record<string, string>,
     DeleteProjectPathParams
-  >({ method: 'DELETE', url: `/organizations/${organizationID}/projects/${projectID}`, ...requestConfig });
+  >({
+    method: 'DELETE',
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}`,
+    ...requestConfig
+  });
+
   return data;
 }
 
 /**
- * @description Retrieves the effective resource limits for the specified project, merging organization-level overrides with any project-specific overrides.
  * @summary Get project resource limits
+ * @description Retrieves the effective resource limits for the specified project, merging organization-level overrides with any project-specific overrides.
  * {@link /organizations/:organizationID/projects/:projectID/limits}
  */
 export async function getProjectLimits({
-  pathParams: { organizationID, projectID },
+  pathParams,
   config = {}
 }: {
   pathParams: GetProjectLimitsPathParams;
@@ -1708,32 +1721,37 @@ export async function getProjectLimits({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
   const data = await request<
-    GetProjectLimitsQueryResponse,
+    GetProjectLimits200,
     GetProjectLimits401,
     null,
     Record<string, string>,
     Record<string, string>,
     GetProjectLimitsPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/projects/${projectID}/limits`, ...requestConfig });
+  >({
+    method: 'GET',
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/limits`,
+    ...requestConfig
+  });
+
   return data;
 }
 
 /**
- * @description Retrieves a list of backups for the specified project.
  * @summary List project backups
+ * @description Retrieves a list of backups for the specified project.
  * {@link /organizations/:organizationID/projects/:projectID/backups}
  */
 export async function listBackups({
-  pathParams: { organizationID, projectID },
+  pathParams,
   config = {}
 }: {
   pathParams: ListBackupsPathParams;
@@ -1741,32 +1759,37 @@ export async function listBackups({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
   const data = await request<
-    ListBackupsQueryResponse,
+    ListBackups200,
     ListBackups400 | ListBackups401 | ListBackups404,
     null,
     Record<string, string>,
     Record<string, string>,
     ListBackupsPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/projects/${projectID}/backups`, ...requestConfig });
+  >({
+    method: 'GET',
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/backups`,
+    ...requestConfig
+  });
+
   return data;
 }
 
 /**
- * @description Retrieves a backup by ID for the specified project.
  * @summary Get project backup by ID
+ * @description Retrieves a backup by ID for the specified project.
  * {@link /organizations/:organizationID/projects/:projectID/backups/:backupID}
  */
 export async function getBackup({
-  pathParams: { organizationID, projectID, backupID },
+  pathParams,
   config = {}
 }: {
   pathParams: GetBackupPathParams;
@@ -1774,20 +1797,20 @@ export async function getBackup({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
-  if (!backupID) {
+  if (!pathParams.backupID) {
     throw new Error(`Missing required path parameter: backupID`);
   }
 
   const data = await request<
-    GetBackupQueryResponse,
+    GetBackup200,
     GetBackup400 | GetBackup401 | GetBackup404,
     null,
     Record<string, string>,
@@ -1795,19 +1818,20 @@ export async function getBackup({
     GetBackupPathParams
   >({
     method: 'GET',
-    url: `/organizations/${organizationID}/projects/${projectID}/backups/${backupID}`,
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/backups/${pathParams.backupID}`,
     ...requestConfig
   });
+
   return data;
 }
 
 /**
- * @description Retrieves a list of all branches within the specified project, including their metadata, region, and access settings.
  * @summary List all branches
+ * @description Retrieves a list of all branches within the specified project, including their metadata, region, and access settings.
  * {@link /organizations/:organizationID/projects/:projectID/branches}
  */
 export async function listBranches({
-  pathParams: { organizationID, projectID },
+  pathParams,
   config = {}
 }: {
   pathParams: ListBranchesPathParams;
@@ -1815,32 +1839,37 @@ export async function listBranches({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
   const data = await request<
-    ListBranchesQueryResponse,
+    ListBranches200,
     ListBranches400 | ListBranches401 | ListBranches404,
     null,
     Record<string, string>,
     Record<string, string>,
     ListBranchesPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/projects/${projectID}/branches`, ...requestConfig });
+  >({
+    method: 'GET',
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/branches`,
+    ...requestConfig
+  });
+
   return data;
 }
 
 /**
- * @description Creates a new branch within the specified project. Branches can be created from scratch or derived from an existing parent branch.
  * @summary Create a new branch
+ * @description Creates a new branch within the specified project. Branches can be created from scratch or derived from an existing parent branch.
  * {@link /organizations/:organizationID/projects/:projectID/branches}
  */
 export async function createBranch({
-  pathParams: { organizationID, projectID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -1850,32 +1879,38 @@ export async function createBranch({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
   const data = await request<
-    CreateBranchMutationResponse,
+    CreateBranch201,
     CreateBranch400 | CreateBranch401 | CreateBranch404 | CreateBranch412,
     CreateBranchMutationRequest,
     Record<string, string>,
     Record<string, string>,
     CreateBranchPathParams
-  >({ method: 'POST', url: `/organizations/${organizationID}/projects/${projectID}/branches`, body, ...requestConfig });
+  >({
+    method: 'POST',
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/branches`,
+    body,
+    ...requestConfig
+  });
+
   return data;
 }
 
 /**
- * @description Retrieves detailed information about a specific branch by its ID, including status, connection string, and configuration.
  * @summary Get branch details
+ * @description Retrieves detailed information about a specific branch by its ID, including status, connection string, and configuration.
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID}
  */
 export async function describeBranch({
-  pathParams: { organizationID, projectID, branchID },
+  pathParams,
   config = {}
 }: {
   pathParams: DescribeBranchPathParams;
@@ -1883,20 +1918,20 @@ export async function describeBranch({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
-  if (!branchID) {
+  if (!pathParams.branchID) {
     throw new Error(`Missing required path parameter: branchID`);
   }
 
   const data = await request<
-    DescribeBranchQueryResponse,
+    DescribeBranch200,
     DescribeBranch400 | DescribeBranch401 | DescribeBranch404,
     null,
     Record<string, string>,
@@ -1904,19 +1939,20 @@ export async function describeBranch({
     DescribeBranchPathParams
   >({
     method: 'GET',
-    url: `/organizations/${organizationID}/projects/${projectID}/branches/${branchID}`,
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/branches/${pathParams.branchID}`,
     ...requestConfig
   });
+
   return data;
 }
 
 /**
- * @description Updates the configuration of a specific branch by its ID, such as changing its name, description, or resource allocation.
  * @summary Update branch details
+ * @description Updates the configuration of a specific branch by its ID, such as changing its name, description, or resource allocation.
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID}
  */
 export async function updateBranch({
-  pathParams: { organizationID, projectID, branchID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -1926,20 +1962,20 @@ export async function updateBranch({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
-  if (!branchID) {
+  if (!pathParams.branchID) {
     throw new Error(`Missing required path parameter: branchID`);
   }
 
   const data = await request<
-    UpdateBranchMutationResponse,
+    UpdateBranch200,
     UpdateBranch400 | UpdateBranch401 | UpdateBranch404,
     UpdateBranchMutationRequest,
     Record<string, string>,
@@ -1947,20 +1983,21 @@ export async function updateBranch({
     UpdateBranchPathParams
   >({
     method: 'PATCH',
-    url: `/organizations/${organizationID}/projects/${projectID}/branches/${branchID}`,
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/branches/${pathParams.branchID}`,
     body,
     ...requestConfig
   });
+
   return data;
 }
 
 /**
- * @description Permanently deletes a specific branch by its ID and all associated data. This action cannot be undone.
  * @summary Delete a branch
+ * @description Permanently deletes a specific branch by its ID and all associated data. This action cannot be undone.
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID}
  */
 export async function deleteBranch({
-  pathParams: { organizationID, projectID, branchID },
+  pathParams,
   config = {}
 }: {
   pathParams: DeleteBranchPathParams;
@@ -1968,20 +2005,20 @@ export async function deleteBranch({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
-  if (!branchID) {
+  if (!pathParams.branchID) {
     throw new Error(`Missing required path parameter: branchID`);
   }
 
   const data = await request<
-    DeleteBranchMutationResponse,
+    DeleteBranch204,
     DeleteBranch400 | DeleteBranch401 | DeleteBranch404,
     null,
     Record<string, string>,
@@ -1989,9 +2026,10 @@ export async function deleteBranch({
     DeleteBranchPathParams
   >({
     method: 'DELETE',
-    url: `/organizations/${organizationID}/projects/${projectID}/branches/${branchID}`,
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/branches/${pathParams.branchID}`,
     ...requestConfig
   });
+
   return data;
 }
 
@@ -2000,7 +2038,7 @@ export async function deleteBranch({
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/credentials}
  */
 export async function getBranchCredentials({
-  pathParams: { organizationID, projectID, branchID },
+  pathParams,
   queryParams,
   config = {}
 }: {
@@ -2010,20 +2048,20 @@ export async function getBranchCredentials({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
-  if (!branchID) {
+  if (!pathParams.branchID) {
     throw new Error(`Missing required path parameter: branchID`);
   }
 
   const data = await request<
-    GetBranchCredentialsQueryResponse,
+    GetBranchCredentials200,
     GetBranchCredentials400 | GetBranchCredentials401 | GetBranchCredentials404,
     null,
     Record<string, string>,
@@ -2031,20 +2069,21 @@ export async function getBranchCredentials({
     GetBranchCredentialsPathParams
   >({
     method: 'GET',
-    url: `/organizations/${organizationID}/projects/${projectID}/branches/${branchID}/credentials`,
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/branches/${pathParams.branchID}/credentials`,
     queryParams,
     ...requestConfig
   });
+
   return data;
 }
 
 /**
- * @description Triggers a credential rotation for the branch database user. The new credentials can be retrieved via the credentials endpoint after rotation completes.
  * @summary Rotate branch credentials
+ * @description Triggers a credential rotation for the branch database user. The new credentials can be retrieved via the credentials endpoint after rotation completes.
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/credentials/rotate}
  */
 export async function rotateBranchCredentials({
-  pathParams: { organizationID, projectID, branchID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -2054,20 +2093,20 @@ export async function rotateBranchCredentials({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
-  if (!branchID) {
+  if (!pathParams.branchID) {
     throw new Error(`Missing required path parameter: branchID`);
   }
 
   const data = await request<
-    RotateBranchCredentialsMutationResponse,
+    RotateBranchCredentials204,
     RotateBranchCredentials400 | RotateBranchCredentials401 | RotateBranchCredentials404,
     RotateBranchCredentialsMutationRequest,
     Record<string, string>,
@@ -2075,20 +2114,21 @@ export async function rotateBranchCredentials({
     RotateBranchCredentialsPathParams
   >({
     method: 'POST',
-    url: `/organizations/${organizationID}/projects/${projectID}/branches/${branchID}/credentials/rotate`,
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/branches/${pathParams.branchID}/credentials/rotate`,
     body,
     ...requestConfig
   });
+
   return data;
 }
 
 /**
- * @description Returns time-series data for one or more metrics of a branch.
  * @summary Retrieve branch metrics
+ * @description Returns time-series data for one or more metrics of a branch.
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/metrics}
  */
 export async function branchMetrics({
-  pathParams: { organizationID, projectID, branchID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -2098,20 +2138,20 @@ export async function branchMetrics({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
-  if (!branchID) {
+  if (!pathParams.branchID) {
     throw new Error(`Missing required path parameter: branchID`);
   }
 
   const data = await request<
-    BranchMetricsMutationResponse,
+    BranchMetrics200,
     BranchMetrics400 | BranchMetrics401 | BranchMetrics404,
     BranchMetricsMutationRequest,
     Record<string, string>,
@@ -2119,20 +2159,21 @@ export async function branchMetrics({
     BranchMetricsPathParams
   >({
     method: 'POST',
-    url: `/organizations/${organizationID}/projects/${projectID}/branches/${branchID}/metrics`,
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/branches/${pathParams.branchID}/metrics`,
     body,
     ...requestConfig
   });
+
   return data;
 }
 
 /**
- * @description Creates a new backup branch within the specified project.
  * @summary Create a new branch from a backup of another branch
+ * @description Creates a new backup branch within the specified project.
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/restore}
  */
 export async function restoreFromBackup({
-  pathParams: { organizationID, projectID, branchID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -2142,20 +2183,20 @@ export async function restoreFromBackup({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
-  if (!branchID) {
+  if (!pathParams.branchID) {
     throw new Error(`Missing required path parameter: branchID`);
   }
 
   const data = await request<
-    RestoreFromBackupMutationResponse,
+    RestoreFromBackup201,
     RestoreFromBackup400 | RestoreFromBackup401 | RestoreFromBackup404,
     RestoreFromBackupMutationRequest,
     Record<string, string>,
@@ -2163,10 +2204,11 @@ export async function restoreFromBackup({
     RestoreFromBackupPathParams
   >({
     method: 'POST',
-    url: `/organizations/${organizationID}/projects/${projectID}/branches/${branchID}/restore`,
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/branches/${pathParams.branchID}/restore`,
     body,
     ...requestConfig
   });
+
   return data;
 }
 
@@ -2175,7 +2217,7 @@ export async function restoreFromBackup({
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/logs}
  */
 export async function branchLogs({
-  pathParams: { organizationID, projectID, branchID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -2185,20 +2227,20 @@ export async function branchLogs({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
-  if (!branchID) {
+  if (!pathParams.branchID) {
     throw new Error(`Missing required path parameter: branchID`);
   }
 
   const data = await request<
-    BranchLogsMutationResponse,
+    BranchLogs200,
     BranchLogs400 | BranchLogs401 | BranchLogs404,
     BranchLogsMutationRequest,
     Record<string, string>,
@@ -2206,20 +2248,21 @@ export async function branchLogs({
     BranchLogsPathParams
   >({
     method: 'POST',
-    url: `/organizations/${organizationID}/projects/${projectID}/branches/${branchID}/logs`,
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/branches/${pathParams.branchID}/logs`,
     body,
     ...requestConfig
   });
+
   return data;
 }
 
 /**
- * @description Retrieves detailed information about the current PostgreSQL configuration parameters for a branch, including parameter types, descriptions, acceptable ranges, default values, and current values.
  * @summary Get PostgreSQL configuration details
+ * @description Retrieves detailed information about the current PostgreSQL configuration parameters for a branch, including parameter types, descriptions, acceptable ranges, default values, and current values.
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/postgres-config}
  */
 export async function getBranchPostgresConfig({
-  pathParams: { organizationID, projectID, branchID },
+  pathParams,
   config = {}
 }: {
   pathParams: GetBranchPostgresConfigPathParams;
@@ -2227,20 +2270,20 @@ export async function getBranchPostgresConfig({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
-  if (!branchID) {
+  if (!pathParams.branchID) {
     throw new Error(`Missing required path parameter: branchID`);
   }
 
   const data = await request<
-    GetBranchPostgresConfigQueryResponse,
+    GetBranchPostgresConfig200,
     GetBranchPostgresConfig400 | GetBranchPostgresConfig401 | GetBranchPostgresConfig404,
     null,
     Record<string, string>,
@@ -2248,19 +2291,20 @@ export async function getBranchPostgresConfig({
     GetBranchPostgresConfigPathParams
   >({
     method: 'GET',
-    url: `/organizations/${organizationID}/projects/${projectID}/branches/${branchID}/postgres-config`,
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/branches/${pathParams.branchID}/postgres-config`,
     ...requestConfig
   });
+
   return data;
 }
 
 /**
- * @description Returns all GitHub App installations associated with the specified organization.
  * @summary List GitHub App installations for organization
+ * @description Returns all GitHub App installations associated with the specified organization.
  * {@link /organizations/:organizationID/githubapp/installations}
  */
 export async function listGithubAppInstallations({
-  pathParams: { organizationID },
+  pathParams,
   config = {}
 }: {
   pathParams: ListGithubAppInstallationsPathParams;
@@ -2268,28 +2312,29 @@ export async function listGithubAppInstallations({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    ListGithubAppInstallationsQueryResponse,
+    ListGithubAppInstallations200,
     ListGithubAppInstallations400 | ListGithubAppInstallations401,
     null,
     Record<string, string>,
     Record<string, string>,
     ListGithubAppInstallationsPathParams
-  >({ method: 'GET', url: `/organizations/${organizationID}/githubapp/installations`, ...requestConfig });
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/githubapp/installations`, ...requestConfig });
+
   return data;
 }
 
 /**
- * @description Creates a new GitHub App installation mapping for the specified organization.
  * @summary Create GitHub App installation
+ * @description Creates a new GitHub App installation mapping for the specified organization.
  * {@link /organizations/:organizationID/githubapp/installations}
  */
 export async function createGithubAppInstallation({
-  pathParams: { organizationID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -2299,28 +2344,34 @@ export async function createGithubAppInstallation({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
   const data = await request<
-    CreateGithubAppInstallationMutationResponse,
+    CreateGithubAppInstallation201,
     CreateGithubAppInstallation400 | CreateGithubAppInstallation401 | CreateGithubAppInstallation409,
     CreateGithubAppInstallationMutationRequest,
     Record<string, string>,
     Record<string, string>,
     CreateGithubAppInstallationPathParams
-  >({ method: 'POST', url: `/organizations/${organizationID}/githubapp/installations`, body, ...requestConfig });
+  >({
+    method: 'POST',
+    url: `/organizations/${pathParams.organizationID}/githubapp/installations`,
+    body,
+    ...requestConfig
+  });
+
   return data;
 }
 
 /**
- * @description Updates an existing GitHub App installation mapping.
  * @summary Update GitHub App installation
+ * @description Updates an existing GitHub App installation mapping.
  * {@link /organizations/:organizationID/githubapp/installations/:githubInstallationID}
  */
 export async function updateGithubAppInstallation({
-  pathParams: { organizationID, githubInstallationID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -2330,16 +2381,16 @@ export async function updateGithubAppInstallation({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!githubInstallationID) {
+  if (!pathParams.githubInstallationID) {
     throw new Error(`Missing required path parameter: githubInstallationID`);
   }
 
   const data = await request<
-    UpdateGithubAppInstallationMutationResponse,
+    UpdateGithubAppInstallation200,
     | UpdateGithubAppInstallation400
     | UpdateGithubAppInstallation401
     | UpdateGithubAppInstallation404
@@ -2350,20 +2401,21 @@ export async function updateGithubAppInstallation({
     UpdateGithubAppInstallationPathParams
   >({
     method: 'PUT',
-    url: `/organizations/${organizationID}/githubapp/installations/${githubInstallationID}`,
+    url: `/organizations/${pathParams.organizationID}/githubapp/installations/${pathParams.githubInstallationID}`,
     body,
     ...requestConfig
   });
+
   return data;
 }
 
 /**
- * @description Returns the GitHub repository mapping for the specified branch.
  * @summary Get GitHub repository for branch
+ * @description Returns the GitHub repository mapping for the specified branch.
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/githubapp/repository}
  */
 export async function getGithubRepository({
-  pathParams: { organizationID, projectID, branchID },
+  pathParams,
   config = {}
 }: {
   pathParams: GetGithubRepositoryPathParams;
@@ -2371,20 +2423,20 @@ export async function getGithubRepository({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
-  if (!branchID) {
+  if (!pathParams.branchID) {
     throw new Error(`Missing required path parameter: branchID`);
   }
 
   const data = await request<
-    GetGithubRepositoryQueryResponse,
+    GetGithubRepository200,
     GetGithubRepository400 | GetGithubRepository401,
     null,
     Record<string, string>,
@@ -2392,19 +2444,20 @@ export async function getGithubRepository({
     GetGithubRepositoryPathParams
   >({
     method: 'GET',
-    url: `/organizations/${organizationID}/projects/${projectID}/branches/${branchID}/githubapp/repository`,
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/branches/${pathParams.branchID}/githubapp/repository`,
     ...requestConfig
   });
+
   return data;
 }
 
 /**
- * @description Creates a new GitHub repository to Xata branch mapping.
  * @summary Create GitHub repository mapping
+ * @description Creates a new GitHub repository to Xata branch mapping.
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/githubapp/repository}
  */
 export async function createGithubRepository({
-  pathParams: { organizationID, projectID, branchID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -2414,20 +2467,20 @@ export async function createGithubRepository({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
-  if (!branchID) {
+  if (!pathParams.branchID) {
     throw new Error(`Missing required path parameter: branchID`);
   }
 
   const data = await request<
-    CreateGithubRepositoryMutationResponse,
+    CreateGithubRepository201,
     CreateGithubRepository400 | CreateGithubRepository401 | CreateGithubRepository409,
     CreateGithubRepositoryMutationRequest,
     Record<string, string>,
@@ -2435,20 +2488,21 @@ export async function createGithubRepository({
     CreateGithubRepositoryPathParams
   >({
     method: 'POST',
-    url: `/organizations/${organizationID}/projects/${projectID}/branches/${branchID}/githubapp/repository`,
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/branches/${pathParams.branchID}/githubapp/repository`,
     body,
     ...requestConfig
   });
+
   return data;
 }
 
 /**
- * @description Updates an existing GitHub repository to Xata branch mapping.
  * @summary Update GitHub repository mapping
+ * @description Updates an existing GitHub repository to Xata branch mapping.
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/githubapp/repository}
  */
 export async function updateGithubRepository({
-  pathParams: { organizationID, projectID, branchID },
+  pathParams,
   body,
   config = {}
 }: {
@@ -2458,20 +2512,20 @@ export async function updateGithubRepository({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
-  if (!branchID) {
+  if (!pathParams.branchID) {
     throw new Error(`Missing required path parameter: branchID`);
   }
 
   const data = await request<
-    UpdateGithubRepositoryMutationResponse,
+    UpdateGithubRepository200,
     UpdateGithubRepository400 | UpdateGithubRepository401 | UpdateGithubRepository404,
     UpdateGithubRepositoryMutationRequest,
     Record<string, string>,
@@ -2479,20 +2533,21 @@ export async function updateGithubRepository({
     UpdateGithubRepositoryPathParams
   >({
     method: 'PUT',
-    url: `/organizations/${organizationID}/projects/${projectID}/branches/${branchID}/githubapp/repository`,
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/branches/${pathParams.branchID}/githubapp/repository`,
     body,
     ...requestConfig
   });
+
   return data;
 }
 
 /**
- * @description Deletes the GitHub repository mapping for the specified branch.
  * @summary Delete GitHub repository mapping
+ * @description Deletes the GitHub repository mapping for the specified branch.
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/githubapp/repository}
  */
 export async function deleteGithubRepository({
-  pathParams: { organizationID, projectID, branchID },
+  pathParams,
   config = {}
 }: {
   pathParams: DeleteGithubRepositoryPathParams;
@@ -2500,20 +2555,20 @@ export async function deleteGithubRepository({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!organizationID) {
+  if (!pathParams.organizationID) {
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  if (!projectID) {
+  if (!pathParams.projectID) {
     throw new Error(`Missing required path parameter: projectID`);
   }
 
-  if (!branchID) {
+  if (!pathParams.branchID) {
     throw new Error(`Missing required path parameter: branchID`);
   }
 
   const data = await request<
-    DeleteGithubRepositoryMutationResponse,
+    DeleteGithubRepository204,
     DeleteGithubRepository400 | DeleteGithubRepository401 | DeleteGithubRepository404,
     null,
     Record<string, string>,
@@ -2521,22 +2576,23 @@ export async function deleteGithubRepository({
     DeleteGithubRepositoryPathParams
   >({
     method: 'DELETE',
-    url: `/organizations/${organizationID}/projects/${projectID}/branches/${branchID}/githubapp/repository`,
+    url: `/organizations/${pathParams.organizationID}/projects/${pathParams.projectID}/branches/${pathParams.branchID}/githubapp/repository`,
     ...requestConfig
   });
+
   return data;
 }
 
 /**
+ * @summary Upsert a Vercel Marketplace installation
  * @description Create or update an installation. Vercel sends this when a customer
  * installs (or re-sends it idempotently). The acting account is taken from
  * the signed token claims, not this body. There is one installation per
  * Vercel team, and an installation can own many Xata organizations.
- * @summary Upsert a Vercel Marketplace installation
  * {@link /v1/installations/:installationId}
  */
 export async function upsertInstallation({
-  pathParams: { installationId },
+  pathParams,
   body,
   config = {}
 }: {
@@ -2546,32 +2602,33 @@ export async function upsertInstallation({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!installationId) {
+  if (!pathParams.installationId) {
     throw new Error(`Missing required path parameter: installationId`);
   }
 
   const data = await request<
-    UpsertInstallationMutationResponse,
+    UpsertInstallation204,
     UpsertInstallation400 | UpsertInstallation403 | UpsertInstallation409,
     UpsertInstallationMutationRequest,
     Record<string, string>,
     Record<string, string>,
     UpsertInstallationPathParams
-  >({ method: 'PUT', url: `/v1/installations/${installationId}`, body, ...requestConfig });
+  >({ method: 'PUT', url: `/v1/installations/${pathParams.installationId}`, body, ...requestConfig });
+
   return data;
 }
 
 /**
+ * @summary Delete a Vercel Marketplace installation
  * @description Begin uninstalling an installation. The installation is marked
  * 'deleting' so billing can finalize before being soft-deleted; the 204
  * defers final deletion to Vercel's 24-hour window. (Vercel's contract
  * also allows a 200 with {"finalized": true} for immediate deletion;
  * Xata always finalizes asynchronously.)
- * @summary Delete a Vercel Marketplace installation
  * {@link /v1/installations/:installationId}
  */
 export async function deleteInstallation({
-  pathParams: { installationId },
+  pathParams,
   body,
   config = {}
 }: {
@@ -2581,26 +2638,27 @@ export async function deleteInstallation({
 }) {
   const { client: request = client, ...requestConfig } = config;
 
-  if (!installationId) {
+  if (!pathParams.installationId) {
     throw new Error(`Missing required path parameter: installationId`);
   }
 
   const data = await request<
-    DeleteInstallationMutationResponse,
+    DeleteInstallation204,
     DeleteInstallation403 | DeleteInstallation409,
     DeleteInstallationMutationRequest,
     Record<string, string>,
     Record<string, string>,
     DeleteInstallationPathParams
-  >({ method: 'DELETE', url: `/v1/installations/${installationId}`, body, ...requestConfig });
+  >({ method: 'DELETE', url: `/v1/installations/${pathParams.installationId}`, body, ...requestConfig });
+
   return data;
 }
 
 /**
+ * @summary Orb billing webhook
  * @description Endpoint used by Orb to deliver billing-related webhook events.
  * This endpoint is authenticated via Orb's HMAC signature headers,
  * not via the normal API authentication.
- * @summary Orb billing webhook
  * {@link /webhooks/orb}
  */
 export async function orbWebhook({
@@ -2613,21 +2671,22 @@ export async function orbWebhook({
   const { client: request = client, ...requestConfig } = config;
 
   const data = await request<
-    OrbWebhookMutationResponse,
+    OrbWebhook200,
     OrbWebhook400 | OrbWebhook500,
     OrbWebhookMutationRequest,
     Record<string, string>,
     Record<string, string>,
     Record<string, string>
   >({ method: 'POST', url: `/webhooks/orb`, body, ...requestConfig });
+
   return data;
 }
 
 /**
+ * @summary Stripe webhook
  * @description Endpoint used by Stripe to deliver webhook events.
  * This endpoint is authenticated via Stripe's signature headers,
  * not via the normal API authentication.
- * @summary Stripe webhook
  * {@link /webhooks/stripe}
  */
 export async function stripeWebhook({
@@ -2640,13 +2699,14 @@ export async function stripeWebhook({
   const { client: request = client, ...requestConfig } = config;
 
   const data = await request<
-    StripeWebhookMutationResponse,
+    StripeWebhook200,
     StripeWebhook400 | StripeWebhook500,
     StripeWebhookMutationRequest,
     Record<string, string>,
     Record<string, string>,
     Record<string, string>
   >({ method: 'POST', url: `/webhooks/stripe`, body, ...requestConfig });
+
   return data;
 }
 
@@ -2934,73 +2994,154 @@ export const Scopes = [
 ] as const;
 
 export type OperationErrors = {
-  'organizations.getOrganizationsList': GetOrganizationsListQuery['Errors'];
-  'organizations.createOrganization': CreateOrganizationMutation['Errors'];
-  'organizations.getOrganization': GetOrganizationQuery['Errors'];
-  'organizations.updateOrganization': UpdateOrganizationMutation['Errors'];
-  'organizations.deleteOrganization': DeleteOrganizationMutation['Errors'];
-  'apiKeys.listOrganizationAPIKeys': ListOrganizationAPIKeysQuery['Errors'];
-  'apiKeys.createOrganizationAPIKey': CreateOrganizationAPIKeyMutation['Errors'];
-  'apiKeys.deleteOrganizationAPIKeys': DeleteOrganizationAPIKeysMutation['Errors'];
-  'organizations.listOrganizationMembers': ListOrganizationMembersQuery['Errors'];
-  'organizations.removeOrganizationMember': RemoveOrganizationMemberMutation['Errors'];
-  'organizations.listOrganizationInvitations': ListOrganizationInvitationsQuery['Errors'];
-  'organizations.createOrganizationInvitation': CreateOrganizationInvitationMutation['Errors'];
-  'organizations.getOrganizationInvitation': GetOrganizationInvitationQuery['Errors'];
-  'organizations.deleteOrganizationInvitation': DeleteOrganizationInvitationMutation['Errors'];
-  'organizations.resendOrganizationInvitation': ResendOrganizationInvitationMutation['Errors'];
-  'organizations.requestOrganizationDeletion': RequestOrganizationDeletionMutation['Errors'];
-  'organizations.getOrganizationMembershipLimits': GetOrganizationMembershipLimitsQuery['Errors'];
-  'billing.createBillingCheckoutSession': CreateBillingCheckoutSessionMutation['Errors'];
-  'billing.createBillingPaymentMethodSession': CreateBillingPaymentMethodSessionMutation['Errors'];
-  'billing.getBillingCustomer': GetBillingCustomerQuery['Errors'];
-  'billing.updateBillingCustomer': UpdateBillingCustomerMutation['Errors'];
-  'billing.getBillingInvoices': GetBillingInvoicesQuery['Errors'];
-  'billing.getBillingUpcomingInvoice': GetBillingUpcomingInvoiceQuery['Errors'];
-  'marketplace.registerMarketplace': RegisterMarketplaceMutation['Errors'];
-  'apiKeys.listUserAPIKeys': ListUserAPIKeysQuery['Errors'];
-  'apiKeys.createUserAPIKey': CreateUserAPIKeyMutation['Errors'];
-  'apiKeys.deleteUserAPIKeys': DeleteUserAPIKeysMutation['Errors'];
-  'gateway.query': QueryMutation['Errors'];
-  'gateway.websocket': WebsocketQuery['Errors'];
-  'mcp.sendMcpRequest': SendMcpRequestMutation['Errors'];
-  'projectsWebhooks.githubWebhook': GithubWebhookMutation['Errors'];
-  'projects.listRegions': ListRegionsQuery['Errors'];
-  'projects.listInstanceTypes': ListInstanceTypesQuery['Errors'];
-  'projects.listImages': ListImagesQuery['Errors'];
-  'projects.listExtensions': ListExtensionsQuery['Errors'];
-  'projects.getOrganizationLimits': GetOrganizationLimitsQuery['Errors'];
-  'projects.getDefaultProjectLimits': GetDefaultProjectLimitsQuery['Errors'];
-  'projects.listProjects': ListProjectsQuery['Errors'];
-  'projects.createProject': CreateProjectMutation['Errors'];
-  'projects.getProject': GetProjectQuery['Errors'];
-  'projects.updateProject': UpdateProjectMutation['Errors'];
-  'projects.deleteProject': DeleteProjectMutation['Errors'];
-  'projects.getProjectLimits': GetProjectLimitsQuery['Errors'];
-  'projects.listBackups': ListBackupsQuery['Errors'];
-  'projects.getBackup': GetBackupQuery['Errors'];
-  'branches.listBranches': ListBranchesQuery['Errors'];
-  'branches.createBranch': CreateBranchMutation['Errors'];
-  'branches.describeBranch': DescribeBranchQuery['Errors'];
-  'branches.updateBranch': UpdateBranchMutation['Errors'];
-  'branches.deleteBranch': DeleteBranchMutation['Errors'];
-  'branches.getBranchCredentials': GetBranchCredentialsQuery['Errors'];
-  'branches.rotateBranchCredentials': RotateBranchCredentialsMutation['Errors'];
-  'branches.branchMetrics': BranchMetricsMutation['Errors'];
-  'branches.restoreFromBackup': RestoreFromBackupMutation['Errors'];
-  'branches.branchLogs': BranchLogsMutation['Errors'];
-  'branches.getBranchPostgresConfig': GetBranchPostgresConfigQuery['Errors'];
-  'githubApp.listGithubAppInstallations': ListGithubAppInstallationsQuery['Errors'];
-  'githubApp.createGithubAppInstallation': CreateGithubAppInstallationMutation['Errors'];
-  'githubApp.updateGithubAppInstallation': UpdateGithubAppInstallationMutation['Errors'];
-  'githubApp.getGithubRepository': GetGithubRepositoryQuery['Errors'];
-  'githubApp.createGithubRepository': CreateGithubRepositoryMutation['Errors'];
-  'githubApp.updateGithubRepository': UpdateGithubRepositoryMutation['Errors'];
-  'githubApp.deleteGithubRepository': DeleteGithubRepositoryMutation['Errors'];
-  'vercel.upsertInstallation': UpsertInstallationMutation['Errors'];
-  'vercel.deleteInstallation': DeleteInstallationMutation['Errors'];
-  'webhooks.orbWebhook': OrbWebhookMutation['Errors'];
-  'webhooks.stripeWebhook': StripeWebhookMutation['Errors'];
+  'organizations.getOrganizationsList': GetOrganizationsList400 | GetOrganizationsList401 | GetOrganizationsList404;
+  'organizations.createOrganization': CreateOrganization400 | CreateOrganization401 | CreateOrganization404;
+  'organizations.getOrganization': GetOrganization400 | GetOrganization401 | GetOrganization403 | GetOrganization404;
+  'organizations.updateOrganization':
+    | UpdateOrganization400
+    | UpdateOrganization401
+    | UpdateOrganization403
+    | UpdateOrganization404;
+  'organizations.deleteOrganization':
+    | DeleteOrganization400
+    | DeleteOrganization401
+    | DeleteOrganization403
+    | DeleteOrganization404;
+  'apiKeys.listOrganizationAPIKeys':
+    | ListOrganizationAPIKeys400
+    | ListOrganizationAPIKeys401
+    | ListOrganizationAPIKeys403
+    | ListOrganizationAPIKeys404;
+  'apiKeys.createOrganizationAPIKey': CreateOrganizationAPIKey400;
+  'apiKeys.deleteOrganizationAPIKeys':
+    | DeleteOrganizationAPIKeys400
+    | DeleteOrganizationAPIKeys401
+    | DeleteOrganizationAPIKeys404;
+  'organizations.listOrganizationMembers': never;
+  'organizations.removeOrganizationMember': never;
+  'organizations.listOrganizationInvitations':
+    | ListOrganizationInvitations400
+    | ListOrganizationInvitations401
+    | ListOrganizationInvitations403
+    | ListOrganizationInvitations404;
+  'organizations.createOrganizationInvitation':
+    | CreateOrganizationInvitation400
+    | CreateOrganizationInvitation401
+    | CreateOrganizationInvitation403
+    | CreateOrganizationInvitation404
+    | CreateOrganizationInvitation409;
+  'organizations.getOrganizationInvitation':
+    | GetOrganizationInvitation400
+    | GetOrganizationInvitation401
+    | GetOrganizationInvitation403
+    | GetOrganizationInvitation404;
+  'organizations.deleteOrganizationInvitation':
+    | DeleteOrganizationInvitation400
+    | DeleteOrganizationInvitation401
+    | DeleteOrganizationInvitation403
+    | DeleteOrganizationInvitation404;
+  'organizations.resendOrganizationInvitation':
+    | ResendOrganizationInvitation400
+    | ResendOrganizationInvitation401
+    | ResendOrganizationInvitation403
+    | ResendOrganizationInvitation404;
+  'organizations.requestOrganizationDeletion':
+    | RequestOrganizationDeletion400
+    | RequestOrganizationDeletion401
+    | RequestOrganizationDeletion403
+    | RequestOrganizationDeletion409;
+  'organizations.getOrganizationMembershipLimits':
+    | GetOrganizationMembershipLimits401
+    | GetOrganizationMembershipLimits403;
+  'billing.createBillingCheckoutSession':
+    | CreateBillingCheckoutSession400
+    | CreateBillingCheckoutSession401
+    | CreateBillingCheckoutSession403;
+  'billing.createBillingPaymentMethodSession':
+    | CreateBillingPaymentMethodSession400
+    | CreateBillingPaymentMethodSession401
+    | CreateBillingPaymentMethodSession403;
+  'billing.getBillingCustomer': GetBillingCustomer401 | GetBillingCustomer403 | GetBillingCustomer404;
+  'billing.updateBillingCustomer':
+    | UpdateBillingCustomer400
+    | UpdateBillingCustomer401
+    | UpdateBillingCustomer403
+    | UpdateBillingCustomer404;
+  'billing.getBillingInvoices':
+    | GetBillingInvoices400
+    | GetBillingInvoices401
+    | GetBillingInvoices403
+    | GetBillingInvoices404;
+  'billing.getBillingUpcomingInvoice':
+    | GetBillingUpcomingInvoice401
+    | GetBillingUpcomingInvoice403
+    | GetBillingUpcomingInvoice404;
+  'marketplace.registerMarketplace':
+    | RegisterMarketplace400
+    | RegisterMarketplace401
+    | RegisterMarketplace409
+    | RegisterMarketplace502;
+  'apiKeys.listUserAPIKeys': ListUserAPIKeys400 | ListUserAPIKeys401;
+  'apiKeys.createUserAPIKey': CreateUserAPIKey400 | CreateUserAPIKey401;
+  'apiKeys.deleteUserAPIKeys': DeleteUserAPIKeys400 | DeleteUserAPIKeys401 | DeleteUserAPIKeys404;
+  'gateway.query': Query400 | Query401 | Query403 | Query404 | Query409 | Query413 | Query500 | Query504 | Query507;
+  'gateway.websocket': Websocket400;
+  'mcp.sendMcpRequest':
+    | SendMcpRequest400
+    | SendMcpRequest401
+    | SendMcpRequest413
+    | SendMcpRequest415
+    | SendMcpRequest500;
+  'projectsWebhooks.githubWebhook': GithubWebhook400 | GithubWebhook500;
+  'projects.listRegions': ListRegions400 | ListRegions401;
+  'projects.listInstanceTypes': ListInstanceTypes400 | ListInstanceTypes401;
+  'projects.listImages': ListImages400 | ListImages401;
+  'projects.listExtensions': ListExtensions400 | ListExtensions401;
+  'projects.getOrganizationLimits': GetOrganizationLimits401 | GetOrganizationLimits403;
+  'projects.getDefaultProjectLimits': never;
+  'projects.listProjects': ListProjects400 | ListProjects401;
+  'projects.createProject': CreateProject400 | CreateProject401;
+  'projects.getProject': GetProject400 | GetProject401 | GetProject404;
+  'projects.updateProject': UpdateProject400 | UpdateProject401 | UpdateProject404;
+  'projects.deleteProject': DeleteProject400 | DeleteProject401 | DeleteProject404;
+  'projects.getProjectLimits': GetProjectLimits401;
+  'projects.listBackups': ListBackups400 | ListBackups401 | ListBackups404;
+  'projects.getBackup': GetBackup400 | GetBackup401 | GetBackup404;
+  'branches.listBranches': ListBranches400 | ListBranches401 | ListBranches404;
+  'branches.createBranch': CreateBranch400 | CreateBranch401 | CreateBranch404 | CreateBranch412;
+  'branches.describeBranch': DescribeBranch400 | DescribeBranch401 | DescribeBranch404;
+  'branches.updateBranch': UpdateBranch400 | UpdateBranch401 | UpdateBranch404;
+  'branches.deleteBranch': DeleteBranch400 | DeleteBranch401 | DeleteBranch404;
+  'branches.getBranchCredentials': GetBranchCredentials400 | GetBranchCredentials401 | GetBranchCredentials404;
+  'branches.rotateBranchCredentials':
+    | RotateBranchCredentials400
+    | RotateBranchCredentials401
+    | RotateBranchCredentials404;
+  'branches.branchMetrics': BranchMetrics400 | BranchMetrics401 | BranchMetrics404;
+  'branches.restoreFromBackup': RestoreFromBackup400 | RestoreFromBackup401 | RestoreFromBackup404;
+  'branches.branchLogs': BranchLogs400 | BranchLogs401 | BranchLogs404;
+  'branches.getBranchPostgresConfig':
+    | GetBranchPostgresConfig400
+    | GetBranchPostgresConfig401
+    | GetBranchPostgresConfig404;
+  'githubApp.listGithubAppInstallations': ListGithubAppInstallations400 | ListGithubAppInstallations401;
+  'githubApp.createGithubAppInstallation':
+    | CreateGithubAppInstallation400
+    | CreateGithubAppInstallation401
+    | CreateGithubAppInstallation409;
+  'githubApp.updateGithubAppInstallation':
+    | UpdateGithubAppInstallation400
+    | UpdateGithubAppInstallation401
+    | UpdateGithubAppInstallation404
+    | UpdateGithubAppInstallation409;
+  'githubApp.getGithubRepository': GetGithubRepository400 | GetGithubRepository401;
+  'githubApp.createGithubRepository': CreateGithubRepository400 | CreateGithubRepository401 | CreateGithubRepository409;
+  'githubApp.updateGithubRepository': UpdateGithubRepository400 | UpdateGithubRepository401 | UpdateGithubRepository404;
+  'githubApp.deleteGithubRepository': DeleteGithubRepository400 | DeleteGithubRepository401 | DeleteGithubRepository404;
+  'vercel.upsertInstallation': UpsertInstallation400 | UpsertInstallation403 | UpsertInstallation409;
+  'vercel.deleteInstallation': DeleteInstallation403 | DeleteInstallation409;
+  'webhooks.orbWebhook': OrbWebhook400 | OrbWebhook500;
+  'webhooks.stripeWebhook': StripeWebhook400 | StripeWebhook500;
 };
 
 export type OperationErrorStatus = {

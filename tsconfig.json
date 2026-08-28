@@ -5,7 +5,9 @@
     "paths": {
       "~/*": ["./src/*"]
     },
-    "rootDir": "."
+    "rootDir": ".",
+    "jsx": "react-jsx",
+    "jsxImportSource": "kubb/jsx"
   },
-  "include": ["src", "env.ts"]
+  "include": ["src", "env.ts", "kubb", "kubb.config.ts"]
 }

@@ -1,88 +1,30 @@
-import { usePluginManager } from '@kubb/core/hooks';
-import type { PluginClient } from '@kubb/plugin-client';
-import { createReactGenerator } from '@kubb/plugin-oas/generators';
-import { useOas, useOperationManager } from '@kubb/plugin-oas/hooks';
-import { getBanner, getFooter } from '@kubb/plugin-oas/utils';
 import { pluginTsName } from '@kubb/plugin-ts';
-import { pluginZodName } from '@kubb/plugin-zod';
-import { File } from '@kubb/react-fabric';
-import { ClientOperation } from '../components/client-operation';
+import { ast, defineGenerator } from 'kubb/kit';
+import { File, jsxRenderer } from 'kubb/jsx';
+import { ClientOperation, resolveTypeSchemas, typeNames } from '../components/client-operation';
+import type { PluginClient } from '../plugin';
+import { clientFile, fileBanner, operationName, typesFile } from '../utils';
 
-export const clientGenerator = createReactGenerator<PluginClient>({
+export const clientGenerator = defineGenerator<PluginClient>({
   name: 'client',
-  Operation({ plugin, operation, generator }) {
-    const pluginManager = usePluginManager();
-    const {
-      options,
-      options: { output }
-    } = plugin;
+  renderer: jsxRenderer,
+  operation(node, ctx) {
+    if (!ast.isHttpOperationNode(node)) return null;
 
-    const oas = useOas();
-    const { getSchemas, getName, getFile } = useOperationManager(generator);
-
-    const client = {
-      name: getName(operation, { type: 'function' }),
-      file: getFile(operation)
-    };
-
-    const url = {
-      name: getName(operation, { type: 'function', suffix: 'url', prefix: 'get' }),
-      file: getFile(operation)
-    };
-
-    const type = {
-      file: getFile(operation, { pluginKey: [pluginTsName] }),
-      schemas: getSchemas(operation, { pluginKey: [pluginTsName], type: 'type' })
-    };
-
-    const zod = {
-      file: getFile(operation, { pluginKey: [pluginZodName] }),
-      schemas: getSchemas(operation, { pluginKey: [pluginZodName], type: 'function' })
-    };
+    const { importPath } = ctx.options;
+    const file = clientFile(ctx, node);
+    const typeSchemas = resolveTypeSchemas(node, ctx.getResolver(pluginTsName));
+    const typeImports = typeNames(typeSchemas);
 
     return (
-      <File
-        baseName={client.file.baseName}
-        path={client.file.path}
-        meta={client.file.meta}
-        banner={getBanner({ oas, output, config: pluginManager.config })}
-        footer={getFooter({ oas, output })}
-      >
-        <File.Import name={'client'} path={options.importPath ?? ''} />
-        <File.Import name={['FetcherConfig']} path={options.importPath ?? ''} isTypeOnly />
-        {options.parser === 'zod' && (
-          <File.Import
-            name={[zod.schemas.response.name, zod.schemas.request?.name].filter(Boolean) as string[]}
-            root={client.file.path}
-            path={zod.file.path}
-          />
+      <File baseName={file.baseName} path={file.path} meta={file.meta} {...fileBanner(ctx, file)}>
+        <File.Import name={'client'} path={importPath} />
+        <File.Import name={['FetcherConfig']} path={importPath} isTypeOnly />
+        {typeImports.length > 0 && (
+          <File.Import name={typeImports} root={file.path} path={typesFile(ctx, node).path} isTypeOnly />
         )}
-        <File.Import
-          name={
-            [
-              type.schemas.request?.name,
-              type.schemas.response.name,
-              type.schemas.pathParams?.name,
-              type.schemas.queryParams?.name,
-              type.schemas.headerParams?.name,
-              ...(type.schemas.statusCodes?.map((item) => item.name) || [])
-            ].filter(Boolean) as string[]
-          }
-          root={client.file.path}
-          path={type.file.path}
-          isTypeOnly
-        />
 
-        <ClientOperation
-          name={client.name}
-          urlName={url.name}
-          baseURL={options.baseURL}
-          paramsCasing={options.paramsCasing}
-          typeSchemas={type.schemas}
-          operation={operation}
-          parser={options.parser}
-          zodSchemas={zod.schemas}
-        />
+        <ClientOperation name={operationName(ctx, node)} node={node} typeSchemas={typeSchemas} />
       </File>
     );
   }
