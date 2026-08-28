@@ -1444,7 +1444,7 @@ export type BranchShortMetadata = {
    */
   parentID?: (string | null) | undefined;
   /**
-   * @description Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead.
+   * @description Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead. The hostname in this connection string carries a -deprecated marker in its first DNS label.
    * @deprecated
    * @type string
    */
@@ -1691,7 +1691,7 @@ export type BranchMetadata = {
    */
   status: BranchStatus;
   /**
-   * @description Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead.
+   * @description Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead. The hostname in this connection string carries a -deprecated marker in its first DNS label.
    * @deprecated
    * @type string
    */

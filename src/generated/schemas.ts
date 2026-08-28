@@ -684,7 +684,7 @@ export const branchShortMetadataSchema = z
     connectionString: z
       .string()
       .describe(
-        'Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead.'
+        'Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead. The hostname in this connection string carries a -deprecated marker in its first DNS label.'
       )
       .nullish(),
     region: z.string().describe('Geographic region where the branch is deployed'),
@@ -813,7 +813,7 @@ export const branchMetadataSchema = z
       z
         .string()
         .describe(
-          'Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead.'
+          'Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead. The hostname in this connection string carries a -deprecated marker in its first DNS label.'
         )
     ),
     publicAccess: z.boolean().describe('Whether the branch allows public access without authentication'),
