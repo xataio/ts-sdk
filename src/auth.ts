@@ -9,10 +9,11 @@ export async function refreshToken(
     accessToken,
     refreshToken,
     expiresAt
-  }: { client: OpenIdClient } & OpenIdToken
+  }: { client: OpenIdClient } & OpenIdToken,
+  { force = false }: { force?: boolean } = {}
 ): Promise<OpenIdToken> {
   // If the token doesn't expire in the next 30 seconds, do nothing
-  if (expiresAt > new Date(Date.now() + 30 * 1000)) {
+  if (!force && expiresAt > new Date(Date.now() + 30 * 1000)) {
     return { accessToken, refreshToken, expiresAt };
   }
 

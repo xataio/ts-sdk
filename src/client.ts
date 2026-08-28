@@ -228,7 +228,7 @@ export class XataApi {
     return result;
   }
 
-  public async refreshToken() {
+  public async refreshToken({ force = false }: { force?: boolean } = {}) {
     if (!this.token) {
       throw new Error('No token provided');
     }
@@ -237,7 +237,7 @@ export class XataApi {
       return this.token;
     }
 
-    const newToken = await refreshToken(this.fetch, this.token);
+    const newToken = await refreshToken(this.fetch, this.token, { force });
     this.token = {
       ...this.token,
       accessToken: newToken.accessToken,

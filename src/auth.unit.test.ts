@@ -56,4 +56,15 @@ describe('refreshToken', () => {
     expect(called).toBe(false);
     expect(result.accessToken).toBe('old-access');
   });
+
+  it('refreshes a token that is still valid when forced', async () => {
+    const fetch = mockFetch({
+      ok: true,
+      status: 200,
+      body: { access_token: 'new-access', refresh_token: 'new-refresh', expires_in: 300 }
+    });
+    const validToken = { ...expiredToken, expiresAt: new Date(Date.now() + 60 * 1000) };
+    const result = await refreshToken(fetch as never, validToken, { force: true });
+    expect(result.accessToken).toBe('new-access');
+  });
 });
