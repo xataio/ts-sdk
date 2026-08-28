@@ -23,10 +23,10 @@
     "@kubb/plugin-zod": "4.39.3",
     "@kubb/react": "4.3.1",
     "@kubb/react-fabric": "0.16.1",
-    "@types/node": "26.2.0",
+    "@types/node": "26.3.0",
     "case": "1.6.3",
     "typescript": "7.0.2",
-    "vitest": "4.1.10",
+    "vitest": "4.1.11",
     "@xata.io/tsconfig": "0.0.2"
   },
   "scripts": {
