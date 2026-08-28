@@ -1,5 +1,19 @@
 # @xata.io/api
 
+## 0.1.10
+
+### Patch Changes
+
+- [#2970](https://github.com/xataio/frontend/pull/2970) [`2054627`](https://github.com/xataio/frontend/commit/2054627b2a2bcb6df998acb9bcda439b8cf473c0) Thanks [@xata-bot](https://github.com/xata-bot)! - [Generated] Update API handlers ([#2970](https://github.com/xataio/frontend/issues/2970))
+
+- [#2491](https://github.com/xataio/frontend/pull/2491) [`4c5d294`](https://github.com/xataio/frontend/commit/4c5d294e2cb8d05b1e3c60c8cd7e239c271e2477) Thanks [@SferaDev](https://github.com/SferaDev)! - Generate the API client with kubb v5. Every operation function keeps its name and signature; the
+  per-operation `*Query`/`*Mutation` aggregate types are gone, the success response type is now the
+  2xx status type (`GetBranchCredentials200`), enum type aliases drop the `Key` suffix
+  (`BranchStatusStatusTypeEnumKey` becomes `BranchStatusStatusTypeEnum`), and the zod schemas type
+  date/time fields as `z.iso.datetime()` strings instead of `z.date()`.
+
+- [#2890](https://github.com/xataio/frontend/pull/2890) [`1d279b5`](https://github.com/xataio/frontend/commit/1d279b5b132c2c6dfc1eae14fc90c6792ae46fdc) Thanks [@SferaDev](https://github.com/SferaDev)! - [CLI]: Recover from expired sessions
+
 ## 0.1.9
 
 ### Patch Changes
