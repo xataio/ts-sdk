@@ -209,8 +209,6 @@ import type {
   GetOrganizationLimitsPathParams,
   GetOrganizationLimits401,
   GetOrganizationLimits403,
-  GetDefaultProjectLimits200,
-  GetDefaultProjectLimitsPathParams,
   ListProjects200,
   ListProjectsPathParams,
   ListProjects400,
@@ -1498,36 +1496,6 @@ export async function getOrganizationLimits({
 }
 
 /**
- * @summary Get project resource limits
- * @description Retrieves the default resource limits for projects in the specified organization, including maximum instances, storage, and allowed regions.
- * {@link /organizations/:organizationID/projects/limits}
- */
-export async function getDefaultProjectLimits({
-  pathParams,
-  config = {}
-}: {
-  pathParams: GetDefaultProjectLimitsPathParams;
-  config?: Partial<FetcherConfig> & { client?: typeof client };
-}) {
-  const { client: request = client, ...requestConfig } = config;
-
-  if (!pathParams.organizationID) {
-    throw new Error(`Missing required path parameter: organizationID`);
-  }
-
-  const data = await request<
-    GetDefaultProjectLimits200,
-    Error,
-    null,
-    Record<string, string>,
-    Record<string, string>,
-    GetDefaultProjectLimitsPathParams
-  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/projects/limits`, ...requestConfig });
-
-  return data;
-}
-
-/**
  * @summary List all projects
  * @description Retrieves a list of all projects within the specified organization that the authenticated user has access to.
  * {@link /organizations/:organizationID/projects}
@@ -2748,7 +2716,6 @@ export const operationsByPath = {
   'GET /organizations/{organizationID}/images': listImages,
   'GET /organizations/{organizationID}/extensions': listExtensions,
   'GET /organizations/{organizationID}/limits': getOrganizationLimits,
-  'GET /organizations/{organizationID}/projects/limits': getDefaultProjectLimits,
   'GET /organizations/{organizationID}/projects': listProjects,
   'POST /organizations/{organizationID}/projects': createProject,
   'GET /organizations/{organizationID}/projects/{projectID}': getProject,
@@ -2839,7 +2806,6 @@ export const operationsByTag = {
     listImages,
     listExtensions,
     getOrganizationLimits,
-    getDefaultProjectLimits,
     listProjects,
     createProject,
     getProject,
@@ -2936,7 +2902,6 @@ export const tagDictionary = {
       'listImages',
       'listExtensions',
       'getOrganizationLimits',
-      'getDefaultProjectLimits',
       'listProjects',
       'getProject',
       'getProjectLimits',
@@ -3097,7 +3062,6 @@ export type OperationErrors = {
   'projects.listImages': ListImages400 | ListImages401;
   'projects.listExtensions': ListExtensions400 | ListExtensions401;
   'projects.getOrganizationLimits': GetOrganizationLimits401 | GetOrganizationLimits403;
-  'projects.getDefaultProjectLimits': never;
   'projects.listProjects': ListProjects400 | ListProjects401;
   'projects.createProject': CreateProject400 | CreateProject401;
   'projects.getProject': GetProject400 | GetProject401 | GetProject404;
@@ -3180,7 +3144,6 @@ export type OperationErrorStatus = {
   'projects.listImages': 400 | 401;
   'projects.listExtensions': 400 | 401;
   'projects.getOrganizationLimits': 401 | 403;
-  'projects.getDefaultProjectLimits': never;
   'projects.listProjects': 400 | 401;
   'projects.createProject': 400 | 401;
   'projects.getProject': 400 | 401 | 404;

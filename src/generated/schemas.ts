@@ -749,15 +749,6 @@ export const branchUpdateDetailsSchema = z
   })
   .describe('Details that can be updated for an existing branch');
 
-export const projectLimitsSchema = z
-  .object({
-    maxInstances: z.int().min(1).describe('Maximum number of database instances allowed per branch'),
-    minInstances: z.int().min(1).describe('Minimum number of database instances required per branch'),
-    maxDescriptionLength: z.int().min(25).describe('Maximum character length allowed for project descriptions'),
-    maxBranches: z.int().describe('Maximum number of branches allowed per project')
-  })
-  .describe('Resource limits and constraints for projects within an organization');
-
 export const branchMetricNameSchema = z
   .enum([
     'cpu',
@@ -2401,16 +2392,6 @@ export const getOrganizationLimitsErrorSchema = z.union([
   getOrganizationLimitsStatus403Schema,
   getOrganizationLimitsStatus5XXSchema
 ]);
-
-export const getDefaultProjectLimitsPathOrganizationIDSchema = organizationIDSchema.describe(
-  'Unique identifier of the organization to get project limits for'
-);
-
-export const getDefaultProjectLimitsStatus200Schema = projectLimitsSchema.describe(
-  'Resource limits and constraints for projects within an organization'
-);
-
-export const getDefaultProjectLimitsResponseSchema = getDefaultProjectLimitsStatus200Schema;
 
 export const listProjectsPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization to list projects from'

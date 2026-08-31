@@ -1938,36 +1938,6 @@ export type BranchUpdateDetails = {
   image?: string | undefined;
 };
 
-/**
- * @description Resource limits and constraints for projects within an organization
- * @type object
- */
-export type ProjectLimits = {
-  /**
-   * @description Maximum number of database instances allowed per branch
-   * @minLength 1
-   * @type integer
-   */
-  maxInstances: number;
-  /**
-   * @description Minimum number of database instances required per branch
-   * @minLength 1
-   * @type integer
-   */
-  minInstances: number;
-  /**
-   * @description Maximum character length allowed for project descriptions
-   * @minLength 25
-   * @type integer
-   */
-  maxDescriptionLength: number;
-  /**
-   * @description Maximum number of branches allowed per project
-   * @type integer
-   */
-  maxBranches: number;
-};
-
 export const branchMetricName = {
   cpu: 'cpu',
   memory: 'memory',
@@ -5767,37 +5737,6 @@ export type GetOrganizationLimitsResponse =
   | GetOrganizationLimits401
   | GetOrganizationLimits403
   | GetOrganizationLimits5XX;
-
-export type GetDefaultProjectLimitsPathParams = {
-  /**
-   * @description Unique identifier of the organization to get project limits for
-   * @pattern [a-zA-Z0-9_-~:]+
-   * @type string
-   */
-  organizationID: OrganizationID;
-};
-
-/**
- * @description Resource limits and constraints for projects within an organization
- * @type object
- */
-export type GetDefaultProjectLimits200 = ProjectLimits;
-
-export type GetDefaultProjectLimitsOptions = {
-  body?: never | undefined;
-  path: GetDefaultProjectLimitsPathParams;
-  query?: never | undefined;
-  headers?: never | undefined;
-};
-
-export type GetDefaultProjectLimitsResponses = {
-  '200': GetDefaultProjectLimits200;
-};
-
-/**
- * @description Union of all possible responses
- */
-export type GetDefaultProjectLimitsResponse = GetDefaultProjectLimits200;
 
 export type ListProjectsPathParams = {
   /**
