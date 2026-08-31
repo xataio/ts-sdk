@@ -2135,8 +2135,6 @@ export const queryStatus500Schema = errorResponseSchema.describe('Error response
 
 export const queryStatus504Schema = errorResponseSchema.describe('Error response with PostgreSQL error fields.');
 
-export const queryStatus507Schema = errorResponseSchema.describe('Error response with PostgreSQL error fields.');
-
 export const queryResponseSchema = queryStatus200Schema;
 
 export const queryErrorSchema = z.union([
@@ -2147,8 +2145,7 @@ export const queryErrorSchema = z.union([
   queryStatus409Schema,
   queryStatus413Schema,
   queryStatus500Schema,
-  queryStatus504Schema,
-  queryStatus507Schema
+  queryStatus504Schema
 ]);
 
 export const queryBodySchema = SQLRequestSchema.describe(

@@ -172,7 +172,6 @@ import type {
   Query413,
   Query500,
   Query504,
-  Query507,
   WebsocketResponse,
   Websocket400,
   SendMcpRequest200,
@@ -1243,7 +1242,7 @@ export async function query({
 
   const data = await request<
     Query200,
-    Query400 | Query401 | Query403 | Query404 | Query409 | Query413 | Query500 | Query504 | Query507,
+    Query400 | Query401 | Query403 | Query404 | Query409 | Query413 | Query500 | Query504,
     QueryMutationRequest,
     QueryHeaderParams,
     Record<string, string>,
@@ -3084,7 +3083,7 @@ export type OperationErrors = {
   'apiKeys.listUserAPIKeys': ListUserAPIKeys400 | ListUserAPIKeys401;
   'apiKeys.createUserAPIKey': CreateUserAPIKey400 | CreateUserAPIKey401;
   'apiKeys.deleteUserAPIKeys': DeleteUserAPIKeys400 | DeleteUserAPIKeys401 | DeleteUserAPIKeys404;
-  'gateway.query': Query400 | Query401 | Query403 | Query404 | Query409 | Query413 | Query500 | Query504 | Query507;
+  'gateway.query': Query400 | Query401 | Query403 | Query404 | Query409 | Query413 | Query500 | Query504;
   'gateway.websocket': Websocket400;
   'mcp.sendMcpRequest':
     | SendMcpRequest400
@@ -3172,7 +3171,7 @@ export type OperationErrorStatus = {
   'apiKeys.listUserAPIKeys': 400 | 401;
   'apiKeys.createUserAPIKey': 400 | 401;
   'apiKeys.deleteUserAPIKeys': 400 | 401 | 404;
-  'gateway.query': 400 | 401 | 403 | 404 | 409 | 413 | 500 | 504 | 507;
+  'gateway.query': 400 | 401 | 403 | 404 | 409 | 413 | 500 | 504;
   'gateway.websocket': 400;
   'mcp.sendMcpRequest': 400 | 401 | 413 | 415 | 500;
   'projectsWebhooks.githubWebhook': 400 | 500;

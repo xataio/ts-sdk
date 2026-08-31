@@ -5162,12 +5162,6 @@ export type Query500 = ErrorResponse;
 export type Query504 = ErrorResponse;
 
 /**
- * @description Error response with PostgreSQL error fields.
- * @type object
- */
-export type Query507 = ErrorResponse;
-
-/**
  * @description SQL query request. Provide either `query` for a single query or `queries` for a batch.
  * @type object
  */
@@ -5190,7 +5184,6 @@ export type QueryResponses = {
   '413': Query413;
   '500': Query500;
   '504': Query504;
-  '507': Query507;
 };
 
 /**
@@ -5205,8 +5198,7 @@ export type QueryResponse =
   | Query409
   | Query413
   | Query500
-  | Query504
-  | Query507;
+  | Query504;
 
 export type Websocket101 = unknown;
 
