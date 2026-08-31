@@ -1,5 +1,15 @@
 # @xata.io/api
 
+## 0.1.11
+
+### Patch Changes
+
+- [#3007](https://github.com/xataio/frontend/pull/3007) [`f2640fc`](https://github.com/xataio/frontend/commit/f2640fc9f0f0f684ce0612c276c872be6420762f) Thanks [@xata-bot](https://github.com/xata-bot)! - [Generated] Update API handlers ([#3007](https://github.com/xataio/frontend/issues/3007))
+
+- [#3010](https://github.com/xataio/frontend/pull/3010) [`4da30cc`](https://github.com/xataio/frontend/commit/4da30cc7a40305104e796ae1b1cea850d69ceca7) Thanks [@xata-bot](https://github.com/xata-bot)! - [Generated] Update API handlers ([#3010](https://github.com/xataio/frontend/issues/3010))
+
+- [#3012](https://github.com/xataio/frontend/pull/3012) [`5b63893`](https://github.com/xataio/frontend/commit/5b638934a813155c899defbb251cebc9ebcff185) Thanks [@xata-bot](https://github.com/xata-bot)! - Remove invite link
+
 ## 0.1.10
 
 ### Patch Changes
