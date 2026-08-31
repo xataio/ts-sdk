@@ -78,8 +78,7 @@ export const organizationInvitationSchema = z.object({
   last_name: z.string().nullish().describe('Last name of the invited user'),
   created_at: z.iso.datetime().describe('Timestamp when the invitation was created'),
   expires_at: z.iso.datetime().describe('Timestamp when the invitation expires'),
-  status: z.enum(['pending', 'expired']).describe('Current status of the invitation'),
-  invite_link: z.string().optional().describe('URL link to accept the invitation')
+  status: z.enum(['pending', 'expired']).describe('Current status of the invitation')
 });
 
 export const billingCollectionMethodSchema = z

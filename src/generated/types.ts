@@ -230,11 +230,6 @@ export type OrganizationInvitation = {
    * @type string
    */
   status: OrganizationInvitationStatusEnum;
-  /**
-   * @description URL link to accept the invitation
-   * @type string | undefined
-   */
-  invite_link?: string | undefined;
 };
 
 export const billingCollectionMethod = {
