@@ -984,6 +984,56 @@ export const deleteInstallationRequestSchema = z.object({
   reason: z.string().optional().describe('The reason for deleting the installation.')
 });
 
+export const planDetailSchema = z.object({
+  label: z.string(),
+  value: z.string().optional()
+});
+
+export const planQuoteLineSchema = z.object({
+  line: z.string(),
+  amount: z.string()
+});
+
+export const billingPlanSchema = z
+  .object({
+    id: z.string().describe('Partner-provided billing plan id.'),
+    type: z.string().describe('Plan type: "subscription" or "prepayment".'),
+    name: z.string(),
+    description: z.string(),
+    scope: z
+      .string()
+      .optional()
+      .describe('Plan scope; installation-level plans require enablement on the integration.'),
+    paymentMethodRequired: z
+      .boolean()
+      .optional()
+      .describe('Subscription plans only. false means the plan is completely free.'),
+    preauthorizationAmount: z
+      .number()
+      .optional()
+      .describe('Subscription + paymentMethodRequired. Amount used to test the payment method; never charged.'),
+    initialCharge: z
+      .string()
+      .optional()
+      .describe('Subscription + paymentMethodRequired. Amount invoiced immediately at sign-up (decimal USD string).'),
+    cost: z
+      .string()
+      .optional()
+      .describe('Display cost for fixed-cost plans, e.g. "$20.00/month". Omitted for usage-based plans.'),
+    details: z.array(planDetailSchema).optional(),
+    highlightedDetails: z.array(planDetailSchema).optional(),
+    quote: z.array(planQuoteLineSchema).optional(),
+    effectiveDate: z.string().optional(),
+    disabled: z.boolean().optional()
+  })
+  .describe('A Vercel Marketplace billing plan. Billing SKU only; it does not change Xata entitlements.');
+
+export const listBillingPlansResponseSchema = z
+  .object({
+    plans: z.array(billingPlanSchema)
+  })
+  .describe('The billing plans available for a product.');
+
 export const vercelErrorSchema = z
   .object({
     error: z.object({
@@ -3494,6 +3544,39 @@ export const deleteInstallationErrorSchema = z.union([
 ]);
 
 export const deleteInstallationBodySchema = deleteInstallationRequestSchema.optional();
+
+export const listBillingPlansForProductPathProductSlugSchema = z
+  .string()
+  .describe('Vercel product slug (e.g. xata-postgres).');
+
+export const listBillingPlansForProductQueryMetadataSchema = z
+  .string()
+  .optional()
+  .describe('Opaque metadata forwarded by Vercel.');
+
+export const listBillingPlansForProductStatus200Schema = listBillingPlansResponseSchema.describe(
+  'The billing plans available for a product.'
+);
+
+export const listBillingPlansForProductStatus400Schema = vercelErrorSchema.describe(
+  'Vercel Partner API error envelope.'
+);
+
+export const listBillingPlansForProductStatus403Schema = vercelErrorSchema.describe(
+  'Vercel Partner API error envelope.'
+);
+
+export const listBillingPlansForProductStatus404Schema = vercelErrorSchema.describe(
+  'Vercel Partner API error envelope.'
+);
+
+export const listBillingPlansForProductResponseSchema = listBillingPlansForProductStatus200Schema;
+
+export const listBillingPlansForProductErrorSchema = z.union([
+  listBillingPlansForProductStatus400Schema,
+  listBillingPlansForProductStatus403Schema,
+  listBillingPlansForProductStatus404Schema
+]);
 
 export const orbWebhookStatus200Schema = z.unknown();
 

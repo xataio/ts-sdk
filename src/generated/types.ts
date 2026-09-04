@@ -2497,6 +2497,73 @@ export type DeleteInstallationRequest = {
   reason?: string | undefined;
 };
 
+export type PlanDetail = {
+  label: string;
+  value?: string | undefined;
+};
+
+export type PlanQuoteLine = {
+  line: string;
+  amount: string;
+};
+
+/**
+ * @description A Vercel Marketplace billing plan. Billing SKU only; it does not change Xata entitlements.
+ * @type object
+ */
+export type BillingPlan = {
+  /**
+   * @description Partner-provided billing plan id.
+   * @type string
+   */
+  id: string;
+  /**
+   * @description Plan type: \"subscription\" or \"prepayment\".
+   * @type string
+   */
+  type: string;
+  name: string;
+  description: string;
+  /**
+   * @description Plan scope; installation-level plans require enablement on the integration.
+   * @type string | undefined
+   */
+  scope?: string | undefined;
+  /**
+   * @description Subscription plans only. false means the plan is completely free.
+   * @type boolean | undefined
+   */
+  paymentMethodRequired?: boolean | undefined;
+  /**
+   * @description Subscription + paymentMethodRequired. Amount used to test the payment method; never charged.
+   * @type number | undefined
+   */
+  preauthorizationAmount?: number | undefined;
+  /**
+   * @description Subscription + paymentMethodRequired. Amount invoiced immediately at sign-up (decimal USD string).
+   * @type string | undefined
+   */
+  initialCharge?: string | undefined;
+  /**
+   * @description Display cost for fixed-cost plans, e.g. \"$20.00/month\". Omitted for usage-based plans.
+   * @type string | undefined
+   */
+  cost?: string | undefined;
+  details?: PlanDetail[] | undefined;
+  highlightedDetails?: PlanDetail[] | undefined;
+  quote?: PlanQuoteLine[] | undefined;
+  effectiveDate?: string | undefined;
+  disabled?: boolean | undefined;
+};
+
+/**
+ * @description The billing plans available for a product.
+ * @type object
+ */
+export type ListBillingPlansResponse = {
+  plans: BillingPlan[];
+};
+
 /**
  * @description Vercel Partner API error envelope.
  * @type object
@@ -8184,6 +8251,69 @@ export type DeleteInstallationResponses = {
  * @description Union of all possible responses
  */
 export type DeleteInstallationResponse = DeleteInstallation204 | DeleteInstallation403 | DeleteInstallation409;
+
+export type ListBillingPlansForProductPathParams = {
+  /**
+   * @description Vercel product slug (e.g. xata-postgres).
+   * @type string
+   */
+  productSlug: string;
+};
+
+export type ListBillingPlansForProductQueryParams = {
+  /**
+   * @description Opaque metadata forwarded by Vercel.
+   * @type string | undefined
+   */
+  metadata?: string | undefined;
+};
+
+/**
+ * @description The billing plans available for a product.
+ * @type object
+ */
+export type ListBillingPlansForProduct200 = ListBillingPlansResponse;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type ListBillingPlansForProduct400 = VercelError;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type ListBillingPlansForProduct403 = VercelError;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type ListBillingPlansForProduct404 = VercelError;
+
+export type ListBillingPlansForProductOptions = {
+  body?: never | undefined;
+  path: ListBillingPlansForProductPathParams;
+  query?: ListBillingPlansForProductQueryParams | undefined;
+  headers?: never | undefined;
+};
+
+export type ListBillingPlansForProductResponses = {
+  '200': ListBillingPlansForProduct200;
+  '400': ListBillingPlansForProduct400;
+  '403': ListBillingPlansForProduct403;
+  '404': ListBillingPlansForProduct404;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type ListBillingPlansForProductResponse =
+  | ListBillingPlansForProduct200
+  | ListBillingPlansForProduct400
+  | ListBillingPlansForProduct403
+  | ListBillingPlansForProduct404;
 
 export type OrbWebhook200 = unknown;
 

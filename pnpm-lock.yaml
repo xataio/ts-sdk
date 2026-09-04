@@ -109,8 +109,8 @@ packages:
     resolution: {integrity: sha512-jh5ejZdJbfresvDpwvLpmRNiq3c8fV9uoEfY3hQPE+QSfuFZCgrQcZldQG46i/4El0TANkknyUaoCg46XFei0Q==}
     engines: {node: '>=22'}
 
-  '@kubb/ast@5.0.6':
-    resolution: {integrity: sha512-hn7wH0uLeKZ4WfeHJ8JAHMSyNlRRnaOYK+mptPo+5c0RROPpFBE+ONWnp6IlC5ettZHVT4V5IomyXa06gsx7EA==}
+  '@kubb/ast@5.1.0':
+    resolution: {integrity: sha512-eO69ae/6192Q3W7pDt450bumE5u+req31Iso+lMQtYduKQf304Askn6qmLrfu8tUlDX2SeqUkB6kedL920kWAQ==}
     engines: {node: '>=22'}
 
   '@kubb/cli@5.0.3':
@@ -130,16 +130,16 @@ packages:
     resolution: {integrity: sha512-zM+VENlkOVIoWUKRvugR2OKG8/sfmJiV1yyIj61TqIPQLTQuo0sBgsKrR8mJbH6ueajH3YZxPrlB3zemltqrfw==}
     engines: {node: '>=22'}
 
-  '@kubb/core@5.0.6':
-    resolution: {integrity: sha512-B7u8t9kNjDGbjoIU/7rDPoajeMYhWSbeiMxvPVVoffGFqbZcDmMOAKZ8lG4vtNj/fNw2t4lHpOaPvu51hQpqaA==}
+  '@kubb/core@5.1.0':
+    resolution: {integrity: sha512-h+1CjjBi3lJQQvdbC3jcCNJidHvepM6DltCTVMvIQMwPm54JapSXDITaspkPy1yMf5tOOxkiV3JmeA+270v2oA==}
     engines: {node: '>=22'}
 
   '@kubb/kit@5.0.3':
     resolution: {integrity: sha512-xByap0n+Bw4h8RAmGUSEHrq/N7+QXjBB3EwuKaDG9Qvcr/1k1byaQxeenKijJkmIsRM4Xs48E5NAwHRvWT0AxA==}
     engines: {node: '>=22'}
 
-  '@kubb/kit@5.0.6':
-    resolution: {integrity: sha512-dyjMyEew3AiyhIVb76FWCqUgttyw6Vzj6jMrF7RXppres5p3IirytmlKNAjNRb2Pdy4eoxFodrmeJtorFv2OPw==}
+  '@kubb/kit@5.1.0':
+    resolution: {integrity: sha512-YXJJlTwmcGcMWLOxXBuhy5X7+CDmfkIt26qZLOzeEwJ6T0E3lvhSW86FCzrOTjEzQCmj3ASJn6a7ua0omKZPHA==}
     engines: {node: '>=22'}
 
   '@kubb/mcp@5.0.3':
@@ -157,8 +157,8 @@ packages:
     resolution: {integrity: sha512-j8QIa8aZK8FJXuq/1iD5G7nGpjml0uin3a6J5d99jwJ5rd/pnkykxMwzWiqFXMWVG9ofnmbA6JMQ0subZzlJCg==}
     engines: {node: '>=22'}
 
-  '@kubb/parser-ts@5.0.6':
-    resolution: {integrity: sha512-zdIOsFxCCsl3BFX5nINmOEWWLvLZ0C0nc8vBwgA++tHINi848xqi8zPsI4zYTjPkm2uiRp/jasQRcjZpVV5wWQ==}
+  '@kubb/parser-ts@5.1.0':
+    resolution: {integrity: sha512-R+mJUbpy4D3Fiva6k+P5xAmp5zYeFmyReSJQzu6+0InUC5HNJnKeA3q3Kpcqs/xkb2EtgV9aJq+Zz0yZQgZVmw==}
     engines: {node: '>=22'}
 
   '@kubb/plugin-barrel@5.0.3':
@@ -732,8 +732,8 @@ packages:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
 
-  postcss@8.5.27:
-    resolution: {integrity: sha512-79Iho8QeYyooJ8e9lCRyTVlyTAkS/kXBYKff6TMzS3kEWGQ8Ds5UEtXpGrSUDLUWok6QTvxeYy0GO8fopHnaSA==}
+  postcss@8.5.28:
+    resolution: {integrity: sha512-RRuzqDtt5Y9h3quz5hWhK+TPnsmVs6WwSU6LkJMeY4HstUEDuYTG8UJSdawMRzmzAtV+KEoG8N3Qg2qLy5vM/A==}
     engines: {node: ^10 || ^12 || >=14}
 
   quansync@1.0.0:
@@ -1074,7 +1074,7 @@ snapshots:
 
   '@kubb/ast@5.0.3': {}
 
-  '@kubb/ast@5.0.6': {}
+  '@kubb/ast@5.1.0': {}
 
   '@kubb/cli@5.0.3(@kubb/adapter-oas@5.0.3(openapi-types@12.1.3))(@kubb/mcp@5.0.3(@kubb/renderer-jsx@5.0.3)(openapi-types@12.1.3)(typescript@7.0.2))':
     dependencies:
@@ -1094,19 +1094,19 @@ snapshots:
     dependencies:
       '@kubb/ast': 5.0.3
 
-  '@kubb/core@5.0.6':
+  '@kubb/core@5.1.0':
     dependencies:
-      '@kubb/ast': 5.0.6
+      '@kubb/ast': 5.1.0
 
   '@kubb/kit@5.0.3':
     dependencies:
       '@kubb/ast': 5.0.3
       '@kubb/core': 5.0.3
 
-  '@kubb/kit@5.0.6':
+  '@kubb/kit@5.1.0':
     dependencies:
-      '@kubb/ast': 5.0.6
-      '@kubb/core': 5.0.6
+      '@kubb/ast': 5.1.0
+      '@kubb/core': 5.1.0
 
   '@kubb/mcp@5.0.3(@kubb/renderer-jsx@5.0.3)(openapi-types@12.1.3)(typescript@7.0.2)':
     dependencies:
@@ -1131,9 +1131,9 @@ snapshots:
       '@kubb/kit': 5.0.3
       typescript: 6.0.3
 
-  '@kubb/parser-ts@5.0.6':
+  '@kubb/parser-ts@5.1.0':
     dependencies:
-      '@kubb/kit': 5.0.6
+      '@kubb/kit': 5.1.0
       typescript: 6.0.3
 
   '@kubb/plugin-barrel@5.0.3(@kubb/core@5.0.3)':
@@ -1143,7 +1143,7 @@ snapshots:
 
   '@kubb/plugin-ts@5.0.0(kubb@5.0.3(openapi-types@12.1.3)(rolldown@1.2.7)(typescript@7.0.2)(vite@8.2.2(@types/node@26.4.0)(jiti@2.7.0)(yaml@2.9.0)))':
     dependencies:
-      '@kubb/parser-ts': 5.0.6
+      '@kubb/parser-ts': 5.1.0
       kubb: 5.0.3(openapi-types@12.1.3)(rolldown@1.2.7)(typescript@7.0.2)(vite@8.2.2(@types/node@26.4.0)(jiti@2.7.0)(yaml@2.9.0))
       typescript: 6.0.3
 
@@ -1564,7 +1564,7 @@ snapshots:
 
   picomatch@4.0.7: {}
 
-  postcss@8.5.27:
+  postcss@8.5.28:
     dependencies:
       nanoid: 3.3.18
       picocolors: 1.1.1
@@ -1705,7 +1705,7 @@ snapshots:
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
-      postcss: 8.5.27
+      postcss: 8.5.28
       rolldown: 1.2.7
       tinyglobby: 0.2.17
     optionalDependencies:

@@ -347,6 +347,12 @@ import type {
   DeleteInstallationPathParams,
   DeleteInstallation403,
   DeleteInstallation409,
+  ListBillingPlansForProduct200,
+  ListBillingPlansForProductPathParams,
+  ListBillingPlansForProductQueryParams,
+  ListBillingPlansForProduct400,
+  ListBillingPlansForProduct403,
+  ListBillingPlansForProduct404,
   OrbWebhook200,
   OrbWebhookMutationRequest,
   OrbWebhook400,
@@ -2622,6 +2628,42 @@ export async function deleteInstallation({
 }
 
 /**
+ * @summary List billing plans for a product
+ * @description Return the product's available billing plans, rendered into Vercel's
+ * billingPlan shape. Vercel calls this to show plans when a customer creates
+ * a resource; it may be called before any installation exists, so the signed
+ * token can carry no installation or account id. Plans are billing SKUs only
+ * and do not change Xata entitlements (every Vercel org is T2).
+ * {@link /v1/products/:productSlug/plans}
+ */
+export async function listBillingPlansForProduct({
+  pathParams,
+  queryParams,
+  config = {}
+}: {
+  pathParams: ListBillingPlansForProductPathParams;
+  queryParams?: ListBillingPlansForProductQueryParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.productSlug) {
+    throw new Error(`Missing required path parameter: productSlug`);
+  }
+
+  const data = await request<
+    ListBillingPlansForProduct200,
+    ListBillingPlansForProduct400 | ListBillingPlansForProduct403 | ListBillingPlansForProduct404,
+    null,
+    Record<string, string>,
+    ListBillingPlansForProductQueryParams,
+    ListBillingPlansForProductPathParams
+  >({ method: 'GET', url: `/v1/products/${pathParams.productSlug}/plans`, queryParams, ...requestConfig });
+
+  return data;
+}
+
+/**
  * @summary Orb billing webhook
  * @description Endpoint used by Orb to deliver billing-related webhook events.
  * This endpoint is authenticated via Orb's HMAC signature headers,
@@ -2750,6 +2792,7 @@ export const operationsByPath = {
     deleteGithubRepository,
   'PUT /v1/installations/{installationId}': upsertInstallation,
   'DELETE /v1/installations/{installationId}': deleteInstallation,
+  'GET /v1/products/{productSlug}/plans': listBillingPlansForProduct,
   'POST /webhooks/orb': orbWebhook,
   'POST /webhooks/stripe': stripeWebhook
 };
@@ -2845,7 +2888,8 @@ export const operationsByTag = {
   },
   vercel: {
     upsertInstallation,
-    deleteInstallation
+    deleteInstallation,
+    listBillingPlansForProduct
   },
   webhooks: {
     orbWebhook,
@@ -2932,7 +2976,8 @@ export const tagDictionary = {
   },
   vercel: {
     PUT: ['upsertInstallation'],
-    DELETE: ['deleteInstallation']
+    DELETE: ['deleteInstallation'],
+    GET: ['listBillingPlansForProduct']
   },
   webhooks: {
     POST: ['orbWebhook', 'stripeWebhook']
@@ -3103,6 +3148,10 @@ export type OperationErrors = {
   'githubApp.deleteGithubRepository': DeleteGithubRepository400 | DeleteGithubRepository401 | DeleteGithubRepository404;
   'vercel.upsertInstallation': UpsertInstallation400 | UpsertInstallation403 | UpsertInstallation409;
   'vercel.deleteInstallation': DeleteInstallation403 | DeleteInstallation409;
+  'vercel.listBillingPlansForProduct':
+    | ListBillingPlansForProduct400
+    | ListBillingPlansForProduct403
+    | ListBillingPlansForProduct404;
   'webhooks.orbWebhook': OrbWebhook400 | OrbWebhook500;
   'webhooks.stripeWebhook': StripeWebhook400 | StripeWebhook500;
 };
@@ -3172,6 +3221,7 @@ export type OperationErrorStatus = {
   'githubApp.deleteGithubRepository': 400 | 401 | 404;
   'vercel.upsertInstallation': 400 | 403 | 409;
   'vercel.deleteInstallation': 403 | 409;
+  'vercel.listBillingPlansForProduct': 400 | 403 | 404;
   'webhooks.orbWebhook': 400 | 500;
   'webhooks.stripeWebhook': 400 | 500;
 };
