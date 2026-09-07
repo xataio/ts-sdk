@@ -7,7 +7,8 @@ import {
   openIdClientSchema,
   type OpenIdToken,
   openIdTokenSchema,
-  refreshToken
+  refreshToken,
+  revokeToken
 } from './auth';
 import {
   DEFAULT_API_BASE_URL,
@@ -247,5 +248,17 @@ export class XataApi {
     await this.callbacks?.onTokenRefresh?.(this.token);
 
     return this.token.accessToken;
+  }
+
+  public async revokeToken(): Promise<void> {
+    if (!this.token) {
+      throw new Error('No token provided');
+    }
+
+    if (typeof this.token === 'string') {
+      throw new Error('Only OIDC sessions can be revoked');
+    }
+
+    await revokeToken(this.fetch, this.token);
   }
 }

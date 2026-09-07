@@ -51,6 +51,35 @@ export async function refreshToken(
   };
 }
 
+/**
+ * Revokes the refresh token with the provider (RFC 7009), which invalidates the
+ * offline session it belongs to. Providers answer 2xx for tokens that are
+ * already expired or revoked, so a 2xx means the token is no longer usable.
+ */
+export async function revokeToken(
+  fetch: FetchImpl,
+  { client: { issuer, clientId, clientSecret }, refreshToken }: { client: OpenIdClient; refreshToken: string }
+): Promise<void> {
+  const response = await fetch(`${issuer}/protocol/openid-connect/revoke`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      token: refreshToken,
+      token_type_hint: 'refresh_token'
+    }).toString()
+  });
+
+  if (!response.ok) {
+    const isJson = response.headers?.get('Content-Type')?.includes('application/json');
+    const errorData = isJson ? await response.json() : { error: 'Unknown error' };
+    throw new Error(`HTTP error! status: ${response.status}, error: ${errorData?.error}`);
+  }
+}
+
 export async function createDeviceSession({ issuer, clientId, clientSecret }: OpenIdClient) {
   const response = await fetch(`${issuer}/protocol/openid-connect/auth/device`, {
     method: 'POST',

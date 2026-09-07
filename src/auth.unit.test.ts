@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { refreshToken } from './auth';
+import { refreshToken, revokeToken } from './auth';
 import { SessionExpiredError } from './errors';
 
 const client = { issuer: 'https://issuer.example', clientId: 'cli', clientSecret: 'secret' };
@@ -66,5 +66,48 @@ describe('refreshToken', () => {
     const validToken = { ...expiredToken, expiresAt: new Date(Date.now() + 60 * 1000) };
     const result = await refreshToken(fetch as never, validToken, { force: true });
     expect(result.accessToken).toBe('new-access');
+  });
+});
+
+describe('revokeToken', () => {
+  it('posts the refresh token and client credentials to the revocation endpoint', async () => {
+    const calls: Array<{ url: string; init: RequestInit }> = [];
+    const fetch = async (url: string, init: RequestInit) => {
+      calls.push({ url, init });
+      return { ok: true, status: 200, headers: { get: () => null } } as unknown as Response;
+    };
+
+    await revokeToken(fetch as never, { client, refreshToken: 'old-refresh' });
+
+    expect(calls).toHaveLength(1);
+    expect(calls[0]?.url).toBe('https://issuer.example/protocol/openid-connect/revoke');
+    expect(calls[0]?.init.method).toBe('POST');
+    expect(new URLSearchParams(calls[0]?.init.body as string)).toEqual(
+      new URLSearchParams({
+        client_id: 'cli',
+        client_secret: 'secret',
+        token: 'old-refresh',
+        token_type_hint: 'refresh_token'
+      })
+    );
+  });
+
+  it('treats a 2xx with an invalid_token body as revoked', async () => {
+    const fetch = mockFetch({ ok: true, status: 200, body: { error: 'invalid_token' } });
+    await expect(revokeToken(fetch as never, { client, refreshToken: 'dead' })).resolves.toBeUndefined();
+  });
+
+  it('throws when the provider rejects the request', async () => {
+    const fetch = mockFetch({ ok: false, status: 401, body: { error: 'unauthorized_client' } });
+    await expect(revokeToken(fetch as never, { client, refreshToken: 'old-refresh' })).rejects.toThrow(
+      'status: 401, error: unauthorized_client'
+    );
+  });
+
+  it('propagates network failures', async () => {
+    const fetch = async () => {
+      throw new TypeError('fetch failed');
+    };
+    await expect(revokeToken(fetch as never, { client, refreshToken: 'old-refresh' })).rejects.toThrow('fetch failed');
   });
 });
