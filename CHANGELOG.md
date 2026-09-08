@@ -1,5 +1,13 @@
 # @xata.io/api
 
+## 0.1.13
+
+### Patch Changes
+
+- [#3066](https://github.com/xataio/frontend/pull/3066) [`7a90601`](https://github.com/xataio/frontend/commit/7a906012484e08ad03e7437f05e938755e729d64) Thanks [@divyenduz](https://github.com/divyenduz)! - `xata auth logout` now revokes the OIDC session with the identity provider before removing the stored credentials, and keeps them when revocation fails; `--local` removes them without revoking. `xata auth login --force` revokes the previous OIDC session before replacing it. `XataApi` gains `revokeToken()`.
+- Updated dependencies [[`e6b5999`](https://github.com/xataio/frontend/commit/e6b5999544850d743fa7167ea9d32719505d8e3e)]:
+  - @xata.io/lang@0.0.5
+
 ## 0.1.12
 
 ### Patch Changes
