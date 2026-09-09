@@ -1890,9 +1890,9 @@ export type BranchCreationDetails = (
    */
   name: string;
   /**
-   * @description Optional description for the branch purpose or contents (max 50 characters)
-   * @maxLength 50
-   * @pattern ^[a-zA-Z0-9]+[a-zA-Z0-9- ]*$
+   * @description Optional description for the branch purpose or contents. An empty string is stored as no description.
+   * @maxLength 255
+   * @pattern ^([a-zA-Z0-9][a-zA-Z0-9\-_./: ]*)?$
    * @type string | undefined
    */
   description?: string | undefined;
@@ -1924,8 +1924,9 @@ export type BranchUpdateDetails = {
    */
   name?: string | undefined;
   /**
-   * @description New description for the branch (max 50 characters)
-   * @pattern ^[a-zA-Z0-9]+[a-zA-Z0-9- ]*$
+   * @description New description for the branch. Send an empty string to clear it.
+   * @maxLength 255
+   * @pattern ^([a-zA-Z0-9][a-zA-Z0-9\-_./: ]*)?$
    * @type string | undefined
    */
   description?: string | undefined;
@@ -2010,7 +2011,7 @@ export type BranchMetricName = (typeof branchMetricName)[keyof typeof branchMetr
  */
 export type EffectiveProjectLimits = {
   /**
-   * @description Maximum character length allowed for project descriptions
+   * @description Maximum character length allowed for branch descriptions
    * @minLength 25
    * @type integer
    */

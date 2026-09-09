@@ -722,10 +722,12 @@ export const branchCreationDetailsSchema = z
       name: z.string().describe('Human-readable name for the new branch'),
       description: z
         .string()
-        .max(50)
-        .regex(/^[a-zA-Z0-9]+[a-zA-Z0-9- ]*$/)
+        .max(255)
+        .regex(/^([a-zA-Z0-9][a-zA-Z0-9\-_./: ]*)?$/)
         .optional()
-        .describe('Optional description for the branch purpose or contents (max 50 characters)'),
+        .describe(
+          'Optional description for the branch purpose or contents. An empty string is stored as no description.'
+        ),
       scaleToZero: scaleToZeroConfigurationSchema
         .optional()
         .describe('Configuration for scaling branches to zero when not in use'),
@@ -742,9 +744,10 @@ export const branchUpdateDetailsSchema = z
     name: z.string().optional().describe('New name for the branch'),
     description: z
       .string()
-      .regex(/^[a-zA-Z0-9]+[a-zA-Z0-9- ]*$/)
+      .max(255)
+      .regex(/^([a-zA-Z0-9][a-zA-Z0-9\-_./: ]*)?$/)
       .optional()
-      .describe('New description for the branch (max 50 characters)'),
+      .describe('New description for the branch. Send an empty string to clear it.'),
     replicas: z.int().optional().describe('Number of database replicas to scale to'),
     storage: z
       .int()
@@ -795,7 +798,7 @@ export const branchMetricNameSchema = z
 
 export const effectiveProjectLimitsSchema = z
   .object({
-    maxDescriptionLength: z.int().min(25).describe('Maximum character length allowed for project descriptions'),
+    maxDescriptionLength: z.int().min(25).describe('Maximum character length allowed for branch descriptions'),
     maxBranchesPerProject: z.int().describe('Maximum number of branches allowed per project'),
     maxInstancesPerBranch: z.int().min(1).describe('Maximum number of database instances allowed per branch'),
     minInstancesPerBranch: z.int().min(1).describe('Minimum number of database instances required per branch'),
