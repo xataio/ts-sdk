@@ -6,23 +6,12 @@
 import client from '../utils/fetcher';
 import type { FetcherConfig } from '../utils/fetcher';
 import type {
-  BranchLogs200,
-  BranchLogsMutationRequest,
-  BranchLogsPathParams,
-  BranchLogs400,
-  BranchLogs401,
-  BranchLogs404,
-  BranchMetrics200,
-  BranchMetricsMutationRequest,
-  BranchMetricsPathParams,
-  BranchMetrics400,
-  BranchMetrics401,
-  BranchMetrics404,
-  CreateBillingCheckoutSession200,
-  CreateBillingCheckoutSessionPathParams,
-  CreateBillingCheckoutSession400,
-  CreateBillingCheckoutSession401,
-  CreateBillingCheckoutSession403,
+  AddOrganizationGroupMember204,
+  AddOrganizationGroupMemberPathParams,
+  AddOrganizationGroupMember400,
+  AddOrganizationGroupMember401,
+  AddOrganizationGroupMember403,
+  AddOrganizationGroupMember404,
   CreateOrganization201,
   CreateOrganizationMutationRequest,
   CreateOrganization400,
@@ -71,6 +60,52 @@ import type {
   ListOrganizationMembersPathParams,
   RemoveOrganizationMember204,
   RemoveOrganizationMemberPathParams,
+  RemoveOrganizationMember400,
+  RemoveOrganizationMember409,
+  ListOrganizationGroups200,
+  ListOrganizationGroupsPathParams,
+  ListOrganizationGroups401,
+  ListOrganizationGroups403,
+  ListOrganizationGroups404,
+  CreateOrganizationGroup201,
+  CreateOrganizationGroupMutationRequest,
+  CreateOrganizationGroupPathParams,
+  CreateOrganizationGroup400,
+  CreateOrganizationGroup401,
+  CreateOrganizationGroup403,
+  CreateOrganizationGroup404,
+  CreateOrganizationGroup409,
+  GetOrganizationGroup200,
+  GetOrganizationGroupPathParams,
+  GetOrganizationGroup401,
+  GetOrganizationGroup403,
+  GetOrganizationGroup404,
+  UpdateOrganizationGroup200,
+  UpdateOrganizationGroupMutationRequest,
+  UpdateOrganizationGroupPathParams,
+  UpdateOrganizationGroup400,
+  UpdateOrganizationGroup401,
+  UpdateOrganizationGroup403,
+  UpdateOrganizationGroup404,
+  UpdateOrganizationGroup409,
+  DeleteOrganizationGroup204,
+  DeleteOrganizationGroupPathParams,
+  DeleteOrganizationGroup400,
+  DeleteOrganizationGroup401,
+  DeleteOrganizationGroup403,
+  DeleteOrganizationGroup404,
+  ListOrganizationGroupMembers200,
+  ListOrganizationGroupMembersPathParams,
+  ListOrganizationGroupMembers401,
+  ListOrganizationGroupMembers403,
+  ListOrganizationGroupMembers404,
+  RemoveOrganizationGroupMember204,
+  RemoveOrganizationGroupMemberPathParams,
+  RemoveOrganizationGroupMember400,
+  RemoveOrganizationGroupMember401,
+  RemoveOrganizationGroupMember403,
+  RemoveOrganizationGroupMember404,
+  RemoveOrganizationGroupMember409,
   ListOrganizationInvitations200,
   ListOrganizationInvitationsPathParams,
   ListOrganizationInvitationsQueryParams,
@@ -114,6 +149,11 @@ import type {
   GetOrganizationMembershipLimitsPathParams,
   GetOrganizationMembershipLimits401,
   GetOrganizationMembershipLimits403,
+  CreateBillingCheckoutSession200,
+  CreateBillingCheckoutSessionPathParams,
+  CreateBillingCheckoutSession400,
+  CreateBillingCheckoutSession401,
+  CreateBillingCheckoutSession403,
   CreateBillingPaymentMethodSession200,
   CreateBillingPaymentMethodSessionPathParams,
   CreateBillingPaymentMethodSession400,
@@ -287,12 +327,24 @@ import type {
   RotateBranchCredentials400,
   RotateBranchCredentials401,
   RotateBranchCredentials404,
+  BranchMetrics200,
+  BranchMetricsMutationRequest,
+  BranchMetricsPathParams,
+  BranchMetrics400,
+  BranchMetrics401,
+  BranchMetrics404,
   RestoreFromBackup201,
   RestoreFromBackupMutationRequest,
   RestoreFromBackupPathParams,
   RestoreFromBackup400,
   RestoreFromBackup401,
   RestoreFromBackup404,
+  BranchLogs200,
+  BranchLogsMutationRequest,
+  BranchLogsPathParams,
+  BranchLogs400,
+  BranchLogs401,
+  BranchLogs404,
   GetBranchPostgresConfig200,
   GetBranchPostgresConfigPathParams,
   GetBranchPostgresConfig400,
@@ -651,7 +703,7 @@ export async function removeOrganizationMember({
 
   const data = await request<
     RemoveOrganizationMember204,
-    Error,
+    RemoveOrganizationMember400 | RemoveOrganizationMember409,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -659,6 +711,320 @@ export async function removeOrganizationMember({
   >({
     method: 'DELETE',
     url: `/organizations/${pathParams.organizationID}/members/${pathParams.userID}`,
+    ...requestConfig
+  });
+
+  return data;
+}
+
+/**
+ * @summary List groups of an organization
+ * @description Retrieve all groups belonging to an organization. Each organization owns an isolated group hierarchy, including a predefined "Owner" group that governs dangerous operations such as billing and organization deletion.
+ * {@link /organizations/:organizationID/groups}
+ */
+export async function listOrganizationGroups({
+  pathParams,
+  config = {}
+}: {
+  pathParams: ListOrganizationGroupsPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  const data = await request<
+    ListOrganizationGroups200,
+    ListOrganizationGroups401 | ListOrganizationGroups403 | ListOrganizationGroups404,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    ListOrganizationGroupsPathParams
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/groups`, ...requestConfig });
+
+  return data;
+}
+
+/**
+ * @summary Create a group in an organization
+ * @description Create a new group within an organization. The reserved name "Owner" cannot be used.
+ * {@link /organizations/:organizationID/groups}
+ */
+export async function createOrganizationGroup({
+  pathParams,
+  body,
+  config = {}
+}: {
+  pathParams: CreateOrganizationGroupPathParams;
+  body: CreateOrganizationGroupMutationRequest;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  const data = await request<
+    CreateOrganizationGroup201,
+    | CreateOrganizationGroup400
+    | CreateOrganizationGroup401
+    | CreateOrganizationGroup403
+    | CreateOrganizationGroup404
+    | CreateOrganizationGroup409,
+    CreateOrganizationGroupMutationRequest,
+    Record<string, string>,
+    Record<string, string>,
+    CreateOrganizationGroupPathParams
+  >({ method: 'POST', url: `/organizations/${pathParams.organizationID}/groups`, body, ...requestConfig });
+
+  return data;
+}
+
+/**
+ * @summary Get details of an organization group
+ * {@link /organizations/:organizationID/groups/:groupID}
+ */
+export async function getOrganizationGroup({
+  pathParams,
+  config = {}
+}: {
+  pathParams: GetOrganizationGroupPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  if (!pathParams.groupID) {
+    throw new Error(`Missing required path parameter: groupID`);
+  }
+
+  const data = await request<
+    GetOrganizationGroup200,
+    GetOrganizationGroup401 | GetOrganizationGroup403 | GetOrganizationGroup404,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    GetOrganizationGroupPathParams
+  >({
+    method: 'GET',
+    url: `/organizations/${pathParams.organizationID}/groups/${pathParams.groupID}`,
+    ...requestConfig
+  });
+
+  return data;
+}
+
+/**
+ * @summary Update an organization group
+ * @description Rename an organization group. The predefined "Owner" group cannot be edited.
+ * {@link /organizations/:organizationID/groups/:groupID}
+ */
+export async function updateOrganizationGroup({
+  pathParams,
+  body,
+  config = {}
+}: {
+  pathParams: UpdateOrganizationGroupPathParams;
+  body: UpdateOrganizationGroupMutationRequest;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  if (!pathParams.groupID) {
+    throw new Error(`Missing required path parameter: groupID`);
+  }
+
+  const data = await request<
+    UpdateOrganizationGroup200,
+    | UpdateOrganizationGroup400
+    | UpdateOrganizationGroup401
+    | UpdateOrganizationGroup403
+    | UpdateOrganizationGroup404
+    | UpdateOrganizationGroup409,
+    UpdateOrganizationGroupMutationRequest,
+    Record<string, string>,
+    Record<string, string>,
+    UpdateOrganizationGroupPathParams
+  >({
+    method: 'PUT',
+    url: `/organizations/${pathParams.organizationID}/groups/${pathParams.groupID}`,
+    body,
+    ...requestConfig
+  });
+
+  return data;
+}
+
+/**
+ * @summary Delete an organization group
+ * @description Delete an organization group. The predefined "Owner" group cannot be deleted.
+ * {@link /organizations/:organizationID/groups/:groupID}
+ */
+export async function deleteOrganizationGroup({
+  pathParams,
+  config = {}
+}: {
+  pathParams: DeleteOrganizationGroupPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  if (!pathParams.groupID) {
+    throw new Error(`Missing required path parameter: groupID`);
+  }
+
+  const data = await request<
+    DeleteOrganizationGroup204,
+    DeleteOrganizationGroup400 | DeleteOrganizationGroup401 | DeleteOrganizationGroup403 | DeleteOrganizationGroup404,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    DeleteOrganizationGroupPathParams
+  >({
+    method: 'DELETE',
+    url: `/organizations/${pathParams.organizationID}/groups/${pathParams.groupID}`,
+    ...requestConfig
+  });
+
+  return data;
+}
+
+/**
+ * @summary List members of an organization group
+ * {@link /organizations/:organizationID/groups/:groupID/members}
+ */
+export async function listOrganizationGroupMembers({
+  pathParams,
+  config = {}
+}: {
+  pathParams: ListOrganizationGroupMembersPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  if (!pathParams.groupID) {
+    throw new Error(`Missing required path parameter: groupID`);
+  }
+
+  const data = await request<
+    ListOrganizationGroupMembers200,
+    ListOrganizationGroupMembers401 | ListOrganizationGroupMembers403 | ListOrganizationGroupMembers404,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    ListOrganizationGroupMembersPathParams
+  >({
+    method: 'GET',
+    url: `/organizations/${pathParams.organizationID}/groups/${pathParams.groupID}/members`,
+    ...requestConfig
+  });
+
+  return data;
+}
+
+/**
+ * @summary Add a member to an organization group
+ * @description Add an existing organization member to a group. The user must already be a member of the organization.
+ * {@link /organizations/:organizationID/groups/:groupID/members/:userID}
+ */
+export async function addOrganizationGroupMember({
+  pathParams,
+  config = {}
+}: {
+  pathParams: AddOrganizationGroupMemberPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  if (!pathParams.groupID) {
+    throw new Error(`Missing required path parameter: groupID`);
+  }
+
+  if (!pathParams.userID) {
+    throw new Error(`Missing required path parameter: userID`);
+  }
+
+  const data = await request<
+    AddOrganizationGroupMember204,
+    | AddOrganizationGroupMember400
+    | AddOrganizationGroupMember401
+    | AddOrganizationGroupMember403
+    | AddOrganizationGroupMember404,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    AddOrganizationGroupMemberPathParams
+  >({
+    method: 'PUT',
+    url: `/organizations/${pathParams.organizationID}/groups/${pathParams.groupID}/members/${pathParams.userID}`,
+    ...requestConfig
+  });
+
+  return data;
+}
+
+/**
+ * @summary Remove a member from an organization group
+ * @description Remove a member from a group. The predefined "Owner" group must always retain at least one member.
+ * {@link /organizations/:organizationID/groups/:groupID/members/:userID}
+ */
+export async function removeOrganizationGroupMember({
+  pathParams,
+  config = {}
+}: {
+  pathParams: RemoveOrganizationGroupMemberPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  if (!pathParams.groupID) {
+    throw new Error(`Missing required path parameter: groupID`);
+  }
+
+  if (!pathParams.userID) {
+    throw new Error(`Missing required path parameter: userID`);
+  }
+
+  const data = await request<
+    RemoveOrganizationGroupMember204,
+    | RemoveOrganizationGroupMember400
+    | RemoveOrganizationGroupMember401
+    | RemoveOrganizationGroupMember403
+    | RemoveOrganizationGroupMember404
+    | RemoveOrganizationGroupMember409,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    RemoveOrganizationGroupMemberPathParams
+  >({
+    method: 'DELETE',
+    url: `/organizations/${pathParams.organizationID}/groups/${pathParams.groupID}/members/${pathParams.userID}`,
     ...requestConfig
   });
 
@@ -2732,6 +3098,14 @@ export const operationsByPath = {
   'DELETE /organizations/{organizationID}/api-keys': deleteOrganizationAPIKeys,
   'GET /organizations/{organizationID}/members': listOrganizationMembers,
   'DELETE /organizations/{organizationID}/members/{userID}': removeOrganizationMember,
+  'GET /organizations/{organizationID}/groups': listOrganizationGroups,
+  'POST /organizations/{organizationID}/groups': createOrganizationGroup,
+  'GET /organizations/{organizationID}/groups/{groupID}': getOrganizationGroup,
+  'PUT /organizations/{organizationID}/groups/{groupID}': updateOrganizationGroup,
+  'DELETE /organizations/{organizationID}/groups/{groupID}': deleteOrganizationGroup,
+  'GET /organizations/{organizationID}/groups/{groupID}/members': listOrganizationGroupMembers,
+  'PUT /organizations/{organizationID}/groups/{groupID}/members/{userID}': addOrganizationGroupMember,
+  'DELETE /organizations/{organizationID}/groups/{groupID}/members/{userID}': removeOrganizationGroupMember,
   'GET /organizations/{organizationID}/invitations': listOrganizationInvitations,
   'POST /organizations/{organizationID}/invitations': createOrganizationInvitation,
   'GET /organizations/{organizationID}/invitations/{invitationID}': getOrganizationInvitation,
@@ -2806,6 +3180,14 @@ export const operationsByTag = {
     deleteOrganization,
     listOrganizationMembers,
     removeOrganizationMember,
+    listOrganizationGroups,
+    createOrganizationGroup,
+    getOrganizationGroup,
+    updateOrganizationGroup,
+    deleteOrganizationGroup,
+    listOrganizationGroupMembers,
+    addOrganizationGroupMember,
+    removeOrganizationGroupMember,
     listOrganizationInvitations,
     createOrganizationInvitation,
     getOrganizationInvitation,
@@ -2903,18 +3285,28 @@ export const tagDictionary = {
       'getOrganizationsList',
       'getOrganization',
       'listOrganizationMembers',
+      'listOrganizationGroups',
+      'getOrganizationGroup',
+      'listOrganizationGroupMembers',
       'listOrganizationInvitations',
       'getOrganizationInvitation',
       'getOrganizationMembershipLimits'
     ],
     POST: [
       'createOrganization',
+      'createOrganizationGroup',
       'createOrganizationInvitation',
       'resendOrganizationInvitation',
       'requestOrganizationDeletion'
     ],
-    PUT: ['updateOrganization'],
-    DELETE: ['deleteOrganization', 'removeOrganizationMember', 'deleteOrganizationInvitation']
+    PUT: ['updateOrganization', 'updateOrganizationGroup', 'addOrganizationGroupMember'],
+    DELETE: [
+      'deleteOrganization',
+      'removeOrganizationMember',
+      'deleteOrganizationGroup',
+      'removeOrganizationGroupMember',
+      'deleteOrganizationInvitation'
+    ]
   },
   apiKeys: {
     GET: ['listOrganizationAPIKeys', 'listUserAPIKeys'],
@@ -2989,6 +3381,8 @@ export const Scopes = [
   'org:write',
   'keys:read',
   'keys:write',
+  'group:read',
+  'group:write',
   'invite:read',
   'invite:write',
   'marketplace:write',
@@ -3027,7 +3421,44 @@ export type OperationErrors = {
     | DeleteOrganizationAPIKeys401
     | DeleteOrganizationAPIKeys404;
   'organizations.listOrganizationMembers': never;
-  'organizations.removeOrganizationMember': never;
+  'organizations.removeOrganizationMember': RemoveOrganizationMember400 | RemoveOrganizationMember409;
+  'organizations.listOrganizationGroups':
+    | ListOrganizationGroups401
+    | ListOrganizationGroups403
+    | ListOrganizationGroups404;
+  'organizations.createOrganizationGroup':
+    | CreateOrganizationGroup400
+    | CreateOrganizationGroup401
+    | CreateOrganizationGroup403
+    | CreateOrganizationGroup404
+    | CreateOrganizationGroup409;
+  'organizations.getOrganizationGroup': GetOrganizationGroup401 | GetOrganizationGroup403 | GetOrganizationGroup404;
+  'organizations.updateOrganizationGroup':
+    | UpdateOrganizationGroup400
+    | UpdateOrganizationGroup401
+    | UpdateOrganizationGroup403
+    | UpdateOrganizationGroup404
+    | UpdateOrganizationGroup409;
+  'organizations.deleteOrganizationGroup':
+    | DeleteOrganizationGroup400
+    | DeleteOrganizationGroup401
+    | DeleteOrganizationGroup403
+    | DeleteOrganizationGroup404;
+  'organizations.listOrganizationGroupMembers':
+    | ListOrganizationGroupMembers401
+    | ListOrganizationGroupMembers403
+    | ListOrganizationGroupMembers404;
+  'organizations.addOrganizationGroupMember':
+    | AddOrganizationGroupMember400
+    | AddOrganizationGroupMember401
+    | AddOrganizationGroupMember403
+    | AddOrganizationGroupMember404;
+  'organizations.removeOrganizationGroupMember':
+    | RemoveOrganizationGroupMember400
+    | RemoveOrganizationGroupMember401
+    | RemoveOrganizationGroupMember403
+    | RemoveOrganizationGroupMember404
+    | RemoveOrganizationGroupMember409;
   'organizations.listOrganizationInvitations':
     | ListOrganizationInvitations400
     | ListOrganizationInvitations401
@@ -3166,7 +3597,15 @@ export type OperationErrorStatus = {
   'apiKeys.createOrganizationAPIKey': 400;
   'apiKeys.deleteOrganizationAPIKeys': 400 | 401 | 404;
   'organizations.listOrganizationMembers': never;
-  'organizations.removeOrganizationMember': never;
+  'organizations.removeOrganizationMember': 400 | 409;
+  'organizations.listOrganizationGroups': 401 | 403 | 404;
+  'organizations.createOrganizationGroup': 400 | 401 | 403 | 404 | 409;
+  'organizations.getOrganizationGroup': 401 | 403 | 404;
+  'organizations.updateOrganizationGroup': 400 | 401 | 403 | 404 | 409;
+  'organizations.deleteOrganizationGroup': 400 | 401 | 403 | 404;
+  'organizations.listOrganizationGroupMembers': 401 | 403 | 404;
+  'organizations.addOrganizationGroupMember': 400 | 401 | 403 | 404;
+  'organizations.removeOrganizationGroupMember': 400 | 401 | 403 | 404 | 409;
   'organizations.listOrganizationInvitations': 400 | 401 | 403 | 404;
   'organizations.createOrganizationInvitation': 400 | 401 | 403 | 404 | 409;
   'organizations.getOrganizationInvitation': 400 | 401 | 403 | 404;

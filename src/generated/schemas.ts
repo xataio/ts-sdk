@@ -255,6 +255,31 @@ export const organizationMembershipLimitsSchema = z
   })
   .describe('Membership limits for an organization');
 
+export const organizationGroupSchema = z
+  .object({
+    id: z.string().describe('Unique identifier for the group'),
+    name: z.string().describe('Human-readable name of the group'),
+    path: z.string().optional().describe('Hierarchical path of the group within the organization'),
+    is_owner: z
+      .boolean()
+      .describe(
+        'Whether this is the predefined "Owner" group, which cannot be edited or deleted and must always retain at least one member'
+      )
+  })
+  .describe('A group within an organization');
+
+export const createOrganizationGroupRequestSchema = z
+  .object({
+    name: z.string().describe('Name for the new group')
+  })
+  .describe('Request payload for creating an organization group');
+
+export const updateOrganizationGroupRequestSchema = z
+  .object({
+    name: z.string().describe('New name for the group')
+  })
+  .describe('Request payload for updating an organization group');
+
 export const endpointTypeSchema = z
   .enum(['rw', 'ro', 'r', 'pooled_rw'])
   .describe(
@@ -1417,7 +1442,404 @@ export const removeOrganizationMemberPathUserIDSchema = userIDSchema.describe(
 
 export const removeOrganizationMemberStatus204Schema = z.unknown();
 
+export const removeOrganizationMemberStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const removeOrganizationMemberStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
 export const removeOrganizationMemberResponseSchema = removeOrganizationMemberStatus204Schema;
+
+export const removeOrganizationMemberErrorSchema = z.union([
+  removeOrganizationMemberStatus400Schema,
+  removeOrganizationMemberStatus409Schema
+]);
+
+export const listOrganizationGroupsPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const listOrganizationGroupsStatus200Schema = z.object({
+  groups: z.array(organizationGroupSchema)
+});
+
+export const listOrganizationGroupsStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const listOrganizationGroupsStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const listOrganizationGroupsStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const listOrganizationGroupsStatus5XXSchema = z.unknown();
+
+export const listOrganizationGroupsResponseSchema = listOrganizationGroupsStatus200Schema;
+
+export const listOrganizationGroupsErrorSchema = z.union([
+  listOrganizationGroupsStatus401Schema,
+  listOrganizationGroupsStatus403Schema,
+  listOrganizationGroupsStatus404Schema,
+  listOrganizationGroupsStatus5XXSchema
+]);
+
+export const createOrganizationGroupPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const createOrganizationGroupStatus201Schema = organizationGroupSchema.describe(
+  'A group within an organization'
+);
+
+export const createOrganizationGroupStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const createOrganizationGroupStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const createOrganizationGroupStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const createOrganizationGroupStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const createOrganizationGroupStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const createOrganizationGroupStatus5XXSchema = z.unknown();
+
+export const createOrganizationGroupResponseSchema = createOrganizationGroupStatus201Schema;
+
+export const createOrganizationGroupErrorSchema = z.union([
+  createOrganizationGroupStatus400Schema,
+  createOrganizationGroupStatus401Schema,
+  createOrganizationGroupStatus403Schema,
+  createOrganizationGroupStatus404Schema,
+  createOrganizationGroupStatus409Schema,
+  createOrganizationGroupStatus5XXSchema
+]);
+
+export const createOrganizationGroupBodySchema = createOrganizationGroupRequestSchema.describe(
+  'Request payload for creating an organization group'
+);
+
+export const getOrganizationGroupPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const getOrganizationGroupPathGroupIDSchema = z.string().describe('Unique identifier for an organization group');
+
+export const getOrganizationGroupStatus200Schema = organizationGroupSchema.describe('A group within an organization');
+
+export const getOrganizationGroupStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getOrganizationGroupStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getOrganizationGroupStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const getOrganizationGroupStatus5XXSchema = z.unknown();
+
+export const getOrganizationGroupResponseSchema = getOrganizationGroupStatus200Schema;
+
+export const getOrganizationGroupErrorSchema = z.union([
+  getOrganizationGroupStatus401Schema,
+  getOrganizationGroupStatus403Schema,
+  getOrganizationGroupStatus404Schema,
+  getOrganizationGroupStatus5XXSchema
+]);
+
+export const updateOrganizationGroupPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const updateOrganizationGroupPathGroupIDSchema = z
+  .string()
+  .describe('Unique identifier for an organization group');
+
+export const updateOrganizationGroupStatus200Schema = organizationGroupSchema.describe(
+  'A group within an organization'
+);
+
+export const updateOrganizationGroupStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const updateOrganizationGroupStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const updateOrganizationGroupStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const updateOrganizationGroupStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const updateOrganizationGroupStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const updateOrganizationGroupStatus5XXSchema = z.unknown();
+
+export const updateOrganizationGroupResponseSchema = updateOrganizationGroupStatus200Schema;
+
+export const updateOrganizationGroupErrorSchema = z.union([
+  updateOrganizationGroupStatus400Schema,
+  updateOrganizationGroupStatus401Schema,
+  updateOrganizationGroupStatus403Schema,
+  updateOrganizationGroupStatus404Schema,
+  updateOrganizationGroupStatus409Schema,
+  updateOrganizationGroupStatus5XXSchema
+]);
+
+export const updateOrganizationGroupBodySchema = updateOrganizationGroupRequestSchema.describe(
+  'Request payload for updating an organization group'
+);
+
+export const deleteOrganizationGroupPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const deleteOrganizationGroupPathGroupIDSchema = z
+  .string()
+  .describe('Unique identifier for an organization group');
+
+export const deleteOrganizationGroupStatus204Schema = z.unknown();
+
+export const deleteOrganizationGroupStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const deleteOrganizationGroupStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const deleteOrganizationGroupStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const deleteOrganizationGroupStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const deleteOrganizationGroupStatus5XXSchema = z.unknown();
+
+export const deleteOrganizationGroupResponseSchema = deleteOrganizationGroupStatus204Schema;
+
+export const deleteOrganizationGroupErrorSchema = z.union([
+  deleteOrganizationGroupStatus400Schema,
+  deleteOrganizationGroupStatus401Schema,
+  deleteOrganizationGroupStatus403Schema,
+  deleteOrganizationGroupStatus404Schema,
+  deleteOrganizationGroupStatus5XXSchema
+]);
+
+export const listOrganizationGroupMembersPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const listOrganizationGroupMembersPathGroupIDSchema = z
+  .string()
+  .describe('Unique identifier for an organization group');
+
+export const listOrganizationGroupMembersStatus200Schema = z.object({
+  members: z.array(userWithIDSchema)
+});
+
+export const listOrganizationGroupMembersStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const listOrganizationGroupMembersStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const listOrganizationGroupMembersStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const listOrganizationGroupMembersStatus5XXSchema = z.unknown();
+
+export const listOrganizationGroupMembersResponseSchema = listOrganizationGroupMembersStatus200Schema;
+
+export const listOrganizationGroupMembersErrorSchema = z.union([
+  listOrganizationGroupMembersStatus401Schema,
+  listOrganizationGroupMembersStatus403Schema,
+  listOrganizationGroupMembersStatus404Schema,
+  listOrganizationGroupMembersStatus5XXSchema
+]);
+
+export const addOrganizationGroupMemberPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const addOrganizationGroupMemberPathGroupIDSchema = z
+  .string()
+  .describe('Unique identifier for an organization group');
+
+export const addOrganizationGroupMemberPathUserIDSchema = userIDSchema.describe(
+  'Unique identifier for a specific user account'
+);
+
+export const addOrganizationGroupMemberStatus204Schema = z.unknown();
+
+export const addOrganizationGroupMemberStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const addOrganizationGroupMemberStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const addOrganizationGroupMemberStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const addOrganizationGroupMemberStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const addOrganizationGroupMemberStatus5XXSchema = z.unknown();
+
+export const addOrganizationGroupMemberResponseSchema = addOrganizationGroupMemberStatus204Schema;
+
+export const addOrganizationGroupMemberErrorSchema = z.union([
+  addOrganizationGroupMemberStatus400Schema,
+  addOrganizationGroupMemberStatus401Schema,
+  addOrganizationGroupMemberStatus403Schema,
+  addOrganizationGroupMemberStatus404Schema,
+  addOrganizationGroupMemberStatus5XXSchema
+]);
+
+export const removeOrganizationGroupMemberPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const removeOrganizationGroupMemberPathGroupIDSchema = z
+  .string()
+  .describe('Unique identifier for an organization group');
+
+export const removeOrganizationGroupMemberPathUserIDSchema = userIDSchema.describe(
+  'Unique identifier for a specific user account'
+);
+
+export const removeOrganizationGroupMemberStatus204Schema = z.unknown();
+
+export const removeOrganizationGroupMemberStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const removeOrganizationGroupMemberStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const removeOrganizationGroupMemberStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const removeOrganizationGroupMemberStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const removeOrganizationGroupMemberStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const removeOrganizationGroupMemberStatus5XXSchema = z.unknown();
+
+export const removeOrganizationGroupMemberResponseSchema = removeOrganizationGroupMemberStatus204Schema;
+
+export const removeOrganizationGroupMemberErrorSchema = z.union([
+  removeOrganizationGroupMemberStatus400Schema,
+  removeOrganizationGroupMemberStatus401Schema,
+  removeOrganizationGroupMemberStatus403Schema,
+  removeOrganizationGroupMemberStatus404Schema,
+  removeOrganizationGroupMemberStatus409Schema,
+  removeOrganizationGroupMemberStatus5XXSchema
+]);
 
 export const listOrganizationInvitationsPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
