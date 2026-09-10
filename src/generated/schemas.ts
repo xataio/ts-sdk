@@ -255,36 +255,142 @@ export const organizationMembershipLimitsSchema = z
   })
   .describe('Membership limits for an organization');
 
-export const organizationGroupSchema = z
+export const organizationRoleNameSchema = z
+  .enum(['admin', 'editor', 'viewer'])
+  .describe('The roles a member of an organization can hold');
+
+export const organizationRoleSchema = z
   .object({
-    id: z.string().describe('Unique identifier for the group'),
-    name: z.string().describe('Human-readable name of the group'),
-    path: z.string().optional().describe('Hierarchical path of the group within the organization'),
-    is_owner: z
+    id: organizationRoleNameSchema.describe('Stable identifier for the role'),
+    name: z.string().describe('Human-readable name of the role'),
+    description: z.string().describe('What the role allows')
+  })
+  .describe('A role that can be held by a member of an organization');
+
+export const organizationMemberSchema = userWithIDSchema
+  .extend({
+    role: organizationRoleNameSchema.describe('The roles a member of an organization can hold')
+  })
+  .describe('A member of an organization and the role they hold in it');
+
+export const setOrganizationMemberRoleRequestSchema = z
+  .object({
+    role: organizationRoleNameSchema.describe('The roles a member of an organization can hold')
+  })
+  .describe('Request payload for setting the role of an organization member');
+
+export const organizationSSOProviderTypeSchema = z
+  .enum(['google', 'microsoft', 'oidc'])
+  .describe(
+    'Which identity provider this is. `google` pins the login to a Google Workspace domain and `microsoft` to a single Entra tenant, taken from the issuer; `oidc` is the fallback for anything else that speaks OpenID Connect.'
+  );
+
+export const organizationSSOProviderSchema = z
+  .object({
+    alias: z.string().describe('Stable identifier for this provider, used in its own endpoints.'),
+    type: organizationSSOProviderTypeSchema.describe(
+      'Which identity provider this is. `google` pins the login to a Google Workspace domain and `microsoft` to a single Entra tenant, taken from the issuer; `oidc` is the fallback for anything else that speaks OpenID Connect.'
+    ),
+    display_name: z.string().describe('Name members see for this provider when signing in.'),
+    domain: z.string().describe('The verified email domain this provider serves.'),
+    enforced: z
       .boolean()
       .describe(
-        'Whether this is the predefined "Owner" group, which cannot be edited or deleted and must always retain at least one member'
+        'Whether members on this domain are sent to this provider automatically, leaving no other way in. Registering a provider does not set this; it is enabled separately once a sign-in through it has worked.'
+      ),
+    issuer: z.url().optional().describe('OIDC issuer URL, without the /.well-known suffix.'),
+    client_id: z.string().describe('OAuth client ID the organization registered with the provider.')
+  })
+  .describe(
+    "An identity provider serving one of the organization's verified domains. The client secret is write-only and is never returned."
+  );
+
+export const organizationSSODomainVerificationSchema = z
+  .object({
+    record_name: z.string().describe('Name to create the record at'),
+    record_type: z.string().describe('DNS record type'),
+    record_value: z.string().describe('Value the record must hold')
+  })
+  .describe('The DNS TXT record that proves an organization controls a domain');
+
+export const organizationSSODomainSchema = z
+  .object({
+    domain: z.string().describe('The claimed email domain'),
+    provider_alias: z
+      .string()
+      .describe(
+        'The alias an identity provider on this domain will be given. Derived from the organization and the domain, so it is known before the provider exists, which is what lets a client show the redirect URI to register with the provider up front.'
+      ),
+    verified: z.boolean().describe('Whether control of the domain has been proven through DNS'),
+    verification: z
+      .union([organizationSSODomainVerificationSchema, z.null()])
+      .optional()
+      .describe('The DNS record that proves control of the domain. Absent once the domain is verified.')
+  })
+  .describe('An email domain claimed by an organization for SSO');
+
+export const organizationSSOSchema = z
+  .object({
+    providers: z
+      .array(organizationSSOProviderSchema)
+      .describe('Identity providers registered for this organization, at most one per verified domain.'),
+    domains: z
+      .array(organizationSSODomainSchema)
+      .describe('Email domains claimed for this organization, verified and pending.')
+  })
+  .describe("An organization's single sign-on setup, as one identity provider per verified email domain.");
+
+export const organizationSSOEnforcementSchema = z
+  .object({
+    enforced: z
+      .boolean()
+      .describe(
+        'Enable to send every address on the domain to this provider. Disable to let members sign in however they could before.'
       )
   })
-  .describe('A group within an organization');
+  .describe("Whether members on a provider's domain must sign in through it.");
 
-export const organizationGroupSummarySchema = organizationGroupSchema
-  .extend({
-    member_count: z.int().describe('Number of organization members in the group')
-  })
-  .describe('A group within an organization together with its member count');
-
-export const createOrganizationGroupRequestSchema = z
+export const createOrganizationSSOProviderRequestSchema = z
   .object({
-    name: z.string().describe('Name for the new group')
+    type: organizationSSOProviderTypeSchema.describe(
+      'Which identity provider this is. `google` pins the login to a Google Workspace domain and `microsoft` to a single Entra tenant, taken from the issuer; `oidc` is the fallback for anything else that speaks OpenID Connect.'
+    ),
+    domain: z.string().describe('The verified email domain this provider will serve.'),
+    issuer: z
+      .url()
+      .optional()
+      .describe(
+        'OIDC issuer URL. Required for `oidc`, and for `microsoft` where it names the Entra tenant; ignored for `google`. Must be https, and must serve a /.well-known/openid-configuration document naming itself as the issuer.'
+      ),
+    client_id: z.string().describe('OAuth client ID the organization registered with the provider'),
+    client_secret: z
+      .string()
+      .describe('OAuth client secret. Write-only: it is stored in Keycloak and is never returned by this API.')
   })
-  .describe('Request payload for creating an organization group');
+  .describe('Request payload for registering an identity provider for a verified domain');
 
-export const updateOrganizationGroupRequestSchema = z
+export const updateOrganizationSSOProviderRequestSchema = z
   .object({
-    name: z.string().describe('New name for the group')
+    issuer: z
+      .url()
+      .optional()
+      .describe(
+        'OIDC issuer URL. Required for `oidc`, and for `microsoft` where it names the Entra tenant; ignored for `google`.'
+      ),
+    client_id: z.string().describe('OAuth client ID the organization registered with the provider'),
+    client_secret: z
+      .string()
+      .describe('OAuth client secret. Write-only: it is stored in Keycloak and is never returned by this API.')
   })
-  .describe('Request payload for updating an organization group');
+  .describe("Request payload for replacing an identity provider's credentials");
+
+export const claimOrganizationSSODomainRequestSchema = z
+  .object({
+    domain: z
+      .string()
+      .describe('Bare email domain to claim, for example acme.com. Wildcards and public email providers are rejected.')
+  })
+  .describe('Request payload for claiming an email domain for SSO');
 
 export const endpointTypeSchema = z
   .enum(['rw', 'ro', 'r', 'pooled_rw'])
@@ -1436,7 +1542,7 @@ export const listOrganizationMembersPathOrganizationIDSchema = organizationIDSch
 );
 
 export const listOrganizationMembersStatus200Schema = z.object({
-  members: z.array(userWithIDSchema)
+  members: z.array(organizationMemberSchema)
 });
 
 export const listOrganizationMembersResponseSchema = listOrganizationMembersStatus200Schema;
@@ -1468,387 +1574,99 @@ export const removeOrganizationMemberErrorSchema = z.union([
   removeOrganizationMemberStatus409Schema
 ]);
 
-export const listOrganizationGroupsPathOrganizationIDSchema = organizationIDSchema.describe(
+export const listOrganizationRolesPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
 
-export const listOrganizationGroupsStatus200Schema = z.object({
-  groups: z.array(organizationGroupSummarySchema)
+export const listOrganizationRolesStatus200Schema = z.object({
+  roles: z.array(organizationRoleSchema)
 });
 
-export const listOrganizationGroupsStatus401Schema = z
+export const listOrganizationRolesStatus401Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
   .meta({ examples: [{}] });
 
-export const listOrganizationGroupsStatus403Schema = z
+export const listOrganizationRolesStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
   .meta({ examples: [{}] });
 
-export const listOrganizationGroupsStatus404Schema = z.object({
+export const listOrganizationRolesStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const listOrganizationGroupsStatus5XXSchema = z.unknown();
+export const listOrganizationRolesStatus5XXSchema = z.unknown();
 
-export const listOrganizationGroupsResponseSchema = listOrganizationGroupsStatus200Schema;
+export const listOrganizationRolesResponseSchema = listOrganizationRolesStatus200Schema;
 
-export const listOrganizationGroupsErrorSchema = z.union([
-  listOrganizationGroupsStatus401Schema,
-  listOrganizationGroupsStatus403Schema,
-  listOrganizationGroupsStatus404Schema,
-  listOrganizationGroupsStatus5XXSchema
+export const listOrganizationRolesErrorSchema = z.union([
+  listOrganizationRolesStatus401Schema,
+  listOrganizationRolesStatus403Schema,
+  listOrganizationRolesStatus404Schema,
+  listOrganizationRolesStatus5XXSchema
 ]);
 
-export const createOrganizationGroupPathOrganizationIDSchema = organizationIDSchema.describe(
+export const setOrganizationMemberRolePathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
 
-export const createOrganizationGroupStatus201Schema = organizationGroupSchema.describe(
-  'A group within an organization'
-);
-
-export const createOrganizationGroupStatus400Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const createOrganizationGroupStatus401Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
-
-export const createOrganizationGroupStatus403Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
-
-export const createOrganizationGroupStatus404Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const createOrganizationGroupStatus409Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const createOrganizationGroupStatus5XXSchema = z.unknown();
-
-export const createOrganizationGroupResponseSchema = createOrganizationGroupStatus201Schema;
-
-export const createOrganizationGroupErrorSchema = z.union([
-  createOrganizationGroupStatus400Schema,
-  createOrganizationGroupStatus401Schema,
-  createOrganizationGroupStatus403Schema,
-  createOrganizationGroupStatus404Schema,
-  createOrganizationGroupStatus409Schema,
-  createOrganizationGroupStatus5XXSchema
-]);
-
-export const createOrganizationGroupBodySchema = createOrganizationGroupRequestSchema.describe(
-  'Request payload for creating an organization group'
-);
-
-export const getOrganizationGroupPathOrganizationIDSchema = organizationIDSchema.describe(
-  'Unique identifier for a specific organization'
-);
-
-export const getOrganizationGroupPathGroupIDSchema = z.string().describe('Unique identifier for an organization group');
-
-export const getOrganizationGroupStatus200Schema = organizationGroupSchema.describe('A group within an organization');
-
-export const getOrganizationGroupStatus401Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
-
-export const getOrganizationGroupStatus403Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
-
-export const getOrganizationGroupStatus404Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const getOrganizationGroupStatus5XXSchema = z.unknown();
-
-export const getOrganizationGroupResponseSchema = getOrganizationGroupStatus200Schema;
-
-export const getOrganizationGroupErrorSchema = z.union([
-  getOrganizationGroupStatus401Schema,
-  getOrganizationGroupStatus403Schema,
-  getOrganizationGroupStatus404Schema,
-  getOrganizationGroupStatus5XXSchema
-]);
-
-export const updateOrganizationGroupPathOrganizationIDSchema = organizationIDSchema.describe(
-  'Unique identifier for a specific organization'
-);
-
-export const updateOrganizationGroupPathGroupIDSchema = z
-  .string()
-  .describe('Unique identifier for an organization group');
-
-export const updateOrganizationGroupStatus200Schema = organizationGroupSchema.describe(
-  'A group within an organization'
-);
-
-export const updateOrganizationGroupStatus400Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const updateOrganizationGroupStatus401Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
-
-export const updateOrganizationGroupStatus403Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
-
-export const updateOrganizationGroupStatus404Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const updateOrganizationGroupStatus409Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const updateOrganizationGroupStatus5XXSchema = z.unknown();
-
-export const updateOrganizationGroupResponseSchema = updateOrganizationGroupStatus200Schema;
-
-export const updateOrganizationGroupErrorSchema = z.union([
-  updateOrganizationGroupStatus400Schema,
-  updateOrganizationGroupStatus401Schema,
-  updateOrganizationGroupStatus403Schema,
-  updateOrganizationGroupStatus404Schema,
-  updateOrganizationGroupStatus409Schema,
-  updateOrganizationGroupStatus5XXSchema
-]);
-
-export const updateOrganizationGroupBodySchema = updateOrganizationGroupRequestSchema.describe(
-  'Request payload for updating an organization group'
-);
-
-export const deleteOrganizationGroupPathOrganizationIDSchema = organizationIDSchema.describe(
-  'Unique identifier for a specific organization'
-);
-
-export const deleteOrganizationGroupPathGroupIDSchema = z
-  .string()
-  .describe('Unique identifier for an organization group');
-
-export const deleteOrganizationGroupStatus204Schema = z.unknown();
-
-export const deleteOrganizationGroupStatus400Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const deleteOrganizationGroupStatus401Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
-
-export const deleteOrganizationGroupStatus403Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
-
-export const deleteOrganizationGroupStatus404Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const deleteOrganizationGroupStatus5XXSchema = z.unknown();
-
-export const deleteOrganizationGroupResponseSchema = deleteOrganizationGroupStatus204Schema;
-
-export const deleteOrganizationGroupErrorSchema = z.union([
-  deleteOrganizationGroupStatus400Schema,
-  deleteOrganizationGroupStatus401Schema,
-  deleteOrganizationGroupStatus403Schema,
-  deleteOrganizationGroupStatus404Schema,
-  deleteOrganizationGroupStatus5XXSchema
-]);
-
-export const listOrganizationGroupMembersPathOrganizationIDSchema = organizationIDSchema.describe(
-  'Unique identifier for a specific organization'
-);
-
-export const listOrganizationGroupMembersPathGroupIDSchema = z
-  .string()
-  .describe('Unique identifier for an organization group');
-
-export const listOrganizationGroupMembersStatus200Schema = z.object({
-  members: z.array(userWithIDSchema)
-});
-
-export const listOrganizationGroupMembersStatus401Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
-
-export const listOrganizationGroupMembersStatus403Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
-
-export const listOrganizationGroupMembersStatus404Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const listOrganizationGroupMembersStatus5XXSchema = z.unknown();
-
-export const listOrganizationGroupMembersResponseSchema = listOrganizationGroupMembersStatus200Schema;
-
-export const listOrganizationGroupMembersErrorSchema = z.union([
-  listOrganizationGroupMembersStatus401Schema,
-  listOrganizationGroupMembersStatus403Schema,
-  listOrganizationGroupMembersStatus404Schema,
-  listOrganizationGroupMembersStatus5XXSchema
-]);
-
-export const addOrganizationGroupMemberPathOrganizationIDSchema = organizationIDSchema.describe(
-  'Unique identifier for a specific organization'
-);
-
-export const addOrganizationGroupMemberPathGroupIDSchema = z
-  .string()
-  .describe('Unique identifier for an organization group');
-
-export const addOrganizationGroupMemberPathUserIDSchema = userIDSchema.describe(
+export const setOrganizationMemberRolePathUserIDSchema = userIDSchema.describe(
   'Unique identifier for a specific user account'
 );
 
-export const addOrganizationGroupMemberStatus204Schema = z.unknown();
+export const setOrganizationMemberRoleStatus204Schema = z.unknown();
 
-export const addOrganizationGroupMemberStatus400Schema = z.object({
+export const setOrganizationMemberRoleStatus400Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const addOrganizationGroupMemberStatus401Schema = z
+export const setOrganizationMemberRoleStatus401Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
   .meta({ examples: [{}] });
 
-export const addOrganizationGroupMemberStatus403Schema = z
+export const setOrganizationMemberRoleStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
   .meta({ examples: [{}] });
 
-export const addOrganizationGroupMemberStatus404Schema = z.object({
+export const setOrganizationMemberRoleStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const addOrganizationGroupMemberStatus5XXSchema = z.unknown();
+export const setOrganizationMemberRoleStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
 
-export const addOrganizationGroupMemberResponseSchema = addOrganizationGroupMemberStatus204Schema;
+export const setOrganizationMemberRoleStatus5XXSchema = z.unknown();
 
-export const addOrganizationGroupMemberErrorSchema = z.union([
-  addOrganizationGroupMemberStatus400Schema,
-  addOrganizationGroupMemberStatus401Schema,
-  addOrganizationGroupMemberStatus403Schema,
-  addOrganizationGroupMemberStatus404Schema,
-  addOrganizationGroupMemberStatus5XXSchema
+export const setOrganizationMemberRoleResponseSchema = setOrganizationMemberRoleStatus204Schema;
+
+export const setOrganizationMemberRoleErrorSchema = z.union([
+  setOrganizationMemberRoleStatus400Schema,
+  setOrganizationMemberRoleStatus401Schema,
+  setOrganizationMemberRoleStatus403Schema,
+  setOrganizationMemberRoleStatus404Schema,
+  setOrganizationMemberRoleStatus409Schema,
+  setOrganizationMemberRoleStatus5XXSchema
 ]);
 
-export const removeOrganizationGroupMemberPathOrganizationIDSchema = organizationIDSchema.describe(
-  'Unique identifier for a specific organization'
+export const setOrganizationMemberRoleBodySchema = setOrganizationMemberRoleRequestSchema.describe(
+  'Request payload for setting the role of an organization member'
 );
-
-export const removeOrganizationGroupMemberPathGroupIDSchema = z
-  .string()
-  .describe('Unique identifier for an organization group');
-
-export const removeOrganizationGroupMemberPathUserIDSchema = userIDSchema.describe(
-  'Unique identifier for a specific user account'
-);
-
-export const removeOrganizationGroupMemberStatus204Schema = z.unknown();
-
-export const removeOrganizationGroupMemberStatus400Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const removeOrganizationGroupMemberStatus401Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
-
-export const removeOrganizationGroupMemberStatus403Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
-
-export const removeOrganizationGroupMemberStatus404Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const removeOrganizationGroupMemberStatus409Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const removeOrganizationGroupMemberStatus5XXSchema = z.unknown();
-
-export const removeOrganizationGroupMemberResponseSchema = removeOrganizationGroupMemberStatus204Schema;
-
-export const removeOrganizationGroupMemberErrorSchema = z.union([
-  removeOrganizationGroupMemberStatus400Schema,
-  removeOrganizationGroupMemberStatus401Schema,
-  removeOrganizationGroupMemberStatus403Schema,
-  removeOrganizationGroupMemberStatus404Schema,
-  removeOrganizationGroupMemberStatus409Schema,
-  removeOrganizationGroupMemberStatus5XXSchema
-]);
 
 export const listOrganizationInvitationsPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
@@ -2195,6 +2013,374 @@ export const getOrganizationMembershipLimitsErrorSchema = z.union([
   getOrganizationMembershipLimitsStatus403Schema,
   getOrganizationMembershipLimitsStatus5XXSchema
 ]);
+
+export const getOrganizationSSOPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const getOrganizationSSOStatus200Schema = organizationSSOSchema.describe(
+  "An organization's single sign-on setup, as one identity provider per verified email domain."
+);
+
+export const getOrganizationSSOStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getOrganizationSSOStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const getOrganizationSSOStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const getOrganizationSSOStatus5XXSchema = z.unknown();
+
+export const getOrganizationSSOResponseSchema = getOrganizationSSOStatus200Schema;
+
+export const getOrganizationSSOErrorSchema = z.union([
+  getOrganizationSSOStatus401Schema,
+  getOrganizationSSOStatus403Schema,
+  getOrganizationSSOStatus404Schema,
+  getOrganizationSSOStatus5XXSchema
+]);
+
+export const claimOrganizationSSODomainPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const claimOrganizationSSODomainStatus201Schema = organizationSSODomainSchema.describe(
+  'An email domain claimed by an organization for SSO'
+);
+
+export const claimOrganizationSSODomainStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const claimOrganizationSSODomainStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const claimOrganizationSSODomainStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const claimOrganizationSSODomainStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const claimOrganizationSSODomainStatus5XXSchema = z.unknown();
+
+export const claimOrganizationSSODomainResponseSchema = claimOrganizationSSODomainStatus201Schema;
+
+export const claimOrganizationSSODomainErrorSchema = z.union([
+  claimOrganizationSSODomainStatus400Schema,
+  claimOrganizationSSODomainStatus401Schema,
+  claimOrganizationSSODomainStatus403Schema,
+  claimOrganizationSSODomainStatus404Schema,
+  claimOrganizationSSODomainStatus5XXSchema
+]);
+
+export const claimOrganizationSSODomainBodySchema = claimOrganizationSSODomainRequestSchema.describe(
+  'Request payload for claiming an email domain for SSO'
+);
+
+export const deleteOrganizationSSODomainPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const deleteOrganizationSSODomainPathDomainSchema = z.string().describe('Email domain claimed for SSO');
+
+export const deleteOrganizationSSODomainStatus204Schema = z.unknown();
+
+export const deleteOrganizationSSODomainStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const deleteOrganizationSSODomainStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const deleteOrganizationSSODomainStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const deleteOrganizationSSODomainStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const deleteOrganizationSSODomainStatus5XXSchema = z.unknown();
+
+export const deleteOrganizationSSODomainResponseSchema = deleteOrganizationSSODomainStatus204Schema;
+
+export const deleteOrganizationSSODomainErrorSchema = z.union([
+  deleteOrganizationSSODomainStatus401Schema,
+  deleteOrganizationSSODomainStatus403Schema,
+  deleteOrganizationSSODomainStatus404Schema,
+  deleteOrganizationSSODomainStatus409Schema,
+  deleteOrganizationSSODomainStatus5XXSchema
+]);
+
+export const verifyOrganizationSSODomainPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const verifyOrganizationSSODomainPathDomainSchema = z.string().describe('Email domain claimed for SSO');
+
+export const verifyOrganizationSSODomainStatus200Schema = organizationSSODomainSchema.describe(
+  'An email domain claimed by an organization for SSO'
+);
+
+export const verifyOrganizationSSODomainStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const verifyOrganizationSSODomainStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const verifyOrganizationSSODomainStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const verifyOrganizationSSODomainStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const verifyOrganizationSSODomainStatus5XXSchema = z.unknown();
+
+export const verifyOrganizationSSODomainResponseSchema = verifyOrganizationSSODomainStatus200Schema;
+
+export const verifyOrganizationSSODomainErrorSchema = z.union([
+  verifyOrganizationSSODomainStatus401Schema,
+  verifyOrganizationSSODomainStatus403Schema,
+  verifyOrganizationSSODomainStatus404Schema,
+  verifyOrganizationSSODomainStatus409Schema,
+  verifyOrganizationSSODomainStatus5XXSchema
+]);
+
+export const createOrganizationSSOProviderPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const createOrganizationSSOProviderStatus201Schema = organizationSSOProviderSchema.describe(
+  "An identity provider serving one of the organization's verified domains. The client secret is write-only and is never returned."
+);
+
+export const createOrganizationSSOProviderStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const createOrganizationSSOProviderStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const createOrganizationSSOProviderStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const createOrganizationSSOProviderStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const createOrganizationSSOProviderStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const createOrganizationSSOProviderStatus5XXSchema = z.unknown();
+
+export const createOrganizationSSOProviderResponseSchema = createOrganizationSSOProviderStatus201Schema;
+
+export const createOrganizationSSOProviderErrorSchema = z.union([
+  createOrganizationSSOProviderStatus400Schema,
+  createOrganizationSSOProviderStatus401Schema,
+  createOrganizationSSOProviderStatus403Schema,
+  createOrganizationSSOProviderStatus404Schema,
+  createOrganizationSSOProviderStatus409Schema,
+  createOrganizationSSOProviderStatus5XXSchema
+]);
+
+export const createOrganizationSSOProviderBodySchema = createOrganizationSSOProviderRequestSchema.describe(
+  'Request payload for registering an identity provider for a verified domain'
+);
+
+export const updateOrganizationSSOProviderPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const updateOrganizationSSOProviderPathProviderAliasSchema = z
+  .string()
+  .describe("Alias identifying one of the organization's SSO identity providers");
+
+export const updateOrganizationSSOProviderStatus200Schema = organizationSSOProviderSchema.describe(
+  "An identity provider serving one of the organization's verified domains. The client secret is write-only and is never returned."
+);
+
+export const updateOrganizationSSOProviderStatus400Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const updateOrganizationSSOProviderStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const updateOrganizationSSOProviderStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const updateOrganizationSSOProviderStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const updateOrganizationSSOProviderStatus5XXSchema = z.unknown();
+
+export const updateOrganizationSSOProviderResponseSchema = updateOrganizationSSOProviderStatus200Schema;
+
+export const updateOrganizationSSOProviderErrorSchema = z.union([
+  updateOrganizationSSOProviderStatus400Schema,
+  updateOrganizationSSOProviderStatus401Schema,
+  updateOrganizationSSOProviderStatus403Schema,
+  updateOrganizationSSOProviderStatus404Schema,
+  updateOrganizationSSOProviderStatus5XXSchema
+]);
+
+export const updateOrganizationSSOProviderBodySchema = updateOrganizationSSOProviderRequestSchema.describe(
+  "Request payload for replacing an identity provider's credentials"
+);
+
+export const deleteOrganizationSSOProviderPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const deleteOrganizationSSOProviderPathProviderAliasSchema = z
+  .string()
+  .describe("Alias identifying one of the organization's SSO identity providers");
+
+export const deleteOrganizationSSOProviderStatus204Schema = z.unknown();
+
+export const deleteOrganizationSSOProviderStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const deleteOrganizationSSOProviderStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const deleteOrganizationSSOProviderStatus5XXSchema = z.unknown();
+
+export const deleteOrganizationSSOProviderResponseSchema = deleteOrganizationSSOProviderStatus204Schema;
+
+export const deleteOrganizationSSOProviderErrorSchema = z.union([
+  deleteOrganizationSSOProviderStatus401Schema,
+  deleteOrganizationSSOProviderStatus403Schema,
+  deleteOrganizationSSOProviderStatus5XXSchema
+]);
+
+export const setOrganizationSSOProviderEnforcementPathOrganizationIDSchema = organizationIDSchema.describe(
+  'Unique identifier for a specific organization'
+);
+
+export const setOrganizationSSOProviderEnforcementPathProviderAliasSchema = z
+  .string()
+  .describe("Alias identifying one of the organization's SSO identity providers");
+
+export const setOrganizationSSOProviderEnforcementStatus200Schema = organizationSSOProviderSchema.describe(
+  "An identity provider serving one of the organization's verified domains. The client secret is write-only and is never returned."
+);
+
+export const setOrganizationSSOProviderEnforcementStatus401Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const setOrganizationSSOProviderEnforcementStatus403Schema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .meta({ examples: [{}] });
+
+export const setOrganizationSSOProviderEnforcementStatus404Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const setOrganizationSSOProviderEnforcementStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
+export const setOrganizationSSOProviderEnforcementStatus5XXSchema = z.unknown();
+
+export const setOrganizationSSOProviderEnforcementResponseSchema = setOrganizationSSOProviderEnforcementStatus200Schema;
+
+export const setOrganizationSSOProviderEnforcementErrorSchema = z.union([
+  setOrganizationSSOProviderEnforcementStatus401Schema,
+  setOrganizationSSOProviderEnforcementStatus403Schema,
+  setOrganizationSSOProviderEnforcementStatus404Schema,
+  setOrganizationSSOProviderEnforcementStatus409Schema,
+  setOrganizationSSOProviderEnforcementStatus5XXSchema
+]);
+
+export const setOrganizationSSOProviderEnforcementBodySchema = organizationSSOEnforcementSchema.describe(
+  "Whether members on a provider's domain must sign in through it."
+);
 
 export const createBillingCheckoutSessionPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'

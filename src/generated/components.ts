@@ -6,12 +6,25 @@
 import client from '../utils/fetcher';
 import type { FetcherConfig } from '../utils/fetcher';
 import type {
-  AddOrganizationGroupMember204,
-  AddOrganizationGroupMemberPathParams,
-  AddOrganizationGroupMember400,
-  AddOrganizationGroupMember401,
-  AddOrganizationGroupMember403,
-  AddOrganizationGroupMember404,
+  BranchLogs200,
+  BranchLogsMutationRequest,
+  BranchLogsPathParams,
+  BranchLogs400,
+  BranchLogs401,
+  BranchLogs404,
+  BranchMetrics200,
+  BranchMetricsMutationRequest,
+  BranchMetricsPathParams,
+  BranchMetrics400,
+  BranchMetrics401,
+  BranchMetrics404,
+  ClaimOrganizationSSODomain201,
+  ClaimOrganizationSSODomainMutationRequest,
+  ClaimOrganizationSSODomainPathParams,
+  ClaimOrganizationSSODomain400,
+  ClaimOrganizationSSODomain401,
+  ClaimOrganizationSSODomain403,
+  ClaimOrganizationSSODomain404,
   CreateOrganization201,
   CreateOrganizationMutationRequest,
   CreateOrganization400,
@@ -62,50 +75,19 @@ import type {
   RemoveOrganizationMemberPathParams,
   RemoveOrganizationMember400,
   RemoveOrganizationMember409,
-  ListOrganizationGroups200,
-  ListOrganizationGroupsPathParams,
-  ListOrganizationGroups401,
-  ListOrganizationGroups403,
-  ListOrganizationGroups404,
-  CreateOrganizationGroup201,
-  CreateOrganizationGroupMutationRequest,
-  CreateOrganizationGroupPathParams,
-  CreateOrganizationGroup400,
-  CreateOrganizationGroup401,
-  CreateOrganizationGroup403,
-  CreateOrganizationGroup404,
-  CreateOrganizationGroup409,
-  GetOrganizationGroup200,
-  GetOrganizationGroupPathParams,
-  GetOrganizationGroup401,
-  GetOrganizationGroup403,
-  GetOrganizationGroup404,
-  UpdateOrganizationGroup200,
-  UpdateOrganizationGroupMutationRequest,
-  UpdateOrganizationGroupPathParams,
-  UpdateOrganizationGroup400,
-  UpdateOrganizationGroup401,
-  UpdateOrganizationGroup403,
-  UpdateOrganizationGroup404,
-  UpdateOrganizationGroup409,
-  DeleteOrganizationGroup204,
-  DeleteOrganizationGroupPathParams,
-  DeleteOrganizationGroup400,
-  DeleteOrganizationGroup401,
-  DeleteOrganizationGroup403,
-  DeleteOrganizationGroup404,
-  ListOrganizationGroupMembers200,
-  ListOrganizationGroupMembersPathParams,
-  ListOrganizationGroupMembers401,
-  ListOrganizationGroupMembers403,
-  ListOrganizationGroupMembers404,
-  RemoveOrganizationGroupMember204,
-  RemoveOrganizationGroupMemberPathParams,
-  RemoveOrganizationGroupMember400,
-  RemoveOrganizationGroupMember401,
-  RemoveOrganizationGroupMember403,
-  RemoveOrganizationGroupMember404,
-  RemoveOrganizationGroupMember409,
+  ListOrganizationRoles200,
+  ListOrganizationRolesPathParams,
+  ListOrganizationRoles401,
+  ListOrganizationRoles403,
+  ListOrganizationRoles404,
+  SetOrganizationMemberRole204,
+  SetOrganizationMemberRoleMutationRequest,
+  SetOrganizationMemberRolePathParams,
+  SetOrganizationMemberRole400,
+  SetOrganizationMemberRole401,
+  SetOrganizationMemberRole403,
+  SetOrganizationMemberRole404,
+  SetOrganizationMemberRole409,
   ListOrganizationInvitations200,
   ListOrganizationInvitationsPathParams,
   ListOrganizationInvitationsQueryParams,
@@ -149,6 +131,49 @@ import type {
   GetOrganizationMembershipLimitsPathParams,
   GetOrganizationMembershipLimits401,
   GetOrganizationMembershipLimits403,
+  GetOrganizationSSO200,
+  GetOrganizationSSOPathParams,
+  GetOrganizationSSO401,
+  GetOrganizationSSO403,
+  GetOrganizationSSO404,
+  DeleteOrganizationSSODomain204,
+  DeleteOrganizationSSODomainPathParams,
+  DeleteOrganizationSSODomain401,
+  DeleteOrganizationSSODomain403,
+  DeleteOrganizationSSODomain404,
+  DeleteOrganizationSSODomain409,
+  VerifyOrganizationSSODomain200,
+  VerifyOrganizationSSODomainPathParams,
+  VerifyOrganizationSSODomain401,
+  VerifyOrganizationSSODomain403,
+  VerifyOrganizationSSODomain404,
+  VerifyOrganizationSSODomain409,
+  CreateOrganizationSSOProvider201,
+  CreateOrganizationSSOProviderMutationRequest,
+  CreateOrganizationSSOProviderPathParams,
+  CreateOrganizationSSOProvider400,
+  CreateOrganizationSSOProvider401,
+  CreateOrganizationSSOProvider403,
+  CreateOrganizationSSOProvider404,
+  CreateOrganizationSSOProvider409,
+  UpdateOrganizationSSOProvider200,
+  UpdateOrganizationSSOProviderMutationRequest,
+  UpdateOrganizationSSOProviderPathParams,
+  UpdateOrganizationSSOProvider400,
+  UpdateOrganizationSSOProvider401,
+  UpdateOrganizationSSOProvider403,
+  UpdateOrganizationSSOProvider404,
+  DeleteOrganizationSSOProvider204,
+  DeleteOrganizationSSOProviderPathParams,
+  DeleteOrganizationSSOProvider401,
+  DeleteOrganizationSSOProvider403,
+  SetOrganizationSSOProviderEnforcement200,
+  SetOrganizationSSOProviderEnforcementMutationRequest,
+  SetOrganizationSSOProviderEnforcementPathParams,
+  SetOrganizationSSOProviderEnforcement401,
+  SetOrganizationSSOProviderEnforcement403,
+  SetOrganizationSSOProviderEnforcement404,
+  SetOrganizationSSOProviderEnforcement409,
   CreateBillingCheckoutSession200,
   CreateBillingCheckoutSessionPathParams,
   CreateBillingCheckoutSession400,
@@ -327,24 +352,12 @@ import type {
   RotateBranchCredentials400,
   RotateBranchCredentials401,
   RotateBranchCredentials404,
-  BranchMetrics200,
-  BranchMetricsMutationRequest,
-  BranchMetricsPathParams,
-  BranchMetrics400,
-  BranchMetrics401,
-  BranchMetrics404,
   RestoreFromBackup201,
   RestoreFromBackupMutationRequest,
   RestoreFromBackupPathParams,
   RestoreFromBackup400,
   RestoreFromBackup401,
   RestoreFromBackup404,
-  BranchLogs200,
-  BranchLogsMutationRequest,
-  BranchLogsPathParams,
-  BranchLogs400,
-  BranchLogs401,
-  BranchLogs404,
   GetBranchPostgresConfig200,
   GetBranchPostgresConfigPathParams,
   GetBranchPostgresConfig400,
@@ -718,15 +731,15 @@ export async function removeOrganizationMember({
 }
 
 /**
- * @summary List groups of an organization
- * @description Retrieve all groups belonging to an organization. Each organization owns an isolated group hierarchy, including a predefined "Owner" group that governs dangerous operations such as billing and organization deletion.
- * {@link /organizations/:organizationID/groups}
+ * @summary List the roles assignable in an organization
+ * @description Roles are predefined. Every member of an organization holds exactly one.
+ * {@link /organizations/:organizationID/roles}
  */
-export async function listOrganizationGroups({
+export async function listOrganizationRoles({
   pathParams,
   config = {}
 }: {
-  pathParams: ListOrganizationGroupsPathParams;
+  pathParams: ListOrganizationRolesPathParams;
   config?: Partial<FetcherConfig> & { client?: typeof client };
 }) {
   const { client: request = client, ...requestConfig } = config;
@@ -736,29 +749,29 @@ export async function listOrganizationGroups({
   }
 
   const data = await request<
-    ListOrganizationGroups200,
-    ListOrganizationGroups401 | ListOrganizationGroups403 | ListOrganizationGroups404,
+    ListOrganizationRoles200,
+    ListOrganizationRoles401 | ListOrganizationRoles403 | ListOrganizationRoles404,
     null,
     Record<string, string>,
     Record<string, string>,
-    ListOrganizationGroupsPathParams
-  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/groups`, ...requestConfig });
+    ListOrganizationRolesPathParams
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/roles`, ...requestConfig });
 
   return data;
 }
 
 /**
- * @summary Create a group in an organization
- * @description Create a new group within an organization. The reserved name "Owner" cannot be used.
- * {@link /organizations/:organizationID/groups}
+ * @summary Set the role of an organization member
+ * @description Replaces the member's current role. An organization always retains at least one Admin.
+ * {@link /organizations/:organizationID/members/:userID/role}
  */
-export async function createOrganizationGroup({
+export async function setOrganizationMemberRole({
   pathParams,
   body,
   config = {}
 }: {
-  pathParams: CreateOrganizationGroupPathParams;
-  body: CreateOrganizationGroupMutationRequest;
+  pathParams: SetOrganizationMemberRolePathParams;
+  body: SetOrganizationMemberRoleMutationRequest;
   config?: Partial<FetcherConfig> & { client?: typeof client };
 }) {
   const { client: request = client, ...requestConfig } = config;
@@ -767,264 +780,25 @@ export async function createOrganizationGroup({
     throw new Error(`Missing required path parameter: organizationID`);
   }
 
-  const data = await request<
-    CreateOrganizationGroup201,
-    | CreateOrganizationGroup400
-    | CreateOrganizationGroup401
-    | CreateOrganizationGroup403
-    | CreateOrganizationGroup404
-    | CreateOrganizationGroup409,
-    CreateOrganizationGroupMutationRequest,
-    Record<string, string>,
-    Record<string, string>,
-    CreateOrganizationGroupPathParams
-  >({ method: 'POST', url: `/organizations/${pathParams.organizationID}/groups`, body, ...requestConfig });
-
-  return data;
-}
-
-/**
- * @summary Get details of an organization group
- * {@link /organizations/:organizationID/groups/:groupID}
- */
-export async function getOrganizationGroup({
-  pathParams,
-  config = {}
-}: {
-  pathParams: GetOrganizationGroupPathParams;
-  config?: Partial<FetcherConfig> & { client?: typeof client };
-}) {
-  const { client: request = client, ...requestConfig } = config;
-
-  if (!pathParams.organizationID) {
-    throw new Error(`Missing required path parameter: organizationID`);
-  }
-
-  if (!pathParams.groupID) {
-    throw new Error(`Missing required path parameter: groupID`);
+  if (!pathParams.userID) {
+    throw new Error(`Missing required path parameter: userID`);
   }
 
   const data = await request<
-    GetOrganizationGroup200,
-    GetOrganizationGroup401 | GetOrganizationGroup403 | GetOrganizationGroup404,
-    null,
+    SetOrganizationMemberRole204,
+    | SetOrganizationMemberRole400
+    | SetOrganizationMemberRole401
+    | SetOrganizationMemberRole403
+    | SetOrganizationMemberRole404
+    | SetOrganizationMemberRole409,
+    SetOrganizationMemberRoleMutationRequest,
     Record<string, string>,
     Record<string, string>,
-    GetOrganizationGroupPathParams
-  >({
-    method: 'GET',
-    url: `/organizations/${pathParams.organizationID}/groups/${pathParams.groupID}`,
-    ...requestConfig
-  });
-
-  return data;
-}
-
-/**
- * @summary Update an organization group
- * @description Rename an organization group. The predefined "Owner" group cannot be edited.
- * {@link /organizations/:organizationID/groups/:groupID}
- */
-export async function updateOrganizationGroup({
-  pathParams,
-  body,
-  config = {}
-}: {
-  pathParams: UpdateOrganizationGroupPathParams;
-  body: UpdateOrganizationGroupMutationRequest;
-  config?: Partial<FetcherConfig> & { client?: typeof client };
-}) {
-  const { client: request = client, ...requestConfig } = config;
-
-  if (!pathParams.organizationID) {
-    throw new Error(`Missing required path parameter: organizationID`);
-  }
-
-  if (!pathParams.groupID) {
-    throw new Error(`Missing required path parameter: groupID`);
-  }
-
-  const data = await request<
-    UpdateOrganizationGroup200,
-    | UpdateOrganizationGroup400
-    | UpdateOrganizationGroup401
-    | UpdateOrganizationGroup403
-    | UpdateOrganizationGroup404
-    | UpdateOrganizationGroup409,
-    UpdateOrganizationGroupMutationRequest,
-    Record<string, string>,
-    Record<string, string>,
-    UpdateOrganizationGroupPathParams
+    SetOrganizationMemberRolePathParams
   >({
     method: 'PUT',
-    url: `/organizations/${pathParams.organizationID}/groups/${pathParams.groupID}`,
+    url: `/organizations/${pathParams.organizationID}/members/${pathParams.userID}/role`,
     body,
-    ...requestConfig
-  });
-
-  return data;
-}
-
-/**
- * @summary Delete an organization group
- * @description Delete an organization group. The predefined "Owner" group cannot be deleted.
- * {@link /organizations/:organizationID/groups/:groupID}
- */
-export async function deleteOrganizationGroup({
-  pathParams,
-  config = {}
-}: {
-  pathParams: DeleteOrganizationGroupPathParams;
-  config?: Partial<FetcherConfig> & { client?: typeof client };
-}) {
-  const { client: request = client, ...requestConfig } = config;
-
-  if (!pathParams.organizationID) {
-    throw new Error(`Missing required path parameter: organizationID`);
-  }
-
-  if (!pathParams.groupID) {
-    throw new Error(`Missing required path parameter: groupID`);
-  }
-
-  const data = await request<
-    DeleteOrganizationGroup204,
-    DeleteOrganizationGroup400 | DeleteOrganizationGroup401 | DeleteOrganizationGroup403 | DeleteOrganizationGroup404,
-    null,
-    Record<string, string>,
-    Record<string, string>,
-    DeleteOrganizationGroupPathParams
-  >({
-    method: 'DELETE',
-    url: `/organizations/${pathParams.organizationID}/groups/${pathParams.groupID}`,
-    ...requestConfig
-  });
-
-  return data;
-}
-
-/**
- * @summary List members of an organization group
- * {@link /organizations/:organizationID/groups/:groupID/members}
- */
-export async function listOrganizationGroupMembers({
-  pathParams,
-  config = {}
-}: {
-  pathParams: ListOrganizationGroupMembersPathParams;
-  config?: Partial<FetcherConfig> & { client?: typeof client };
-}) {
-  const { client: request = client, ...requestConfig } = config;
-
-  if (!pathParams.organizationID) {
-    throw new Error(`Missing required path parameter: organizationID`);
-  }
-
-  if (!pathParams.groupID) {
-    throw new Error(`Missing required path parameter: groupID`);
-  }
-
-  const data = await request<
-    ListOrganizationGroupMembers200,
-    ListOrganizationGroupMembers401 | ListOrganizationGroupMembers403 | ListOrganizationGroupMembers404,
-    null,
-    Record<string, string>,
-    Record<string, string>,
-    ListOrganizationGroupMembersPathParams
-  >({
-    method: 'GET',
-    url: `/organizations/${pathParams.organizationID}/groups/${pathParams.groupID}/members`,
-    ...requestConfig
-  });
-
-  return data;
-}
-
-/**
- * @summary Add a member to an organization group
- * @description Add an existing organization member to a group. The user must already be a member of the organization.
- * {@link /organizations/:organizationID/groups/:groupID/members/:userID}
- */
-export async function addOrganizationGroupMember({
-  pathParams,
-  config = {}
-}: {
-  pathParams: AddOrganizationGroupMemberPathParams;
-  config?: Partial<FetcherConfig> & { client?: typeof client };
-}) {
-  const { client: request = client, ...requestConfig } = config;
-
-  if (!pathParams.organizationID) {
-    throw new Error(`Missing required path parameter: organizationID`);
-  }
-
-  if (!pathParams.groupID) {
-    throw new Error(`Missing required path parameter: groupID`);
-  }
-
-  if (!pathParams.userID) {
-    throw new Error(`Missing required path parameter: userID`);
-  }
-
-  const data = await request<
-    AddOrganizationGroupMember204,
-    | AddOrganizationGroupMember400
-    | AddOrganizationGroupMember401
-    | AddOrganizationGroupMember403
-    | AddOrganizationGroupMember404,
-    null,
-    Record<string, string>,
-    Record<string, string>,
-    AddOrganizationGroupMemberPathParams
-  >({
-    method: 'PUT',
-    url: `/organizations/${pathParams.organizationID}/groups/${pathParams.groupID}/members/${pathParams.userID}`,
-    ...requestConfig
-  });
-
-  return data;
-}
-
-/**
- * @summary Remove a member from an organization group
- * @description Remove a member from a group. The predefined "Owner" group must always retain at least one member.
- * {@link /organizations/:organizationID/groups/:groupID/members/:userID}
- */
-export async function removeOrganizationGroupMember({
-  pathParams,
-  config = {}
-}: {
-  pathParams: RemoveOrganizationGroupMemberPathParams;
-  config?: Partial<FetcherConfig> & { client?: typeof client };
-}) {
-  const { client: request = client, ...requestConfig } = config;
-
-  if (!pathParams.organizationID) {
-    throw new Error(`Missing required path parameter: organizationID`);
-  }
-
-  if (!pathParams.groupID) {
-    throw new Error(`Missing required path parameter: groupID`);
-  }
-
-  if (!pathParams.userID) {
-    throw new Error(`Missing required path parameter: userID`);
-  }
-
-  const data = await request<
-    RemoveOrganizationGroupMember204,
-    | RemoveOrganizationGroupMember400
-    | RemoveOrganizationGroupMember401
-    | RemoveOrganizationGroupMember403
-    | RemoveOrganizationGroupMember404
-    | RemoveOrganizationGroupMember409,
-    null,
-    Record<string, string>,
-    Record<string, string>,
-    RemoveOrganizationGroupMemberPathParams
-  >({
-    method: 'DELETE',
-    url: `/organizations/${pathParams.organizationID}/groups/${pathParams.groupID}/members/${pathParams.userID}`,
     ...requestConfig
   });
 
@@ -1286,6 +1060,331 @@ export async function getOrganizationMembershipLimits({
     Record<string, string>,
     GetOrganizationMembershipLimitsPathParams
   >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/membership-limits`, ...requestConfig });
+
+  return data;
+}
+
+/**
+ * @summary Get the organization's SSO configuration
+ * @description Lists the organization's identity providers and the email domains claimed for them. An organization signs in
+ * through one provider per verified domain, so both are collections. Client secrets are write-only and are never
+ * returned. An organization that has not set anything up yet responds 200 with empty lists, so 404 means only
+ * that the feature is unavailable.
+ * {@link /organizations/:organizationID/sso}
+ */
+export async function getOrganizationSSO({
+  pathParams,
+  config = {}
+}: {
+  pathParams: GetOrganizationSSOPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  const data = await request<
+    GetOrganizationSSO200,
+    GetOrganizationSSO401 | GetOrganizationSSO403 | GetOrganizationSSO404,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    GetOrganizationSSOPathParams
+  >({ method: 'GET', url: `/organizations/${pathParams.organizationID}/sso`, ...requestConfig });
+
+  return data;
+}
+
+/**
+ * @summary Claim an email domain for SSO
+ * @description Claims an email domain and returns the DNS record that proves control of it. A claim is only a note to
+ * ourselves: nothing is registered against the domain until verification succeeds, so claiming a domain neither
+ * affects anyone's sign-in nor stops another organization claiming it first.
+ * {@link /organizations/:organizationID/sso/domains}
+ */
+export async function claimOrganizationSSODomain({
+  pathParams,
+  body,
+  config = {}
+}: {
+  pathParams: ClaimOrganizationSSODomainPathParams;
+  body: ClaimOrganizationSSODomainMutationRequest;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  const data = await request<
+    ClaimOrganizationSSODomain201,
+    | ClaimOrganizationSSODomain400
+    | ClaimOrganizationSSODomain401
+    | ClaimOrganizationSSODomain403
+    | ClaimOrganizationSSODomain404,
+    ClaimOrganizationSSODomainMutationRequest,
+    Record<string, string>,
+    Record<string, string>,
+    ClaimOrganizationSSODomainPathParams
+  >({ method: 'POST', url: `/organizations/${pathParams.organizationID}/sso/domains`, body, ...requestConfig });
+
+  return data;
+}
+
+/**
+ * @summary Release a claimed or verified domain
+ * @description Drops a pending claim, or releases a verified domain so members on it sign in however they could before.
+ * Refused with a 409 while a provider is still bound to the domain, since releasing it underneath one would
+ * leave a provider nobody can reach; remove the provider first. Idempotent.
+ * {@link /organizations/:organizationID/sso/domains/:domain}
+ */
+export async function deleteOrganizationSSODomain({
+  pathParams,
+  config = {}
+}: {
+  pathParams: DeleteOrganizationSSODomainPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  if (!pathParams.domain) {
+    throw new Error(`Missing required path parameter: domain`);
+  }
+
+  const data = await request<
+    DeleteOrganizationSSODomain204,
+    | DeleteOrganizationSSODomain401
+    | DeleteOrganizationSSODomain403
+    | DeleteOrganizationSSODomain404
+    | DeleteOrganizationSSODomain409,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    DeleteOrganizationSSODomainPathParams
+  >({
+    method: 'DELETE',
+    url: `/organizations/${pathParams.organizationID}/sso/domains/${pathParams.domain}`,
+    ...requestConfig
+  });
+
+  return data;
+}
+
+/**
+ * @summary Check the DNS record for a claimed domain
+ * @description Looks up the challenge TXT record. Verification is a poll, not a command: a missing or stale record is reported
+ * as `verified: false` on a 200 rather than as an error, so a client can retry while DNS propagates. Verifying
+ * proves the organization controls the domain and nothing more; it does not change how anyone signs in.
+ * {@link /organizations/:organizationID/sso/domains/:domain/verify}
+ */
+export async function verifyOrganizationSSODomain({
+  pathParams,
+  config = {}
+}: {
+  pathParams: VerifyOrganizationSSODomainPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  if (!pathParams.domain) {
+    throw new Error(`Missing required path parameter: domain`);
+  }
+
+  const data = await request<
+    VerifyOrganizationSSODomain200,
+    | VerifyOrganizationSSODomain401
+    | VerifyOrganizationSSODomain403
+    | VerifyOrganizationSSODomain404
+    | VerifyOrganizationSSODomain409,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    VerifyOrganizationSSODomainPathParams
+  >({
+    method: 'POST',
+    url: `/organizations/${pathParams.organizationID}/sso/domains/${pathParams.domain}/verify`,
+    ...requestConfig
+  });
+
+  return data;
+}
+
+/**
+ * @summary Register an identity provider for a verified domain
+ * @description Registers an identity provider for one verified domain. `google` needs only the credentials and pins the login
+ * to that Google Workspace domain; `oidc` is the fallback for any other provider and discovers its endpoints from
+ * the issuer's `/.well-known/openid-configuration`. The domain must already be verified, and registering does not
+ * redirect anyone on its own: that is enabled separately.
+ * {@link /organizations/:organizationID/sso/providers}
+ */
+export async function createOrganizationSSOProvider({
+  pathParams,
+  body,
+  config = {}
+}: {
+  pathParams: CreateOrganizationSSOProviderPathParams;
+  body: CreateOrganizationSSOProviderMutationRequest;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  const data = await request<
+    CreateOrganizationSSOProvider201,
+    | CreateOrganizationSSOProvider400
+    | CreateOrganizationSSOProvider401
+    | CreateOrganizationSSOProvider403
+    | CreateOrganizationSSOProvider404
+    | CreateOrganizationSSOProvider409,
+    CreateOrganizationSSOProviderMutationRequest,
+    Record<string, string>,
+    Record<string, string>,
+    CreateOrganizationSSOProviderPathParams
+  >({ method: 'POST', url: `/organizations/${pathParams.organizationID}/sso/providers`, body, ...requestConfig });
+
+  return data;
+}
+
+/**
+ * @summary Update an identity provider's credentials
+ * @description Replaces the provider's credentials, and for `oidc` re-discovers its endpoints from the issuer. The domain it
+ * serves and whether it is enforced are carried across unchanged, so rotating a client secret does not quietly
+ * turn enforcement off.
+ * {@link /organizations/:organizationID/sso/providers/:providerAlias}
+ */
+export async function updateOrganizationSSOProvider({
+  pathParams,
+  body,
+  config = {}
+}: {
+  pathParams: UpdateOrganizationSSOProviderPathParams;
+  body: UpdateOrganizationSSOProviderMutationRequest;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  if (!pathParams.providerAlias) {
+    throw new Error(`Missing required path parameter: providerAlias`);
+  }
+
+  const data = await request<
+    UpdateOrganizationSSOProvider200,
+    | UpdateOrganizationSSOProvider400
+    | UpdateOrganizationSSOProvider401
+    | UpdateOrganizationSSOProvider403
+    | UpdateOrganizationSSOProvider404,
+    UpdateOrganizationSSOProviderMutationRequest,
+    Record<string, string>,
+    Record<string, string>,
+    UpdateOrganizationSSOProviderPathParams
+  >({
+    method: 'PUT',
+    url: `/organizations/${pathParams.organizationID}/sso/providers/${pathParams.providerAlias}`,
+    body,
+    ...requestConfig
+  });
+
+  return data;
+}
+
+/**
+ * @summary Remove an identity provider
+ * @description Deletes the provider, so members on its domain fall back to the sign-in methods they had before. The domain
+ * stays verified and can be given another provider. Idempotent.
+ * {@link /organizations/:organizationID/sso/providers/:providerAlias}
+ */
+export async function deleteOrganizationSSOProvider({
+  pathParams,
+  config = {}
+}: {
+  pathParams: DeleteOrganizationSSOProviderPathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  if (!pathParams.providerAlias) {
+    throw new Error(`Missing required path parameter: providerAlias`);
+  }
+
+  const data = await request<
+    DeleteOrganizationSSOProvider204,
+    DeleteOrganizationSSOProvider401 | DeleteOrganizationSSOProvider403,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    DeleteOrganizationSSOProviderPathParams
+  >({
+    method: 'DELETE',
+    url: `/organizations/${pathParams.organizationID}/sso/providers/${pathParams.providerAlias}`,
+    ...requestConfig
+  });
+
+  return data;
+}
+
+/**
+ * @summary Require members on this provider's domain to sign in through it
+ * @description Enabling sends every address on the provider's domain to it, leaving those members no other way in. Refused
+ * with a 409 until the domain is verified. Disabling needs nothing, so the way out is always open.
+ * {@link /organizations/:organizationID/sso/providers/:providerAlias/enforcement}
+ */
+export async function setOrganizationSSOProviderEnforcement({
+  pathParams,
+  body,
+  config = {}
+}: {
+  pathParams: SetOrganizationSSOProviderEnforcementPathParams;
+  body: SetOrganizationSSOProviderEnforcementMutationRequest;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.organizationID) {
+    throw new Error(`Missing required path parameter: organizationID`);
+  }
+
+  if (!pathParams.providerAlias) {
+    throw new Error(`Missing required path parameter: providerAlias`);
+  }
+
+  const data = await request<
+    SetOrganizationSSOProviderEnforcement200,
+    | SetOrganizationSSOProviderEnforcement401
+    | SetOrganizationSSOProviderEnforcement403
+    | SetOrganizationSSOProviderEnforcement404
+    | SetOrganizationSSOProviderEnforcement409,
+    SetOrganizationSSOProviderEnforcementMutationRequest,
+    Record<string, string>,
+    Record<string, string>,
+    SetOrganizationSSOProviderEnforcementPathParams
+  >({
+    method: 'PUT',
+    url: `/organizations/${pathParams.organizationID}/sso/providers/${pathParams.providerAlias}/enforcement`,
+    body,
+    ...requestConfig
+  });
 
   return data;
 }
@@ -3098,14 +3197,8 @@ export const operationsByPath = {
   'DELETE /organizations/{organizationID}/api-keys': deleteOrganizationAPIKeys,
   'GET /organizations/{organizationID}/members': listOrganizationMembers,
   'DELETE /organizations/{organizationID}/members/{userID}': removeOrganizationMember,
-  'GET /organizations/{organizationID}/groups': listOrganizationGroups,
-  'POST /organizations/{organizationID}/groups': createOrganizationGroup,
-  'GET /organizations/{organizationID}/groups/{groupID}': getOrganizationGroup,
-  'PUT /organizations/{organizationID}/groups/{groupID}': updateOrganizationGroup,
-  'DELETE /organizations/{organizationID}/groups/{groupID}': deleteOrganizationGroup,
-  'GET /organizations/{organizationID}/groups/{groupID}/members': listOrganizationGroupMembers,
-  'PUT /organizations/{organizationID}/groups/{groupID}/members/{userID}': addOrganizationGroupMember,
-  'DELETE /organizations/{organizationID}/groups/{groupID}/members/{userID}': removeOrganizationGroupMember,
+  'GET /organizations/{organizationID}/roles': listOrganizationRoles,
+  'PUT /organizations/{organizationID}/members/{userID}/role': setOrganizationMemberRole,
   'GET /organizations/{organizationID}/invitations': listOrganizationInvitations,
   'POST /organizations/{organizationID}/invitations': createOrganizationInvitation,
   'GET /organizations/{organizationID}/invitations/{invitationID}': getOrganizationInvitation,
@@ -3113,6 +3206,15 @@ export const operationsByPath = {
   'POST /organizations/{organizationID}/invitations/{invitationID}/resend': resendOrganizationInvitation,
   'POST /organizations/{organizationID}/deletion-request': requestOrganizationDeletion,
   'GET /organizations/{organizationID}/membership-limits': getOrganizationMembershipLimits,
+  'GET /organizations/{organizationID}/sso': getOrganizationSSO,
+  'POST /organizations/{organizationID}/sso/domains': claimOrganizationSSODomain,
+  'DELETE /organizations/{organizationID}/sso/domains/{domain}': deleteOrganizationSSODomain,
+  'POST /organizations/{organizationID}/sso/domains/{domain}/verify': verifyOrganizationSSODomain,
+  'POST /organizations/{organizationID}/sso/providers': createOrganizationSSOProvider,
+  'PUT /organizations/{organizationID}/sso/providers/{providerAlias}': updateOrganizationSSOProvider,
+  'DELETE /organizations/{organizationID}/sso/providers/{providerAlias}': deleteOrganizationSSOProvider,
+  'PUT /organizations/{organizationID}/sso/providers/{providerAlias}/enforcement':
+    setOrganizationSSOProviderEnforcement,
   'POST /organizations/{organizationID}/billing/checkout-session': createBillingCheckoutSession,
   'POST /organizations/{organizationID}/billing/payment-method-session': createBillingPaymentMethodSession,
   'GET /organizations/{organizationID}/billing/customer': getBillingCustomer,
@@ -3180,21 +3282,23 @@ export const operationsByTag = {
     deleteOrganization,
     listOrganizationMembers,
     removeOrganizationMember,
-    listOrganizationGroups,
-    createOrganizationGroup,
-    getOrganizationGroup,
-    updateOrganizationGroup,
-    deleteOrganizationGroup,
-    listOrganizationGroupMembers,
-    addOrganizationGroupMember,
-    removeOrganizationGroupMember,
+    listOrganizationRoles,
+    setOrganizationMemberRole,
     listOrganizationInvitations,
     createOrganizationInvitation,
     getOrganizationInvitation,
     deleteOrganizationInvitation,
     resendOrganizationInvitation,
     requestOrganizationDeletion,
-    getOrganizationMembershipLimits
+    getOrganizationMembershipLimits,
+    getOrganizationSSO,
+    claimOrganizationSSODomain,
+    deleteOrganizationSSODomain,
+    verifyOrganizationSSODomain,
+    createOrganizationSSOProvider,
+    updateOrganizationSSOProvider,
+    deleteOrganizationSSOProvider,
+    setOrganizationSSOProviderEnforcement
   },
   apiKeys: {
     listOrganizationAPIKeys,
@@ -3285,27 +3389,33 @@ export const tagDictionary = {
       'getOrganizationsList',
       'getOrganization',
       'listOrganizationMembers',
-      'listOrganizationGroups',
-      'getOrganizationGroup',
-      'listOrganizationGroupMembers',
+      'listOrganizationRoles',
       'listOrganizationInvitations',
       'getOrganizationInvitation',
-      'getOrganizationMembershipLimits'
+      'getOrganizationMembershipLimits',
+      'getOrganizationSSO'
     ],
     POST: [
       'createOrganization',
-      'createOrganizationGroup',
       'createOrganizationInvitation',
       'resendOrganizationInvitation',
-      'requestOrganizationDeletion'
+      'requestOrganizationDeletion',
+      'claimOrganizationSSODomain',
+      'verifyOrganizationSSODomain',
+      'createOrganizationSSOProvider'
     ],
-    PUT: ['updateOrganization', 'updateOrganizationGroup', 'addOrganizationGroupMember'],
+    PUT: [
+      'updateOrganization',
+      'setOrganizationMemberRole',
+      'updateOrganizationSSOProvider',
+      'setOrganizationSSOProviderEnforcement'
+    ],
     DELETE: [
       'deleteOrganization',
       'removeOrganizationMember',
-      'deleteOrganizationGroup',
-      'removeOrganizationGroupMember',
-      'deleteOrganizationInvitation'
+      'deleteOrganizationInvitation',
+      'deleteOrganizationSSODomain',
+      'deleteOrganizationSSOProvider'
     ]
   },
   apiKeys: {
@@ -3381,8 +3491,8 @@ export const Scopes = [
   'org:write',
   'keys:read',
   'keys:write',
-  'group:read',
-  'group:write',
+  'role:read',
+  'role:write',
   'invite:read',
   'invite:write',
   'marketplace:write',
@@ -3422,43 +3532,13 @@ export type OperationErrors = {
     | DeleteOrganizationAPIKeys404;
   'organizations.listOrganizationMembers': never;
   'organizations.removeOrganizationMember': RemoveOrganizationMember400 | RemoveOrganizationMember409;
-  'organizations.listOrganizationGroups':
-    | ListOrganizationGroups401
-    | ListOrganizationGroups403
-    | ListOrganizationGroups404;
-  'organizations.createOrganizationGroup':
-    | CreateOrganizationGroup400
-    | CreateOrganizationGroup401
-    | CreateOrganizationGroup403
-    | CreateOrganizationGroup404
-    | CreateOrganizationGroup409;
-  'organizations.getOrganizationGroup': GetOrganizationGroup401 | GetOrganizationGroup403 | GetOrganizationGroup404;
-  'organizations.updateOrganizationGroup':
-    | UpdateOrganizationGroup400
-    | UpdateOrganizationGroup401
-    | UpdateOrganizationGroup403
-    | UpdateOrganizationGroup404
-    | UpdateOrganizationGroup409;
-  'organizations.deleteOrganizationGroup':
-    | DeleteOrganizationGroup400
-    | DeleteOrganizationGroup401
-    | DeleteOrganizationGroup403
-    | DeleteOrganizationGroup404;
-  'organizations.listOrganizationGroupMembers':
-    | ListOrganizationGroupMembers401
-    | ListOrganizationGroupMembers403
-    | ListOrganizationGroupMembers404;
-  'organizations.addOrganizationGroupMember':
-    | AddOrganizationGroupMember400
-    | AddOrganizationGroupMember401
-    | AddOrganizationGroupMember403
-    | AddOrganizationGroupMember404;
-  'organizations.removeOrganizationGroupMember':
-    | RemoveOrganizationGroupMember400
-    | RemoveOrganizationGroupMember401
-    | RemoveOrganizationGroupMember403
-    | RemoveOrganizationGroupMember404
-    | RemoveOrganizationGroupMember409;
+  'organizations.listOrganizationRoles': ListOrganizationRoles401 | ListOrganizationRoles403 | ListOrganizationRoles404;
+  'organizations.setOrganizationMemberRole':
+    | SetOrganizationMemberRole400
+    | SetOrganizationMemberRole401
+    | SetOrganizationMemberRole403
+    | SetOrganizationMemberRole404
+    | SetOrganizationMemberRole409;
   'organizations.listOrganizationInvitations':
     | ListOrganizationInvitations400
     | ListOrganizationInvitations401
@@ -3493,6 +3573,39 @@ export type OperationErrors = {
   'organizations.getOrganizationMembershipLimits':
     | GetOrganizationMembershipLimits401
     | GetOrganizationMembershipLimits403;
+  'organizations.getOrganizationSSO': GetOrganizationSSO401 | GetOrganizationSSO403 | GetOrganizationSSO404;
+  'organizations.claimOrganizationSSODomain':
+    | ClaimOrganizationSSODomain400
+    | ClaimOrganizationSSODomain401
+    | ClaimOrganizationSSODomain403
+    | ClaimOrganizationSSODomain404;
+  'organizations.deleteOrganizationSSODomain':
+    | DeleteOrganizationSSODomain401
+    | DeleteOrganizationSSODomain403
+    | DeleteOrganizationSSODomain404
+    | DeleteOrganizationSSODomain409;
+  'organizations.verifyOrganizationSSODomain':
+    | VerifyOrganizationSSODomain401
+    | VerifyOrganizationSSODomain403
+    | VerifyOrganizationSSODomain404
+    | VerifyOrganizationSSODomain409;
+  'organizations.createOrganizationSSOProvider':
+    | CreateOrganizationSSOProvider400
+    | CreateOrganizationSSOProvider401
+    | CreateOrganizationSSOProvider403
+    | CreateOrganizationSSOProvider404
+    | CreateOrganizationSSOProvider409;
+  'organizations.updateOrganizationSSOProvider':
+    | UpdateOrganizationSSOProvider400
+    | UpdateOrganizationSSOProvider401
+    | UpdateOrganizationSSOProvider403
+    | UpdateOrganizationSSOProvider404;
+  'organizations.deleteOrganizationSSOProvider': DeleteOrganizationSSOProvider401 | DeleteOrganizationSSOProvider403;
+  'organizations.setOrganizationSSOProviderEnforcement':
+    | SetOrganizationSSOProviderEnforcement401
+    | SetOrganizationSSOProviderEnforcement403
+    | SetOrganizationSSOProviderEnforcement404
+    | SetOrganizationSSOProviderEnforcement409;
   'billing.createBillingCheckoutSession':
     | CreateBillingCheckoutSession400
     | CreateBillingCheckoutSession401
@@ -3598,14 +3711,8 @@ export type OperationErrorStatus = {
   'apiKeys.deleteOrganizationAPIKeys': 400 | 401 | 404;
   'organizations.listOrganizationMembers': never;
   'organizations.removeOrganizationMember': 400 | 409;
-  'organizations.listOrganizationGroups': 401 | 403 | 404;
-  'organizations.createOrganizationGroup': 400 | 401 | 403 | 404 | 409;
-  'organizations.getOrganizationGroup': 401 | 403 | 404;
-  'organizations.updateOrganizationGroup': 400 | 401 | 403 | 404 | 409;
-  'organizations.deleteOrganizationGroup': 400 | 401 | 403 | 404;
-  'organizations.listOrganizationGroupMembers': 401 | 403 | 404;
-  'organizations.addOrganizationGroupMember': 400 | 401 | 403 | 404;
-  'organizations.removeOrganizationGroupMember': 400 | 401 | 403 | 404 | 409;
+  'organizations.listOrganizationRoles': 401 | 403 | 404;
+  'organizations.setOrganizationMemberRole': 400 | 401 | 403 | 404 | 409;
   'organizations.listOrganizationInvitations': 400 | 401 | 403 | 404;
   'organizations.createOrganizationInvitation': 400 | 401 | 403 | 404 | 409;
   'organizations.getOrganizationInvitation': 400 | 401 | 403 | 404;
@@ -3613,6 +3720,14 @@ export type OperationErrorStatus = {
   'organizations.resendOrganizationInvitation': 400 | 401 | 403 | 404;
   'organizations.requestOrganizationDeletion': 400 | 401 | 403 | 409;
   'organizations.getOrganizationMembershipLimits': 401 | 403;
+  'organizations.getOrganizationSSO': 401 | 403 | 404;
+  'organizations.claimOrganizationSSODomain': 400 | 401 | 403 | 404;
+  'organizations.deleteOrganizationSSODomain': 401 | 403 | 404 | 409;
+  'organizations.verifyOrganizationSSODomain': 401 | 403 | 404 | 409;
+  'organizations.createOrganizationSSOProvider': 400 | 401 | 403 | 404 | 409;
+  'organizations.updateOrganizationSSOProvider': 400 | 401 | 403 | 404;
+  'organizations.deleteOrganizationSSOProvider': 401 | 403;
+  'organizations.setOrganizationSSOProviderEnforcement': 401 | 403 | 404 | 409;
   'billing.createBillingCheckoutSession': 400 | 401 | 403;
   'billing.createBillingPaymentMethodSession': 400 | 401 | 403;
   'billing.getBillingCustomer': 401 | 403 | 404;

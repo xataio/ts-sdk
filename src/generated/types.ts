@@ -672,66 +672,257 @@ export type OrganizationMembershipLimits = {
   maxInvites: number;
 };
 
+export const organizationRoleName = {
+  admin: 'admin',
+  editor: 'editor',
+  viewer: 'viewer'
+} as const;
+
+export type OrganizationRoleName = (typeof organizationRoleName)[keyof typeof organizationRoleName];
+
 /**
- * @description A group within an organization
+ * @description A role that can be held by a member of an organization
  * @type object
  */
-export type OrganizationGroup = {
+export type OrganizationRole = {
   /**
-   * @description Unique identifier for the group
+   * @description Stable identifier for the role
    * @type string
    */
-  id: string;
+  id: OrganizationRoleName;
   /**
-   * @description Human-readable name of the group
+   * @description Human-readable name of the role
    * @type string
    */
   name: string;
   /**
-   * @description Hierarchical path of the group within the organization
-   * @type string | undefined
+   * @description What the role allows
+   * @type string
    */
-  path?: string | undefined;
+  description: string;
+};
+
+/**
+ * @description A member of an organization and the role they hold in it
+ */
+export type OrganizationMember = UserWithID & {
   /**
-   * @description Whether this is the predefined \"Owner\" group, which cannot be edited or deleted and must always retain at least one member
+   * @description The roles a member of an organization can hold
+   * @type string
+   */
+  role: OrganizationRoleName;
+};
+
+/**
+ * @description Request payload for setting the role of an organization member
+ * @type object
+ */
+export type SetOrganizationMemberRoleRequest = {
+  /**
+   * @description The roles a member of an organization can hold
+   * @type string
+   */
+  role: OrganizationRoleName;
+};
+
+export const organizationSSOProviderType = {
+  google: 'google',
+  microsoft: 'microsoft',
+  oidc: 'oidc'
+} as const;
+
+export type OrganizationSSOProviderType =
+  (typeof organizationSSOProviderType)[keyof typeof organizationSSOProviderType];
+
+/**
+ * @description An identity provider serving one of the organization\'s verified domains. The client secret is write-only and is never returned.
+ * @type object
+ */
+export type OrganizationSSOProvider = {
+  /**
+   * @description Stable identifier for this provider, used in its own endpoints.
+   * @type string
+   */
+  alias: string;
+  /**
+   * @description Which identity provider this is. `google` pins the login to a Google Workspace domain and `microsoft` to a single Entra tenant, taken from the issuer; `oidc` is the fallback for anything else that speaks OpenID Connect.
+   * @type string
+   */
+  type: OrganizationSSOProviderType;
+  /**
+   * @description Name members see for this provider when signing in.
+   * @type string
+   */
+  display_name: string;
+  /**
+   * @description The verified email domain this provider serves.
+   * @type string
+   */
+  domain: string;
+  /**
+   * @description Whether members on this domain are sent to this provider automatically, leaving no other way in. Registering a provider does not set this; it is enabled separately once a sign-in through it has worked.
    * @type boolean
    */
-  is_owner: boolean;
-};
-
-/**
- * @description A group within an organization together with its member count
- */
-export type OrganizationGroupSummary = OrganizationGroup & {
+  enforced: boolean;
   /**
-   * @description Number of organization members in the group
-   * @type integer
+   * @description OIDC issuer URL, without the /.well-known suffix.
+   *
+   * Format: `uri`
+   * @type string | undefined
    */
-  member_count: number;
-};
-
-/**
- * @description Request payload for creating an organization group
- * @type object
- */
-export type CreateOrganizationGroupRequest = {
+  issuer?: string | undefined;
   /**
-   * @description Name for the new group
+   * @description OAuth client ID the organization registered with the provider.
    * @type string
    */
-  name: string;
+  client_id: string;
 };
 
 /**
- * @description Request payload for updating an organization group
+ * @description The DNS TXT record that proves an organization controls a domain
  * @type object
  */
-export type UpdateOrganizationGroupRequest = {
+export type OrganizationSSODomainVerification = {
   /**
-   * @description New name for the group
+   * @description Name to create the record at
    * @type string
    */
-  name: string;
+  record_name: string;
+  /**
+   * @description DNS record type
+   * @type string
+   */
+  record_type: string;
+  /**
+   * @description Value the record must hold
+   * @type string
+   */
+  record_value: string;
+};
+
+/**
+ * @description An email domain claimed by an organization for SSO
+ * @type object
+ */
+export type OrganizationSSODomain = {
+  /**
+   * @description The claimed email domain
+   * @type string
+   */
+  domain: string;
+  /**
+   * @description The alias an identity provider on this domain will be given. Derived from the organization and the domain, so it is known before the provider exists, which is what lets a client show the redirect URI to register with the provider up front.
+   * @type string
+   */
+  provider_alias: string;
+  /**
+   * @description Whether control of the domain has been proven through DNS
+   * @type boolean
+   */
+  verified: boolean;
+  /**
+   * @description The DNS record that proves control of the domain. Absent once the domain is verified.
+   */
+  verification?: (OrganizationSSODomainVerification | null) | undefined;
+};
+
+/**
+ * @description An organization\'s single sign-on setup, as one identity provider per verified email domain.
+ * @type object
+ */
+export type OrganizationSSO = {
+  /**
+   * @description Identity providers registered for this organization, at most one per verified domain.
+   * @type array
+   */
+  providers: OrganizationSSOProvider[];
+  /**
+   * @description Email domains claimed for this organization, verified and pending.
+   * @type array
+   */
+  domains: OrganizationSSODomain[];
+};
+
+/**
+ * @description Whether members on a provider\'s domain must sign in through it.
+ * @type object
+ */
+export type OrganizationSSOEnforcement = {
+  /**
+   * @description Enable to send every address on the domain to this provider. Disable to let members sign in however they could before.
+   * @type boolean
+   */
+  enforced: boolean;
+};
+
+/**
+ * @description Request payload for registering an identity provider for a verified domain
+ * @type object
+ */
+export type CreateOrganizationSSOProviderRequest = {
+  /**
+   * @description Which identity provider this is. `google` pins the login to a Google Workspace domain and `microsoft` to a single Entra tenant, taken from the issuer; `oidc` is the fallback for anything else that speaks OpenID Connect.
+   * @type string
+   */
+  type: OrganizationSSOProviderType;
+  /**
+   * @description The verified email domain this provider will serve.
+   * @type string
+   */
+  domain: string;
+  /**
+   * @description OIDC issuer URL. Required for `oidc`, and for `microsoft` where it names the Entra tenant; ignored for `google`. Must be https, and must serve a /.well-known/openid-configuration document naming itself as the issuer.
+   *
+   * Format: `uri`
+   * @type string | undefined
+   */
+  issuer?: string | undefined;
+  /**
+   * @description OAuth client ID the organization registered with the provider
+   * @type string
+   */
+  client_id: string;
+  /**
+   * @description OAuth client secret. Write-only: it is stored in Keycloak and is never returned by this API.
+   * @type string
+   */
+  client_secret: string;
+};
+
+/**
+ * @description Request payload for replacing an identity provider\'s credentials
+ * @type object
+ */
+export type UpdateOrganizationSSOProviderRequest = {
+  /**
+   * @description OIDC issuer URL. Required for `oidc`, and for `microsoft` where it names the Entra tenant; ignored for `google`.
+   *
+   * Format: `uri`
+   * @type string | undefined
+   */
+  issuer?: string | undefined;
+  /**
+   * @description OAuth client ID the organization registered with the provider
+   * @type string
+   */
+  client_id: string;
+  /**
+   * @description OAuth client secret. Write-only: it is stored in Keycloak and is never returned by this API.
+   * @type string
+   */
+  client_secret: string;
+};
+
+/**
+ * @description Request payload for claiming an email domain for SSO
+ * @type object
+ */
+export type ClaimOrganizationSSODomainRequest = {
+  /**
+   * @description Bare email domain to claim, for example acme.com. Wildcards and public email providers are rejected.
+   * @type string
+   */
+  domain: string;
 };
 
 export const endpointType = {
@@ -3492,7 +3683,7 @@ export type ListOrganizationMembersPathParams = {
 };
 
 export type ListOrganizationMembers200 = {
-  members: UserWithID[];
+  members: OrganizationMember[];
 };
 
 export type ListOrganizationMembersOptions = {
@@ -3575,7 +3766,7 @@ export type RemoveOrganizationMemberResponse =
   | RemoveOrganizationMember400
   | RemoveOrganizationMember409;
 
-export type ListOrganizationGroupsPathParams = {
+export type ListOrganizationRolesPathParams = {
   /**
    * @description Unique identifier for a specific organization
    * @pattern [a-zA-Z0-9_-~:]+
@@ -3584,15 +3775,15 @@ export type ListOrganizationGroupsPathParams = {
   organizationID: OrganizationID;
 };
 
-export type ListOrganizationGroups200 = {
-  groups: OrganizationGroupSummary[];
+export type ListOrganizationRoles200 = {
+  roles: OrganizationRole[];
 };
 
 /**
  * @example {"message":"invalid API key"}
  * @type object
  */
-export type ListOrganizationGroups401 = {
+export type ListOrganizationRoles401 = {
   /**
    * @description Error identifier for tracking and debugging
    * @type string | undefined
@@ -3609,7 +3800,7 @@ export type ListOrganizationGroups401 = {
  * @example {"message":"invalid API key"}
  * @type object
  */
-export type ListOrganizationGroups403 = {
+export type ListOrganizationRoles403 = {
   /**
    * @description Error identifier for tracking and debugging
    * @type string | undefined
@@ -3622,7 +3813,7 @@ export type ListOrganizationGroups403 = {
   message: string;
 };
 
-export type ListOrganizationGroups404 = {
+export type ListOrganizationRoles404 = {
   /**
    * @description Error identifier for tracking and debugging
    * @type string | undefined
@@ -3635,591 +3826,40 @@ export type ListOrganizationGroups404 = {
   message: string;
 };
 
-export type ListOrganizationGroups5XX = unknown;
+export type ListOrganizationRoles5XX = unknown;
 
-export type ListOrganizationGroupsOptions = {
+export type ListOrganizationRolesOptions = {
   body?: never | undefined;
-  path: ListOrganizationGroupsPathParams;
+  path: ListOrganizationRolesPathParams;
   query?: never | undefined;
   headers?: never | undefined;
 };
 
-export type ListOrganizationGroupsResponses = {
-  '200': ListOrganizationGroups200;
-  '401': ListOrganizationGroups401;
-  '403': ListOrganizationGroups403;
-  '404': ListOrganizationGroups404;
-  '5XX': ListOrganizationGroups5XX;
+export type ListOrganizationRolesResponses = {
+  '200': ListOrganizationRoles200;
+  '401': ListOrganizationRoles401;
+  '403': ListOrganizationRoles403;
+  '404': ListOrganizationRoles404;
+  '5XX': ListOrganizationRoles5XX;
 };
 
 /**
  * @description Union of all possible responses
  */
-export type ListOrganizationGroupsResponse =
-  | ListOrganizationGroups200
-  | ListOrganizationGroups401
-  | ListOrganizationGroups403
-  | ListOrganizationGroups404
-  | ListOrganizationGroups5XX;
+export type ListOrganizationRolesResponse =
+  | ListOrganizationRoles200
+  | ListOrganizationRoles401
+  | ListOrganizationRoles403
+  | ListOrganizationRoles404
+  | ListOrganizationRoles5XX;
 
-export type CreateOrganizationGroupPathParams = {
+export type SetOrganizationMemberRolePathParams = {
   /**
    * @description Unique identifier for a specific organization
    * @pattern [a-zA-Z0-9_-~:]+
    * @type string
    */
   organizationID: OrganizationID;
-};
-
-/**
- * @description A group within an organization
- * @type object
- */
-export type CreateOrganizationGroup201 = OrganizationGroup;
-
-export type CreateOrganizationGroup400 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-/**
- * @example {"message":"invalid API key"}
- * @type object
- */
-export type CreateOrganizationGroup401 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-/**
- * @example {"message":"invalid API key"}
- * @type object
- */
-export type CreateOrganizationGroup403 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type CreateOrganizationGroup404 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type CreateOrganizationGroup409 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type CreateOrganizationGroup5XX = unknown;
-
-/**
- * @description Request payload for creating an organization group
- * @type object
- */
-export type CreateOrganizationGroupMutationRequest = CreateOrganizationGroupRequest;
-
-export type CreateOrganizationGroupOptions = {
-  body: CreateOrganizationGroupMutationRequest;
-  path: CreateOrganizationGroupPathParams;
-  query?: never | undefined;
-  headers?: never | undefined;
-};
-
-export type CreateOrganizationGroupResponses = {
-  '201': CreateOrganizationGroup201;
-  '400': CreateOrganizationGroup400;
-  '401': CreateOrganizationGroup401;
-  '403': CreateOrganizationGroup403;
-  '404': CreateOrganizationGroup404;
-  '409': CreateOrganizationGroup409;
-  '5XX': CreateOrganizationGroup5XX;
-};
-
-/**
- * @description Union of all possible responses
- */
-export type CreateOrganizationGroupResponse =
-  | CreateOrganizationGroup201
-  | CreateOrganizationGroup400
-  | CreateOrganizationGroup401
-  | CreateOrganizationGroup403
-  | CreateOrganizationGroup404
-  | CreateOrganizationGroup409
-  | CreateOrganizationGroup5XX;
-
-export type GetOrganizationGroupPathParams = {
-  /**
-   * @description Unique identifier for a specific organization
-   * @pattern [a-zA-Z0-9_-~:]+
-   * @type string
-   */
-  organizationID: OrganizationID;
-  /**
-   * @description Unique identifier for an organization group
-   * @type string
-   */
-  groupID: string;
-};
-
-/**
- * @description A group within an organization
- * @type object
- */
-export type GetOrganizationGroup200 = OrganizationGroup;
-
-/**
- * @example {"message":"invalid API key"}
- * @type object
- */
-export type GetOrganizationGroup401 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-/**
- * @example {"message":"invalid API key"}
- * @type object
- */
-export type GetOrganizationGroup403 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type GetOrganizationGroup404 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type GetOrganizationGroup5XX = unknown;
-
-export type GetOrganizationGroupOptions = {
-  body?: never | undefined;
-  path: GetOrganizationGroupPathParams;
-  query?: never | undefined;
-  headers?: never | undefined;
-};
-
-export type GetOrganizationGroupResponses = {
-  '200': GetOrganizationGroup200;
-  '401': GetOrganizationGroup401;
-  '403': GetOrganizationGroup403;
-  '404': GetOrganizationGroup404;
-  '5XX': GetOrganizationGroup5XX;
-};
-
-/**
- * @description Union of all possible responses
- */
-export type GetOrganizationGroupResponse =
-  | GetOrganizationGroup200
-  | GetOrganizationGroup401
-  | GetOrganizationGroup403
-  | GetOrganizationGroup404
-  | GetOrganizationGroup5XX;
-
-export type UpdateOrganizationGroupPathParams = {
-  /**
-   * @description Unique identifier for a specific organization
-   * @pattern [a-zA-Z0-9_-~:]+
-   * @type string
-   */
-  organizationID: OrganizationID;
-  /**
-   * @description Unique identifier for an organization group
-   * @type string
-   */
-  groupID: string;
-};
-
-/**
- * @description A group within an organization
- * @type object
- */
-export type UpdateOrganizationGroup200 = OrganizationGroup;
-
-export type UpdateOrganizationGroup400 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-/**
- * @example {"message":"invalid API key"}
- * @type object
- */
-export type UpdateOrganizationGroup401 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-/**
- * @example {"message":"invalid API key"}
- * @type object
- */
-export type UpdateOrganizationGroup403 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type UpdateOrganizationGroup404 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type UpdateOrganizationGroup409 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type UpdateOrganizationGroup5XX = unknown;
-
-/**
- * @description Request payload for updating an organization group
- * @type object
- */
-export type UpdateOrganizationGroupMutationRequest = UpdateOrganizationGroupRequest;
-
-export type UpdateOrganizationGroupOptions = {
-  body: UpdateOrganizationGroupMutationRequest;
-  path: UpdateOrganizationGroupPathParams;
-  query?: never | undefined;
-  headers?: never | undefined;
-};
-
-export type UpdateOrganizationGroupResponses = {
-  '200': UpdateOrganizationGroup200;
-  '400': UpdateOrganizationGroup400;
-  '401': UpdateOrganizationGroup401;
-  '403': UpdateOrganizationGroup403;
-  '404': UpdateOrganizationGroup404;
-  '409': UpdateOrganizationGroup409;
-  '5XX': UpdateOrganizationGroup5XX;
-};
-
-/**
- * @description Union of all possible responses
- */
-export type UpdateOrganizationGroupResponse =
-  | UpdateOrganizationGroup200
-  | UpdateOrganizationGroup400
-  | UpdateOrganizationGroup401
-  | UpdateOrganizationGroup403
-  | UpdateOrganizationGroup404
-  | UpdateOrganizationGroup409
-  | UpdateOrganizationGroup5XX;
-
-export type DeleteOrganizationGroupPathParams = {
-  /**
-   * @description Unique identifier for a specific organization
-   * @pattern [a-zA-Z0-9_-~:]+
-   * @type string
-   */
-  organizationID: OrganizationID;
-  /**
-   * @description Unique identifier for an organization group
-   * @type string
-   */
-  groupID: string;
-};
-
-export type DeleteOrganizationGroup204 = unknown;
-
-export type DeleteOrganizationGroup400 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-/**
- * @example {"message":"invalid API key"}
- * @type object
- */
-export type DeleteOrganizationGroup401 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-/**
- * @example {"message":"invalid API key"}
- * @type object
- */
-export type DeleteOrganizationGroup403 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type DeleteOrganizationGroup404 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type DeleteOrganizationGroup5XX = unknown;
-
-export type DeleteOrganizationGroupOptions = {
-  body?: never | undefined;
-  path: DeleteOrganizationGroupPathParams;
-  query?: never | undefined;
-  headers?: never | undefined;
-};
-
-export type DeleteOrganizationGroupResponses = {
-  '204': DeleteOrganizationGroup204;
-  '400': DeleteOrganizationGroup400;
-  '401': DeleteOrganizationGroup401;
-  '403': DeleteOrganizationGroup403;
-  '404': DeleteOrganizationGroup404;
-  '5XX': DeleteOrganizationGroup5XX;
-};
-
-/**
- * @description Union of all possible responses
- */
-export type DeleteOrganizationGroupResponse =
-  | DeleteOrganizationGroup204
-  | DeleteOrganizationGroup400
-  | DeleteOrganizationGroup401
-  | DeleteOrganizationGroup403
-  | DeleteOrganizationGroup404
-  | DeleteOrganizationGroup5XX;
-
-export type ListOrganizationGroupMembersPathParams = {
-  /**
-   * @description Unique identifier for a specific organization
-   * @pattern [a-zA-Z0-9_-~:]+
-   * @type string
-   */
-  organizationID: OrganizationID;
-  /**
-   * @description Unique identifier for an organization group
-   * @type string
-   */
-  groupID: string;
-};
-
-export type ListOrganizationGroupMembers200 = {
-  members: UserWithID[];
-};
-
-/**
- * @example {"message":"invalid API key"}
- * @type object
- */
-export type ListOrganizationGroupMembers401 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-/**
- * @example {"message":"invalid API key"}
- * @type object
- */
-export type ListOrganizationGroupMembers403 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type ListOrganizationGroupMembers404 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type ListOrganizationGroupMembers5XX = unknown;
-
-export type ListOrganizationGroupMembersOptions = {
-  body?: never | undefined;
-  path: ListOrganizationGroupMembersPathParams;
-  query?: never | undefined;
-  headers?: never | undefined;
-};
-
-export type ListOrganizationGroupMembersResponses = {
-  '200': ListOrganizationGroupMembers200;
-  '401': ListOrganizationGroupMembers401;
-  '403': ListOrganizationGroupMembers403;
-  '404': ListOrganizationGroupMembers404;
-  '5XX': ListOrganizationGroupMembers5XX;
-};
-
-/**
- * @description Union of all possible responses
- */
-export type ListOrganizationGroupMembersResponse =
-  | ListOrganizationGroupMembers200
-  | ListOrganizationGroupMembers401
-  | ListOrganizationGroupMembers403
-  | ListOrganizationGroupMembers404
-  | ListOrganizationGroupMembers5XX;
-
-export type AddOrganizationGroupMemberPathParams = {
-  /**
-   * @description Unique identifier for a specific organization
-   * @pattern [a-zA-Z0-9_-~:]+
-   * @type string
-   */
-  organizationID: OrganizationID;
-  /**
-   * @description Unique identifier for an organization group
-   * @type string
-   */
-  groupID: string;
   /**
    * @description Unique identifier for a specific user account
    * @pattern [a-zA-Z0-9_-~:]+
@@ -4228,9 +3868,9 @@ export type AddOrganizationGroupMemberPathParams = {
   userID: UserID;
 };
 
-export type AddOrganizationGroupMember204 = unknown;
+export type SetOrganizationMemberRole204 = unknown;
 
-export type AddOrganizationGroupMember400 = {
+export type SetOrganizationMemberRole400 = {
   /**
    * @description Error identifier for tracking and debugging
    * @type string | undefined
@@ -4247,7 +3887,7 @@ export type AddOrganizationGroupMember400 = {
  * @example {"message":"invalid API key"}
  * @type object
  */
-export type AddOrganizationGroupMember401 = {
+export type SetOrganizationMemberRole401 = {
   /**
    * @description Error identifier for tracking and debugging
    * @type string | undefined
@@ -4264,7 +3904,7 @@ export type AddOrganizationGroupMember401 = {
  * @example {"message":"invalid API key"}
  * @type object
  */
-export type AddOrganizationGroupMember403 = {
+export type SetOrganizationMemberRole403 = {
   /**
    * @description Error identifier for tracking and debugging
    * @type string | undefined
@@ -4277,7 +3917,7 @@ export type AddOrganizationGroupMember403 = {
   message: string;
 };
 
-export type AddOrganizationGroupMember404 = {
+export type SetOrganizationMemberRole404 = {
   /**
    * @description Error identifier for tracking and debugging
    * @type string | undefined
@@ -4290,160 +3930,55 @@ export type AddOrganizationGroupMember404 = {
   message: string;
 };
 
-export type AddOrganizationGroupMember5XX = unknown;
+export type SetOrganizationMemberRole409 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
 
-export type AddOrganizationGroupMemberOptions = {
-  body?: never | undefined;
-  path: AddOrganizationGroupMemberPathParams;
+export type SetOrganizationMemberRole5XX = unknown;
+
+/**
+ * @description Request payload for setting the role of an organization member
+ * @type object
+ */
+export type SetOrganizationMemberRoleMutationRequest = SetOrganizationMemberRoleRequest;
+
+export type SetOrganizationMemberRoleOptions = {
+  body: SetOrganizationMemberRoleMutationRequest;
+  path: SetOrganizationMemberRolePathParams;
   query?: never | undefined;
   headers?: never | undefined;
 };
 
-export type AddOrganizationGroupMemberResponses = {
-  '204': AddOrganizationGroupMember204;
-  '400': AddOrganizationGroupMember400;
-  '401': AddOrganizationGroupMember401;
-  '403': AddOrganizationGroupMember403;
-  '404': AddOrganizationGroupMember404;
-  '5XX': AddOrganizationGroupMember5XX;
+export type SetOrganizationMemberRoleResponses = {
+  '204': SetOrganizationMemberRole204;
+  '400': SetOrganizationMemberRole400;
+  '401': SetOrganizationMemberRole401;
+  '403': SetOrganizationMemberRole403;
+  '404': SetOrganizationMemberRole404;
+  '409': SetOrganizationMemberRole409;
+  '5XX': SetOrganizationMemberRole5XX;
 };
 
 /**
  * @description Union of all possible responses
  */
-export type AddOrganizationGroupMemberResponse =
-  | AddOrganizationGroupMember204
-  | AddOrganizationGroupMember400
-  | AddOrganizationGroupMember401
-  | AddOrganizationGroupMember403
-  | AddOrganizationGroupMember404
-  | AddOrganizationGroupMember5XX;
-
-export type RemoveOrganizationGroupMemberPathParams = {
-  /**
-   * @description Unique identifier for a specific organization
-   * @pattern [a-zA-Z0-9_-~:]+
-   * @type string
-   */
-  organizationID: OrganizationID;
-  /**
-   * @description Unique identifier for an organization group
-   * @type string
-   */
-  groupID: string;
-  /**
-   * @description Unique identifier for a specific user account
-   * @pattern [a-zA-Z0-9_-~:]+
-   * @type string
-   */
-  userID: UserID;
-};
-
-export type RemoveOrganizationGroupMember204 = unknown;
-
-export type RemoveOrganizationGroupMember400 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-/**
- * @example {"message":"invalid API key"}
- * @type object
- */
-export type RemoveOrganizationGroupMember401 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-/**
- * @example {"message":"invalid API key"}
- * @type object
- */
-export type RemoveOrganizationGroupMember403 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type RemoveOrganizationGroupMember404 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type RemoveOrganizationGroupMember409 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type RemoveOrganizationGroupMember5XX = unknown;
-
-export type RemoveOrganizationGroupMemberOptions = {
-  body?: never | undefined;
-  path: RemoveOrganizationGroupMemberPathParams;
-  query?: never | undefined;
-  headers?: never | undefined;
-};
-
-export type RemoveOrganizationGroupMemberResponses = {
-  '204': RemoveOrganizationGroupMember204;
-  '400': RemoveOrganizationGroupMember400;
-  '401': RemoveOrganizationGroupMember401;
-  '403': RemoveOrganizationGroupMember403;
-  '404': RemoveOrganizationGroupMember404;
-  '409': RemoveOrganizationGroupMember409;
-  '5XX': RemoveOrganizationGroupMember5XX;
-};
-
-/**
- * @description Union of all possible responses
- */
-export type RemoveOrganizationGroupMemberResponse =
-  | RemoveOrganizationGroupMember204
-  | RemoveOrganizationGroupMember400
-  | RemoveOrganizationGroupMember401
-  | RemoveOrganizationGroupMember403
-  | RemoveOrganizationGroupMember404
-  | RemoveOrganizationGroupMember409
-  | RemoveOrganizationGroupMember5XX;
+export type SetOrganizationMemberRoleResponse =
+  | SetOrganizationMemberRole204
+  | SetOrganizationMemberRole400
+  | SetOrganizationMemberRole401
+  | SetOrganizationMemberRole403
+  | SetOrganizationMemberRole404
+  | SetOrganizationMemberRole409
+  | SetOrganizationMemberRole5XX;
 
 export type ListOrganizationInvitationsPathParams = {
   /**
@@ -5203,6 +4738,849 @@ export type GetOrganizationMembershipLimitsResponse =
   | GetOrganizationMembershipLimits401
   | GetOrganizationMembershipLimits403
   | GetOrganizationMembershipLimits5XX;
+
+export type GetOrganizationSSOPathParams = {
+  /**
+   * @description Unique identifier for a specific organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+};
+
+/**
+ * @description An organization\'s single sign-on setup, as one identity provider per verified email domain.
+ * @type object
+ */
+export type GetOrganizationSSO200 = OrganizationSSO;
+
+/**
+ * @example {"message":"invalid API key"}
+ * @type object
+ */
+export type GetOrganizationSSO401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @example {"message":"invalid API key"}
+ * @type object
+ */
+export type GetOrganizationSSO403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type GetOrganizationSSO404 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type GetOrganizationSSO5XX = unknown;
+
+export type GetOrganizationSSOOptions = {
+  body?: never | undefined;
+  path: GetOrganizationSSOPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
+
+export type GetOrganizationSSOResponses = {
+  '200': GetOrganizationSSO200;
+  '401': GetOrganizationSSO401;
+  '403': GetOrganizationSSO403;
+  '404': GetOrganizationSSO404;
+  '5XX': GetOrganizationSSO5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type GetOrganizationSSOResponse =
+  | GetOrganizationSSO200
+  | GetOrganizationSSO401
+  | GetOrganizationSSO403
+  | GetOrganizationSSO404
+  | GetOrganizationSSO5XX;
+
+export type ClaimOrganizationSSODomainPathParams = {
+  /**
+   * @description Unique identifier for a specific organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+};
+
+/**
+ * @description An email domain claimed by an organization for SSO
+ * @type object
+ */
+export type ClaimOrganizationSSODomain201 = OrganizationSSODomain;
+
+export type ClaimOrganizationSSODomain400 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @example {"message":"invalid API key"}
+ * @type object
+ */
+export type ClaimOrganizationSSODomain401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @example {"message":"invalid API key"}
+ * @type object
+ */
+export type ClaimOrganizationSSODomain403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type ClaimOrganizationSSODomain404 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type ClaimOrganizationSSODomain5XX = unknown;
+
+/**
+ * @description Request payload for claiming an email domain for SSO
+ * @type object
+ */
+export type ClaimOrganizationSSODomainMutationRequest = ClaimOrganizationSSODomainRequest;
+
+export type ClaimOrganizationSSODomainOptions = {
+  body: ClaimOrganizationSSODomainMutationRequest;
+  path: ClaimOrganizationSSODomainPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
+
+export type ClaimOrganizationSSODomainResponses = {
+  '201': ClaimOrganizationSSODomain201;
+  '400': ClaimOrganizationSSODomain400;
+  '401': ClaimOrganizationSSODomain401;
+  '403': ClaimOrganizationSSODomain403;
+  '404': ClaimOrganizationSSODomain404;
+  '5XX': ClaimOrganizationSSODomain5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type ClaimOrganizationSSODomainResponse =
+  | ClaimOrganizationSSODomain201
+  | ClaimOrganizationSSODomain400
+  | ClaimOrganizationSSODomain401
+  | ClaimOrganizationSSODomain403
+  | ClaimOrganizationSSODomain404
+  | ClaimOrganizationSSODomain5XX;
+
+export type DeleteOrganizationSSODomainPathParams = {
+  /**
+   * @description Unique identifier for a specific organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+  /**
+   * @description Email domain claimed for SSO
+   * @type string
+   */
+  domain: string;
+};
+
+export type DeleteOrganizationSSODomain204 = unknown;
+
+/**
+ * @example {"message":"invalid API key"}
+ * @type object
+ */
+export type DeleteOrganizationSSODomain401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @example {"message":"invalid API key"}
+ * @type object
+ */
+export type DeleteOrganizationSSODomain403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type DeleteOrganizationSSODomain404 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type DeleteOrganizationSSODomain409 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type DeleteOrganizationSSODomain5XX = unknown;
+
+export type DeleteOrganizationSSODomainOptions = {
+  body?: never | undefined;
+  path: DeleteOrganizationSSODomainPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
+
+export type DeleteOrganizationSSODomainResponses = {
+  '204': DeleteOrganizationSSODomain204;
+  '401': DeleteOrganizationSSODomain401;
+  '403': DeleteOrganizationSSODomain403;
+  '404': DeleteOrganizationSSODomain404;
+  '409': DeleteOrganizationSSODomain409;
+  '5XX': DeleteOrganizationSSODomain5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type DeleteOrganizationSSODomainResponse =
+  | DeleteOrganizationSSODomain204
+  | DeleteOrganizationSSODomain401
+  | DeleteOrganizationSSODomain403
+  | DeleteOrganizationSSODomain404
+  | DeleteOrganizationSSODomain409
+  | DeleteOrganizationSSODomain5XX;
+
+export type VerifyOrganizationSSODomainPathParams = {
+  /**
+   * @description Unique identifier for a specific organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+  /**
+   * @description Email domain claimed for SSO
+   * @type string
+   */
+  domain: string;
+};
+
+/**
+ * @description An email domain claimed by an organization for SSO
+ * @type object
+ */
+export type VerifyOrganizationSSODomain200 = OrganizationSSODomain;
+
+/**
+ * @example {"message":"invalid API key"}
+ * @type object
+ */
+export type VerifyOrganizationSSODomain401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @example {"message":"invalid API key"}
+ * @type object
+ */
+export type VerifyOrganizationSSODomain403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type VerifyOrganizationSSODomain404 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type VerifyOrganizationSSODomain409 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type VerifyOrganizationSSODomain5XX = unknown;
+
+export type VerifyOrganizationSSODomainOptions = {
+  body?: never | undefined;
+  path: VerifyOrganizationSSODomainPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
+
+export type VerifyOrganizationSSODomainResponses = {
+  '200': VerifyOrganizationSSODomain200;
+  '401': VerifyOrganizationSSODomain401;
+  '403': VerifyOrganizationSSODomain403;
+  '404': VerifyOrganizationSSODomain404;
+  '409': VerifyOrganizationSSODomain409;
+  '5XX': VerifyOrganizationSSODomain5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type VerifyOrganizationSSODomainResponse =
+  | VerifyOrganizationSSODomain200
+  | VerifyOrganizationSSODomain401
+  | VerifyOrganizationSSODomain403
+  | VerifyOrganizationSSODomain404
+  | VerifyOrganizationSSODomain409
+  | VerifyOrganizationSSODomain5XX;
+
+export type CreateOrganizationSSOProviderPathParams = {
+  /**
+   * @description Unique identifier for a specific organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+};
+
+/**
+ * @description An identity provider serving one of the organization\'s verified domains. The client secret is write-only and is never returned.
+ * @type object
+ */
+export type CreateOrganizationSSOProvider201 = OrganizationSSOProvider;
+
+export type CreateOrganizationSSOProvider400 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @example {"message":"invalid API key"}
+ * @type object
+ */
+export type CreateOrganizationSSOProvider401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @example {"message":"invalid API key"}
+ * @type object
+ */
+export type CreateOrganizationSSOProvider403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type CreateOrganizationSSOProvider404 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type CreateOrganizationSSOProvider409 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type CreateOrganizationSSOProvider5XX = unknown;
+
+/**
+ * @description Request payload for registering an identity provider for a verified domain
+ * @type object
+ */
+export type CreateOrganizationSSOProviderMutationRequest = CreateOrganizationSSOProviderRequest;
+
+export type CreateOrganizationSSOProviderOptions = {
+  body: CreateOrganizationSSOProviderMutationRequest;
+  path: CreateOrganizationSSOProviderPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
+
+export type CreateOrganizationSSOProviderResponses = {
+  '201': CreateOrganizationSSOProvider201;
+  '400': CreateOrganizationSSOProvider400;
+  '401': CreateOrganizationSSOProvider401;
+  '403': CreateOrganizationSSOProvider403;
+  '404': CreateOrganizationSSOProvider404;
+  '409': CreateOrganizationSSOProvider409;
+  '5XX': CreateOrganizationSSOProvider5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type CreateOrganizationSSOProviderResponse =
+  | CreateOrganizationSSOProvider201
+  | CreateOrganizationSSOProvider400
+  | CreateOrganizationSSOProvider401
+  | CreateOrganizationSSOProvider403
+  | CreateOrganizationSSOProvider404
+  | CreateOrganizationSSOProvider409
+  | CreateOrganizationSSOProvider5XX;
+
+export type UpdateOrganizationSSOProviderPathParams = {
+  /**
+   * @description Unique identifier for a specific organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+  /**
+   * @description Alias identifying one of the organization\'s SSO identity providers
+   * @type string
+   */
+  providerAlias: string;
+};
+
+/**
+ * @description An identity provider serving one of the organization\'s verified domains. The client secret is write-only and is never returned.
+ * @type object
+ */
+export type UpdateOrganizationSSOProvider200 = OrganizationSSOProvider;
+
+export type UpdateOrganizationSSOProvider400 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @example {"message":"invalid API key"}
+ * @type object
+ */
+export type UpdateOrganizationSSOProvider401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @example {"message":"invalid API key"}
+ * @type object
+ */
+export type UpdateOrganizationSSOProvider403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type UpdateOrganizationSSOProvider404 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type UpdateOrganizationSSOProvider5XX = unknown;
+
+/**
+ * @description Request payload for replacing an identity provider\'s credentials
+ * @type object
+ */
+export type UpdateOrganizationSSOProviderMutationRequest = UpdateOrganizationSSOProviderRequest;
+
+export type UpdateOrganizationSSOProviderOptions = {
+  body: UpdateOrganizationSSOProviderMutationRequest;
+  path: UpdateOrganizationSSOProviderPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
+
+export type UpdateOrganizationSSOProviderResponses = {
+  '200': UpdateOrganizationSSOProvider200;
+  '400': UpdateOrganizationSSOProvider400;
+  '401': UpdateOrganizationSSOProvider401;
+  '403': UpdateOrganizationSSOProvider403;
+  '404': UpdateOrganizationSSOProvider404;
+  '5XX': UpdateOrganizationSSOProvider5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type UpdateOrganizationSSOProviderResponse =
+  | UpdateOrganizationSSOProvider200
+  | UpdateOrganizationSSOProvider400
+  | UpdateOrganizationSSOProvider401
+  | UpdateOrganizationSSOProvider403
+  | UpdateOrganizationSSOProvider404
+  | UpdateOrganizationSSOProvider5XX;
+
+export type DeleteOrganizationSSOProviderPathParams = {
+  /**
+   * @description Unique identifier for a specific organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+  /**
+   * @description Alias identifying one of the organization\'s SSO identity providers
+   * @type string
+   */
+  providerAlias: string;
+};
+
+export type DeleteOrganizationSSOProvider204 = unknown;
+
+/**
+ * @example {"message":"invalid API key"}
+ * @type object
+ */
+export type DeleteOrganizationSSOProvider401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @example {"message":"invalid API key"}
+ * @type object
+ */
+export type DeleteOrganizationSSOProvider403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type DeleteOrganizationSSOProvider5XX = unknown;
+
+export type DeleteOrganizationSSOProviderOptions = {
+  body?: never | undefined;
+  path: DeleteOrganizationSSOProviderPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
+
+export type DeleteOrganizationSSOProviderResponses = {
+  '204': DeleteOrganizationSSOProvider204;
+  '401': DeleteOrganizationSSOProvider401;
+  '403': DeleteOrganizationSSOProvider403;
+  '5XX': DeleteOrganizationSSOProvider5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type DeleteOrganizationSSOProviderResponse =
+  | DeleteOrganizationSSOProvider204
+  | DeleteOrganizationSSOProvider401
+  | DeleteOrganizationSSOProvider403
+  | DeleteOrganizationSSOProvider5XX;
+
+export type SetOrganizationSSOProviderEnforcementPathParams = {
+  /**
+   * @description Unique identifier for a specific organization
+   * @pattern [a-zA-Z0-9_-~:]+
+   * @type string
+   */
+  organizationID: OrganizationID;
+  /**
+   * @description Alias identifying one of the organization\'s SSO identity providers
+   * @type string
+   */
+  providerAlias: string;
+};
+
+/**
+ * @description An identity provider serving one of the organization\'s verified domains. The client secret is write-only and is never returned.
+ * @type object
+ */
+export type SetOrganizationSSOProviderEnforcement200 = OrganizationSSOProvider;
+
+/**
+ * @example {"message":"invalid API key"}
+ * @type object
+ */
+export type SetOrganizationSSOProviderEnforcement401 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
+ * @example {"message":"invalid API key"}
+ * @type object
+ */
+export type SetOrganizationSSOProviderEnforcement403 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type SetOrganizationSSOProviderEnforcement404 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type SetOrganizationSSOProviderEnforcement409 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+export type SetOrganizationSSOProviderEnforcement5XX = unknown;
+
+/**
+ * @description Whether members on a provider\'s domain must sign in through it.
+ * @type object
+ */
+export type SetOrganizationSSOProviderEnforcementMutationRequest = OrganizationSSOEnforcement;
+
+export type SetOrganizationSSOProviderEnforcementOptions = {
+  body: SetOrganizationSSOProviderEnforcementMutationRequest;
+  path: SetOrganizationSSOProviderEnforcementPathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
+
+export type SetOrganizationSSOProviderEnforcementResponses = {
+  '200': SetOrganizationSSOProviderEnforcement200;
+  '401': SetOrganizationSSOProviderEnforcement401;
+  '403': SetOrganizationSSOProviderEnforcement403;
+  '404': SetOrganizationSSOProviderEnforcement404;
+  '409': SetOrganizationSSOProviderEnforcement409;
+  '5XX': SetOrganizationSSOProviderEnforcement5XX;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type SetOrganizationSSOProviderEnforcementResponse =
+  | SetOrganizationSSOProviderEnforcement200
+  | SetOrganizationSSOProviderEnforcement401
+  | SetOrganizationSSOProviderEnforcement403
+  | SetOrganizationSSOProviderEnforcement404
+  | SetOrganizationSSOProviderEnforcement409
+  | SetOrganizationSSOProviderEnforcement5XX;
 
 export type CreateBillingCheckoutSessionPathParams = {
   /**
