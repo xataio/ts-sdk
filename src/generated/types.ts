@@ -700,6 +700,17 @@ export type OrganizationGroup = {
 };
 
 /**
+ * @description A group within an organization together with its member count
+ */
+export type OrganizationGroupSummary = OrganizationGroup & {
+  /**
+   * @description Number of organization members in the group
+   * @type integer
+   */
+  member_count: number;
+};
+
+/**
  * @description Request payload for creating an organization group
  * @type object
  */
@@ -3574,7 +3585,7 @@ export type ListOrganizationGroupsPathParams = {
 };
 
 export type ListOrganizationGroups200 = {
-  groups: OrganizationGroup[];
+  groups: OrganizationGroupSummary[];
 };
 
 /**

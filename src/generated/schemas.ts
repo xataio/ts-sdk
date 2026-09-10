@@ -268,6 +268,12 @@ export const organizationGroupSchema = z
   })
   .describe('A group within an organization');
 
+export const organizationGroupSummarySchema = organizationGroupSchema
+  .extend({
+    member_count: z.int().describe('Number of organization members in the group')
+  })
+  .describe('A group within an organization together with its member count');
+
 export const createOrganizationGroupRequestSchema = z
   .object({
     name: z.string().describe('Name for the new group')
@@ -1467,7 +1473,7 @@ export const listOrganizationGroupsPathOrganizationIDSchema = organizationIDSche
 );
 
 export const listOrganizationGroupsStatus200Schema = z.object({
-  groups: z.array(organizationGroupSchema)
+  groups: z.array(organizationGroupSummarySchema)
 });
 
 export const listOrganizationGroupsStatus401Schema = z
