@@ -2865,6 +2865,77 @@ export type VercelError = {
   };
 };
 
+/**
+ * @description A provisioned Vercel Marketplace resource. Matches Vercel\'s Partner API\n\"Get Resource\" response. Secrets/connection info are returned by Provision\nResource, not here. The optional billingPlan, protocolSettings, and\nnotification fields are not yet populated.\n
+ * @type object
+ */
+export type Resource = {
+  /**
+   * @description The partner-specific resource id.
+   * @type string
+   */
+  id: string;
+  /**
+   * @description The partner-specific product id/slug.
+   * @type string
+   */
+  productId: string;
+  /**
+   * @description User-inputted resource name.
+   * @type string
+   */
+  name: string;
+  /**
+   * @description User-inputted metadata based on the registered metadata schema.
+   * @type object
+   */
+  metadata: {
+    [key: string]: unknown;
+  };
+  /**
+   * @description Resource lifecycle status. One of Vercel\'s values: ready, pending, onboarding, suspended, resumed, uninstalled, error.
+   * @type string
+   */
+  status: string;
+};
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type ResourceError = {
+  error: {
+    /**
+     * @description Machine-readable error code (e.g. validation_error, conflict).
+     * @type string
+     */
+    code: string;
+    /**
+     * @description Human-readable (system) error message.
+     * @type string
+     */
+    message: string;
+    /**
+     * @description User-facing error details, if applicable.
+     * @type object | undefined
+     */
+    user?:
+      | {
+          /**
+           * @description User-facing error message.
+           * @type string | undefined
+           */
+          message?: string | undefined;
+          /**
+           * @description URL to a help article or dashboard page for resolution.
+           * @type string | undefined
+           */
+          url?: string | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type BadRequestError = {
   /**
    * @description Error identifier for tracking and debugging
@@ -9656,6 +9727,62 @@ export type ListBillingPlansForProductResponse =
   | ListBillingPlansForProduct400
   | ListBillingPlansForProduct403
   | ListBillingPlansForProduct404;
+
+export type GetResourcePathParams = {
+  /**
+   * @description Vercel installation id (icfg_...).
+   * @type string
+   */
+  installationId: string;
+  /**
+   * @description Vercel resource id.
+   * @type string
+   */
+  resourceId: string;
+};
+
+/**
+ * @description A provisioned Vercel Marketplace resource. Matches Vercel\'s Partner API\n\"Get Resource\" response. Secrets/connection info are returned by Provision\nResource, not here. The optional billingPlan, protocolSettings, and\nnotification fields are not yet populated.\n
+ * @type object
+ */
+export type GetResource200 = Resource;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type GetResource403 = ResourceError;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type GetResource404 = ResourceError;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type GetResource500 = ResourceError;
+
+export type GetResourceOptions = {
+  body?: never | undefined;
+  path: GetResourcePathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
+
+export type GetResourceResponses = {
+  '200': GetResource200;
+  '403': GetResource403;
+  '404': GetResource404;
+  '500': GetResource500;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type GetResourceResponse = GetResource200 | GetResource403 | GetResource404 | GetResource500;
 
 export type OrbWebhook200 = unknown;
 

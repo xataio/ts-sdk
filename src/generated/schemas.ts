@@ -1199,6 +1199,41 @@ export const vercelErrorSchema = z
   })
   .describe('Vercel Partner API error envelope.');
 
+export const resourceSchema = z
+  .object({
+    id: z.string().describe('The partner-specific resource id.'),
+    productId: z.string().describe('The partner-specific product id/slug.'),
+    name: z.string().describe('User-inputted resource name.'),
+    metadata: z
+      .object({})
+      .catchall(z.unknown())
+      .describe('User-inputted metadata based on the registered metadata schema.'),
+    status: z
+      .string()
+      .describe(
+        "Resource lifecycle status. One of Vercel's values: ready, pending, onboarding, suspended, resumed, uninstalled, error."
+      )
+  })
+  .describe(
+    'A provisioned Vercel Marketplace resource. Matches Vercel\'s Partner API\n"Get Resource" response. Secrets/connection info are returned by Provision\nResource, not here. The optional billingPlan, protocolSettings, and\nnotification fields are not yet populated.\n'
+  );
+
+export const resourceErrorSchema = z
+  .object({
+    error: z.object({
+      code: z.string().describe('Machine-readable error code (e.g. validation_error, conflict).'),
+      message: z.string().describe('Human-readable (system) error message.'),
+      user: z
+        .object({
+          message: z.string().optional().describe('User-facing error message.'),
+          url: z.string().optional().describe('URL to a help article or dashboard page for resolution.')
+        })
+        .optional()
+        .describe('User-facing error details, if applicable.')
+    })
+  })
+  .describe('Vercel Partner API error envelope.');
+
 export const badRequestErrorSchema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
   message: z.string().describe('Human-readable error message explaining the issue')
@@ -4193,6 +4228,28 @@ export const listBillingPlansForProductErrorSchema = z.union([
   listBillingPlansForProductStatus400Schema,
   listBillingPlansForProductStatus403Schema,
   listBillingPlansForProductStatus404Schema
+]);
+
+export const getResourcePathInstallationIdSchema = z.string().describe('Vercel installation id (icfg_...).');
+
+export const getResourcePathResourceIdSchema = z.string().describe('Vercel resource id.');
+
+export const getResourceStatus200Schema = resourceSchema.describe(
+  'A provisioned Vercel Marketplace resource. Matches Vercel\'s Partner API\n"Get Resource" response. Secrets/connection info are returned by Provision\nResource, not here. The optional billingPlan, protocolSettings, and\nnotification fields are not yet populated.\n'
+);
+
+export const getResourceStatus403Schema = resourceErrorSchema.describe('Vercel Partner API error envelope.');
+
+export const getResourceStatus404Schema = resourceErrorSchema.describe('Vercel Partner API error envelope.');
+
+export const getResourceStatus500Schema = resourceErrorSchema.describe('Vercel Partner API error envelope.');
+
+export const getResourceResponseSchema = getResourceStatus200Schema;
+
+export const getResourceErrorSchema = z.union([
+  getResourceStatus403Schema,
+  getResourceStatus404Schema,
+  getResourceStatus500Schema
 ]);
 
 export const orbWebhookStatus200Schema = z.unknown();

@@ -418,6 +418,11 @@ import type {
   ListBillingPlansForProduct400,
   ListBillingPlansForProduct403,
   ListBillingPlansForProduct404,
+  GetResource200,
+  GetResourcePathParams,
+  GetResource403,
+  GetResource404,
+  GetResource500,
   OrbWebhook200,
   OrbWebhookMutationRequest,
   OrbWebhook400,
@@ -3129,6 +3134,45 @@ export async function listBillingPlansForProduct({
 }
 
 /**
+ * @summary Get a Vercel Marketplace resource
+ * @description Return a provisioned resource. Scoped to the installation in the signed
+ * token; a resource owned by another installation is reported as not found.
+ * {@link /v1/installations/:installationId/resources/:resourceId}
+ */
+export async function getResource({
+  pathParams,
+  config = {}
+}: {
+  pathParams: GetResourcePathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.installationId) {
+    throw new Error(`Missing required path parameter: installationId`);
+  }
+
+  if (!pathParams.resourceId) {
+    throw new Error(`Missing required path parameter: resourceId`);
+  }
+
+  const data = await request<
+    GetResource200,
+    GetResource403 | GetResource404 | GetResource500,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    GetResourcePathParams
+  >({
+    method: 'GET',
+    url: `/v1/installations/${pathParams.installationId}/resources/${pathParams.resourceId}`,
+    ...requestConfig
+  });
+
+  return data;
+}
+
+/**
  * @summary Orb billing webhook
  * @description Endpoint used by Orb to deliver billing-related webhook events.
  * This endpoint is authenticated via Orb's HMAC signature headers,
@@ -3269,6 +3313,7 @@ export const operationsByPath = {
   'PUT /v1/installations/{installationId}': upsertInstallation,
   'DELETE /v1/installations/{installationId}': deleteInstallation,
   'GET /v1/products/{productSlug}/plans': listBillingPlansForProduct,
+  'GET /v1/installations/{installationId}/resources/{resourceId}': getResource,
   'POST /webhooks/orb': orbWebhook,
   'POST /webhooks/stripe': stripeWebhook
 };
@@ -3377,6 +3422,9 @@ export const operationsByTag = {
     deleteInstallation,
     listBillingPlansForProduct
   },
+  vercelResources: {
+    getResource
+  },
   webhooks: {
     orbWebhook,
     stripeWebhook
@@ -3480,6 +3528,9 @@ export const tagDictionary = {
     PUT: ['upsertInstallation'],
     DELETE: ['deleteInstallation'],
     GET: ['listBillingPlansForProduct']
+  },
+  vercelResources: {
+    GET: ['getResource']
   },
   webhooks: {
     POST: ['orbWebhook', 'stripeWebhook']
@@ -3696,6 +3747,7 @@ export type OperationErrors = {
     | ListBillingPlansForProduct400
     | ListBillingPlansForProduct403
     | ListBillingPlansForProduct404;
+  'vercelResources.getResource': GetResource403 | GetResource404 | GetResource500;
   'webhooks.orbWebhook': OrbWebhook400 | OrbWebhook500;
   'webhooks.stripeWebhook': StripeWebhook400 | StripeWebhook500;
 };
@@ -3776,6 +3828,7 @@ export type OperationErrorStatus = {
   'vercel.upsertInstallation': 400 | 403 | 409;
   'vercel.deleteInstallation': 403 | 409;
   'vercel.listBillingPlansForProduct': 400 | 403 | 404;
+  'vercelResources.getResource': 403 | 404 | 500;
   'webhooks.orbWebhook': 400 | 500;
   'webhooks.stripeWebhook': 400 | 500;
 };
