@@ -25,6 +25,7 @@ import type {
   ClaimOrganizationSSODomain401,
   ClaimOrganizationSSODomain403,
   ClaimOrganizationSSODomain404,
+  ClaimOrganizationSSODomain409,
   CreateOrganization201,
   CreateOrganizationMutationRequest,
   CreateOrganization400,
@@ -1106,7 +1107,8 @@ export async function getOrganizationSSO({
  * @summary Claim an email domain for SSO
  * @description Claims an email domain and returns the DNS record that proves control of it. A claim is only a note to
  * ourselves: nothing is registered against the domain until verification succeeds, so claiming a domain neither
- * affects anyone's sign-in nor stops another organization claiming it first.
+ * affects anyone's sign-in nor stops another organization claiming it first. A domain another organization has
+ * already registered is refused with 409, before any DNS record is published.
  * {@link /organizations/:organizationID/sso/domains}
  */
 export async function claimOrganizationSSODomain({
@@ -1129,7 +1131,8 @@ export async function claimOrganizationSSODomain({
     | ClaimOrganizationSSODomain400
     | ClaimOrganizationSSODomain401
     | ClaimOrganizationSSODomain403
-    | ClaimOrganizationSSODomain404,
+    | ClaimOrganizationSSODomain404
+    | ClaimOrganizationSSODomain409,
     ClaimOrganizationSSODomainMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -3629,7 +3632,8 @@ export type OperationErrors = {
     | ClaimOrganizationSSODomain400
     | ClaimOrganizationSSODomain401
     | ClaimOrganizationSSODomain403
-    | ClaimOrganizationSSODomain404;
+    | ClaimOrganizationSSODomain404
+    | ClaimOrganizationSSODomain409;
   'organizations.deleteOrganizationSSODomain':
     | DeleteOrganizationSSODomain401
     | DeleteOrganizationSSODomain403
@@ -3773,7 +3777,7 @@ export type OperationErrorStatus = {
   'organizations.requestOrganizationDeletion': 400 | 401 | 403 | 409;
   'organizations.getOrganizationMembershipLimits': 401 | 403;
   'organizations.getOrganizationSSO': 401 | 403 | 404;
-  'organizations.claimOrganizationSSODomain': 400 | 401 | 403 | 404;
+  'organizations.claimOrganizationSSODomain': 400 | 401 | 403 | 404 | 409;
   'organizations.deleteOrganizationSSODomain': 401 | 403 | 404 | 409;
   'organizations.verifyOrganizationSSODomain': 401 | 403 | 404 | 409;
   'organizations.createOrganizationSSOProvider': 400 | 401 | 403 | 404 | 409;

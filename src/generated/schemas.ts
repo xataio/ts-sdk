@@ -2119,6 +2119,11 @@ export const claimOrganizationSSODomainStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
+export const claimOrganizationSSODomainStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
 export const claimOrganizationSSODomainStatus5XXSchema = z.unknown();
 
 export const claimOrganizationSSODomainResponseSchema = claimOrganizationSSODomainStatus201Schema;
@@ -2128,6 +2133,7 @@ export const claimOrganizationSSODomainErrorSchema = z.union([
   claimOrganizationSSODomainStatus401Schema,
   claimOrganizationSSODomainStatus403Schema,
   claimOrganizationSSODomainStatus404Schema,
+  claimOrganizationSSODomainStatus409Schema,
   claimOrganizationSSODomainStatus5XXSchema
 ]);
 

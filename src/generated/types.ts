@@ -4974,6 +4974,19 @@ export type ClaimOrganizationSSODomain404 = {
   message: string;
 };
 
+export type ClaimOrganizationSSODomain409 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
 export type ClaimOrganizationSSODomain5XX = unknown;
 
 /**
@@ -4995,6 +5008,7 @@ export type ClaimOrganizationSSODomainResponses = {
   '401': ClaimOrganizationSSODomain401;
   '403': ClaimOrganizationSSODomain403;
   '404': ClaimOrganizationSSODomain404;
+  '409': ClaimOrganizationSSODomain409;
   '5XX': ClaimOrganizationSSODomain5XX;
 };
 
@@ -5007,6 +5021,7 @@ export type ClaimOrganizationSSODomainResponse =
   | ClaimOrganizationSSODomain401
   | ClaimOrganizationSSODomain403
   | ClaimOrganizationSSODomain404
+  | ClaimOrganizationSSODomain409
   | ClaimOrganizationSSODomain5XX;
 
 export type DeleteOrganizationSSODomainPathParams = {
