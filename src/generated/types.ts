@@ -181,7 +181,7 @@ export type CreateOrganizationInvitationRequest = {
    */
   email: string;
   /**
-   * @description Role the user holds once they accept the invitation. Optional; when omitted, the user joins with the least privileged role (Viewer)
+   * @description Role the user holds once they accept the invitation. Optional; when omitted, the least privileged role (Viewer) applies once roles are enabled for the organization
    * @type string | undefined
    */
   role?: OrganizationRoleName | undefined;
