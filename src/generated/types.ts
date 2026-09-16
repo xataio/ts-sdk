@@ -164,6 +164,14 @@ export type Organization = {
   marketplace?: (OrganizationMarketplaceProvider | null) | undefined;
 };
 
+export const organizationRoleName = {
+  admin: 'admin',
+  editor: 'editor',
+  viewer: 'viewer'
+} as const;
+
+export type OrganizationRoleName = (typeof organizationRoleName)[keyof typeof organizationRoleName];
+
 export type CreateOrganizationInvitationRequest = {
   /**
    * @description Email address of the user to invite
@@ -172,6 +180,11 @@ export type CreateOrganizationInvitationRequest = {
    * @type string
    */
   email: string;
+  /**
+   * @description Role the user holds once they accept the invitation. Optional; when omitted, the user joins with the least privileged role (Viewer)
+   * @type string | undefined
+   */
+  role?: OrganizationRoleName | undefined;
 };
 
 export const organizationInvitationStatusEnum = {
@@ -230,6 +243,11 @@ export type OrganizationInvitation = {
    * @type string
    */
   status: OrganizationInvitationStatusEnum;
+  /**
+   * @description Role the user holds once they accept the invitation
+   * @type string
+   */
+  role: OrganizationRoleName;
 };
 
 export const billingCollectionMethod = {
@@ -671,14 +689,6 @@ export type OrganizationMembershipLimits = {
    */
   maxInvites: number;
 };
-
-export const organizationRoleName = {
-  admin: 'admin',
-  editor: 'editor',
-  viewer: 'viewer'
-} as const;
-
-export type OrganizationRoleName = (typeof organizationRoleName)[keyof typeof organizationRoleName];
 
 /**
  * @description A role that can be held by a member of an organization

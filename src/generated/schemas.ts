@@ -66,8 +66,17 @@ export const organizationSchema = z
   })
   .describe('Organization details including ID and name');
 
+export const organizationRoleNameSchema = z
+  .enum(['admin', 'editor', 'viewer'])
+  .describe('The roles a member of an organization can hold');
+
 export const createOrganizationInvitationRequestSchema = z.object({
-  email: z.email().describe('Email address of the user to invite')
+  email: z.email().describe('Email address of the user to invite'),
+  role: organizationRoleNameSchema
+    .optional()
+    .describe(
+      'Role the user holds once they accept the invitation. Optional; when omitted, the user joins with the least privileged role (Viewer)'
+    )
 });
 
 export const organizationInvitationSchema = z.object({
@@ -78,7 +87,8 @@ export const organizationInvitationSchema = z.object({
   last_name: z.string().nullish().describe('Last name of the invited user'),
   created_at: z.iso.datetime().describe('Timestamp when the invitation was created'),
   expires_at: z.iso.datetime().describe('Timestamp when the invitation expires'),
-  status: z.enum(['pending', 'expired']).describe('Current status of the invitation')
+  status: z.enum(['pending', 'expired']).describe('Current status of the invitation'),
+  role: organizationRoleNameSchema.describe('Role the user holds once they accept the invitation')
 });
 
 export const billingCollectionMethodSchema = z
@@ -254,10 +264,6 @@ export const organizationMembershipLimitsSchema = z
     maxInvites: z.int().min(1).describe('Maximum number of pending invitations allowed at once')
   })
   .describe('Membership limits for an organization');
-
-export const organizationRoleNameSchema = z
-  .enum(['admin', 'editor', 'viewer'])
-  .describe('The roles a member of an organization can hold');
 
 export const organizationRoleSchema = z
   .object({
