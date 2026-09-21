@@ -1,5 +1,15 @@
 # @xata.io/api
 
+## 0.1.17
+
+### Patch Changes
+
+- [#3173](https://github.com/xataio/frontend/pull/3173) [`e36d3a8`](https://github.com/xataio/frontend/commit/e36d3a84d5c921d1f425d0750330bff237391e08) Thanks [@xata-bot](https://github.com/xata-bot)! - [Generated] Update API handlers ([#3173](https://github.com/xataio/frontend/issues/3173))
+
+- [#3095](https://github.com/xataio/frontend/pull/3095) [`8bcfade`](https://github.com/xataio/frontend/commit/8bcfade54e3747998dbc42b9b45dd8473048dcac) Thanks [@SferaDev](https://github.com/SferaDev)! - Manage organization member roles: `xata organization members set-role` changes a member's role, `--role` on `invitations create` and `members invite` picks the role an invitee joins with, and `members list`, `invitations list` and `invitations get` show roles. Role definitions are shared through `@xata.io/utils`
+
+- [#3192](https://github.com/xataio/frontend/pull/3192) [`bd6e471`](https://github.com/xataio/frontend/commit/bd6e4713c8aa26f74428f4ae612c39f0de13efc6) Thanks [@divyenduz](https://github.com/divyenduz)! - add login code as url parameter to the printed url
+
 ## 0.1.16
 
 ### Patch Changes
