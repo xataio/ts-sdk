@@ -102,7 +102,7 @@ export async function createDeviceSession({ issuer, clientId, clientSecret }: Op
   const deviceData: DeviceResponse = await response.json();
 
   return {
-    verifyUrl: deviceData.verification_uri,
+    verifyUrl: deviceData.verification_uri_complete ?? deviceData.verification_uri,
     userCode: deviceData.user_code,
     deviceCode: deviceData.device_code,
     interval: deviceData.interval
@@ -164,7 +164,7 @@ type DeviceResponse = {
   device_code: string;
   user_code: string;
   verification_uri: string;
-  verification_uri_complete: string;
+  verification_uri_complete?: string;
   interval: number;
   expires_in: number;
 };

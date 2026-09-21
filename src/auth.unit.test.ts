@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { refreshToken, revokeToken } from './auth';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { createDeviceSession, refreshToken, revokeToken } from './auth';
 import { SessionExpiredError } from './errors';
 
 const client = { issuer: 'https://issuer.example', clientId: 'cli', clientSecret: 'secret' };
@@ -22,6 +22,46 @@ function mockFetch(response: { ok: boolean; status: number; body: unknown }) {
       json: async () => response.body
     }) as unknown as Response;
 }
+
+describe('createDeviceSession', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it.each([
+    {
+      name: 'uses the complete URL supplied by the issuer unchanged',
+      completeUrl: 'https://issuer.example/activate?user_code=ABCD-EFGH&source=cli',
+      expectedUrl: 'https://issuer.example/activate?user_code=ABCD-EFGH&source=cli'
+    },
+    {
+      name: 'falls back to manual verification when no complete URL is supplied',
+      completeUrl: undefined,
+      expectedUrl: 'https://issuer.example/device'
+    }
+  ])('$name', async ({ completeUrl, expectedUrl }) => {
+    vi.stubGlobal(
+      'fetch',
+      mockFetch({
+        ok: true,
+        status: 200,
+        body: {
+          verification_uri: 'https://issuer.example/device',
+          ...(completeUrl === undefined ? {} : { verification_uri_complete: completeUrl }),
+          user_code: 'ABCD-EFGH',
+          device_code: 'private-device-code',
+          interval: 5,
+          expires_in: 600
+        }
+      })
+    );
+
+    await expect(createDeviceSession(client)).resolves.toEqual({
+      verifyUrl: expectedUrl,
+      userCode: 'ABCD-EFGH',
+      deviceCode: 'private-device-code',
+      interval: 5
+    });
+  });
+});
 
 describe('refreshToken', () => {
   it('throws SessionExpiredError when the offline session is expired', async () => {
