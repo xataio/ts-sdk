@@ -2930,7 +2930,7 @@ export const listRegionsStatus200Schema = z.object({
         id: z.string().describe('Unique identifier for the region'),
         publicAccess: z.boolean().describe('Whether data plane is public-facing to the internet in this region'),
         backupsEnabled: z.boolean().describe('Whether backups are enabled for branches created in this region'),
-        provider: z.enum(['aws', 'gcp', 'custom']).describe('Cloud provider the region runs on'),
+        provider: z.enum(['aws', 'gcp', 'azure', 'custom']).describe('Cloud provider the region runs on'),
         organizationId: z
           .string()
           .nullable()

@@ -6803,6 +6803,7 @@ export type ListRegionsPathParams = {
 export const listRegionsStatus200RegionsProviderEnum = {
   aws: 'aws',
   gcp: 'gcp',
+  azure: 'azure',
   custom: 'custom'
 } as const;
 

@@ -63,8 +63,8 @@ packages:
     resolution: {integrity: sha512-qehxGkRj55h/ff8EMaJ+cYhyaKlHIxqYDn682wQD7RNp9UujOQsHog2uS0r2vzr4pW+sXf90NeeayjcNaX3fFg==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/parser@7.29.8':
-    resolution: {integrity: sha512-E8lTAYNB1KW+FH+VGJuZM1ioAx2E6oVlvQFRrf5P8ZZmsiJXYAD9vTFV7yyEURNzgh1dFqMZuO6tUwcARbqFCA==}
+  '@babel/parser@7.29.9':
+    resolution: {integrity: sha512-CjXrNHTnvqBVqHgdBysY3vk2T8tpJHb5/RMeHJBTyVa9xgugCB0CJTx/3oO8RV2QRQP391RWpB7D6hLjm8V9uA==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -126,12 +126,12 @@ packages:
     resolution: {integrity: sha512-a0zFkJTXQYPBXNZXOUNxLn1Z/w8Zf+0AyQU69F7AubWMQWmWjXAWON+SzMGacven381wVTHZ2PlFrsAQJt+IZg==}
     engines: {node: '>=22'}
 
-  '@kubb/ast@5.3.6':
-    resolution: {integrity: sha512-3tHOU/lXn6WcC+01jbRtBMcQ7RRfODAIeERpUd1DYw1xpdWXoRoor4lGC7egjB0pTjeGb+1FQiKyykp9tszd3A==}
+  '@kubb/ast@5.3.10':
+    resolution: {integrity: sha512-/0WCCZJRsIgMDXZD8U4n3WovoxoChrkGpQhXMy80pIFhxIsRfzL8O+wFgDIXP02eyjyC97yW+6F6mjW+if/1ow==}
     engines: {node: '>=22'}
 
-  '@kubb/ast@5.3.7':
-    resolution: {integrity: sha512-DMUBD6UT9OAXbI4cg78+X+B+CWPPZV8l3zg75iuhCfOMzWbSX4j7AEnPE9C2/zxZf5bMBr3af1rD820IVUp/Uw==}
+  '@kubb/ast@5.3.6':
+    resolution: {integrity: sha512-3tHOU/lXn6WcC+01jbRtBMcQ7RRfODAIeERpUd1DYw1xpdWXoRoor4lGC7egjB0pTjeGb+1FQiKyykp9tszd3A==}
     engines: {node: '>=22'}
 
   '@kubb/cli@5.3.6':
@@ -150,20 +150,20 @@ packages:
       '@kubb/studio':
         optional: true
 
+  '@kubb/core@5.3.10':
+    resolution: {integrity: sha512-AmC9vRXujo6J9q7kEqaF6Ce5BG8tYGdO3Xc59huJn6iqfmJ3nQ+6944WwYRi73+y0niT7jb6xqsaBmZHT4s1nQ==}
+    engines: {node: '>=22'}
+
   '@kubb/core@5.3.6':
     resolution: {integrity: sha512-0TGxdnOzZOvpGppAJOpzsEgS3F8XQ9MaHJOlwymDxGHw8g2LwCPf5BxM+dNWzFGybHNiNvxo42pBk3PsVnCWug==}
     engines: {node: '>=22'}
 
-  '@kubb/core@5.3.7':
-    resolution: {integrity: sha512-Xj37a2k3s46RwS1hB+ZkpiFIWPQJ3i3nqDc3+U79BQU4D1FvT+tQgR7A/VRTAaRuMc7Kl6nU6xrpqdiDdB9YeQ==}
+  '@kubb/kit@5.3.10':
+    resolution: {integrity: sha512-p9EcOlrHs0AQpSXnwisYIaHB5UuLjL9+fMvjDnNjFJ4cdaxgq4clyLt98q09ol0KRirZrUCPrUfBUf8LYYLGhQ==}
     engines: {node: '>=22'}
 
   '@kubb/kit@5.3.6':
     resolution: {integrity: sha512-k//qHtkCpy83zf8GXh4xhJCDDrzP8XjMyJ+Wx6ndTQKicsuhWI8yO6jzimiBw+J7ky25dXQxhD30BMAaAbtEFQ==}
-    engines: {node: '>=22'}
-
-  '@kubb/kit@5.3.7':
-    resolution: {integrity: sha512-DL4eUm6uNIIsLjqkZlocWT3CZlui2pJxgQnIu+1XXwiAI0B+a8ETGNF2/ElJslS0gBqVJhPUcjG3+7sBrbvgSg==}
     engines: {node: '>=22'}
 
   '@kubb/mcp@5.3.6':
@@ -177,12 +177,12 @@ packages:
     resolution: {integrity: sha512-YdeJjtAjNuGWsmQ71dgllZRitDeYSRX+WzmMAcnDVf9Nr9xivvspw+59wX3QW8oRnH1B3w1nY59J+bK2vr0TBw==}
     engines: {node: '>=22'}
 
-  '@kubb/parser-ts@5.3.6':
-    resolution: {integrity: sha512-PhPF/pJOj6KfZqfZbXCucMizt+FaCnfZD1DwOtupr+SlTHIs3Bw3ksfAZ6HESyTLi2rOfc7VVcBzVjYpjv6/mg==}
+  '@kubb/parser-ts@5.3.10':
+    resolution: {integrity: sha512-ANcj/qptWvWMb+UxonJp+JVrgRtqaCWezxaAVHwsLL/Uv9HQP2ZOWbNQ4tg4lBxbl2vSPg0ZC7+fkcouLlNG7w==}
     engines: {node: '>=22'}
 
-  '@kubb/parser-ts@5.3.7':
-    resolution: {integrity: sha512-y2FCakfYdcJK/FN0nnf5qo+aS9BYR044XJI+rKyOCmUHvgV6kx/MXGryq2xgNF31UUs6J92JmybJZO/m4t7r8g==}
+  '@kubb/parser-ts@5.3.6':
+    resolution: {integrity: sha512-PhPF/pJOj6KfZqfZbXCucMizt+FaCnfZD1DwOtupr+SlTHIs3Bw3ksfAZ6HESyTLi2rOfc7VVcBzVjYpjv6/mg==}
     engines: {node: '>=22'}
 
   '@kubb/plugin-barrel@5.3.6':
@@ -344,8 +344,8 @@ packages:
     resolution: {integrity: sha512-hge0dhllV70dwqgUiucmDY5yZLq91BOV/78lWSqQMTY67x+LHcQplJUZDomfFi5oepROpWDs5iaKMr7ubqDBOA==}
     engines: {node: '>=22'}
 
-  '@scalar/openapi-upgrader@0.2.16':
-    resolution: {integrity: sha512-fUV3JD++f42mGwUH6RQm7lRAQKB65uq93t/15RnnK1pA1ZPp73yKU7NfId2Xzx2CZaK4aVip2Tt5peaLWZ8Sng==}
+  '@scalar/openapi-upgrader@0.2.17':
+    resolution: {integrity: sha512-HoSgjb57UNH2OACVmbo4yLPnvP3BPnvtSMJVqRhjOspJhz945XEZYnfwgk2C3hET0bFvkc7aLSabm/K1nbjp8Q==}
     engines: {node: '>=22'}
 
   '@standard-schema/spec@1.1.0':
@@ -746,8 +746,8 @@ packages:
       oxc-resolver:
         optional: true
 
-  empathic@2.0.1:
-    resolution: {integrity: sha512-YGRs8knHhKHVShLkFET/rWAU8kmHbOV5LwN938RHI0pljAJ1Gf6SzXsSmRaEzcXTtOOmVqJ5+WtQPL5uigY50Q==}
+  empathic@2.1.0:
+    resolution: {integrity: sha512-AnfC1ATldl49/cvZdLPDjBfrRNwbDO05aibiOtzQu3qtlbJtomNLhF30HEtn/7iBz50dlMECqATo3fG0LrdEgw==}
     engines: {node: '>=14'}
 
   es-define-property@1.0.1:
@@ -958,8 +958,8 @@ packages:
     resolution: {integrity: sha512-WkUDrojuJs0xkgGf2udWxa3yGBRxPtxUkB79i6aCZLRgc7PM8fZe9TosfPDcvEpQZbuFASnHYmRLBLUbmLOIIA==}
     engines: {node: '>= 12.0.0'}
 
-  lru-cache@11.5.2:
-    resolution: {integrity: sha512-4pfM1Ff0x50o0tQwb5ucw/RzNyD0/YJME6IVcStalZuMWxdt3sR3huStTtxz4PUmvZfRguvDejasvQ2kifR11g==}
+  lru-cache@11.5.3:
+    resolution: {integrity: sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==}
     engines: {node: 20 || >=22}
 
   magic-string@1.4.1:
@@ -1340,8 +1340,8 @@ packages:
       typescript:
         optional: true
 
-  verkit@0.4.0:
-    resolution: {integrity: sha512-sXMwN6DMHeouPfCxkxWkKAmxphWKEenHYY5H1nIBzU3PmDsmJp6kBXJdshjVdpMZuWCmL9SH7KFRx29AylpP6g==}
+  verkit@0.4.1:
+    resolution: {integrity: sha512-mMVzj0TXExtVdlDEq+Mzp0eyOuyznNpFobNM3uAqe3HVm/Ps2c+u17BligMkZjZCA6EiXpoon8iRTer3iu40SQ==}
     engines: {node: '>=18.12.0'}
 
   vite@8.3.0:
@@ -1491,7 +1491,7 @@ snapshots:
 
   '@babel/helper-validator-identifier@7.29.7': {}
 
-  '@babel/parser@7.29.8':
+  '@babel/parser@7.29.9':
     dependencies:
       '@babel/types': 7.29.8
 
@@ -1560,15 +1560,15 @@ snapshots:
       '@kubb/core': 5.3.6
       '@kubb/kit': 5.3.6
       '@readme/openapi-parser': 8.0.2(openapi-types@12.1.3)
-      '@scalar/openapi-upgrader': 0.2.16
+      '@scalar/openapi-upgrader': 0.2.17
       api-ref-bundler: 0.5.1
       yaml: 2.9.1
     transitivePeerDependencies:
       - openapi-types
 
-  '@kubb/ast@5.3.6': {}
+  '@kubb/ast@5.3.10': {}
 
-  '@kubb/ast@5.3.7': {}
+  '@kubb/ast@5.3.6': {}
 
   '@kubb/cli@5.3.6(@kubb/adapter-oas@5.3.6(openapi-types@12.1.3))(@kubb/mcp@5.3.6(@kubb/renderer-jsx@5.3.6)(openapi-types@12.1.3)(typescript@7.0.2))(@kubb/studio@5.3.6(typescript@7.0.2))':
     dependencies:
@@ -1580,29 +1580,29 @@ snapshots:
       jiti: 2.7.0
       tinyexec: 1.3.1
       unconfig: 7.5.0
-      verkit: 0.4.0
+      verkit: 0.4.1
     optionalDependencies:
       '@kubb/adapter-oas': 5.3.6(openapi-types@12.1.3)
       '@kubb/mcp': 5.3.6(@kubb/renderer-jsx@5.3.6)(openapi-types@12.1.3)(typescript@7.0.2)
       '@kubb/studio': 5.3.6(typescript@7.0.2)
 
+  '@kubb/core@5.3.10':
+    dependencies:
+      '@kubb/ast': 5.3.10
+
   '@kubb/core@5.3.6':
     dependencies:
       '@kubb/ast': 5.3.6
 
-  '@kubb/core@5.3.7':
+  '@kubb/kit@5.3.10':
     dependencies:
-      '@kubb/ast': 5.3.7
+      '@kubb/ast': 5.3.10
+      '@kubb/core': 5.3.10
 
   '@kubb/kit@5.3.6':
     dependencies:
       '@kubb/ast': 5.3.6
       '@kubb/core': 5.3.6
-
-  '@kubb/kit@5.3.7':
-    dependencies:
-      '@kubb/ast': 5.3.7
-      '@kubb/core': 5.3.7
 
   '@kubb/mcp@5.3.6(@kubb/renderer-jsx@5.3.6)(openapi-types@12.1.3)(typescript@7.0.2)':
     dependencies:
@@ -1622,14 +1622,14 @@ snapshots:
       '@kubb/kit': 5.3.6
       yaml: 2.9.1
 
+  '@kubb/parser-ts@5.3.10':
+    dependencies:
+      '@kubb/kit': 5.3.10
+      typescript: 6.0.3
+
   '@kubb/parser-ts@5.3.6':
     dependencies:
       '@kubb/kit': 5.3.6
-      typescript: 6.0.3
-
-  '@kubb/parser-ts@5.3.7':
-    dependencies:
-      '@kubb/kit': 5.3.7
       typescript: 6.0.3
 
   '@kubb/plugin-barrel@5.3.6(@kubb/core@5.3.6)':
@@ -1639,7 +1639,7 @@ snapshots:
 
   '@kubb/plugin-ts@5.0.2(kubb@5.3.6(openapi-types@12.1.3)(rolldown@1.2.9)(typescript@7.0.2)(vite@8.3.0(@types/node@26.6.1)(jiti@2.7.0)(yaml@2.9.1)))':
     dependencies:
-      '@kubb/parser-ts': 5.3.7
+      '@kubb/parser-ts': 5.3.10
       kubb: 5.3.6(openapi-types@12.1.3)(rolldown@1.2.9)(typescript@7.0.2)(vite@8.3.0(@types/node@26.6.1)(jiti@2.7.0)(yaml@2.9.1))
       typescript: 6.0.3
 
@@ -1783,7 +1783,7 @@ snapshots:
 
   '@scalar/openapi-types@0.9.6': {}
 
-  '@scalar/openapi-upgrader@0.2.16':
+  '@scalar/openapi-upgrader@0.2.17':
     dependencies:
       '@scalar/helpers': 0.12.0
       '@scalar/openapi-types': 0.9.6
@@ -2045,7 +2045,7 @@ snapshots:
 
   dts-resolver@3.0.0: {}
 
-  empathic@2.0.1: {}
+  empathic@2.1.0: {}
 
   es-define-property@1.0.1: {}
 
@@ -2264,7 +2264,7 @@ snapshots:
       lightningcss-win32-arm64-msvc: 1.33.0
       lightningcss-win32-x64-msvc: 1.33.0
 
-  lru-cache@11.5.2: {}
+  lru-cache@11.5.3: {}
 
   magic-string@1.4.1:
     dependencies:
@@ -2272,7 +2272,7 @@ snapshots:
 
   magicast@0.5.5:
     dependencies:
-      '@babel/parser': 7.29.8
+      '@babel/parser': 7.29.9
       '@babel/types': 7.29.8
       source-map-js: 1.2.1
 
@@ -2421,7 +2421,7 @@ snapshots:
     dependencies:
       cac: 7.0.0
       defu: 6.1.7
-      empathic: 2.0.1
+      empathic: 2.1.0
       hookable: 6.1.2
       import-without-cache: 0.4.1
       obug: 2.2.1
@@ -2432,7 +2432,7 @@ snapshots:
       tinyglobby: 0.2.17
       tree-kill: 1.2.2
       unconfig-core: 7.5.0
-      verkit: 0.4.0
+      verkit: 0.4.1
     optionalDependencies:
       typescript: 7.0.2
     transitivePeerDependencies:
@@ -2522,7 +2522,7 @@ snapshots:
       chokidar: 5.0.0
       destr: 2.0.5
       h3: 1.15.11
-      lru-cache: 11.5.2
+      lru-cache: 11.5.3
       node-fetch-native: 1.6.7
       ofetch: 1.5.1
       ufo: 1.6.4
@@ -2533,7 +2533,7 @@ snapshots:
     optionalDependencies:
       typescript: 7.0.2
 
-  verkit@0.4.0: {}
+  verkit@0.4.1: {}
 
   vite@8.3.0(@types/node@26.6.1)(jiti@2.7.0)(yaml@2.9.1):
     dependencies:
