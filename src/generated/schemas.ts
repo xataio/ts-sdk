@@ -67,7 +67,7 @@ export const organizationSchema = z
   .describe('Organization details including ID and name');
 
 export const organizationRoleNameSchema = z
-  .enum(['admin', 'editor', 'viewer'])
+  .enum(['admin', 'editor'])
   .describe('The roles a member of an organization can hold');
 
 export const createOrganizationInvitationRequestSchema = z.object({
@@ -75,7 +75,7 @@ export const createOrganizationInvitationRequestSchema = z.object({
   role: organizationRoleNameSchema
     .optional()
     .describe(
-      'Role the user holds once they accept the invitation. Optional; when omitted, the least privileged role (Viewer) applies once roles are enabled for the organization'
+      'Role the user holds once they accept the invitation. Optional; when omitted, Editor applies once roles are enabled for the organization'
     )
 });
 

@@ -166,8 +166,7 @@ export type Organization = {
 
 export const organizationRoleName = {
   admin: 'admin',
-  editor: 'editor',
-  viewer: 'viewer'
+  editor: 'editor'
 } as const;
 
 export type OrganizationRoleName = (typeof organizationRoleName)[keyof typeof organizationRoleName];
@@ -181,7 +180,7 @@ export type CreateOrganizationInvitationRequest = {
    */
   email: string;
   /**
-   * @description Role the user holds once they accept the invitation. Optional; when omitted, the least privileged role (Viewer) applies once roles are enabled for the organization
+   * @description Role the user holds once they accept the invitation. Optional; when omitted, Editor applies once roles are enabled for the organization
    * @type string | undefined
    */
   role?: OrganizationRoleName | undefined;

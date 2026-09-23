@@ -862,8 +862,8 @@ packages:
     resolution: {integrity: sha512-MOKk9cjtpMrP4H1DmG+PtS7aFWg9OuSqxc/wpFcOE++yVnD5Bi5iKoXD6oqs+kltRwJRgZBYMozRNpQpxD/TJw==}
     engines: {node: '>=14.0.0'}
 
-  json-rpc-2.0@1.8.0:
-    resolution: {integrity: sha512-4nw+XlJbk5XokA7BtqHGu+0PEiUPfAkRzXXd1Cgjy1c3F2UI/3Gy7yr76wyJEv3X1F1SRGGF8xPAPPhelBiGmA==}
+  json-rpc-2.0@1.8.1:
+    resolution: {integrity: sha512-BmN42JKn6FI36pcMMzHCXQhpKNEfbeqgSIcUYHKnifq0/4Ey6PDinovwUOgajT7NsgUtpWdDXaCWlpI4LHXN3g==}
 
   json-schema-traverse@1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
@@ -1799,7 +1799,7 @@ snapshots:
 
   '@tmcp/session-manager@0.3.0(tmcp@1.20.0(typescript@7.0.2))':
     dependencies:
-      json-rpc-2.0: 1.8.0
+      json-rpc-2.0: 1.8.1
       tmcp: 1.20.0(typescript@7.0.2)
 
   '@tmcp/transport-stdio@0.5.0(tmcp@1.20.0(typescript@7.0.2))':
@@ -2142,7 +2142,7 @@ snapshots:
 
   json-crawl@0.4.2: {}
 
-  json-rpc-2.0@1.8.0: {}
+  json-rpc-2.0@1.8.1: {}
 
   json-schema-traverse@1.0.0: {}
 
@@ -2408,7 +2408,7 @@ snapshots:
   tmcp@1.20.0(typescript@7.0.2):
     dependencies:
       '@standard-schema/spec': 1.1.0
-      json-rpc-2.0: 1.8.0
+      json-rpc-2.0: 1.8.1
       sqids: 0.3.0
       uri-template-matcher: 1.1.2
       valibot: 1.5.0(typescript@7.0.2)
