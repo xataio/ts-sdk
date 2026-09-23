@@ -1,5 +1,11 @@
 # @xata.io/api
 
+## 0.1.18
+
+### Patch Changes
+
+- [#3222](https://github.com/xataio/frontend/pull/3222) [`7becb68`](https://github.com/xataio/frontend/commit/7becb68acaf7d3767e2beeb926ef979db49d49c9) Thanks [@divyenduz](https://github.com/divyenduz)! - Support Azure region providers in the API contract and CLI region choices, and give repeated Azure icons unique gradient IDs.
+
 ## 0.1.17
 
 ### Patch Changes
