@@ -1,5 +1,18 @@
 # @xata.io/api
 
+## 0.1.19
+
+### Patch Changes
+
+- [#3230](https://github.com/xataio/frontend/pull/3230) [`8c3961f`](https://github.com/xataio/frontend/commit/8c3961f731dd60384f5c4809d6fcb701b862a0f8) Thanks [@xata-bot](https://github.com/xata-bot)! - [Generated] Update API handlers
+
+  `OrganizationRoleName` no longer offers `viewer`, so `ORGANIZATION_ROLES`, `ORGANIZATION_ROLE_IDS`
+  and `DEFAULT_INVITATION_ROLE` in `@xata.io/utils` cover Admin and Editor only. The dashboard role
+  pickers and the CLI `--role` flags read from those, so neither offers Viewer any more and a new
+  invitation starts on Editor.
+
+- [#3220](https://github.com/xataio/frontend/pull/3220) [`e0b208d`](https://github.com/xataio/frontend/commit/e0b208d1d75c3796baf5e5a87c3873752e404d4f) Thanks [@SferaDev](https://github.com/SferaDev)! - [Roles]: Hide the Viewer role ([#3220](https://github.com/xataio/frontend/issues/3220))
+
 ## 0.1.18
 
 ### Patch Changes
