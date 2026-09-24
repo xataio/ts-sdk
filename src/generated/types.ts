@@ -5452,6 +5452,19 @@ export type UpdateOrganizationSSOProvider404 = {
   message: string;
 };
 
+export type UpdateOrganizationSSOProvider409 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
 export type UpdateOrganizationSSOProvider5XX = unknown;
 
 /**
@@ -5473,6 +5486,7 @@ export type UpdateOrganizationSSOProviderResponses = {
   '401': UpdateOrganizationSSOProvider401;
   '403': UpdateOrganizationSSOProvider403;
   '404': UpdateOrganizationSSOProvider404;
+  '409': UpdateOrganizationSSOProvider409;
   '5XX': UpdateOrganizationSSOProvider5XX;
 };
 
@@ -5485,6 +5499,7 @@ export type UpdateOrganizationSSOProviderResponse =
   | UpdateOrganizationSSOProvider401
   | UpdateOrganizationSSOProvider403
   | UpdateOrganizationSSOProvider404
+  | UpdateOrganizationSSOProvider409
   | UpdateOrganizationSSOProvider5XX;
 
 export type DeleteOrganizationSSOProviderPathParams = {

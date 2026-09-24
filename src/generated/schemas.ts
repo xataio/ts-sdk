@@ -2327,6 +2327,11 @@ export const updateOrganizationSSOProviderStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
+export const updateOrganizationSSOProviderStatus409Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the issue')
+});
+
 export const updateOrganizationSSOProviderStatus5XXSchema = z.unknown();
 
 export const updateOrganizationSSOProviderResponseSchema = updateOrganizationSSOProviderStatus200Schema;
@@ -2336,6 +2341,7 @@ export const updateOrganizationSSOProviderErrorSchema = z.union([
   updateOrganizationSSOProviderStatus401Schema,
   updateOrganizationSSOProviderStatus403Schema,
   updateOrganizationSSOProviderStatus404Schema,
+  updateOrganizationSSOProviderStatus409Schema,
   updateOrganizationSSOProviderStatus5XXSchema
 ]);
 

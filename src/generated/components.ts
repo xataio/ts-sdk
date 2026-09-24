@@ -164,6 +164,7 @@ import type {
   UpdateOrganizationSSOProvider401,
   UpdateOrganizationSSOProvider403,
   UpdateOrganizationSSOProvider404,
+  UpdateOrganizationSSOProvider409,
   DeleteOrganizationSSOProvider204,
   DeleteOrganizationSSOProviderPathParams,
   DeleteOrganizationSSOProvider401,
@@ -1271,7 +1272,7 @@ export async function createOrganizationSSOProvider({
  * @summary Update an identity provider's credentials
  * @description Replaces the provider's credentials, and for `oidc` re-discovers its endpoints from the issuer. The domain it
  * serves and whether it is enforced are carried across unchanged, so rotating a client secret does not quietly
- * turn enforcement off.
+ * turn enforcement off. A provider whose domain stopped being verified is refused until the domain verifies again.
  * {@link /organizations/:organizationID/sso/providers/:providerAlias}
  */
 export async function updateOrganizationSSOProvider({
@@ -1298,7 +1299,8 @@ export async function updateOrganizationSSOProvider({
     | UpdateOrganizationSSOProvider400
     | UpdateOrganizationSSOProvider401
     | UpdateOrganizationSSOProvider403
-    | UpdateOrganizationSSOProvider404,
+    | UpdateOrganizationSSOProvider404
+    | UpdateOrganizationSSOProvider409,
     UpdateOrganizationSSOProviderMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -3654,7 +3656,8 @@ export type OperationErrors = {
     | UpdateOrganizationSSOProvider400
     | UpdateOrganizationSSOProvider401
     | UpdateOrganizationSSOProvider403
-    | UpdateOrganizationSSOProvider404;
+    | UpdateOrganizationSSOProvider404
+    | UpdateOrganizationSSOProvider409;
   'organizations.deleteOrganizationSSOProvider': DeleteOrganizationSSOProvider401 | DeleteOrganizationSSOProvider403;
   'organizations.setOrganizationSSOProviderEnforcement':
     | SetOrganizationSSOProviderEnforcement401
@@ -3781,7 +3784,7 @@ export type OperationErrorStatus = {
   'organizations.deleteOrganizationSSODomain': 401 | 403 | 404 | 409;
   'organizations.verifyOrganizationSSODomain': 401 | 403 | 404 | 409;
   'organizations.createOrganizationSSOProvider': 400 | 401 | 403 | 404 | 409;
-  'organizations.updateOrganizationSSOProvider': 400 | 401 | 403 | 404;
+  'organizations.updateOrganizationSSOProvider': 400 | 401 | 403 | 404 | 409;
   'organizations.deleteOrganizationSSOProvider': 401 | 403;
   'organizations.setOrganizationSSOProviderEnforcement': 401 | 403 | 404 | 409;
   'billing.createBillingCheckoutSession': 400 | 401 | 403;
