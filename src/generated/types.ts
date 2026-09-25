@@ -4,6 +4,23 @@
  */
 
 /**
+ * @description Error response
+ * @type object
+ */
+export type AuthErrorResponse = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the issue
+   * @type string
+   */
+  message: string;
+};
+
+/**
  * @description User information including email, full name, and profile image
  * @type object
  */
@@ -4852,34 +4869,10 @@ export type GetOrganizationSSO401 = {
 };
 
 /**
- * @example {"message":"invalid API key"}
+ * @description Error response
  * @type object
  */
-export type GetOrganizationSSO403 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type GetOrganizationSSO404 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+export type GetOrganizationSSO403 = AuthErrorResponse;
 
 export type GetOrganizationSSO5XX = unknown;
 
@@ -4894,7 +4887,6 @@ export type GetOrganizationSSOResponses = {
   '200': GetOrganizationSSO200;
   '401': GetOrganizationSSO401;
   '403': GetOrganizationSSO403;
-  '404': GetOrganizationSSO404;
   '5XX': GetOrganizationSSO5XX;
 };
 
@@ -4905,7 +4897,6 @@ export type GetOrganizationSSOResponse =
   | GetOrganizationSSO200
   | GetOrganizationSSO401
   | GetOrganizationSSO403
-  | GetOrganizationSSO404
   | GetOrganizationSSO5XX;
 
 export type ClaimOrganizationSSODomainPathParams = {
@@ -4954,47 +4945,16 @@ export type ClaimOrganizationSSODomain401 = {
 };
 
 /**
- * @example {"message":"invalid API key"}
+ * @description Error response
  * @type object
  */
-export type ClaimOrganizationSSODomain403 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+export type ClaimOrganizationSSODomain403 = AuthErrorResponse;
 
-export type ClaimOrganizationSSODomain404 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type ClaimOrganizationSSODomain409 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+/**
+ * @description Error response
+ * @type object
+ */
+export type ClaimOrganizationSSODomain409 = AuthErrorResponse;
 
 export type ClaimOrganizationSSODomain5XX = unknown;
 
@@ -5016,7 +4976,6 @@ export type ClaimOrganizationSSODomainResponses = {
   '400': ClaimOrganizationSSODomain400;
   '401': ClaimOrganizationSSODomain401;
   '403': ClaimOrganizationSSODomain403;
-  '404': ClaimOrganizationSSODomain404;
   '409': ClaimOrganizationSSODomain409;
   '5XX': ClaimOrganizationSSODomain5XX;
 };
@@ -5029,7 +4988,6 @@ export type ClaimOrganizationSSODomainResponse =
   | ClaimOrganizationSSODomain400
   | ClaimOrganizationSSODomain401
   | ClaimOrganizationSSODomain403
-  | ClaimOrganizationSSODomain404
   | ClaimOrganizationSSODomain409
   | ClaimOrganizationSSODomain5XX;
 
@@ -5067,47 +5025,16 @@ export type DeleteOrganizationSSODomain401 = {
 };
 
 /**
- * @example {"message":"invalid API key"}
+ * @description Error response
  * @type object
  */
-export type DeleteOrganizationSSODomain403 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+export type DeleteOrganizationSSODomain403 = AuthErrorResponse;
 
-export type DeleteOrganizationSSODomain404 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type DeleteOrganizationSSODomain409 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+/**
+ * @description Error response
+ * @type object
+ */
+export type DeleteOrganizationSSODomain409 = AuthErrorResponse;
 
 export type DeleteOrganizationSSODomain5XX = unknown;
 
@@ -5122,7 +5049,6 @@ export type DeleteOrganizationSSODomainResponses = {
   '204': DeleteOrganizationSSODomain204;
   '401': DeleteOrganizationSSODomain401;
   '403': DeleteOrganizationSSODomain403;
-  '404': DeleteOrganizationSSODomain404;
   '409': DeleteOrganizationSSODomain409;
   '5XX': DeleteOrganizationSSODomain5XX;
 };
@@ -5134,7 +5060,6 @@ export type DeleteOrganizationSSODomainResponse =
   | DeleteOrganizationSSODomain204
   | DeleteOrganizationSSODomain401
   | DeleteOrganizationSSODomain403
-  | DeleteOrganizationSSODomain404
   | DeleteOrganizationSSODomain409
   | DeleteOrganizationSSODomain5XX;
 
@@ -5176,47 +5101,22 @@ export type VerifyOrganizationSSODomain401 = {
 };
 
 /**
- * @example {"message":"invalid API key"}
+ * @description Error response
  * @type object
  */
-export type VerifyOrganizationSSODomain403 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+export type VerifyOrganizationSSODomain403 = AuthErrorResponse;
 
-export type VerifyOrganizationSSODomain404 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+/**
+ * @description Error response
+ * @type object
+ */
+export type VerifyOrganizationSSODomain404 = AuthErrorResponse;
 
-export type VerifyOrganizationSSODomain409 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+/**
+ * @description Error response
+ * @type object
+ */
+export type VerifyOrganizationSSODomain409 = AuthErrorResponse;
 
 export type VerifyOrganizationSSODomain5XX = unknown;
 
@@ -5293,47 +5193,16 @@ export type CreateOrganizationSSOProvider401 = {
 };
 
 /**
- * @example {"message":"invalid API key"}
+ * @description Error response
  * @type object
  */
-export type CreateOrganizationSSOProvider403 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+export type CreateOrganizationSSOProvider403 = AuthErrorResponse;
 
-export type CreateOrganizationSSOProvider404 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
-
-export type CreateOrganizationSSOProvider409 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+/**
+ * @description Error response
+ * @type object
+ */
+export type CreateOrganizationSSOProvider409 = AuthErrorResponse;
 
 export type CreateOrganizationSSOProvider5XX = unknown;
 
@@ -5355,7 +5224,6 @@ export type CreateOrganizationSSOProviderResponses = {
   '400': CreateOrganizationSSOProvider400;
   '401': CreateOrganizationSSOProvider401;
   '403': CreateOrganizationSSOProvider403;
-  '404': CreateOrganizationSSOProvider404;
   '409': CreateOrganizationSSOProvider409;
   '5XX': CreateOrganizationSSOProvider5XX;
 };
@@ -5368,7 +5236,6 @@ export type CreateOrganizationSSOProviderResponse =
   | CreateOrganizationSSOProvider400
   | CreateOrganizationSSOProvider401
   | CreateOrganizationSSOProvider403
-  | CreateOrganizationSSOProvider404
   | CreateOrganizationSSOProvider409
   | CreateOrganizationSSOProvider5XX;
 
@@ -5423,47 +5290,22 @@ export type UpdateOrganizationSSOProvider401 = {
 };
 
 /**
- * @example {"message":"invalid API key"}
+ * @description Error response
  * @type object
  */
-export type UpdateOrganizationSSOProvider403 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+export type UpdateOrganizationSSOProvider403 = AuthErrorResponse;
 
-export type UpdateOrganizationSSOProvider404 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+/**
+ * @description Error response
+ * @type object
+ */
+export type UpdateOrganizationSSOProvider404 = AuthErrorResponse;
 
-export type UpdateOrganizationSSOProvider409 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+/**
+ * @description Error response
+ * @type object
+ */
+export type UpdateOrganizationSSOProvider409 = AuthErrorResponse;
 
 export type UpdateOrganizationSSOProvider5XX = unknown;
 
@@ -5536,21 +5378,10 @@ export type DeleteOrganizationSSOProvider401 = {
 };
 
 /**
- * @example {"message":"invalid API key"}
+ * @description Error response
  * @type object
  */
-export type DeleteOrganizationSSOProvider403 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+export type DeleteOrganizationSSOProvider403 = AuthErrorResponse;
 
 export type DeleteOrganizationSSOProvider5XX = unknown;
 
@@ -5615,47 +5446,22 @@ export type SetOrganizationSSOProviderEnforcement401 = {
 };
 
 /**
- * @example {"message":"invalid API key"}
+ * @description Error response
  * @type object
  */
-export type SetOrganizationSSOProviderEnforcement403 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+export type SetOrganizationSSOProviderEnforcement403 = AuthErrorResponse;
 
-export type SetOrganizationSSOProviderEnforcement404 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+/**
+ * @description Error response
+ * @type object
+ */
+export type SetOrganizationSSOProviderEnforcement404 = AuthErrorResponse;
 
-export type SetOrganizationSSOProviderEnforcement409 = {
-  /**
-   * @description Error identifier for tracking and debugging
-   * @type string | undefined
-   */
-  id?: string | undefined;
-  /**
-   * @description Human-readable error message explaining the issue
-   * @type string
-   */
-  message: string;
-};
+/**
+ * @description Error response
+ * @type object
+ */
+export type SetOrganizationSSOProviderEnforcement409 = AuthErrorResponse;
 
 export type SetOrganizationSSOProviderEnforcement5XX = unknown;
 

@@ -5,6 +5,13 @@
 
 import * as z from 'zod';
 
+export const authErrorResponseSchema = z
+  .object({
+    id: z.string().optional().describe('Error identifier for tracking and debugging'),
+    message: z.string().describe('Human-readable error message explaining the issue')
+  })
+  .describe('Error response');
+
 export const userSchema = z
   .object({
     email: z.email().describe('Email address associated with the user account'),
@@ -2070,17 +2077,7 @@ export const getOrganizationSSOStatus401Schema = z
   })
   .meta({ examples: [{}] });
 
-export const getOrganizationSSOStatus403Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
-
-export const getOrganizationSSOStatus404Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
+export const getOrganizationSSOStatus403Schema = authErrorResponseSchema.describe('Error response');
 
 export const getOrganizationSSOStatus5XXSchema = z.unknown();
 
@@ -2089,7 +2086,6 @@ export const getOrganizationSSOResponseSchema = getOrganizationSSOStatus200Schem
 export const getOrganizationSSOErrorSchema = z.union([
   getOrganizationSSOStatus401Schema,
   getOrganizationSSOStatus403Schema,
-  getOrganizationSSOStatus404Schema,
   getOrganizationSSOStatus5XXSchema
 ]);
 
@@ -2113,22 +2109,9 @@ export const claimOrganizationSSODomainStatus401Schema = z
   })
   .meta({ examples: [{}] });
 
-export const claimOrganizationSSODomainStatus403Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
+export const claimOrganizationSSODomainStatus403Schema = authErrorResponseSchema.describe('Error response');
 
-export const claimOrganizationSSODomainStatus404Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const claimOrganizationSSODomainStatus409Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
+export const claimOrganizationSSODomainStatus409Schema = authErrorResponseSchema.describe('Error response');
 
 export const claimOrganizationSSODomainStatus5XXSchema = z.unknown();
 
@@ -2138,7 +2121,6 @@ export const claimOrganizationSSODomainErrorSchema = z.union([
   claimOrganizationSSODomainStatus400Schema,
   claimOrganizationSSODomainStatus401Schema,
   claimOrganizationSSODomainStatus403Schema,
-  claimOrganizationSSODomainStatus404Schema,
   claimOrganizationSSODomainStatus409Schema,
   claimOrganizationSSODomainStatus5XXSchema
 ]);
@@ -2162,22 +2144,9 @@ export const deleteOrganizationSSODomainStatus401Schema = z
   })
   .meta({ examples: [{}] });
 
-export const deleteOrganizationSSODomainStatus403Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
+export const deleteOrganizationSSODomainStatus403Schema = authErrorResponseSchema.describe('Error response');
 
-export const deleteOrganizationSSODomainStatus404Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const deleteOrganizationSSODomainStatus409Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
+export const deleteOrganizationSSODomainStatus409Schema = authErrorResponseSchema.describe('Error response');
 
 export const deleteOrganizationSSODomainStatus5XXSchema = z.unknown();
 
@@ -2186,7 +2155,6 @@ export const deleteOrganizationSSODomainResponseSchema = deleteOrganizationSSODo
 export const deleteOrganizationSSODomainErrorSchema = z.union([
   deleteOrganizationSSODomainStatus401Schema,
   deleteOrganizationSSODomainStatus403Schema,
-  deleteOrganizationSSODomainStatus404Schema,
   deleteOrganizationSSODomainStatus409Schema,
   deleteOrganizationSSODomainStatus5XXSchema
 ]);
@@ -2208,22 +2176,11 @@ export const verifyOrganizationSSODomainStatus401Schema = z
   })
   .meta({ examples: [{}] });
 
-export const verifyOrganizationSSODomainStatus403Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
+export const verifyOrganizationSSODomainStatus403Schema = authErrorResponseSchema.describe('Error response');
 
-export const verifyOrganizationSSODomainStatus404Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
+export const verifyOrganizationSSODomainStatus404Schema = authErrorResponseSchema.describe('Error response');
 
-export const verifyOrganizationSSODomainStatus409Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
+export const verifyOrganizationSSODomainStatus409Schema = authErrorResponseSchema.describe('Error response');
 
 export const verifyOrganizationSSODomainStatus5XXSchema = z.unknown();
 
@@ -2257,22 +2214,9 @@ export const createOrganizationSSOProviderStatus401Schema = z
   })
   .meta({ examples: [{}] });
 
-export const createOrganizationSSOProviderStatus403Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
+export const createOrganizationSSOProviderStatus403Schema = authErrorResponseSchema.describe('Error response');
 
-export const createOrganizationSSOProviderStatus404Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
-
-export const createOrganizationSSOProviderStatus409Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
+export const createOrganizationSSOProviderStatus409Schema = authErrorResponseSchema.describe('Error response');
 
 export const createOrganizationSSOProviderStatus5XXSchema = z.unknown();
 
@@ -2282,7 +2226,6 @@ export const createOrganizationSSOProviderErrorSchema = z.union([
   createOrganizationSSOProviderStatus400Schema,
   createOrganizationSSOProviderStatus401Schema,
   createOrganizationSSOProviderStatus403Schema,
-  createOrganizationSSOProviderStatus404Schema,
   createOrganizationSSOProviderStatus409Schema,
   createOrganizationSSOProviderStatus5XXSchema
 ]);
@@ -2315,22 +2258,11 @@ export const updateOrganizationSSOProviderStatus401Schema = z
   })
   .meta({ examples: [{}] });
 
-export const updateOrganizationSSOProviderStatus403Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
+export const updateOrganizationSSOProviderStatus403Schema = authErrorResponseSchema.describe('Error response');
 
-export const updateOrganizationSSOProviderStatus404Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
+export const updateOrganizationSSOProviderStatus404Schema = authErrorResponseSchema.describe('Error response');
 
-export const updateOrganizationSSOProviderStatus409Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
+export const updateOrganizationSSOProviderStatus409Schema = authErrorResponseSchema.describe('Error response');
 
 export const updateOrganizationSSOProviderStatus5XXSchema = z.unknown();
 
@@ -2366,12 +2298,7 @@ export const deleteOrganizationSSOProviderStatus401Schema = z
   })
   .meta({ examples: [{}] });
 
-export const deleteOrganizationSSOProviderStatus403Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
+export const deleteOrganizationSSOProviderStatus403Schema = authErrorResponseSchema.describe('Error response');
 
 export const deleteOrganizationSSOProviderStatus5XXSchema = z.unknown();
 
@@ -2402,22 +2329,11 @@ export const setOrganizationSSOProviderEnforcementStatus401Schema = z
   })
   .meta({ examples: [{}] });
 
-export const setOrganizationSSOProviderEnforcementStatus403Schema = z
-  .object({
-    id: z.string().optional().describe('Error identifier for tracking and debugging'),
-    message: z.string().describe('Human-readable error message explaining the issue')
-  })
-  .meta({ examples: [{}] });
+export const setOrganizationSSOProviderEnforcementStatus403Schema = authErrorResponseSchema.describe('Error response');
 
-export const setOrganizationSSOProviderEnforcementStatus404Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
+export const setOrganizationSSOProviderEnforcementStatus404Schema = authErrorResponseSchema.describe('Error response');
 
-export const setOrganizationSSOProviderEnforcementStatus409Schema = z.object({
-  id: z.string().optional().describe('Error identifier for tracking and debugging'),
-  message: z.string().describe('Human-readable error message explaining the issue')
-});
+export const setOrganizationSSOProviderEnforcementStatus409Schema = authErrorResponseSchema.describe('Error response');
 
 export const setOrganizationSSOProviderEnforcementStatus5XXSchema = z.unknown();
 

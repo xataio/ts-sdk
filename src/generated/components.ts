@@ -24,7 +24,6 @@ import type {
   ClaimOrganizationSSODomain400,
   ClaimOrganizationSSODomain401,
   ClaimOrganizationSSODomain403,
-  ClaimOrganizationSSODomain404,
   ClaimOrganizationSSODomain409,
   CreateOrganization201,
   CreateOrganizationMutationRequest,
@@ -136,12 +135,10 @@ import type {
   GetOrganizationSSOPathParams,
   GetOrganizationSSO401,
   GetOrganizationSSO403,
-  GetOrganizationSSO404,
   DeleteOrganizationSSODomain204,
   DeleteOrganizationSSODomainPathParams,
   DeleteOrganizationSSODomain401,
   DeleteOrganizationSSODomain403,
-  DeleteOrganizationSSODomain404,
   DeleteOrganizationSSODomain409,
   VerifyOrganizationSSODomain200,
   VerifyOrganizationSSODomainPathParams,
@@ -155,7 +152,6 @@ import type {
   CreateOrganizationSSOProvider400,
   CreateOrganizationSSOProvider401,
   CreateOrganizationSSOProvider403,
-  CreateOrganizationSSOProvider404,
   CreateOrganizationSSOProvider409,
   UpdateOrganizationSSOProvider200,
   UpdateOrganizationSSOProviderMutationRequest,
@@ -1075,8 +1071,7 @@ export async function getOrganizationMembershipLimits({
  * @summary Get the organization's SSO configuration
  * @description Lists the organization's identity providers and the email domains claimed for them. An organization signs in
  * through one provider per verified domain, so both are collections. Client secrets are write-only and are never
- * returned. An organization that has not set anything up yet responds 200 with empty lists, so 404 means only
- * that the feature is unavailable.
+ * returned. An organization that has not set anything up yet responds 200 with empty lists.
  * {@link /organizations/:organizationID/sso}
  */
 export async function getOrganizationSSO({
@@ -1094,7 +1089,7 @@ export async function getOrganizationSSO({
 
   const data = await request<
     GetOrganizationSSO200,
-    GetOrganizationSSO401 | GetOrganizationSSO403 | GetOrganizationSSO404,
+    GetOrganizationSSO401 | GetOrganizationSSO403,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1132,7 +1127,6 @@ export async function claimOrganizationSSODomain({
     | ClaimOrganizationSSODomain400
     | ClaimOrganizationSSODomain401
     | ClaimOrganizationSSODomain403
-    | ClaimOrganizationSSODomain404
     | ClaimOrganizationSSODomain409,
     ClaimOrganizationSSODomainMutationRequest,
     Record<string, string>,
@@ -1169,10 +1163,7 @@ export async function deleteOrganizationSSODomain({
 
   const data = await request<
     DeleteOrganizationSSODomain204,
-    | DeleteOrganizationSSODomain401
-    | DeleteOrganizationSSODomain403
-    | DeleteOrganizationSSODomain404
-    | DeleteOrganizationSSODomain409,
+    DeleteOrganizationSSODomain401 | DeleteOrganizationSSODomain403 | DeleteOrganizationSSODomain409,
     null,
     Record<string, string>,
     Record<string, string>,
@@ -1257,7 +1248,6 @@ export async function createOrganizationSSOProvider({
     | CreateOrganizationSSOProvider400
     | CreateOrganizationSSOProvider401
     | CreateOrganizationSSOProvider403
-    | CreateOrganizationSSOProvider404
     | CreateOrganizationSSOProvider409,
     CreateOrganizationSSOProviderMutationRequest,
     Record<string, string>,
@@ -3629,17 +3619,15 @@ export type OperationErrors = {
   'organizations.getOrganizationMembershipLimits':
     | GetOrganizationMembershipLimits401
     | GetOrganizationMembershipLimits403;
-  'organizations.getOrganizationSSO': GetOrganizationSSO401 | GetOrganizationSSO403 | GetOrganizationSSO404;
+  'organizations.getOrganizationSSO': GetOrganizationSSO401 | GetOrganizationSSO403;
   'organizations.claimOrganizationSSODomain':
     | ClaimOrganizationSSODomain400
     | ClaimOrganizationSSODomain401
     | ClaimOrganizationSSODomain403
-    | ClaimOrganizationSSODomain404
     | ClaimOrganizationSSODomain409;
   'organizations.deleteOrganizationSSODomain':
     | DeleteOrganizationSSODomain401
     | DeleteOrganizationSSODomain403
-    | DeleteOrganizationSSODomain404
     | DeleteOrganizationSSODomain409;
   'organizations.verifyOrganizationSSODomain':
     | VerifyOrganizationSSODomain401
@@ -3650,7 +3638,6 @@ export type OperationErrors = {
     | CreateOrganizationSSOProvider400
     | CreateOrganizationSSOProvider401
     | CreateOrganizationSSOProvider403
-    | CreateOrganizationSSOProvider404
     | CreateOrganizationSSOProvider409;
   'organizations.updateOrganizationSSOProvider':
     | UpdateOrganizationSSOProvider400
@@ -3779,11 +3766,11 @@ export type OperationErrorStatus = {
   'organizations.resendOrganizationInvitation': 400 | 401 | 403 | 404;
   'organizations.requestOrganizationDeletion': 400 | 401 | 403 | 409;
   'organizations.getOrganizationMembershipLimits': 401 | 403;
-  'organizations.getOrganizationSSO': 401 | 403 | 404;
-  'organizations.claimOrganizationSSODomain': 400 | 401 | 403 | 404 | 409;
-  'organizations.deleteOrganizationSSODomain': 401 | 403 | 404 | 409;
+  'organizations.getOrganizationSSO': 401 | 403;
+  'organizations.claimOrganizationSSODomain': 400 | 401 | 403 | 409;
+  'organizations.deleteOrganizationSSODomain': 401 | 403 | 409;
   'organizations.verifyOrganizationSSODomain': 401 | 403 | 404 | 409;
-  'organizations.createOrganizationSSOProvider': 400 | 401 | 403 | 404 | 409;
+  'organizations.createOrganizationSSOProvider': 400 | 401 | 403 | 409;
   'organizations.updateOrganizationSSOProvider': 400 | 401 | 403 | 404 | 409;
   'organizations.deleteOrganizationSSOProvider': 401 | 403;
   'organizations.setOrganizationSSOProviderEnforcement': 401 | 403 | 404 | 409;
