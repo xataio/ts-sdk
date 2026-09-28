@@ -434,11 +434,11 @@ export const SQLRequestSchema = z
 export const fieldDefinitionSchema = z
   .object({
     name: z.string().describe('Column name.'),
-    tableID: z.int().describe('OID of the source table (0 if not a table column).'),
-    columnID: z.int().describe('Attribute number of the column within the table.'),
-    dataTypeID: z.int().describe('OID of the column data type.'),
-    dataTypeSize: z.int().describe('Data type size (negative for variable-length types).'),
-    dataTypeModifier: z.int().describe('Type-specific modifier (e.g. precision/scale for numeric types).'),
+    tableID: z.int32().describe('OID of the source table (0 if not a table column).'),
+    columnID: z.int32().describe('Attribute number of the column within the table.'),
+    dataTypeID: z.int32().describe('OID of the column data type.'),
+    dataTypeSize: z.int32().describe('Data type size (negative for variable-length types).'),
+    dataTypeModifier: z.int32().describe('Type-specific modifier (e.g. precision/scale for numeric types).'),
     format: z.string().describe('Data format (`text` or `binary`).')
   })
   .describe('PostgreSQL column metadata from the row description message.');
@@ -652,11 +652,11 @@ export const branchFromParentSchema = z.object({
 export const clusterConfigurationSchema = z
   .object({
     region: z.string().describe('Geographic region where the cluster will be deployed'),
-    storage: z.int().optional().describe('Branch storage in GiB (gigabytes)'),
+    storage: z.int32().optional().describe('Branch storage in GiB (gigabytes)'),
     instanceType: z.string().describe('The instance type according to the xata instance types available'),
     image: z.string().describe('PostgreSQL image to use for the database instances'),
     replicas: z
-      .int()
+      .int32()
       .describe(
         'Number of replicas in the branch. Every child branch is created with no replicas. This can be updated.'
       ),
@@ -759,7 +759,7 @@ export const branchStatusSchema = z
 
 export const backupConfigurationSchema = z
   .object({
-    retentionPeriod: z.int().optional().default(2).describe('how long are we keeping the backups around for'),
+    retentionPeriod: z.int32().optional().default(2).describe('how long are we keeping the backups around for'),
     backupTime: z
       .string()
       .regex(/^(\*|[0-6]):(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/)
@@ -873,9 +873,9 @@ export const branchUpdateDetailsSchema = z
       .regex(/^([a-zA-Z0-9][a-zA-Z0-9\-_./: ]*)?$/)
       .optional()
       .describe('New description for the branch. Send an empty string to clear it.'),
-    replicas: z.int().optional().describe('Number of database replicas to scale to'),
+    replicas: z.int32().optional().describe('Number of database replicas to scale to'),
     storage: z
-      .int()
+      .int32()
       .optional()
       .describe(
         "Branch storage in GiB (gigabytes). The maximum allowed value depends on the organization's storage limit."
