@@ -1022,12 +1022,14 @@ export type FieldDefinition = {
   /**
    * @description OID of the source table (0 if not a table column).
    *
-   * Format: `int32`
+   * Format: `int64`
+   * @minLength 0
+   * @maxLength 4294967295
    * @type integer
    */
   tableID: number;
   /**
-   * @description Attribute number of the column within the table.
+   * @description Attribute number of the column within the table (0 if not a table column, negative for system columns).
    *
    * Format: `int32`
    * @type integer
@@ -1036,7 +1038,9 @@ export type FieldDefinition = {
   /**
    * @description OID of the column data type.
    *
-   * Format: `int32`
+   * Format: `int64`
+   * @minLength 0
+   * @maxLength 4294967295
    * @type integer
    */
   dataTypeID: number;

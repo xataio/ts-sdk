@@ -434,9 +434,13 @@ export const SQLRequestSchema = z
 export const fieldDefinitionSchema = z
   .object({
     name: z.string().describe('Column name.'),
-    tableID: z.int32().describe('OID of the source table (0 if not a table column).'),
-    columnID: z.int32().describe('Attribute number of the column within the table.'),
-    dataTypeID: z.int32().describe('OID of the column data type.'),
+    tableID: z.int().min(0).max(4294967295).describe('OID of the source table (0 if not a table column).'),
+    columnID: z
+      .int32()
+      .describe(
+        'Attribute number of the column within the table (0 if not a table column, negative for system columns).'
+      ),
+    dataTypeID: z.int().min(0).max(4294967295).describe('OID of the column data type.'),
     dataTypeSize: z.int32().describe('Data type size (negative for variable-length types).'),
     dataTypeModifier: z.int32().describe('Type-specific modifier (e.g. precision/scale for numeric types).'),
     format: z.string().describe('Data format (`text` or `binary`).')
