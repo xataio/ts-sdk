@@ -1,5 +1,13 @@
 # @xata.io/api
 
+## 0.1.21
+
+### Patch Changes
+
+- [#3278](https://github.com/xataio/frontend/pull/3278) [`4121b5b`](https://github.com/xataio/frontend/commit/4121b5b02d69c557806353e8ce0b6490beba39ec) Thanks [@SferaDev](https://github.com/SferaDev)! - Retry non-idempotent requests that the API rejected with 429 and a `Retry-After` header, such as creating a branch while the project is busy.
+
+- [#3271](https://github.com/xataio/frontend/pull/3271) [`49642fb`](https://github.com/xataio/frontend/commit/49642fb29e445850b59fce17c85460a24a664d06) Thanks [@xata-bot](https://github.com/xata-bot)! - Generate `z.int32()` for int32 fields in the API schemas
+
 ## 0.1.20
 
 ### Patch Changes
