@@ -164,6 +164,33 @@ describe('fetcher retries', () => {
     expect(fetchImpl).toHaveBeenCalledTimes(1);
   });
 
+  const busyResponse = () => {
+    const response = jsonResponse(429, { message: 'project [prj_1] is busy; retry later' }, false);
+    response.headers.set('retry-after', '0');
+    return response;
+  };
+
+  it('retries a POST the server turned away as busy with Retry-After', async () => {
+    let n = 0;
+    const { fetchImpl, promise } = run('POST', async () =>
+      n++ === 0 ? busyResponse() : jsonResponse(200, { ok: true })
+    );
+    await expect(promise).resolves.toEqual({ ok: true });
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not retry a POST on a 429 without Retry-After', async () => {
+    const { fetchImpl, promise } = run('POST', async () => jsonResponse(429, { message: 'slow down' }, false));
+    await expect(promise).rejects.toMatchObject({ name: 'ApiError', status: 429 });
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not retry a busy POST explicitly marked not retryable', async () => {
+    const { fetchImpl, promise } = run('POST', async () => busyResponse(), { retryable: false });
+    await expect(promise).rejects.toMatchObject({ name: 'ApiError', status: 429 });
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+  });
+
   it('retries a POST when explicitly marked retryable', async () => {
     let n = 0;
     const { fetchImpl, promise } = run(

@@ -30,6 +30,13 @@ export function isRetryableError(error: unknown, statuses: number[] = DEFAULT_RE
   return isNetworkError(error);
 }
 
+/** The API pairs 429 with `Retry-After` only when it refused the request up front, so even a POST can repeat. */
+export function isRejectedUnprocessed(error: unknown, statuses: number[] = DEFAULT_RETRY.statuses): boolean {
+  return (
+    error instanceof ApiError && error.status === 429 && statuses.includes(429) && error.retryAfterMs !== undefined
+  );
+}
+
 export function retryDelayMs(attempt: number, error: unknown, config: Required<RetryOptions> = DEFAULT_RETRY): number {
   if (error instanceof ApiError && typeof error.retryAfterMs === 'number') {
     return Math.min(error.retryAfterMs, 30_000);

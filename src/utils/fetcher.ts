@@ -1,6 +1,6 @@
 import { compactObject, retry as retryAsync } from '@xata.io/lang';
 import { ApiError, NetworkError } from '../errors';
-import { DEFAULT_RETRY, isRetryableError, retryDelayMs, type RetryOptions } from '../retry';
+import { DEFAULT_RETRY, isRejectedUnprocessed, isRetryableError, retryDelayMs, type RetryOptions } from '../retry';
 import type { FetchImpl } from './fetch';
 
 export { ApiError, NetworkError };
@@ -109,8 +109,8 @@ async function client<
   };
 
   const retryConfig = retry === false ? null : { ...DEFAULT_RETRY, ...retry };
-  const isIdempotent = retryable ?? retryConfig?.methods.includes(methodUpper) ?? false;
-  if (!retryConfig || !isIdempotent) return run();
+  if (!retryConfig || retryable === false) return run();
+  const isIdempotent = retryable ?? retryConfig.methods.includes(methodUpper);
 
   // `shouldRetry` runs immediately before `delay`, so we stash the error to honor its `Retry-After`.
   const ctx: { error: unknown } = { error: undefined };
@@ -119,7 +119,9 @@ async function client<
     signal,
     shouldRetry: (error) => {
       ctx.error = error;
-      return isRetryableError(error, retryConfig.statuses);
+      return isIdempotent
+        ? isRetryableError(error, retryConfig.statuses)
+        : isRejectedUnprocessed(error, retryConfig.statuses);
     },
     delay: (attempt) => retryDelayMs(attempt, ctx.error, retryConfig)
   });
