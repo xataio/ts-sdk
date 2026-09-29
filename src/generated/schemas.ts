@@ -338,7 +338,17 @@ export const organizationSSODomainSchema = z
     verification: z
       .union([organizationSSODomainVerificationSchema, z.null()])
       .optional()
-      .describe('The DNS record that proves control of the domain. Absent once the domain is verified.')
+      .describe(
+        'The DNS record that proves control of the domain. It must stay published while the domain is verified.'
+      ),
+    missing_since: z.iso
+      .datetime()
+      .nullish()
+      .describe('When the daily recheck first found the record missing from a verified domain.'),
+    revokes_at: z.iso
+      .datetime()
+      .nullish()
+      .describe('When the domain stops being verified if the record is still missing.')
   })
   .describe('An email domain claimed by an organization for SSO');
 

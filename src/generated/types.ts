@@ -847,9 +847,23 @@ export type OrganizationSSODomain = {
    */
   verified: boolean;
   /**
-   * @description The DNS record that proves control of the domain. Absent once the domain is verified.
+   * @description The DNS record that proves control of the domain. It must stay published while the domain is verified.
    */
   verification?: (OrganizationSSODomainVerification | null) | undefined;
+  /**
+   * @description When the daily recheck first found the record missing from a verified domain.
+   *
+   * Format: `date-time`
+   * @type string | undefined
+   */
+  missing_since?: (string | null) | undefined;
+  /**
+   * @description When the domain stops being verified if the record is still missing.
+   *
+   * Format: `date-time`
+   * @type string | undefined
+   */
+  revokes_at?: (string | null) | undefined;
 };
 
 /**
