@@ -1,7 +1,7 @@
 {
   "name": "@xata.io/api",
   "private": false,
-  "version": "0.1.22",
+  "version": "0.1.23",
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
@@ -9,19 +9,19 @@
     "./retry": "./src/retry.ts"
   },
   "dependencies": {
-    "@dotenvx/dotenvx": "2.30.0",
+    "@dotenvx/dotenvx": "2.31.1",
     "@xata.io/lang": "0.0.5",
     "zod": "4.6.5"
   },
   "devDependencies": {
-    "@kubb/adapter-oas": "5.3.16",
+    "@kubb/adapter-oas": "5.3.18",
     "@kubb/plugin-ts": "5.0.2",
     "@kubb/plugin-zod": "5.3.0",
-    "@types/node": "26.6.2",
+    "@types/node": "26.6.3",
     "@xata.io/tsconfig": "0.0.2",
-    "kubb": "5.3.16",
+    "kubb": "5.3.18",
     "typescript": "7.0.2",
-    "vitest": "5.0.1"
+    "vitest": "5.0.2"
   },
   "scripts": {
     "test": "vitest --passWithNoTests",
