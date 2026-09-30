@@ -1,5 +1,19 @@
 # @xata.io/api
 
+## 0.1.23
+
+### Patch Changes
+
+- [#3312](https://github.com/xataio/frontend/pull/3312) [`4a14d45`](https://github.com/xataio/frontend/commit/4a14d45762715dc0928783f70a3ed8778621c462) Thanks [@divyenduz](https://github.com/divyenduz)! - Move the organization-scoped AI Gateway proxy and its client into `@xata.io/ai/gateway`. Clients send a protocol version so the proxy can ask outdated ones to upgrade.
+
+- [#3309](https://github.com/xataio/frontend/pull/3309) [`bc3631d`](https://github.com/xataio/frontend/commit/bc3631de2104811cb7ac11782baa0169c3993466) Thanks [@xata-bot](https://github.com/xata-bot)! - [Generated] Update API handlers
+
+- [#3312](https://github.com/xataio/frontend/pull/3312) [`4a14d45`](https://github.com/xataio/frontend/commit/4a14d45762715dc0928783f70a3ed8778621c462) Thanks [@divyenduz](https://github.com/divyenduz)! - Route CLI AI generation through an organization-authenticated Xata Gateway proxy. Preserve date strings and float transformer bounds in generated clone configuration YAML.
+
+  AI generation helpers now require AI SDK model objects instead of Anthropic API keys. Remove the Anthropic model registry and support Gateway model IDs.
+
+  Allow token refresh requests to accept an AbortSignal so AI cancellation and deadlines also stop pending authentication requests.
+
 ## 0.1.22
 
 ### Patch Changes
