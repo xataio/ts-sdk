@@ -10,7 +10,7 @@ export async function refreshToken(
     refreshToken,
     expiresAt
   }: { client: OpenIdClient } & OpenIdToken,
-  { force = false }: { force?: boolean } = {}
+  { force = false, signal }: { force?: boolean; signal?: AbortSignal } = {}
 ): Promise<OpenIdToken> {
   // If the token doesn't expire in the next 30 seconds, do nothing
   if (!force && expiresAt > new Date(Date.now() + 30 * 1000)) {
@@ -19,6 +19,7 @@ export async function refreshToken(
 
   const response = await fetch(`${issuer}/protocol/openid-connect/token`, {
     method: 'POST',
+    signal,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
