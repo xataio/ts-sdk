@@ -781,12 +781,12 @@ export type OrganizationSSOProvider = {
    */
   display_name: string;
   /**
-   * @description The verified email domain this provider serves.
+   * @description The verified email domain this provider serves. Empty while the domain is not verified.
    * @type string
    */
   domain: string;
   /**
-   * @description Whether members on this domain are sent to this provider automatically, leaving no other way in. Registering a provider does not set this; it is enabled separately once a sign-in through it has worked.
+   * @description Whether members on this domain are sent to this provider automatically, leaving no other way in. Registering a provider does not set this; it is enabled separately.
    * @type boolean
    */
   enforced: boolean;
@@ -959,7 +959,7 @@ export type UpdateOrganizationSSOProviderRequest = {
  */
 export type ClaimOrganizationSSODomainRequest = {
   /**
-   * @description Bare email domain to claim, for example acme.com. Wildcards and public email providers are rejected.
+   * @description Bare email domain to claim, for example acme.com.
    * @type string
    */
   domain: string;

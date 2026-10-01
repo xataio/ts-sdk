@@ -1140,8 +1140,7 @@ export async function claimOrganizationSSODomain({
 /**
  * @summary Release a claimed or verified domain
  * @description Drops a pending claim, or releases a verified domain so members on it sign in however they could before.
- * Refused with a 409 while a provider is still bound to the domain, since releasing it underneath one would
- * leave a provider nobody can reach; remove the provider first. Idempotent.
+ * Refused with a 409 while the organization has a provider for the domain; remove the provider first. Idempotent.
  * {@link /organizations/:organizationID/sso/domains/:domain}
  */
 export async function deleteOrganizationSSODomain({
@@ -1180,8 +1179,8 @@ export async function deleteOrganizationSSODomain({
 /**
  * @summary Check the DNS record for a claimed domain
  * @description Looks up the challenge TXT record. Verification is a poll, not a command: a missing or stale record is reported
- * as `verified: false` on a 200 rather than as an error, so a client can retry while DNS propagates. Verifying
- * proves the organization controls the domain and nothing more; it does not change how anyone signs in.
+ * as `verified: false` on a 200 rather than as an error, so a client can retry while DNS propagates. Verifying a
+ * domain that lost its verification restores its provider, with enforcement off.
  * {@link /organizations/:organizationID/sso/domains/:domain/verify}
  */
 export async function verifyOrganizationSSODomain({
@@ -1223,9 +1222,10 @@ export async function verifyOrganizationSSODomain({
 /**
  * @summary Register an identity provider for a verified domain
  * @description Registers an identity provider for one verified domain. `google` needs only the credentials and pins the login
- * to that Google Workspace domain; `oidc` is the fallback for any other provider and discovers its endpoints from
- * the issuer's `/.well-known/openid-configuration`. The domain must already be verified, and registering does not
- * redirect anyone on its own: that is enabled separately.
+ * to that Google Workspace domain; `microsoft` pins it to the Entra tenant in the issuer; `oidc` is the fallback
+ * for any other provider and discovers its endpoints from the issuer's `/.well-known/openid-configuration`. The
+ * domain must already be verified, and registering does not redirect anyone on its own: that is enabled
+ * separately.
  * {@link /organizations/:organizationID/sso/providers}
  */
 export async function createOrganizationSSOProvider({

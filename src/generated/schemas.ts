@@ -305,11 +305,13 @@ export const organizationSSOProviderSchema = z
       'Which identity provider this is. `google` pins the login to a Google Workspace domain and `microsoft` to a single Entra tenant, taken from the issuer; `oidc` is the fallback for anything else that speaks OpenID Connect.'
     ),
     display_name: z.string().describe('Name members see for this provider when signing in.'),
-    domain: z.string().describe('The verified email domain this provider serves.'),
+    domain: z
+      .string()
+      .describe('The verified email domain this provider serves. Empty while the domain is not verified.'),
     enforced: z
       .boolean()
       .describe(
-        'Whether members on this domain are sent to this provider automatically, leaving no other way in. Registering a provider does not set this; it is enabled separately once a sign-in through it has worked.'
+        'Whether members on this domain are sent to this provider automatically, leaving no other way in. Registering a provider does not set this; it is enabled separately.'
       ),
     issuer: z.url().optional().describe('OIDC issuer URL, without the /.well-known suffix.'),
     client_id: z.string().describe('OAuth client ID the organization registered with the provider.')
@@ -409,9 +411,7 @@ export const updateOrganizationSSOProviderRequestSchema = z
 
 export const claimOrganizationSSODomainRequestSchema = z
   .object({
-    domain: z
-      .string()
-      .describe('Bare email domain to claim, for example acme.com. Wildcards and public email providers are rejected.')
+    domain: z.string().describe('Bare email domain to claim, for example acme.com.')
   })
   .describe('Request payload for claiming an email domain for SSO');
 
