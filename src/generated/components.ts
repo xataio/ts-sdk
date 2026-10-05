@@ -421,6 +421,17 @@ import type {
   GetResource403,
   GetResource404,
   GetResource500,
+  ProvisionResource200,
+  ProvisionResourceMutationRequest,
+  ProvisionResourcePathParams,
+  ProvisionResourceHeaderParams,
+  ProvisionResource400,
+  ProvisionResource403,
+  ProvisionResource404,
+  ProvisionResource409,
+  ProvisionResource429,
+  ProvisionResource500,
+  ProvisionResource503,
   OrbWebhook200,
   OrbWebhookMutationRequest,
   OrbWebhook400,
@@ -3168,6 +3179,57 @@ export async function getResource({
 }
 
 /**
+ * @summary Provision a Vercel Marketplace resource
+ * @description Create a resource (a Xata project and its branches) and return it with
+ * the connection secrets. Vercel calls this when a customer creates a
+ * resource. Idempotent when an Idempotency-Key header is sent: a retry with
+ * the same key returns the existing resource unchanged, and reusing the key
+ * with a different body is a conflict (409). Without the header there is no
+ * stable key, so each call provisions a new resource.
+ * {@link /v1/installations/:installationId/resources}
+ */
+export async function provisionResource({
+  pathParams,
+  body,
+  headers,
+  config = {}
+}: {
+  pathParams: ProvisionResourcePathParams;
+  body: ProvisionResourceMutationRequest;
+  headers?: ProvisionResourceHeaderParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.installationId) {
+    throw new Error(`Missing required path parameter: installationId`);
+  }
+
+  const data = await request<
+    ProvisionResource200,
+    | ProvisionResource400
+    | ProvisionResource403
+    | ProvisionResource404
+    | ProvisionResource409
+    | ProvisionResource429
+    | ProvisionResource500
+    | ProvisionResource503,
+    ProvisionResourceMutationRequest,
+    ProvisionResourceHeaderParams,
+    Record<string, string>,
+    ProvisionResourcePathParams
+  >({
+    method: 'POST',
+    url: `/v1/installations/${pathParams.installationId}/resources`,
+    body,
+    ...requestConfig,
+    headers: { ...headers, ...requestConfig.headers }
+  });
+
+  return data;
+}
+
+/**
  * @summary Orb billing webhook
  * @description Endpoint used by Orb to deliver billing-related webhook events.
  * This endpoint is authenticated via Orb's HMAC signature headers,
@@ -3309,6 +3371,7 @@ export const operationsByPath = {
   'DELETE /v1/installations/{installationId}': deleteInstallation,
   'GET /v1/products/{productSlug}/plans': listBillingPlansForProduct,
   'GET /v1/installations/{installationId}/resources/{resourceId}': getResource,
+  'POST /v1/installations/{installationId}/resources': provisionResource,
   'POST /webhooks/orb': orbWebhook,
   'POST /webhooks/stripe': stripeWebhook
 };
@@ -3418,7 +3481,8 @@ export const operationsByTag = {
     listBillingPlansForProduct
   },
   vercelResources: {
-    getResource
+    getResource,
+    provisionResource
   },
   webhooks: {
     orbWebhook,
@@ -3525,7 +3589,8 @@ export const tagDictionary = {
     GET: ['listBillingPlansForProduct']
   },
   vercelResources: {
-    GET: ['getResource']
+    GET: ['getResource'],
+    POST: ['provisionResource']
   },
   webhooks: {
     POST: ['orbWebhook', 'stripeWebhook']
@@ -3742,6 +3807,14 @@ export type OperationErrors = {
     | ListBillingPlansForProduct403
     | ListBillingPlansForProduct404;
   'vercelResources.getResource': GetResource403 | GetResource404 | GetResource500;
+  'vercelResources.provisionResource':
+    | ProvisionResource400
+    | ProvisionResource403
+    | ProvisionResource404
+    | ProvisionResource409
+    | ProvisionResource429
+    | ProvisionResource500
+    | ProvisionResource503;
   'webhooks.orbWebhook': OrbWebhook400 | OrbWebhook500;
   'webhooks.stripeWebhook': StripeWebhook400 | StripeWebhook500;
 };
@@ -3823,6 +3896,7 @@ export type OperationErrorStatus = {
   'vercel.deleteInstallation': 403 | 409;
   'vercel.listBillingPlansForProduct': 400 | 403 | 404;
   'vercelResources.getResource': 403 | 404 | 500;
+  'vercelResources.provisionResource': 400 | 403 | 404 | 409 | 429 | 500 | 503;
   'webhooks.orbWebhook': 400 | 500;
   'webhooks.stripeWebhook': 400 | 500;
 };

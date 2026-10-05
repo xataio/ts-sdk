@@ -82,7 +82,7 @@ export const createOrganizationInvitationRequestSchema = z.object({
   role: organizationRoleNameSchema
     .optional()
     .describe(
-      'Role the user holds once they accept the invitation. Optional; when omitted, Editor applies once roles are enabled for the organization'
+      'Role the user holds once they accept the invitation. Optional; when omitted, the least privileged role offered applies'
     )
 });
 
@@ -1231,6 +1231,50 @@ export const resourceSchema = z
     'A provisioned Vercel Marketplace resource. Matches Vercel\'s Partner API\n"Get Resource" response. Secrets/connection info are returned by Provision\nResource, not here. The optional billingPlan, protocolSettings, and\nnotification fields are not yet populated.\n'
   );
 
+export const provisionResourceRequestSchema = z
+  .object({
+    productId: z.string().describe('The partner-specific product id/slug.'),
+    name: z.string().describe('User-inputted resource name.'),
+    metadata: z.looseObject({}).describe('User-inputted metadata based on the registered metadata schema.'),
+    billingPlanId: z.string().describe('Selected Vercel billing plan id.'),
+    externalId: z.string().optional().describe('Partner-provided identifier indicating the source of provisioning.')
+  })
+  .describe('Vercel Provision Resource request body.');
+
+export const secretSchema = z
+  .object({
+    name: z.string().describe('Environment variable name.'),
+    value: z.string().describe('Default value, used when no per-environment override applies.'),
+    environmentOverrides: z
+      .object({
+        development: z.string().optional(),
+        preview: z.string().optional(),
+        production: z.string().optional()
+      })
+      .optional()
+      .describe('Per-environment values that override value for that Vercel environment.')
+  })
+  .describe('A connection secret exposed as an environment variable on connected Vercel projects.');
+
+export const provisionedResourceSchema = z
+  .object({
+    id: z.string().describe('The partner-specific resource id.'),
+    productId: z.string().describe('The partner-specific product id/slug.'),
+    name: z.string().describe('User-inputted resource name.'),
+    metadata: z.looseObject({}).describe('User-inputted metadata based on the registered metadata schema.'),
+    status: z
+      .string()
+      .describe(
+        "Resource lifecycle status. One of Vercel's values: ready, pending, onboarding, suspended, resumed, uninstalled, error."
+      ),
+    secrets: z
+      .array(secretSchema)
+      .describe('Connection secrets that become environment variables on connected projects.')
+  })
+  .describe(
+    'A newly provisioned resource: the Resource fields plus the connection\nsecrets. Provision Resource is the only endpoint that returns secrets.\n'
+  );
+
 export const resourceErrorSchema = z
   .object({
     error: z.object({
@@ -1242,7 +1286,16 @@ export const resourceErrorSchema = z
           url: z.string().optional().describe('URL to a help article or dashboard page for resolution.')
         })
         .optional()
-        .describe('User-facing error details, if applicable.')
+        .describe('User-facing error details, if applicable.'),
+      fields: z
+        .array(
+          z.object({
+            key: z.string().describe('The metadata field the error applies to.'),
+            message: z.string().optional().describe('Validation message for this field.')
+          })
+        )
+        .optional()
+        .describe('Field-level validation errors, for 400 responses.')
     })
   })
   .describe('Vercel Partner API error envelope.');
@@ -4185,6 +4238,49 @@ export const getResourceErrorSchema = z.union([
   getResourceStatus404Schema,
   getResourceStatus500Schema
 ]);
+
+export const provisionResourcePathInstallationIdSchema = z.string().describe('Vercel installation id (icfg_...).');
+
+export const provisionResourceHeaderIdempotencyKeySchema = z
+  .string()
+  .optional()
+  .describe(
+    'A stable key Vercel sends to make retries safe. A repeat with the same\nkey returns the existing resource; reusing it with a different body is a\nconflict (409). Optional — without it each call provisions a new resource.\n'
+  );
+
+export const provisionResourceStatus200Schema = provisionedResourceSchema.describe(
+  'A newly provisioned resource: the Resource fields plus the connection\nsecrets. Provision Resource is the only endpoint that returns secrets.\n'
+);
+
+export const provisionResourceStatus400Schema = resourceErrorSchema.describe('Vercel Partner API error envelope.');
+
+export const provisionResourceStatus403Schema = resourceErrorSchema.describe('Vercel Partner API error envelope.');
+
+export const provisionResourceStatus404Schema = resourceErrorSchema.describe('Vercel Partner API error envelope.');
+
+export const provisionResourceStatus409Schema = resourceErrorSchema.describe('Vercel Partner API error envelope.');
+
+export const provisionResourceStatus429Schema = resourceErrorSchema.describe('Vercel Partner API error envelope.');
+
+export const provisionResourceStatus500Schema = resourceErrorSchema.describe('Vercel Partner API error envelope.');
+
+export const provisionResourceStatus503Schema = resourceErrorSchema.describe('Vercel Partner API error envelope.');
+
+export const provisionResourceResponseSchema = provisionResourceStatus200Schema;
+
+export const provisionResourceErrorSchema = z.union([
+  provisionResourceStatus400Schema,
+  provisionResourceStatus403Schema,
+  provisionResourceStatus404Schema,
+  provisionResourceStatus409Schema,
+  provisionResourceStatus429Schema,
+  provisionResourceStatus500Schema,
+  provisionResourceStatus503Schema
+]);
+
+export const provisionResourceBodySchema = provisionResourceRequestSchema.describe(
+  'Vercel Provision Resource request body.'
+);
 
 export const orbWebhookStatus200Schema = z.unknown();
 

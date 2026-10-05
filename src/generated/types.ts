@@ -197,7 +197,7 @@ export type CreateOrganizationInvitationRequest = {
    */
   email: string;
   /**
-   * @description Role the user holds once they accept the invitation. Optional; when omitted, Editor applies once roles are enabled for the organization
+   * @description Role the user holds once they accept the invitation. Optional; when omitted, the least privileged role offered applies
    * @type string | undefined
    */
   role?: OrganizationRoleName | undefined;
@@ -2944,6 +2944,107 @@ export type Resource = {
 };
 
 /**
+ * @description Vercel Provision Resource request body.
+ * @type object
+ */
+export type ProvisionResourceRequest = {
+  /**
+   * @description The partner-specific product id/slug.
+   * @type string
+   */
+  productId: string;
+  /**
+   * @description User-inputted resource name.
+   * @type string
+   */
+  name: string;
+  /**
+   * @description User-inputted metadata based on the registered metadata schema.
+   * @type object
+   */
+  metadata: {
+    [key: string]: unknown;
+  };
+  /**
+   * @description Selected Vercel billing plan id.
+   * @type string
+   */
+  billingPlanId: string;
+  /**
+   * @description Partner-provided identifier indicating the source of provisioning.
+   * @type string | undefined
+   */
+  externalId?: string | undefined;
+};
+
+/**
+ * @description A connection secret exposed as an environment variable on connected Vercel projects.
+ * @type object
+ */
+export type Secret = {
+  /**
+   * @description Environment variable name.
+   * @type string
+   */
+  name: string;
+  /**
+   * @description Default value, used when no per-environment override applies.
+   * @type string
+   */
+  value: string;
+  /**
+   * @description Per-environment values that override value for that Vercel environment.
+   * @type object | undefined
+   */
+  environmentOverrides?:
+    | {
+        development?: string | undefined;
+        preview?: string | undefined;
+        production?: string | undefined;
+      }
+    | undefined;
+};
+
+/**
+ * @description A newly provisioned resource: the Resource fields plus the connection\nsecrets. Provision Resource is the only endpoint that returns secrets.\n
+ * @type object
+ */
+export type ProvisionedResource = {
+  /**
+   * @description The partner-specific resource id.
+   * @type string
+   */
+  id: string;
+  /**
+   * @description The partner-specific product id/slug.
+   * @type string
+   */
+  productId: string;
+  /**
+   * @description User-inputted resource name.
+   * @type string
+   */
+  name: string;
+  /**
+   * @description User-inputted metadata based on the registered metadata schema.
+   * @type object
+   */
+  metadata: {
+    [key: string]: unknown;
+  };
+  /**
+   * @description Resource lifecycle status. One of Vercel\'s values: ready, pending, onboarding, suspended, resumed, uninstalled, error.
+   * @type string
+   */
+  status: string;
+  /**
+   * @description Connection secrets that become environment variables on connected projects.
+   * @type array
+   */
+  secrets: Secret[];
+};
+
+/**
  * @description Vercel Partner API error envelope.
  * @type object
  */
@@ -2976,6 +3077,24 @@ export type ResourceError = {
            */
           url?: string | undefined;
         }
+      | undefined;
+    /**
+     * @description Field-level validation errors, for 400 responses.
+     * @type array | undefined
+     */
+    fields?:
+      | {
+          /**
+           * @description The metadata field the error applies to.
+           * @type string
+           */
+          key: string;
+          /**
+           * @description Validation message for this field.
+           * @type string | undefined
+           */
+          message?: string | undefined;
+        }[]
       | undefined;
   };
 };
@@ -9647,6 +9766,107 @@ export type GetResourceResponses = {
  * @description Union of all possible responses
  */
 export type GetResourceResponse = GetResource200 | GetResource403 | GetResource404 | GetResource500;
+
+export type ProvisionResourcePathParams = {
+  /**
+   * @description Vercel installation id (icfg_...).
+   * @type string
+   */
+  installationId: string;
+};
+
+export type ProvisionResourceHeaderParams = {
+  /**
+   * @description A stable key Vercel sends to make retries safe. A repeat with the same\nkey returns the existing resource; reusing it with a different body is a\nconflict (409). Optional — without it each call provisions a new resource.\n
+   * @type string | undefined
+   */
+  'Idempotency-Key'?: string | undefined;
+};
+
+/**
+ * @description A newly provisioned resource: the Resource fields plus the connection\nsecrets. Provision Resource is the only endpoint that returns secrets.\n
+ * @type object
+ */
+export type ProvisionResource200 = ProvisionedResource;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type ProvisionResource400 = ResourceError;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type ProvisionResource403 = ResourceError;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type ProvisionResource404 = ResourceError;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type ProvisionResource409 = ResourceError;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type ProvisionResource429 = ResourceError;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type ProvisionResource500 = ResourceError;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type ProvisionResource503 = ResourceError;
+
+/**
+ * @description Vercel Provision Resource request body.
+ * @type object
+ */
+export type ProvisionResourceMutationRequest = ProvisionResourceRequest;
+
+export type ProvisionResourceOptions = {
+  body: ProvisionResourceMutationRequest;
+  path: ProvisionResourcePathParams;
+  query?: never | undefined;
+  headers?: ProvisionResourceHeaderParams | undefined;
+};
+
+export type ProvisionResourceResponses = {
+  '200': ProvisionResource200;
+  '400': ProvisionResource400;
+  '403': ProvisionResource403;
+  '404': ProvisionResource404;
+  '409': ProvisionResource409;
+  '429': ProvisionResource429;
+  '500': ProvisionResource500;
+  '503': ProvisionResource503;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type ProvisionResourceResponse =
+  | ProvisionResource200
+  | ProvisionResource400
+  | ProvisionResource403
+  | ProvisionResource404
+  | ProvisionResource409
+  | ProvisionResource429
+  | ProvisionResource500
+  | ProvisionResource503;
 
 export type OrbWebhook200 = unknown;
 
