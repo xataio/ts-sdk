@@ -1,5 +1,15 @@
 # @xata.io/api
 
+## 0.1.24
+
+### Patch Changes
+
+- [#3349](https://github.com/xataio/frontend/pull/3349) [`7e95583`](https://github.com/xataio/frontend/commit/7e955834d9397a4f931c2d4e615126ad9cc7a006) Thanks [@xata-bot](https://github.com/xata-bot)! - [Generated] Update API handlers
+
+- [#3356](https://github.com/xataio/frontend/pull/3356) [`41b3563`](https://github.com/xataio/frontend/commit/41b356319b7aa2d73b521aa75ae745ec2113b5ca) Thanks [@xata-bot](https://github.com/xata-bot)! - Regenerate API schemas with Kubb 5.4
+
+- [#3359](https://github.com/xataio/frontend/pull/3359) [`0dbb989`](https://github.com/xataio/frontend/commit/0dbb989030c80da9d18148d52152cbf5ac0ef45f) Thanks [@xata-bot](https://github.com/xata-bot)! - [Generated] Update API handlers ([#3359](https://github.com/xataio/frontend/issues/3359))
+
 ## 0.1.23
 
 ### Patch Changes
