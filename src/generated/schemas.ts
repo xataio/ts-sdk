@@ -505,11 +505,7 @@ export const JSONRPCMessageSchema = z
       .optional()
       .describe('Request identifier, echoed on the response. Omitted for notifications.'),
     method: z.string().describe('MCP method, such as `initialize`, `tools/list`, or `tools/call`.'),
-    params: z
-      .object({})
-      .catchall(z.unknown())
-      .optional()
-      .describe('Method parameters as defined by the MCP specification.')
+    params: z.looseObject({}).optional().describe('Method parameters as defined by the MCP specification.')
   })
   .describe(
     'A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a\nresponse; a notification carries `method` without `id` and is not. The `method` and\n`params` values are defined by the MCP specification.\n'
@@ -527,11 +523,7 @@ export const JSONRPCResponseSchema = z
   .object({
     jsonrpc: z.enum(['2.0']).describe('JSON-RPC protocol version. Always `2.0`.'),
     id: z.union([z.string(), z.int()]).describe('Identifier of the request this responds to.'),
-    result: z
-      .object({})
-      .catchall(z.unknown())
-      .optional()
-      .describe('Method result as defined by the MCP specification.'),
+    result: z.looseObject({}).optional().describe('Method result as defined by the MCP specification.'),
     error: JSONRPCErrorSchema.optional().describe(
       'A JSON-RPC 2.0 error. Failures inside a tool are reported in the tool result with `isError`, not here.'
     )
@@ -675,8 +667,7 @@ export const clusterConfigurationSchema = z
         'Number of replicas in the branch. Every child branch is created with no replicas. This can be updated.'
       ),
     postgresConfigurationParameters: z
-      .object({})
-      .catchall(z.string())
+      .record(z.string(), z.string())
       .optional()
       .describe('Arbitrary PostgreSQL configuration parameters for the cluster'),
     preloadLibraries: z.array(z.string()).optional().describe('List of PostgreSQL extensions and libraries to preload')
@@ -906,8 +897,7 @@ export const branchUpdateDetailsSchema = z
       .optional()
       .describe('Configuration for scaling branches to zero when not in use'),
     postgresConfigurationParameters: z
-      .object({})
-      .catchall(z.string())
+      .record(z.string(), z.string())
       .optional()
       .describe('Arbitrary PostgreSQL configuration parameters for the cluster'),
     preloadLibraries: z.array(z.string()).optional().describe('List of PostgreSQL extensions and libraries to preload'),
@@ -1136,8 +1126,7 @@ export const installationAccountSchema = z
 export const upsertInstallationRequestSchema = z.object({
   scopes: z.array(z.string()).describe('Scopes granted to the installation.'),
   acceptedPolicies: z
-    .object({})
-    .catchall(z.iso.datetime())
+    .record(z.string(), z.iso.datetime())
     .describe('Map of policy id to the acceptance timestamp (RFC 3339), e.g. {"toc": "2024-02-28T10:00:00Z"}.'),
   credentials: installationCredentialsSchema,
   account: installationAccountSchema.describe('The Vercel account/team installing the integration.')
@@ -1231,10 +1220,7 @@ export const resourceSchema = z
     id: z.string().describe('The partner-specific resource id.'),
     productId: z.string().describe('The partner-specific product id/slug.'),
     name: z.string().describe('User-inputted resource name.'),
-    metadata: z
-      .object({})
-      .catchall(z.unknown())
-      .describe('User-inputted metadata based on the registered metadata schema.'),
+    metadata: z.looseObject({}).describe('User-inputted metadata based on the registered metadata schema.'),
     status: z
       .string()
       .describe(
@@ -2853,7 +2839,7 @@ export const githubWebhookResponseSchema = githubWebhookStatus200Schema;
 
 export const githubWebhookErrorSchema = z.union([githubWebhookStatus400Schema, githubWebhookStatus500Schema]);
 
-export const githubWebhookBodySchema = z.object({}).catchall(z.unknown()).describe('GitHub webhook event payload');
+export const githubWebhookBodySchema = z.looseObject({}).describe('GitHub webhook event payload');
 
 export const listRegionsPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization to check region availability for'
@@ -4210,7 +4196,7 @@ export const orbWebhookResponseSchema = orbWebhookStatus200Schema;
 
 export const orbWebhookErrorSchema = z.union([orbWebhookStatus400Schema, orbWebhookStatus500Schema]);
 
-export const orbWebhookBodySchema = z.object({}).catchall(z.unknown()).describe('Orb webhook event payload');
+export const orbWebhookBodySchema = z.looseObject({}).describe('Orb webhook event payload');
 
 export const stripeWebhookStatus200Schema = z.unknown();
 
@@ -4222,4 +4208,4 @@ export const stripeWebhookResponseSchema = stripeWebhookStatus200Schema;
 
 export const stripeWebhookErrorSchema = z.union([stripeWebhookStatus400Schema, stripeWebhookStatus500Schema]);
 
-export const stripeWebhookBodySchema = z.object({}).catchall(z.unknown()).describe('Stripe webhook event payload');
+export const stripeWebhookBodySchema = z.looseObject({}).describe('Stripe webhook event payload');
