@@ -4239,6 +4239,29 @@ export const getResourceErrorSchema = z.union([
   getResourceStatus500Schema
 ]);
 
+export const deleteResourcePathInstallationIdSchema = z.string().describe('Vercel installation id (icfg_...).');
+
+export const deleteResourcePathResourceIdSchema = z.string().describe('Vercel resource id.');
+
+export const deleteResourceStatus204Schema = z.unknown();
+
+export const deleteResourceStatus403Schema = resourceErrorSchema.describe('Vercel Partner API error envelope.');
+
+export const deleteResourceStatus404Schema = resourceErrorSchema.describe('Vercel Partner API error envelope.');
+
+export const deleteResourceStatus429Schema = resourceErrorSchema.describe('Vercel Partner API error envelope.');
+
+export const deleteResourceStatus500Schema = resourceErrorSchema.describe('Vercel Partner API error envelope.');
+
+export const deleteResourceResponseSchema = deleteResourceStatus204Schema;
+
+export const deleteResourceErrorSchema = z.union([
+  deleteResourceStatus403Schema,
+  deleteResourceStatus404Schema,
+  deleteResourceStatus429Schema,
+  deleteResourceStatus500Schema
+]);
+
 export const provisionResourcePathInstallationIdSchema = z.string().describe('Vercel installation id (icfg_...).');
 
 export const provisionResourceHeaderIdempotencyKeySchema = z

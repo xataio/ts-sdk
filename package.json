@@ -1,7 +1,7 @@
 {
   "name": "@xata.io/api",
   "private": false,
-  "version": "0.1.24",
+  "version": "0.1.25",
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
@@ -9,11 +9,11 @@
     "./retry": "./src/retry.ts"
   },
   "dependencies": {
-    "@dotenvx/dotenvx": "2.32.4",
     "@xata.io/lang": "0.0.5",
     "zod": "4.6.5"
   },
   "devDependencies": {
+    "@dotenvx/dotenvx": "2.32.4",
     "@kubb/adapter-oas": "5.4.2",
     "@kubb/plugin-ts": "5.0.2",
     "@kubb/plugin-zod": "5.4.1",

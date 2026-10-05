@@ -421,6 +421,12 @@ import type {
   GetResource403,
   GetResource404,
   GetResource500,
+  DeleteResource204,
+  DeleteResourcePathParams,
+  DeleteResource403,
+  DeleteResource404,
+  DeleteResource429,
+  DeleteResource500,
   ProvisionResource200,
   ProvisionResourceMutationRequest,
   ProvisionResourcePathParams,
@@ -3179,6 +3185,47 @@ export async function getResource({
 }
 
 /**
+ * @summary Delete a Vercel Marketplace resource
+ * @description Deprovision a resource (its Xata project and branches) and mark the
+ * tracking records deleting. Vercel calls this when a customer removes a
+ * resource. Idempotent: a resource already being torn down is deprovisioned
+ * again harmlessly; a resource that no longer exists returns 404.
+ * {@link /v1/installations/:installationId/resources/:resourceId}
+ */
+export async function deleteResource({
+  pathParams,
+  config = {}
+}: {
+  pathParams: DeleteResourcePathParams;
+  config?: Partial<FetcherConfig> & { client?: typeof client };
+}) {
+  const { client: request = client, ...requestConfig } = config;
+
+  if (!pathParams.installationId) {
+    throw new Error(`Missing required path parameter: installationId`);
+  }
+
+  if (!pathParams.resourceId) {
+    throw new Error(`Missing required path parameter: resourceId`);
+  }
+
+  const data = await request<
+    DeleteResource204,
+    DeleteResource403 | DeleteResource404 | DeleteResource429 | DeleteResource500,
+    null,
+    Record<string, string>,
+    Record<string, string>,
+    DeleteResourcePathParams
+  >({
+    method: 'DELETE',
+    url: `/v1/installations/${pathParams.installationId}/resources/${pathParams.resourceId}`,
+    ...requestConfig
+  });
+
+  return data;
+}
+
+/**
  * @summary Provision a Vercel Marketplace resource
  * @description Create a resource (a Xata project and its branches) and return it with
  * the connection secrets. Vercel calls this when a customer creates a
@@ -3371,6 +3418,7 @@ export const operationsByPath = {
   'DELETE /v1/installations/{installationId}': deleteInstallation,
   'GET /v1/products/{productSlug}/plans': listBillingPlansForProduct,
   'GET /v1/installations/{installationId}/resources/{resourceId}': getResource,
+  'DELETE /v1/installations/{installationId}/resources/{resourceId}': deleteResource,
   'POST /v1/installations/{installationId}/resources': provisionResource,
   'POST /webhooks/orb': orbWebhook,
   'POST /webhooks/stripe': stripeWebhook
@@ -3482,6 +3530,7 @@ export const operationsByTag = {
   },
   vercelResources: {
     getResource,
+    deleteResource,
     provisionResource
   },
   webhooks: {
@@ -3590,6 +3639,7 @@ export const tagDictionary = {
   },
   vercelResources: {
     GET: ['getResource'],
+    DELETE: ['deleteResource'],
     POST: ['provisionResource']
   },
   webhooks: {
@@ -3807,6 +3857,7 @@ export type OperationErrors = {
     | ListBillingPlansForProduct403
     | ListBillingPlansForProduct404;
   'vercelResources.getResource': GetResource403 | GetResource404 | GetResource500;
+  'vercelResources.deleteResource': DeleteResource403 | DeleteResource404 | DeleteResource429 | DeleteResource500;
   'vercelResources.provisionResource':
     | ProvisionResource400
     | ProvisionResource403
@@ -3896,6 +3947,7 @@ export type OperationErrorStatus = {
   'vercel.deleteInstallation': 403 | 409;
   'vercel.listBillingPlansForProduct': 400 | 403 | 404;
   'vercelResources.getResource': 403 | 404 | 500;
+  'vercelResources.deleteResource': 403 | 404 | 429 | 500;
   'vercelResources.provisionResource': 400 | 403 | 404 | 409 | 429 | 500 | 503;
   'webhooks.orbWebhook': 400 | 500;
   'webhooks.stripeWebhook': 400 | 500;

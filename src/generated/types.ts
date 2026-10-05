@@ -9767,6 +9767,70 @@ export type GetResourceResponses = {
  */
 export type GetResourceResponse = GetResource200 | GetResource403 | GetResource404 | GetResource500;
 
+export type DeleteResourcePathParams = {
+  /**
+   * @description Vercel installation id (icfg_...).
+   * @type string
+   */
+  installationId: string;
+  /**
+   * @description Vercel resource id.
+   * @type string
+   */
+  resourceId: string;
+};
+
+export type DeleteResource204 = unknown;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type DeleteResource403 = ResourceError;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type DeleteResource404 = ResourceError;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type DeleteResource429 = ResourceError;
+
+/**
+ * @description Vercel Partner API error envelope.
+ * @type object
+ */
+export type DeleteResource500 = ResourceError;
+
+export type DeleteResourceOptions = {
+  body?: never | undefined;
+  path: DeleteResourcePathParams;
+  query?: never | undefined;
+  headers?: never | undefined;
+};
+
+export type DeleteResourceResponses = {
+  '204': DeleteResource204;
+  '403': DeleteResource403;
+  '404': DeleteResource404;
+  '429': DeleteResource429;
+  '500': DeleteResource500;
+};
+
+/**
+ * @description Union of all possible responses
+ */
+export type DeleteResourceResponse =
+  | DeleteResource204
+  | DeleteResource403
+  | DeleteResource404
+  | DeleteResource429
+  | DeleteResource500;
+
 export type ProvisionResourcePathParams = {
   /**
    * @description Vercel installation id (icfg_...).
