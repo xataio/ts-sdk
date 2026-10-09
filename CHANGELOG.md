@@ -1,5 +1,13 @@
 # @xata.io/api
 
+## 0.1.25
+
+### Patch Changes
+
+- [#3383](https://github.com/xataio/frontend/pull/3383) [`ef6cd3d`](https://github.com/xataio/frontend/commit/ef6cd3d03df2ebe0414db05ccda9497afd6da9e6) Thanks [@SferaDev](https://github.com/SferaDev)! - Add `xata licenses` to print the bundled third-party notices, show the embedded Bun version in `xata version`, and stop bundling `@dotenvx/dotenvx` (and its `node-forge` dependency) into the CLI and `@xata.io/api`.
+
+- [#3363](https://github.com/xataio/frontend/pull/3363) [`db6d0ac`](https://github.com/xataio/frontend/commit/db6d0ac37b7221c8d9d1467fe9804d31b3978f85) Thanks [@xata-bot](https://github.com/xata-bot)! - [Generated] Update API handlers
+
 ## 0.1.24
 
 ### Patch Changes
