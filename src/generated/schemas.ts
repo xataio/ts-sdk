@@ -447,11 +447,13 @@ export const fieldDefinitionSchema = z
     tableID: z.int().min(0).max(4294967295).describe('OID of the source table (0 if not a table column).'),
     columnID: z
       .int32()
+      .min(-32768)
+      .max(32767)
       .describe(
         'Attribute number of the column within the table (0 if not a table column, negative for system columns).'
       ),
     dataTypeID: z.int().min(0).max(4294967295).describe('OID of the column data type.'),
-    dataTypeSize: z.int32().describe('Data type size (negative for variable-length types).'),
+    dataTypeSize: z.int32().min(-32768).max(32767).describe('Data type size (negative for variable-length types).'),
     dataTypeModifier: z.int32().describe('Type-specific modifier (e.g. precision/scale for numeric types).'),
     format: z.string().describe('Data format (`text` or `binary`).')
   })
@@ -658,11 +660,13 @@ export const branchFromParentSchema = z.object({
 export const clusterConfigurationSchema = z
   .object({
     region: z.string().describe('Geographic region where the cluster will be deployed'),
-    storage: z.int32().optional().describe('Branch storage in GiB (gigabytes)'),
+    storage: z.int32().max(250).optional().describe('Branch storage in GiB (gigabytes)'),
     instanceType: z.string().describe('The instance type according to the xata instance types available'),
     image: z.string().describe('PostgreSQL image to use for the database instances'),
     replicas: z
       .int32()
+      .min(0)
+      .max(4)
       .describe(
         'Number of replicas in the branch. Every child branch is created with no replicas. This can be updated.'
       ),
@@ -764,7 +768,13 @@ export const branchStatusSchema = z
 
 export const backupConfigurationSchema = z
   .object({
-    retentionPeriod: z.int32().optional().default(2).describe('how long are we keeping the backups around for'),
+    retentionPeriod: z
+      .int32()
+      .min(2)
+      .max(35)
+      .optional()
+      .default(2)
+      .describe('how long are we keeping the backups around for'),
     backupTime: z
       .string()
       .regex(/^(\*|[0-6]):(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/)
@@ -878,9 +888,10 @@ export const branchUpdateDetailsSchema = z
       .regex(/^([a-zA-Z0-9][a-zA-Z0-9\-_./: ]*)?$/)
       .optional()
       .describe('New description for the branch. Send an empty string to clear it.'),
-    replicas: z.int32().optional().describe('Number of database replicas to scale to'),
+    replicas: z.int32().min(0).max(4).optional().describe('Number of database replicas to scale to'),
     storage: z
       .int32()
+      .min(1)
       .optional()
       .describe(
         "Branch storage in GiB (gigabytes). The maximum allowed value depends on the organization's storage limit."

@@ -1046,6 +1046,8 @@ export type FieldDefinition = {
    * @description Attribute number of the column within the table (0 if not a table column, negative for system columns).
    *
    * Format: `int32`
+   * @minLength -32768
+   * @maxLength 32767
    * @type integer
    */
   columnID: number;
@@ -1062,6 +1064,8 @@ export type FieldDefinition = {
    * @description Data type size (negative for variable-length types).
    *
    * Format: `int32`
+   * @minLength -32768
+   * @maxLength 32767
    * @type integer
    */
   dataTypeSize: number;
@@ -1647,6 +1651,7 @@ export type ClusterConfiguration = {
    * @description Branch storage in GiB (gigabytes)
    *
    * Format: `int32`
+   * @maxLength 250
    * @type integer | undefined
    */
   storage?: number | undefined;
@@ -1664,6 +1669,8 @@ export type ClusterConfiguration = {
    * @description Number of replicas in the branch. Every child branch is created with no replicas. This can be updated.
    *
    * Format: `int32`
+   * @minLength 0
+   * @maxLength 4
    * @type integer
    */
   replicas: number;
@@ -1932,6 +1939,8 @@ export type BackupConfiguration = {
    * @description how long are we keeping the backups around for
    *
    * Format: `int32`
+   * @minLength 2
+   * @maxLength 35
    * @default 2
    * @type integer | undefined
    */
@@ -2180,6 +2189,8 @@ export type BranchUpdateDetails = {
    * @description Number of database replicas to scale to
    *
    * Format: `int32`
+   * @minLength 0
+   * @maxLength 4
    * @type integer | undefined
    */
   replicas?: number | undefined;
@@ -2187,6 +2198,7 @@ export type BranchUpdateDetails = {
    * @description Branch storage in GiB (gigabytes). The maximum allowed value depends on the organization\'s storage limit.
    *
    * Format: `int32`
+   * @minLength 1
    * @type integer | undefined
    */
   storage?: number | undefined;
@@ -3269,12 +3281,7 @@ export type GetOrganizationsListResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GetOrganizationsListResponse =
-  | GetOrganizationsList200
-  | GetOrganizationsList400
-  | GetOrganizationsList401
-  | GetOrganizationsList404
-  | GetOrganizationsList5XX;
+export type GetOrganizationsListResponse = GetOrganizationsList200;
 
 /**
  * @description Organization details including ID and name
@@ -3351,12 +3358,7 @@ export type CreateOrganizationResponses = {
 /**
  * @description Union of all possible responses
  */
-export type CreateOrganizationResponse =
-  | CreateOrganization201
-  | CreateOrganization400
-  | CreateOrganization401
-  | CreateOrganization404
-  | CreateOrganization5XX;
+export type CreateOrganizationResponse = CreateOrganization201;
 
 export type GetOrganizationPathParams = {
   /**
@@ -3454,13 +3456,7 @@ export type GetOrganizationResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GetOrganizationResponse =
-  | GetOrganization200
-  | GetOrganization400
-  | GetOrganization401
-  | GetOrganization403
-  | GetOrganization404
-  | GetOrganization5XX;
+export type GetOrganizationResponse = GetOrganization200;
 
 export type UpdateOrganizationPathParams = {
   /**
@@ -3574,13 +3570,7 @@ export type UpdateOrganizationResponses = {
 /**
  * @description Union of all possible responses
  */
-export type UpdateOrganizationResponse =
-  | UpdateOrganization200
-  | UpdateOrganization400
-  | UpdateOrganization401
-  | UpdateOrganization403
-  | UpdateOrganization404
-  | UpdateOrganization5XX;
+export type UpdateOrganizationResponse = UpdateOrganization200;
 
 export type DeleteOrganizationPathParams = {
   /**
@@ -3674,13 +3664,7 @@ export type DeleteOrganizationResponses = {
 /**
  * @description Union of all possible responses
  */
-export type DeleteOrganizationResponse =
-  | DeleteOrganization204
-  | DeleteOrganization400
-  | DeleteOrganization401
-  | DeleteOrganization403
-  | DeleteOrganization404
-  | DeleteOrganization5XX;
+export type DeleteOrganizationResponse = DeleteOrganization204;
 
 export type ListOrganizationAPIKeysPathParams = {
   /**
@@ -3780,13 +3764,7 @@ export type ListOrganizationAPIKeysResponses = {
 /**
  * @description Union of all possible responses
  */
-export type ListOrganizationAPIKeysResponse =
-  | ListOrganizationAPIKeys200
-  | ListOrganizationAPIKeys400
-  | ListOrganizationAPIKeys401
-  | ListOrganizationAPIKeys403
-  | ListOrganizationAPIKeys404
-  | ListOrganizationAPIKeys5XX;
+export type ListOrganizationAPIKeysResponse = ListOrganizationAPIKeys200;
 
 export type CreateOrganizationAPIKeyPathParams = {
   /**
@@ -3820,7 +3798,7 @@ export type CreateOrganizationAPIKeyResponses = {
 /**
  * @description Union of all possible responses
  */
-export type CreateOrganizationAPIKeyResponse = CreateOrganizationAPIKey201 | CreateOrganizationAPIKey400;
+export type CreateOrganizationAPIKeyResponse = CreateOrganizationAPIKey201;
 
 export type DeleteOrganizationAPIKeysPathParams = {
   /**
@@ -3901,11 +3879,7 @@ export type DeleteOrganizationAPIKeysResponses = {
 /**
  * @description Union of all possible responses
  */
-export type DeleteOrganizationAPIKeysResponse =
-  | DeleteOrganizationAPIKeys204
-  | DeleteOrganizationAPIKeys400
-  | DeleteOrganizationAPIKeys401
-  | DeleteOrganizationAPIKeys404;
+export type DeleteOrganizationAPIKeysResponse = DeleteOrganizationAPIKeys204;
 
 export type ListOrganizationMembersPathParams = {
   /**
@@ -3995,10 +3969,7 @@ export type RemoveOrganizationMemberResponses = {
 /**
  * @description Union of all possible responses
  */
-export type RemoveOrganizationMemberResponse =
-  | RemoveOrganizationMember204
-  | RemoveOrganizationMember400
-  | RemoveOrganizationMember409;
+export type RemoveOrganizationMemberResponse = RemoveOrganizationMember204;
 
 export type ListOrganizationRolesPathParams = {
   /**
@@ -4080,12 +4051,7 @@ export type ListOrganizationRolesResponses = {
 /**
  * @description Union of all possible responses
  */
-export type ListOrganizationRolesResponse =
-  | ListOrganizationRoles200
-  | ListOrganizationRoles401
-  | ListOrganizationRoles403
-  | ListOrganizationRoles404
-  | ListOrganizationRoles5XX;
+export type ListOrganizationRolesResponse = ListOrganizationRoles200;
 
 export type SetOrganizationMemberRolePathParams = {
   /**
@@ -4205,14 +4171,7 @@ export type SetOrganizationMemberRoleResponses = {
 /**
  * @description Union of all possible responses
  */
-export type SetOrganizationMemberRoleResponse =
-  | SetOrganizationMemberRole204
-  | SetOrganizationMemberRole400
-  | SetOrganizationMemberRole401
-  | SetOrganizationMemberRole403
-  | SetOrganizationMemberRole404
-  | SetOrganizationMemberRole409
-  | SetOrganizationMemberRole5XX;
+export type SetOrganizationMemberRoleResponse = SetOrganizationMemberRole204;
 
 export type ListOrganizationInvitationsPathParams = {
   /**
@@ -4359,13 +4318,7 @@ export type ListOrganizationInvitationsResponses = {
 /**
  * @description Union of all possible responses
  */
-export type ListOrganizationInvitationsResponse =
-  | ListOrganizationInvitations200
-  | ListOrganizationInvitations400
-  | ListOrganizationInvitations401
-  | ListOrganizationInvitations403
-  | ListOrganizationInvitations404
-  | ListOrganizationInvitations5XX;
+export type ListOrganizationInvitationsResponse = ListOrganizationInvitations200;
 
 export type CreateOrganizationInvitationPathParams = {
   /**
@@ -4475,14 +4428,7 @@ export type CreateOrganizationInvitationResponses = {
 /**
  * @description Union of all possible responses
  */
-export type CreateOrganizationInvitationResponse =
-  | CreateOrganizationInvitation201
-  | CreateOrganizationInvitation400
-  | CreateOrganizationInvitation401
-  | CreateOrganizationInvitation403
-  | CreateOrganizationInvitation404
-  | CreateOrganizationInvitation409
-  | CreateOrganizationInvitation5XX;
+export type CreateOrganizationInvitationResponse = CreateOrganizationInvitation201;
 
 export type GetOrganizationInvitationPathParams = {
   /**
@@ -4581,13 +4527,7 @@ export type GetOrganizationInvitationResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GetOrganizationInvitationResponse =
-  | GetOrganizationInvitation200
-  | GetOrganizationInvitation400
-  | GetOrganizationInvitation401
-  | GetOrganizationInvitation403
-  | GetOrganizationInvitation404
-  | GetOrganizationInvitation5XX;
+export type GetOrganizationInvitationResponse = GetOrganizationInvitation200;
 
 export type DeleteOrganizationInvitationPathParams = {
   /**
@@ -4686,13 +4626,7 @@ export type DeleteOrganizationInvitationResponses = {
 /**
  * @description Union of all possible responses
  */
-export type DeleteOrganizationInvitationResponse =
-  | DeleteOrganizationInvitation204
-  | DeleteOrganizationInvitation400
-  | DeleteOrganizationInvitation401
-  | DeleteOrganizationInvitation403
-  | DeleteOrganizationInvitation404
-  | DeleteOrganizationInvitation5XX;
+export type DeleteOrganizationInvitationResponse = DeleteOrganizationInvitation204;
 
 export type ResendOrganizationInvitationPathParams = {
   /**
@@ -4791,13 +4725,7 @@ export type ResendOrganizationInvitationResponses = {
 /**
  * @description Union of all possible responses
  */
-export type ResendOrganizationInvitationResponse =
-  | ResendOrganizationInvitation204
-  | ResendOrganizationInvitation400
-  | ResendOrganizationInvitation401
-  | ResendOrganizationInvitation403
-  | ResendOrganizationInvitation404
-  | ResendOrganizationInvitation5XX;
+export type ResendOrganizationInvitationResponse = ResendOrganizationInvitation204;
 
 export type RequestOrganizationDeletionPathParams = {
   /**
@@ -4891,13 +4819,7 @@ export type RequestOrganizationDeletionResponses = {
 /**
  * @description Union of all possible responses
  */
-export type RequestOrganizationDeletionResponse =
-  | RequestOrganizationDeletion202
-  | RequestOrganizationDeletion400
-  | RequestOrganizationDeletion401
-  | RequestOrganizationDeletion403
-  | RequestOrganizationDeletion409
-  | RequestOrganizationDeletion5XX;
+export type RequestOrganizationDeletionResponse = RequestOrganizationDeletion202;
 
 export type GetOrganizationMembershipLimitsPathParams = {
   /**
@@ -4967,11 +4889,7 @@ export type GetOrganizationMembershipLimitsResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GetOrganizationMembershipLimitsResponse =
-  | GetOrganizationMembershipLimits200
-  | GetOrganizationMembershipLimits401
-  | GetOrganizationMembershipLimits403
-  | GetOrganizationMembershipLimits5XX;
+export type GetOrganizationMembershipLimitsResponse = GetOrganizationMembershipLimits200;
 
 export type GetOrganizationSSOPathParams = {
   /**
@@ -5030,11 +4948,7 @@ export type GetOrganizationSSOResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GetOrganizationSSOResponse =
-  | GetOrganizationSSO200
-  | GetOrganizationSSO401
-  | GetOrganizationSSO403
-  | GetOrganizationSSO5XX;
+export type GetOrganizationSSOResponse = GetOrganizationSSO200;
 
 export type ClaimOrganizationSSODomainPathParams = {
   /**
@@ -5120,13 +5034,7 @@ export type ClaimOrganizationSSODomainResponses = {
 /**
  * @description Union of all possible responses
  */
-export type ClaimOrganizationSSODomainResponse =
-  | ClaimOrganizationSSODomain201
-  | ClaimOrganizationSSODomain400
-  | ClaimOrganizationSSODomain401
-  | ClaimOrganizationSSODomain403
-  | ClaimOrganizationSSODomain409
-  | ClaimOrganizationSSODomain5XX;
+export type ClaimOrganizationSSODomainResponse = ClaimOrganizationSSODomain201;
 
 export type DeleteOrganizationSSODomainPathParams = {
   /**
@@ -5193,12 +5101,7 @@ export type DeleteOrganizationSSODomainResponses = {
 /**
  * @description Union of all possible responses
  */
-export type DeleteOrganizationSSODomainResponse =
-  | DeleteOrganizationSSODomain204
-  | DeleteOrganizationSSODomain401
-  | DeleteOrganizationSSODomain403
-  | DeleteOrganizationSSODomain409
-  | DeleteOrganizationSSODomain5XX;
+export type DeleteOrganizationSSODomainResponse = DeleteOrganizationSSODomain204;
 
 export type VerifyOrganizationSSODomainPathParams = {
   /**
@@ -5276,13 +5179,7 @@ export type VerifyOrganizationSSODomainResponses = {
 /**
  * @description Union of all possible responses
  */
-export type VerifyOrganizationSSODomainResponse =
-  | VerifyOrganizationSSODomain200
-  | VerifyOrganizationSSODomain401
-  | VerifyOrganizationSSODomain403
-  | VerifyOrganizationSSODomain404
-  | VerifyOrganizationSSODomain409
-  | VerifyOrganizationSSODomain5XX;
+export type VerifyOrganizationSSODomainResponse = VerifyOrganizationSSODomain200;
 
 export type CreateOrganizationSSOProviderPathParams = {
   /**
@@ -5368,13 +5265,7 @@ export type CreateOrganizationSSOProviderResponses = {
 /**
  * @description Union of all possible responses
  */
-export type CreateOrganizationSSOProviderResponse =
-  | CreateOrganizationSSOProvider201
-  | CreateOrganizationSSOProvider400
-  | CreateOrganizationSSOProvider401
-  | CreateOrganizationSSOProvider403
-  | CreateOrganizationSSOProvider409
-  | CreateOrganizationSSOProvider5XX;
+export type CreateOrganizationSSOProviderResponse = CreateOrganizationSSOProvider201;
 
 export type UpdateOrganizationSSOProviderPathParams = {
   /**
@@ -5472,14 +5363,7 @@ export type UpdateOrganizationSSOProviderResponses = {
 /**
  * @description Union of all possible responses
  */
-export type UpdateOrganizationSSOProviderResponse =
-  | UpdateOrganizationSSOProvider200
-  | UpdateOrganizationSSOProvider400
-  | UpdateOrganizationSSOProvider401
-  | UpdateOrganizationSSOProvider403
-  | UpdateOrganizationSSOProvider404
-  | UpdateOrganizationSSOProvider409
-  | UpdateOrganizationSSOProvider5XX;
+export type UpdateOrganizationSSOProviderResponse = UpdateOrganizationSSOProvider200;
 
 export type DeleteOrganizationSSOProviderPathParams = {
   /**
@@ -5539,11 +5423,7 @@ export type DeleteOrganizationSSOProviderResponses = {
 /**
  * @description Union of all possible responses
  */
-export type DeleteOrganizationSSOProviderResponse =
-  | DeleteOrganizationSSOProvider204
-  | DeleteOrganizationSSOProvider401
-  | DeleteOrganizationSSOProvider403
-  | DeleteOrganizationSSOProvider5XX;
+export type DeleteOrganizationSSOProviderResponse = DeleteOrganizationSSOProvider204;
 
 export type SetOrganizationSSOProviderEnforcementPathParams = {
   /**
@@ -5627,13 +5507,7 @@ export type SetOrganizationSSOProviderEnforcementResponses = {
 /**
  * @description Union of all possible responses
  */
-export type SetOrganizationSSOProviderEnforcementResponse =
-  | SetOrganizationSSOProviderEnforcement200
-  | SetOrganizationSSOProviderEnforcement401
-  | SetOrganizationSSOProviderEnforcement403
-  | SetOrganizationSSOProviderEnforcement404
-  | SetOrganizationSSOProviderEnforcement409
-  | SetOrganizationSSOProviderEnforcement5XX;
+export type SetOrganizationSSOProviderEnforcementResponse = SetOrganizationSSOProviderEnforcement200;
 
 export type CreateBillingCheckoutSessionPathParams = {
   /**
@@ -5713,12 +5587,7 @@ export type CreateBillingCheckoutSessionResponses = {
 /**
  * @description Union of all possible responses
  */
-export type CreateBillingCheckoutSessionResponse =
-  | CreateBillingCheckoutSession200
-  | CreateBillingCheckoutSession400
-  | CreateBillingCheckoutSession401
-  | CreateBillingCheckoutSession403
-  | CreateBillingCheckoutSession5XX;
+export type CreateBillingCheckoutSessionResponse = CreateBillingCheckoutSession200;
 
 export type CreateBillingPaymentMethodSessionPathParams = {
   /**
@@ -5798,12 +5667,7 @@ export type CreateBillingPaymentMethodSessionResponses = {
 /**
  * @description Union of all possible responses
  */
-export type CreateBillingPaymentMethodSessionResponse =
-  | CreateBillingPaymentMethodSession200
-  | CreateBillingPaymentMethodSession400
-  | CreateBillingPaymentMethodSession401
-  | CreateBillingPaymentMethodSession403
-  | CreateBillingPaymentMethodSession5XX;
+export type CreateBillingPaymentMethodSessionResponse = CreateBillingPaymentMethodSession200;
 
 export type GetBillingCustomerPathParams = {
   /**
@@ -5883,12 +5747,7 @@ export type GetBillingCustomerResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GetBillingCustomerResponse =
-  | GetBillingCustomer200
-  | GetBillingCustomer401
-  | GetBillingCustomer403
-  | GetBillingCustomer404
-  | GetBillingCustomer5XX;
+export type GetBillingCustomerResponse = GetBillingCustomer200;
 
 export type UpdateBillingCustomerPathParams = {
   /**
@@ -5984,13 +5843,7 @@ export type UpdateBillingCustomerResponses = {
 /**
  * @description Union of all possible responses
  */
-export type UpdateBillingCustomerResponse =
-  | UpdateBillingCustomer200
-  | UpdateBillingCustomer400
-  | UpdateBillingCustomer401
-  | UpdateBillingCustomer403
-  | UpdateBillingCustomer404
-  | UpdateBillingCustomer5XX;
+export type UpdateBillingCustomerResponse = UpdateBillingCustomer200;
 
 export type GetBillingInvoicesPathParams = {
   /**
@@ -6100,13 +5953,7 @@ export type GetBillingInvoicesResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GetBillingInvoicesResponse =
-  | GetBillingInvoices200
-  | GetBillingInvoices400
-  | GetBillingInvoices401
-  | GetBillingInvoices403
-  | GetBillingInvoices404
-  | GetBillingInvoices5XX;
+export type GetBillingInvoicesResponse = GetBillingInvoices200;
 
 export type GetBillingUpcomingInvoicePathParams = {
   /**
@@ -6186,12 +6033,7 @@ export type GetBillingUpcomingInvoiceResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GetBillingUpcomingInvoiceResponse =
-  | GetBillingUpcomingInvoice200
-  | GetBillingUpcomingInvoice401
-  | GetBillingUpcomingInvoice403
-  | GetBillingUpcomingInvoice404
-  | GetBillingUpcomingInvoice5XX;
+export type GetBillingUpcomingInvoiceResponse = GetBillingUpcomingInvoice200;
 
 export type RegisterMarketplace200 = unknown;
 
@@ -6266,12 +6108,7 @@ export type RegisterMarketplaceResponses = {
 /**
  * @description Union of all possible responses
  */
-export type RegisterMarketplaceResponse =
-  | RegisterMarketplace200
-  | RegisterMarketplace400
-  | RegisterMarketplace401
-  | RegisterMarketplace409
-  | RegisterMarketplace502;
+export type RegisterMarketplaceResponse = RegisterMarketplace200;
 
 export type ListUserAPIKeys200 = {
   /**
@@ -6330,7 +6167,7 @@ export type ListUserAPIKeysResponses = {
 /**
  * @description Union of all possible responses
  */
-export type ListUserAPIKeysResponse = ListUserAPIKeys200 | ListUserAPIKeys400 | ListUserAPIKeys401 | ListUserAPIKeys5XX;
+export type ListUserAPIKeysResponse = ListUserAPIKeys200;
 
 export type CreateUserAPIKey201 = {
   key: FullAPIKey;
@@ -6387,11 +6224,7 @@ export type CreateUserAPIKeyResponses = {
 /**
  * @description Union of all possible responses
  */
-export type CreateUserAPIKeyResponse =
-  | CreateUserAPIKey201
-  | CreateUserAPIKey400
-  | CreateUserAPIKey401
-  | CreateUserAPIKey5XX;
+export type CreateUserAPIKeyResponse = CreateUserAPIKey201;
 
 export type DeleteUserAPIKeys204 = unknown;
 
@@ -6466,12 +6299,7 @@ export type DeleteUserAPIKeysResponses = {
 /**
  * @description Union of all possible responses
  */
-export type DeleteUserAPIKeysResponse =
-  | DeleteUserAPIKeys204
-  | DeleteUserAPIKeys400
-  | DeleteUserAPIKeys401
-  | DeleteUserAPIKeys404
-  | DeleteUserAPIKeys5XX;
+export type DeleteUserAPIKeysResponse = DeleteUserAPIKeys204;
 
 export const queryArrayMode = {
   true: 'true',
@@ -6616,16 +6444,7 @@ export type QueryResponses = {
 /**
  * @description Union of all possible responses
  */
-export type QueryResponse =
-  | Query200
-  | Query400
-  | Query401
-  | Query403
-  | Query404
-  | Query409
-  | Query413
-  | Query500
-  | Query504;
+export type QueryResponse = Query200;
 
 export type Websocket101 = unknown;
 
@@ -6707,14 +6526,7 @@ export type SendMcpRequestResponses = {
 /**
  * @description Union of all possible responses
  */
-export type SendMcpRequestResponse =
-  | SendMcpRequest200
-  | SendMcpRequest202
-  | SendMcpRequest400
-  | SendMcpRequest401
-  | SendMcpRequest413
-  | SendMcpRequest415
-  | SendMcpRequest500;
+export type SendMcpRequestResponse = SendMcpRequest200 | SendMcpRequest202;
 
 export type GithubWebhook200 = unknown;
 
@@ -6746,7 +6558,7 @@ export type GithubWebhookResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GithubWebhookResponse = GithubWebhook200 | GithubWebhook400 | GithubWebhook500;
+export type GithubWebhookResponse = GithubWebhook200;
 
 export type ListRegionsPathParams = {
   /**
@@ -6849,12 +6661,7 @@ export type ListRegionsResponses = {
 /**
  * @description Union of all possible responses
  */
-export type ListRegionsResponse =
-  | ListRegions200
-  | ListRegions400
-  | ListRegions401
-  | ListRegions5XX
-  | ListRegionsDefault;
+export type ListRegionsResponse = ListRegions200;
 
 export type ListInstanceTypesPathParams = {
   /**
@@ -6964,12 +6771,7 @@ export type ListInstanceTypesResponses = {
 /**
  * @description Union of all possible responses
  */
-export type ListInstanceTypesResponse =
-  | ListInstanceTypes200
-  | ListInstanceTypes400
-  | ListInstanceTypes401
-  | ListInstanceTypes5XX
-  | ListInstanceTypesDefault;
+export type ListInstanceTypesResponse = ListInstanceTypes200;
 
 export type ListImagesPathParams = {
   /**
@@ -7044,7 +6846,7 @@ export type ListImagesResponses = {
 /**
  * @description Union of all possible responses
  */
-export type ListImagesResponse = ListImages200 | ListImages400 | ListImages401 | ListImages5XX | ListImagesDefault;
+export type ListImagesResponse = ListImages200;
 
 export type ListExtensionsPathParams = {
   /**
@@ -7124,12 +6926,7 @@ export type ListExtensionsResponses = {
 /**
  * @description Union of all possible responses
  */
-export type ListExtensionsResponse =
-  | ListExtensions200
-  | ListExtensions400
-  | ListExtensions401
-  | ListExtensions5XX
-  | ListExtensionsDefault;
+export type ListExtensionsResponse = ListExtensions200;
 
 export type GetOrganizationLimitsPathParams = {
   /**
@@ -7190,11 +6987,7 @@ export type GetOrganizationLimitsResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GetOrganizationLimitsResponse =
-  | GetOrganizationLimits200
-  | GetOrganizationLimits401
-  | GetOrganizationLimits403
-  | GetOrganizationLimits5XX;
+export type GetOrganizationLimitsResponse = GetOrganizationLimits200;
 
 export type ListProjectsPathParams = {
   /**
@@ -7261,12 +7054,7 @@ export type ListProjectsResponses = {
 /**
  * @description Union of all possible responses
  */
-export type ListProjectsResponse =
-  | ListProjects200
-  | ListProjects400
-  | ListProjects401
-  | ListProjects5XX
-  | ListProjectsDefault;
+export type ListProjectsResponse = ListProjects200;
 
 export type CreateProjectPathParams = {
   /**
@@ -7344,12 +7132,7 @@ export type CreateProjectResponses = {
 /**
  * @description Union of all possible responses
  */
-export type CreateProjectResponse =
-  | CreateProject201
-  | CreateProject400
-  | CreateProject401
-  | CreateProject5XX
-  | CreateProjectDefault;
+export type CreateProjectResponse = CreateProject201;
 
 export type GetProjectPathParams = {
   /**
@@ -7433,13 +7216,7 @@ export type GetProjectResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GetProjectResponse =
-  | GetProject200
-  | GetProject400
-  | GetProject401
-  | GetProject404
-  | GetProject5XX
-  | GetProjectDefault;
+export type GetProjectResponse = GetProject200;
 
 export type UpdateProjectPathParams = {
   /**
@@ -7536,13 +7313,7 @@ export type UpdateProjectResponses = {
 /**
  * @description Union of all possible responses
  */
-export type UpdateProjectResponse =
-  | UpdateProject200
-  | UpdateProject400
-  | UpdateProject401
-  | UpdateProject404
-  | UpdateProject5XX
-  | UpdateProjectDefault;
+export type UpdateProjectResponse = UpdateProject200;
 
 export type DeleteProjectPathParams = {
   /**
@@ -7622,13 +7393,7 @@ export type DeleteProjectResponses = {
 /**
  * @description Union of all possible responses
  */
-export type DeleteProjectResponse =
-  | DeleteProject204
-  | DeleteProject400
-  | DeleteProject401
-  | DeleteProject404
-  | DeleteProject5XX
-  | DeleteProjectDefault;
+export type DeleteProjectResponse = DeleteProject204;
 
 export type GetProjectLimitsPathParams = {
   /**
@@ -7684,11 +7449,7 @@ export type GetProjectLimitsResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GetProjectLimitsResponse =
-  | GetProjectLimits200
-  | GetProjectLimits401
-  | GetProjectLimits5XX
-  | GetProjectLimitsDefault;
+export type GetProjectLimitsResponse = GetProjectLimits200;
 
 export type ListBackupsPathParams = {
   /**
@@ -7774,13 +7535,7 @@ export type ListBackupsResponses = {
 /**
  * @description Union of all possible responses
  */
-export type ListBackupsResponse =
-  | ListBackups200
-  | ListBackups400
-  | ListBackups401
-  | ListBackups404
-  | ListBackups5XX
-  | ListBackupsDefault;
+export type ListBackupsResponse = ListBackups200;
 
 export type GetBackupPathParams = {
   /**
@@ -7869,13 +7624,7 @@ export type GetBackupResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GetBackupResponse =
-  | GetBackup200
-  | GetBackup400
-  | GetBackup401
-  | GetBackup404
-  | GetBackup5XX
-  | GetBackupDefault;
+export type GetBackupResponse = GetBackup200;
 
 export type ListBranchesPathParams = {
   /**
@@ -7961,13 +7710,7 @@ export type ListBranchesResponses = {
 /**
  * @description Union of all possible responses
  */
-export type ListBranchesResponse =
-  | ListBranches200
-  | ListBranches400
-  | ListBranches401
-  | ListBranches404
-  | ListBranches5XX
-  | ListBranchesDefault;
+export type ListBranchesResponse = ListBranches200;
 
 export type CreateBranchPathParams = {
   /**
@@ -8070,14 +7813,7 @@ export type CreateBranchResponses = {
 /**
  * @description Union of all possible responses
  */
-export type CreateBranchResponse =
-  | CreateBranch201
-  | CreateBranch400
-  | CreateBranch401
-  | CreateBranch404
-  | CreateBranch412
-  | CreateBranch5XX
-  | CreateBranchDefault;
+export type CreateBranchResponse = CreateBranch201;
 
 export type DescribeBranchPathParams = {
   /**
@@ -8166,13 +7902,7 @@ export type DescribeBranchResponses = {
 /**
  * @description Union of all possible responses
  */
-export type DescribeBranchResponse =
-  | DescribeBranch200
-  | DescribeBranch400
-  | DescribeBranch401
-  | DescribeBranch404
-  | DescribeBranch5XX
-  | DescribeBranchDefault;
+export type DescribeBranchResponse = DescribeBranch200;
 
 export type UpdateBranchPathParams = {
   /**
@@ -8267,13 +7997,7 @@ export type UpdateBranchResponses = {
 /**
  * @description Union of all possible responses
  */
-export type UpdateBranchResponse =
-  | UpdateBranch200
-  | UpdateBranch400
-  | UpdateBranch401
-  | UpdateBranch404
-  | UpdateBranch5XX
-  | UpdateBranchDefault;
+export type UpdateBranchResponse = UpdateBranch200;
 
 export type DeleteBranchPathParams = {
   /**
@@ -8358,13 +8082,7 @@ export type DeleteBranchResponses = {
 /**
  * @description Union of all possible responses
  */
-export type DeleteBranchResponse =
-  | DeleteBranch204
-  | DeleteBranch400
-  | DeleteBranch401
-  | DeleteBranch404
-  | DeleteBranch5XX
-  | DeleteBranchDefault;
+export type DeleteBranchResponse = DeleteBranch204;
 
 export type GetBranchCredentialsPathParams = {
   /**
@@ -8453,13 +8171,7 @@ export type GetBranchCredentialsResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GetBranchCredentialsResponse =
-  | GetBranchCredentials200
-  | GetBranchCredentials400
-  | GetBranchCredentials401
-  | GetBranchCredentials404
-  | GetBranchCredentials5XX
-  | GetBranchCredentialsDefault;
+export type GetBranchCredentialsResponse = GetBranchCredentials200;
 
 export type RotateBranchCredentialsPathParams = {
   /**
@@ -8541,13 +8253,7 @@ export type RotateBranchCredentialsResponses = {
 /**
  * @description Union of all possible responses
  */
-export type RotateBranchCredentialsResponse =
-  | RotateBranchCredentials204
-  | RotateBranchCredentials400
-  | RotateBranchCredentials401
-  | RotateBranchCredentials404
-  | RotateBranchCredentials5XX
-  | RotateBranchCredentialsDefault;
+export type RotateBranchCredentialsResponse = RotateBranchCredentials204;
 
 export type BranchMetricsPathParams = {
   /**
@@ -8629,13 +8335,7 @@ export type BranchMetricsResponses = {
 /**
  * @description Union of all possible responses
  */
-export type BranchMetricsResponse =
-  | BranchMetrics200
-  | BranchMetrics400
-  | BranchMetrics401
-  | BranchMetrics404
-  | BranchMetrics5XX
-  | BranchMetricsDefault;
+export type BranchMetricsResponse = BranchMetrics200;
 
 export type RestoreFromBackupPathParams = {
   /**
@@ -8730,13 +8430,7 @@ export type RestoreFromBackupResponses = {
 /**
  * @description Union of all possible responses
  */
-export type RestoreFromBackupResponse =
-  | RestoreFromBackup201
-  | RestoreFromBackup400
-  | RestoreFromBackup401
-  | RestoreFromBackup404
-  | RestoreFromBackup5XX
-  | RestoreFromBackupDefault;
+export type RestoreFromBackupResponse = RestoreFromBackup201;
 
 export type BranchLogsPathParams = {
   /**
@@ -8818,13 +8512,7 @@ export type BranchLogsResponses = {
 /**
  * @description Union of all possible responses
  */
-export type BranchLogsResponse =
-  | BranchLogs200
-  | BranchLogs400
-  | BranchLogs401
-  | BranchLogs404
-  | BranchLogs5XX
-  | BranchLogsDefault;
+export type BranchLogsResponse = BranchLogs200;
 
 export type GetBranchPostgresConfigPathParams = {
   /**
@@ -8913,13 +8601,7 @@ export type GetBranchPostgresConfigResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GetBranchPostgresConfigResponse =
-  | GetBranchPostgresConfig200
-  | GetBranchPostgresConfig400
-  | GetBranchPostgresConfig401
-  | GetBranchPostgresConfig404
-  | GetBranchPostgresConfig5XX
-  | GetBranchPostgresConfigDefault;
+export type GetBranchPostgresConfigResponse = GetBranchPostgresConfig200;
 
 export type ListGithubAppInstallationsPathParams = {
   /**
@@ -8986,12 +8668,7 @@ export type ListGithubAppInstallationsResponses = {
 /**
  * @description Union of all possible responses
  */
-export type ListGithubAppInstallationsResponse =
-  | ListGithubAppInstallations200
-  | ListGithubAppInstallations400
-  | ListGithubAppInstallations401
-  | ListGithubAppInstallations5XX
-  | ListGithubAppInstallationsDefault;
+export type ListGithubAppInstallationsResponse = ListGithubAppInstallations200;
 
 export type CreateGithubAppInstallationPathParams = {
   /**
@@ -9072,13 +8749,7 @@ export type CreateGithubAppInstallationResponses = {
 /**
  * @description Union of all possible responses
  */
-export type CreateGithubAppInstallationResponse =
-  | CreateGithubAppInstallation201
-  | CreateGithubAppInstallation400
-  | CreateGithubAppInstallation401
-  | CreateGithubAppInstallation409
-  | CreateGithubAppInstallation5XX
-  | CreateGithubAppInstallationDefault;
+export type CreateGithubAppInstallationResponse = CreateGithubAppInstallation201;
 
 export type UpdateGithubAppInstallationPathParams = {
   /**
@@ -9178,14 +8849,7 @@ export type UpdateGithubAppInstallationResponses = {
 /**
  * @description Union of all possible responses
  */
-export type UpdateGithubAppInstallationResponse =
-  | UpdateGithubAppInstallation200
-  | UpdateGithubAppInstallation400
-  | UpdateGithubAppInstallation401
-  | UpdateGithubAppInstallation404
-  | UpdateGithubAppInstallation409
-  | UpdateGithubAppInstallation5XX
-  | UpdateGithubAppInstallationDefault;
+export type UpdateGithubAppInstallationResponse = UpdateGithubAppInstallation200;
 
 export type GetGithubRepositoryPathParams = {
   /**
@@ -9261,12 +8925,7 @@ export type GetGithubRepositoryResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GetGithubRepositoryResponse =
-  | GetGithubRepository200
-  | GetGithubRepository400
-  | GetGithubRepository401
-  | GetGithubRepository5XX
-  | GetGithubRepositoryDefault;
+export type GetGithubRepositoryResponse = GetGithubRepository200;
 
 export type CreateGithubRepositoryPathParams = {
   /**
@@ -9357,13 +9016,7 @@ export type CreateGithubRepositoryResponses = {
 /**
  * @description Union of all possible responses
  */
-export type CreateGithubRepositoryResponse =
-  | CreateGithubRepository201
-  | CreateGithubRepository400
-  | CreateGithubRepository401
-  | CreateGithubRepository409
-  | CreateGithubRepository5XX
-  | CreateGithubRepositoryDefault;
+export type CreateGithubRepositoryResponse = CreateGithubRepository201;
 
 export type UpdateGithubRepositoryPathParams = {
   /**
@@ -9454,13 +9107,7 @@ export type UpdateGithubRepositoryResponses = {
 /**
  * @description Union of all possible responses
  */
-export type UpdateGithubRepositoryResponse =
-  | UpdateGithubRepository200
-  | UpdateGithubRepository400
-  | UpdateGithubRepository401
-  | UpdateGithubRepository404
-  | UpdateGithubRepository5XX
-  | UpdateGithubRepositoryDefault;
+export type UpdateGithubRepositoryResponse = UpdateGithubRepository200;
 
 export type DeleteGithubRepositoryPathParams = {
   /**
@@ -9545,13 +9192,7 @@ export type DeleteGithubRepositoryResponses = {
 /**
  * @description Union of all possible responses
  */
-export type DeleteGithubRepositoryResponse =
-  | DeleteGithubRepository204
-  | DeleteGithubRepository400
-  | DeleteGithubRepository401
-  | DeleteGithubRepository404
-  | DeleteGithubRepository5XX
-  | DeleteGithubRepositoryDefault;
+export type DeleteGithubRepositoryResponse = DeleteGithubRepository204;
 
 export type UpsertInstallationPathParams = {
   /**
@@ -9600,11 +9241,7 @@ export type UpsertInstallationResponses = {
 /**
  * @description Union of all possible responses
  */
-export type UpsertInstallationResponse =
-  | UpsertInstallation204
-  | UpsertInstallation400
-  | UpsertInstallation403
-  | UpsertInstallation409;
+export type UpsertInstallationResponse = UpsertInstallation204;
 
 export type DeleteInstallationPathParams = {
   /**
@@ -9646,7 +9283,7 @@ export type DeleteInstallationResponses = {
 /**
  * @description Union of all possible responses
  */
-export type DeleteInstallationResponse = DeleteInstallation204 | DeleteInstallation403 | DeleteInstallation409;
+export type DeleteInstallationResponse = DeleteInstallation204;
 
 export type ListBillingPlansForProductPathParams = {
   /**
@@ -9705,11 +9342,7 @@ export type ListBillingPlansForProductResponses = {
 /**
  * @description Union of all possible responses
  */
-export type ListBillingPlansForProductResponse =
-  | ListBillingPlansForProduct200
-  | ListBillingPlansForProduct400
-  | ListBillingPlansForProduct403
-  | ListBillingPlansForProduct404;
+export type ListBillingPlansForProductResponse = ListBillingPlansForProduct200;
 
 export type GetResourcePathParams = {
   /**
@@ -9765,7 +9398,7 @@ export type GetResourceResponses = {
 /**
  * @description Union of all possible responses
  */
-export type GetResourceResponse = GetResource200 | GetResource403 | GetResource404 | GetResource500;
+export type GetResourceResponse = GetResource200;
 
 export type DeleteResourcePathParams = {
   /**
@@ -9824,12 +9457,7 @@ export type DeleteResourceResponses = {
 /**
  * @description Union of all possible responses
  */
-export type DeleteResourceResponse =
-  | DeleteResource204
-  | DeleteResource403
-  | DeleteResource404
-  | DeleteResource429
-  | DeleteResource500;
+export type DeleteResourceResponse = DeleteResource204;
 
 export type ProvisionResourcePathParams = {
   /**
@@ -9922,15 +9550,7 @@ export type ProvisionResourceResponses = {
 /**
  * @description Union of all possible responses
  */
-export type ProvisionResourceResponse =
-  | ProvisionResource200
-  | ProvisionResource400
-  | ProvisionResource403
-  | ProvisionResource404
-  | ProvisionResource409
-  | ProvisionResource429
-  | ProvisionResource500
-  | ProvisionResource503;
+export type ProvisionResourceResponse = ProvisionResource200;
 
 export type OrbWebhook200 = unknown;
 
@@ -9962,7 +9582,7 @@ export type OrbWebhookResponses = {
 /**
  * @description Union of all possible responses
  */
-export type OrbWebhookResponse = OrbWebhook200 | OrbWebhook400 | OrbWebhook500;
+export type OrbWebhookResponse = OrbWebhook200;
 
 export type StripeWebhook200 = unknown;
 
@@ -9994,4 +9614,4 @@ export type StripeWebhookResponses = {
 /**
  * @description Union of all possible responses
  */
-export type StripeWebhookResponse = StripeWebhook200 | StripeWebhook400 | StripeWebhook500;
+export type StripeWebhookResponse = StripeWebhook200;
