@@ -10,18 +10,18 @@
   },
   "dependencies": {
     "@xata.io/lang": "0.0.6",
-    "zod": "4.6.5"
+    "zod": "4.6.7"
   },
   "devDependencies": {
-    "@dotenvx/dotenvx": "2.34.1",
+    "@dotenvx/dotenvx": "2.37.0",
     "@kubb/adapter-oas": "5.5.6",
     "@kubb/plugin-ts": "5.0.5",
     "@kubb/plugin-zod": "5.4.3",
-    "@types/node": "26.6.4",
+    "@types/node": "26.6.5",
     "@xata.io/tsconfig": "0.0.2",
     "kubb": "5.5.6",
     "typescript": "7.0.2",
-    "vitest": "5.0.3"
+    "vitest": "5.0.5"
   },
   "scripts": {
     "test": "vitest --passWithNoTests",
