@@ -1,5 +1,13 @@
 # @xata.io/api
 
+## 0.1.27
+
+### Patch Changes
+
+- [#3415](https://github.com/xataio/frontend/pull/3415) [`54677c2`](https://github.com/xataio/frontend/commit/54677c2a5a0a81499a0dfa292ac79325c2eb59f5) Thanks [@xata-bot](https://github.com/xata-bot)! - [Generated] Update API handlers
+
+- [#3412](https://github.com/xataio/frontend/pull/3412) [`ad7b988`](https://github.com/xataio/frontend/commit/ad7b98871bc9473935c83c3ffd5df9bc15008483) Thanks [@SferaDev](https://github.com/SferaDev)! - Upgrade kubb to 5.10 and keep the generated schemas' error examples.
+
 ## 0.1.26
 
 ### Patch Changes
