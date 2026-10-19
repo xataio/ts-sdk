@@ -356,6 +356,7 @@ import type {
   RestoreFromBackup400,
   RestoreFromBackup401,
   RestoreFromBackup404,
+  RestoreFromBackup412,
   GetBranchPostgresConfig200,
   GetBranchPostgresConfigPathParams,
   GetBranchPostgresConfig400,
@@ -2624,7 +2625,7 @@ export async function branchMetrics({
 
 /**
  * @summary Create a new branch from a backup of another branch
- * @description Creates a new backup branch within the specified project.
+ * @description Creates a new branch from the continuous backup of the source branch. The source branch does not change. The new branch is created in the region and cell of the source branch, and its parentID is the source branch.
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/restore}
  */
 export async function restoreFromBackup({
@@ -2652,7 +2653,7 @@ export async function restoreFromBackup({
 
   const data = await request<
     RestoreFromBackup201,
-    RestoreFromBackup400 | RestoreFromBackup401 | RestoreFromBackup404,
+    RestoreFromBackup400 | RestoreFromBackup401 | RestoreFromBackup404 | RestoreFromBackup412,
     RestoreFromBackupMutationRequest,
     Record<string, string>,
     Record<string, string>,
@@ -3830,7 +3831,11 @@ export type OperationErrors = {
     | RotateBranchCredentials401
     | RotateBranchCredentials404;
   'branches.branchMetrics': BranchMetrics400 | BranchMetrics401 | BranchMetrics404;
-  'branches.restoreFromBackup': RestoreFromBackup400 | RestoreFromBackup401 | RestoreFromBackup404;
+  'branches.restoreFromBackup':
+    | RestoreFromBackup400
+    | RestoreFromBackup401
+    | RestoreFromBackup404
+    | RestoreFromBackup412;
   'branches.branchLogs': BranchLogs400 | BranchLogs401 | BranchLogs404;
   'branches.getBranchPostgresConfig':
     | GetBranchPostgresConfig400
@@ -3933,7 +3938,7 @@ export type OperationErrorStatus = {
   'branches.getBranchCredentials': 400 | 401 | 404;
   'branches.rotateBranchCredentials': 400 | 401 | 404;
   'branches.branchMetrics': 400 | 401 | 404;
-  'branches.restoreFromBackup': 400 | 401 | 404;
+  'branches.restoreFromBackup': 400 | 401 | 404 | 412;
   'branches.branchLogs': 400 | 401 | 404;
   'branches.getBranchPostgresConfig': 400 | 401 | 404;
   'githubApp.listGithubAppInstallations': 400 | 401;

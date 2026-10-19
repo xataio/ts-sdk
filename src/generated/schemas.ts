@@ -774,12 +774,16 @@ export const backupConfigurationSchema = z
       .max(35)
       .optional()
       .default(2)
-      .describe('how long are we keeping the backups around for'),
+      .describe(
+        'Number of days of point-in-time recovery to guarantee. You can restore the branch to any point within this many days. To provide this, the most recent full backup taken before the start of the window is always kept, along with all changes made after it. Because of this, restore points older than retentionPeriod are sometimes available, but how far back they go depends on the backup schedule and is not guaranteed.'
+      ),
     backupTime: z
       .string()
       .regex(/^(\*|[0-6]):(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/)
       .optional()
-      .describe('time of day/week when we are taking a full backup')
+      .describe(
+        'When to take a full backup, in UTC, in the format D:HH:MM. D is * for every day, or 0-6 for one day of the week (0 is Sunday). If it is not set, a random time on Sunday between 02:00 and 05:59 is used.'
+      )
   })
   .describe('Details about the branch continuous backup configuration');
 
@@ -817,12 +821,19 @@ export const branchMetadataSchema = z
 export const backupMetadataSchema = z
   .object({
     id: z.string().describe('unique identifier for the backup'),
-    branchID: z.string().describe('the branchID the branch associated with the backup'),
+    branchID: z.string().describe('ID of the branch that the backup belongs to'),
     earliestRestore: z.iso
       .datetime()
       .optional()
-      .describe('the earlies point in time available for restoring the branch'),
-    latestRestore: z.iso.datetime().optional().describe('the latest point in time available for restoring the branch'),
+      .describe(
+        'The earliest point in time that the branch can be restored to. It is absent until the first backup of the branch completes.'
+      ),
+    latestRestore: z.iso
+      .datetime()
+      .optional()
+      .describe(
+        'The latest point in time that the branch is known to be restorable to. It is updated from the archived WAL at most every five minutes, so it can be several minutes behind the current time. It is absent until the first backup of the branch completes.'
+      ),
     description: z.string().describe('description of the backup')
   })
   .describe('metadata about a continuous backup');
@@ -1105,7 +1116,13 @@ export const restoreDetailsSchema = z
       .describe('Details about the branch continuous backup configuration'),
     configuration: clusterConfigurationSchema
       .optional()
-      .describe('Configuration details for a database cluster backing a branch')
+      .describe('Configuration details for a database cluster backing a branch'),
+    targetTime: z.iso
+      .datetime()
+      .optional()
+      .describe(
+        'Point in time to restore the source branch to. It must be in the recovery window that getBackup reports, from earliestRestore to latestRestore. If it is not set, the new branch is restored to the end of the archived WAL at the time the restore runs.'
+      )
   })
   .describe(
     'Metadata about a backup, used in request to create a restore. If configuration is not provided, the branch will inherit the source branch configuration.'
@@ -3775,6 +3792,11 @@ export const restoreFromBackupStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
+export const restoreFromBackupStatus412Schema = z.object({
+  id: z.string().optional().describe('Error identifier for tracking and debugging'),
+  message: z.string().describe('Human-readable error message explaining the precondition failure')
+});
+
 export const restoreFromBackupStatus5XXSchema = z.unknown();
 
 export const restoreFromBackupStatusDefaultSchema = z.unknown();
@@ -3785,6 +3807,7 @@ export const restoreFromBackupErrorSchema = z.union([
   restoreFromBackupStatus400Schema,
   restoreFromBackupStatus401Schema,
   restoreFromBackupStatus404Schema,
+  restoreFromBackupStatus412Schema,
   restoreFromBackupStatus5XXSchema,
   restoreFromBackupStatusDefaultSchema
 ]);

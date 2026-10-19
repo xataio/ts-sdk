@@ -1936,7 +1936,7 @@ export type BranchStatus = {
  */
 export type BackupConfiguration = {
   /**
-   * @description how long are we keeping the backups around for
+   * @description Number of days of point-in-time recovery to guarantee. You can restore the branch to any point within this many days. To provide this, the most recent full backup taken before the start of the window is always kept, along with all changes made after it. Because of this, restore points older than retentionPeriod are sometimes available, but how far back they go depends on the backup schedule and is not guaranteed.
    *
    * Format: `int32`
    * @minLength 2
@@ -1946,7 +1946,7 @@ export type BackupConfiguration = {
    */
   retentionPeriod?: number | undefined;
   /**
-   * @description time of day/week when we are taking a full backup
+   * @description When to take a full backup, in UTC, in the format D:HH:MM. D is * for every day, or 0-6 for one day of the week (0 is Sunday). If it is not set, a random time on Sunday between 02:00 and 05:59 is used.
    * @pattern ^(\*|[0-6]):(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$
    * @type string | undefined
    */
@@ -2046,19 +2046,19 @@ export type BackupMetadata = {
    */
   id: string;
   /**
-   * @description the branchID the branch associated with the backup
+   * @description ID of the branch that the backup belongs to
    * @type string
    */
   branchID: string;
   /**
-   * @description the earlies point in time available for restoring the branch
+   * @description The earliest point in time that the branch can be restored to. It is absent until the first backup of the branch completes.
    *
    * Format: `date-time`
    * @type string | undefined
    */
   earliestRestore?: string | undefined;
   /**
-   * @description the latest point in time available for restoring the branch
+   * @description The latest point in time that the branch is known to be restorable to. It is updated from the archived WAL at most every five minutes, so it can be several minutes behind the current time. It is absent until the first backup of the branch completes.
    *
    * Format: `date-time`
    * @type string | undefined
@@ -2731,6 +2731,13 @@ export type RestoreDetails = {
    * @type object | undefined
    */
   configuration?: ClusterConfiguration | undefined;
+  /**
+   * @description Point in time to restore the source branch to. It must be in the recovery window that getBackup reports, from earliestRestore to latestRestore. If it is not set, the new branch is restored to the end of the archived WAL at the time the restore runs.
+   *
+   * Format: `date-time`
+   * @type string | undefined
+   */
+  targetTime?: string | undefined;
 };
 
 export type InstallationCredentials = {
@@ -8401,6 +8408,19 @@ export type RestoreFromBackup404 = {
   message: string;
 };
 
+export type RestoreFromBackup412 = {
+  /**
+   * @description Error identifier for tracking and debugging
+   * @type string | undefined
+   */
+  id?: string | undefined;
+  /**
+   * @description Human-readable error message explaining the precondition failure
+   * @type string
+   */
+  message: string;
+};
+
 export type RestoreFromBackup5XX = unknown;
 
 export type RestoreFromBackupDefault = unknown;
@@ -8423,6 +8443,7 @@ export type RestoreFromBackupResponses = {
   '400': RestoreFromBackup400;
   '401': RestoreFromBackup401;
   '404': RestoreFromBackup404;
+  '412': RestoreFromBackup412;
   '5XX': RestoreFromBackup5XX;
   default: RestoreFromBackupDefault;
 };
