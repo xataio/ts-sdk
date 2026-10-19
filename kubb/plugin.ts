@@ -1,5 +1,5 @@
 import { pluginTsName } from '@kubb/plugin-ts';
-import { definePlugin, type Output, type PluginFactoryOptions } from 'kubb/kit';
+import { addGenerator, defineExtension, type Output, type PluginType } from 'kubb/kit';
 import { extraGenerator } from './client/extra';
 import { clientGenerator } from './client/operations';
 
@@ -10,7 +10,7 @@ type Options = {
 
 export const pluginClientName = 'plugin-client';
 
-export type PluginClient = PluginFactoryOptions<typeof pluginClientName, Options, Options>;
+export type PluginClient = PluginType<typeof pluginClientName, Options, Options>;
 
 declare global {
   namespace Kubb {
@@ -20,16 +20,12 @@ declare global {
   }
 }
 
-export const pluginClient = definePlugin<PluginClient>((options) => {
-  return {
-    name: pluginClientName,
-    options,
-    dependencies: [pluginTsName],
-    hooks: {
-      'kubb:plugin:setup'(ctx) {
-        ctx.setOptions(options);
-        ctx.addGenerator(clientGenerator, extraGenerator);
-      }
-    }
-  };
+export const pluginClient = defineExtension<PluginClient>({
+  kind: 'plugin',
+  meta: { name: pluginClientName },
+  dependencies: [pluginTsName],
+  setup(options) {
+    addGenerator(clientGenerator, extraGenerator);
+    return options;
+  }
 });

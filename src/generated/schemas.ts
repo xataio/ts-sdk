@@ -1321,7 +1321,7 @@ export const authErrorSchema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const simpleErrorSchema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -1365,7 +1365,7 @@ export const getOrganizationsListStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const getOrganizationsListStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -1397,7 +1397,7 @@ export const createOrganizationStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const createOrganizationStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -1435,14 +1435,14 @@ export const getOrganizationStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const getOrganizationStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const getOrganizationStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -1479,14 +1479,14 @@ export const updateOrganizationStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const updateOrganizationStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const updateOrganizationStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -1528,14 +1528,14 @@ export const deleteOrganizationStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const deleteOrganizationStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const deleteOrganizationStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -1572,14 +1572,14 @@ export const listOrganizationAPIKeysStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const listOrganizationAPIKeysStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const listOrganizationAPIKeysStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -1630,7 +1630,7 @@ export const deleteOrganizationAPIKeysStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const deleteOrganizationAPIKeysStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -1699,14 +1699,14 @@ export const listOrganizationRolesStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const listOrganizationRolesStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const listOrganizationRolesStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -1744,14 +1744,14 @@ export const setOrganizationMemberRoleStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const setOrganizationMemberRoleStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const setOrganizationMemberRoleStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -1838,14 +1838,14 @@ export const listOrganizationInvitationsStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const listOrganizationInvitationsStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const listOrganizationInvitationsStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -1880,14 +1880,14 @@ export const createOrganizationInvitationStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const createOrganizationInvitationStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const createOrganizationInvitationStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -1934,14 +1934,14 @@ export const getOrganizationInvitationStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const getOrganizationInvitationStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const getOrganizationInvitationStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -1980,14 +1980,14 @@ export const deleteOrganizationInvitationStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const deleteOrganizationInvitationStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const deleteOrganizationInvitationStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -2026,14 +2026,14 @@ export const resendOrganizationInvitationStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const resendOrganizationInvitationStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const resendOrganizationInvitationStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -2068,14 +2068,14 @@ export const requestOrganizationDeletionStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const requestOrganizationDeletionStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const requestOrganizationDeletionStatus409Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -2107,14 +2107,14 @@ export const getOrganizationMembershipLimitsStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const getOrganizationMembershipLimitsStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const getOrganizationMembershipLimitsStatus5XXSchema = z.unknown();
 
@@ -2139,7 +2139,7 @@ export const getOrganizationSSOStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const getOrganizationSSOStatus403Schema = authErrorResponseSchema.describe('Error response');
 
@@ -2171,7 +2171,7 @@ export const claimOrganizationSSODomainStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const claimOrganizationSSODomainStatus403Schema = authErrorResponseSchema.describe('Error response');
 
@@ -2206,7 +2206,7 @@ export const deleteOrganizationSSODomainStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const deleteOrganizationSSODomainStatus403Schema = authErrorResponseSchema.describe('Error response');
 
@@ -2238,7 +2238,7 @@ export const verifyOrganizationSSODomainStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const verifyOrganizationSSODomainStatus403Schema = authErrorResponseSchema.describe('Error response');
 
@@ -2276,7 +2276,7 @@ export const createOrganizationSSOProviderStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const createOrganizationSSOProviderStatus403Schema = authErrorResponseSchema.describe('Error response');
 
@@ -2320,7 +2320,7 @@ export const updateOrganizationSSOProviderStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const updateOrganizationSSOProviderStatus403Schema = authErrorResponseSchema.describe('Error response');
 
@@ -2360,7 +2360,7 @@ export const deleteOrganizationSSOProviderStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const deleteOrganizationSSOProviderStatus403Schema = authErrorResponseSchema.describe('Error response');
 
@@ -2391,7 +2391,7 @@ export const setOrganizationSSOProviderEnforcementStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const setOrganizationSSOProviderEnforcementStatus403Schema = authErrorResponseSchema.describe('Error response');
 
@@ -2431,14 +2431,14 @@ export const createBillingCheckoutSessionStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const createBillingCheckoutSessionStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const createBillingCheckoutSessionStatus5XXSchema = z.unknown();
 
@@ -2467,14 +2467,14 @@ export const createBillingPaymentMethodSessionStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const createBillingPaymentMethodSessionStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const createBillingPaymentMethodSessionStatus5XXSchema = z.unknown();
 
@@ -2498,14 +2498,14 @@ export const getBillingCustomerStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const getBillingCustomerStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const getBillingCustomerStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -2539,14 +2539,14 @@ export const updateBillingCustomerStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const updateBillingCustomerStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const updateBillingCustomerStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -2596,14 +2596,14 @@ export const getBillingInvoicesStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const getBillingInvoicesStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const getBillingInvoicesStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -2633,14 +2633,14 @@ export const getBillingUpcomingInvoiceStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const getBillingUpcomingInvoiceStatus403Schema = z
   .object({
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const getBillingUpcomingInvoiceStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -2670,7 +2670,7 @@ export const registerMarketplaceStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const registerMarketplaceStatus409Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
@@ -2708,7 +2708,7 @@ export const listUserAPIKeysStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const listUserAPIKeysStatus5XXSchema = z.unknown();
 
@@ -2734,7 +2734,7 @@ export const createUserAPIKeyStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const createUserAPIKeyStatus5XXSchema = z.unknown();
 
@@ -2760,7 +2760,7 @@ export const deleteUserAPIKeysStatus401Schema = z
     id: z.string().optional().describe('Error identifier for tracking and debugging'),
     message: z.string().describe('Human-readable error message explaining the issue')
   })
-  .meta({ examples: [{}] });
+  .meta({ examples: [{ message: 'invalid API key' }] });
 
 export const deleteUserAPIKeysStatus404Schema = z.object({
   id: z.string().optional().describe('Error identifier for tracking and debugging'),
