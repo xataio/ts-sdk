@@ -1,7 +1,7 @@
 {
   "name": "@xata.io/api",
   "private": false,
-  "version": "0.1.26",
+  "version": "0.1.27",
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
@@ -14,12 +14,12 @@
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "2.37.0",
-    "@kubb/adapter-oas": "5.5.6",
-    "@kubb/plugin-ts": "5.0.5",
-    "@kubb/plugin-zod": "5.4.3",
+    "@kubb/adapter-oas": "5.10.4",
+    "@kubb/plugin-ts": "5.0.14",
+    "@kubb/plugin-zod": "5.4.12",
     "@types/node": "26.6.5",
     "@xata.io/tsconfig": "0.0.2",
-    "kubb": "5.5.6",
+    "kubb": "5.10.4",
     "typescript": "7.0.2",
     "vitest": "5.0.5"
   },
