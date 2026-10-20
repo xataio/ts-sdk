@@ -1256,7 +1256,7 @@ export const resourceSchema = z
       )
   })
   .describe(
-    'A provisioned Vercel Marketplace resource. Matches Vercel\'s Partner API\n"Get Resource" response. Secrets/connection info are returned by Provision\nResource, not here. The optional billingPlan, protocolSettings, and\nnotification fields are not yet populated.\n'
+    'A provisioned Vercel Marketplace resource. Matches Vercel\'s Partner API\n"Get Resource" response. Secrets/connection info are returned by Provision\nResource, not here.\n'
   );
 
 export const provisionResourceRequestSchema = z
@@ -2840,6 +2840,8 @@ export const queryStatus413Schema = errorResponseSchema.describe('Error response
 
 export const queryStatus500Schema = errorResponseSchema.describe('Error response with PostgreSQL error fields.');
 
+export const queryStatus503Schema = errorResponseSchema.describe('Error response with PostgreSQL error fields.');
+
 export const queryStatus504Schema = errorResponseSchema.describe('Error response with PostgreSQL error fields.');
 
 export const queryResponseSchema = queryStatus200Schema;
@@ -2852,6 +2854,7 @@ export const queryErrorSchema = z.union([
   queryStatus409Schema,
   queryStatus413Schema,
   queryStatus500Schema,
+  queryStatus503Schema,
   queryStatus504Schema
 ]);
 
@@ -4256,7 +4259,7 @@ export const getResourcePathInstallationIdSchema = z.string().describe('Vercel i
 export const getResourcePathResourceIdSchema = z.string().describe('Vercel resource id.');
 
 export const getResourceStatus200Schema = resourceSchema.describe(
-  'A provisioned Vercel Marketplace resource. Matches Vercel\'s Partner API\n"Get Resource" response. Secrets/connection info are returned by Provision\nResource, not here. The optional billingPlan, protocolSettings, and\nnotification fields are not yet populated.\n'
+  'A provisioned Vercel Marketplace resource. Matches Vercel\'s Partner API\n"Get Resource" response. Secrets/connection info are returned by Provision\nResource, not here.\n'
 );
 
 export const getResourceStatus403Schema = resourceErrorSchema.describe('Vercel Partner API error envelope.');

@@ -234,6 +234,7 @@ import type {
   Query409,
   Query413,
   Query500,
+  Query503,
   Query504,
   WebsocketResponse,
   Websocket400,
@@ -1714,6 +1715,11 @@ export async function deleteUserAPIKeys({
  * **Single query:** provide `query` (and optional `params`) at the top level.
  * **Batch:** provide `queries` as an array of query objects, or send the request body
  * as a JSON array. Batch queries execute within a single transaction.
+ * **Errors:** PostgreSQL errors return 400 with their SQLSTATE in `code` and their
+ * diagnostic fields. A 503 means the gateway could not reach the database: `08001`
+ * when a connection cannot be established and `08006` when an established connection
+ * fails. A 503 does not guarantee that replaying a write is safe: a connection failure
+ * can leave its outcome unknown.
  * {@link /sql}
  */
 export async function query({
@@ -1729,7 +1735,7 @@ export async function query({
 
   const data = await request<
     Query200,
-    Query400 | Query401 | Query403 | Query404 | Query409 | Query413 | Query500 | Query504,
+    Query400 | Query401 | Query403 | Query404 | Query409 | Query413 | Query500 | Query503 | Query504,
     QueryMutationRequest,
     QueryHeaderParams,
     Record<string, string>,
@@ -3798,7 +3804,7 @@ export type OperationErrors = {
   'apiKeys.listUserAPIKeys': ListUserAPIKeys400 | ListUserAPIKeys401;
   'apiKeys.createUserAPIKey': CreateUserAPIKey400 | CreateUserAPIKey401;
   'apiKeys.deleteUserAPIKeys': DeleteUserAPIKeys400 | DeleteUserAPIKeys401 | DeleteUserAPIKeys404;
-  'gateway.query': Query400 | Query401 | Query403 | Query404 | Query409 | Query413 | Query500 | Query504;
+  'gateway.query': Query400 | Query401 | Query403 | Query404 | Query409 | Query413 | Query500 | Query503 | Query504;
   'gateway.websocket': Websocket400;
   'mcp.sendMcpRequest':
     | SendMcpRequest400
@@ -3913,7 +3919,7 @@ export type OperationErrorStatus = {
   'apiKeys.listUserAPIKeys': 400 | 401;
   'apiKeys.createUserAPIKey': 400 | 401;
   'apiKeys.deleteUserAPIKeys': 400 | 401 | 404;
-  'gateway.query': 400 | 401 | 403 | 404 | 409 | 413 | 500 | 504;
+  'gateway.query': 400 | 401 | 403 | 404 | 409 | 413 | 500 | 503 | 504;
   'gateway.websocket': 400;
   'mcp.sendMcpRequest': 400 | 401 | 413 | 415 | 500;
   'projectsWebhooks.githubWebhook': 400 | 500;

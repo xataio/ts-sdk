@@ -2929,7 +2929,7 @@ export type VercelError = {
 };
 
 /**
- * @description A provisioned Vercel Marketplace resource. Matches Vercel\'s Partner API\n\"Get Resource\" response. Secrets/connection info are returned by Provision\nResource, not here. The optional billingPlan, protocolSettings, and\nnotification fields are not yet populated.\n
+ * @description A provisioned Vercel Marketplace resource. Matches Vercel\'s Partner API\n\"Get Resource\" response. Secrets/connection info are returned by Provision\nResource, not here.\n
  * @type object
  */
 export type Resource = {
@@ -6421,6 +6421,12 @@ export type Query500 = ErrorResponse;
  * @description Error response with PostgreSQL error fields.
  * @type object
  */
+export type Query503 = ErrorResponse;
+
+/**
+ * @description Error response with PostgreSQL error fields.
+ * @type object
+ */
 export type Query504 = ErrorResponse;
 
 /**
@@ -6445,6 +6451,7 @@ export type QueryResponses = {
   '409': Query409;
   '413': Query413;
   '500': Query500;
+  '503': Query503;
   '504': Query504;
 };
 
@@ -9379,7 +9386,7 @@ export type GetResourcePathParams = {
 };
 
 /**
- * @description A provisioned Vercel Marketplace resource. Matches Vercel\'s Partner API\n\"Get Resource\" response. Secrets/connection info are returned by Provision\nResource, not here. The optional billingPlan, protocolSettings, and\nnotification fields are not yet populated.\n
+ * @description A provisioned Vercel Marketplace resource. Matches Vercel\'s Partner API\n\"Get Resource\" response. Secrets/connection info are returned by Provision\nResource, not here.\n
  * @type object
  */
 export type GetResource200 = Resource;
