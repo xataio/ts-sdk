@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@xata.io/lang':
-        specifier: 0.0.6
-        version: 0.0.6
+        specifier: 0.0.7
+        version: 0.0.7
       zod:
         specifier: 4.6.7
         version: 4.6.7
@@ -83,6 +83,9 @@ packages:
   '@clack/prompts@1.8.1':
     resolution: {integrity: sha512-dlT1m5e/0yUL0kRNcQn7yGLVThkgbB0Ga/1AmfDDC/8ik6AIiSf2QLQO2zPYvefsHP0aFgxO93cVLCCfDp7kzQ==}
     engines: {node: '>= 20.12.0'}
+
+  '@date-fns/tz@1.5.0':
+    resolution: {integrity: sha512-lwYN/vDPeNRULcepoE/LO2Pgx+7/RV+S9ARfbc9lr2DtGkOD7pAiruHvbR1RX3Qyf6ja47EWJDMsNK5vK08DJg==}
 
   '@dotenvx/dotenvx@2.37.0':
     resolution: {integrity: sha512-h3yaCxV2UwZj8yeJLyQJ/JqVT9GnxSMVES9sJ0U1bQFQDsqKPdtryrZtAOirS5yACl/xUtnvj6VhKBymvxvEaw==}
@@ -522,8 +525,8 @@ packages:
   '@vitest/spy@5.0.5':
     resolution: {integrity: sha512-lwJRExuH417257Q5wv9QYugN9IMJkoxcrKrYxGPQkBzl7wlNpTUxD/5yNX4ESKVUIShKPgkGchYPFMWOOk0wzw==}
 
-  '@xata.io/lang@0.0.6':
-    resolution: {integrity: sha512-e56WsC0DOgV+tykcqSSg7x8L9OwyNYWErg/9CgbDchzzXjGEaRW1eLoNSEXE9EucRK/iB+mQibgHIyEomU9zMw==}
+  '@xata.io/lang@0.0.7':
+    resolution: {integrity: sha512-4tohSKWJuRdHKBzxC1+f0a8NSWnIRlAT/4EolVJipe7XuoHIluxqZgy8bFIRz/9LoP2ag6b/E7Syx3lAxYq+2A==}
 
   '@xata.io/tsconfig@0.0.2':
     resolution: {integrity: sha512-7uY1tUBZbA1g7PTSrJ+DWEo1qOxIpN3DU1W94ttWL7Ns76+DmL1JVYtXOw6i9Ta7SYeEii3pxQZnaOQRLe/EAw==}
@@ -1360,6 +1363,8 @@ snapshots:
       fast-wrap-ansi: 0.2.2
       sisteransi: 1.0.5
 
+  '@date-fns/tz@1.5.0': {}
+
   '@dotenvx/dotenvx@2.37.0':
     dependencies:
       '@dotenvx/primitives': 3.3.1
@@ -1968,8 +1973,9 @@ snapshots:
 
   '@vitest/spy@5.0.5': {}
 
-  '@xata.io/lang@0.0.6':
+  '@xata.io/lang@0.0.7':
     dependencies:
+      '@date-fns/tz': 1.5.0
       date-fns: 4.4.0
       es-toolkit: 1.52.0
       ipaddr.js: 2.5.0
