@@ -102,7 +102,7 @@ export type OrganizationStatusUsageTierEnum =
 
 export type OrganizationStatus = {
   /**
-   * @description Indicates whether the organization is active, it\'s computed as `!disabled_by_admin AND billing_status == \'ok\'`
+   * @description Indicates whether the organization is active, it's computed as `!disabled_by_admin AND billing_status == 'ok'`
    * @type string
    */
   status: OrganizationStatusStatusEnum;
@@ -132,7 +132,7 @@ export type OrganizationStatus = {
    */
   usage_tier: OrganizationStatusUsageTierEnum;
   /**
-   * @description Timestamp of the last update to the organization\'s status
+   * @description Timestamp of the last update to the organization's status
    *
    * Format: `date-time`
    * @type string
@@ -176,7 +176,7 @@ export type Organization = {
    */
   status: OrganizationStatus;
   /**
-   * @description Marketplace provider for this organization (e.g. \"aws\"), if billed through a marketplace
+   * @description Marketplace provider for this organization (e.g. "aws"), if billed through a marketplace
    */
   marketplace?: (OrganizationMarketplaceProvider | null) | undefined;
 };
@@ -382,7 +382,7 @@ export type BillingCustomerResponse = {
    */
   billing_email: string;
   /**
-   * @description Marketplace provider for this organization (e.g. \"aws\"), if billed through a marketplace
+   * @description Marketplace provider for this organization (e.g. "aws"), if billed through a marketplace
    */
   marketplace: OrganizationMarketplaceProvider | null;
   /**
@@ -761,7 +761,7 @@ export type OrganizationSSOProviderType =
   (typeof organizationSSOProviderType)[keyof typeof organizationSSOProviderType];
 
 /**
- * @description An identity provider serving one of the organization\'s verified domains. The client secret is write-only and is never returned.
+ * @description An identity provider serving one of the organization's verified domains. The client secret is write-only and is never returned.
  * @type object
  */
 export type OrganizationSSOProvider = {
@@ -867,7 +867,7 @@ export type OrganizationSSODomain = {
 };
 
 /**
- * @description An organization\'s single sign-on setup, as one identity provider per verified email domain.
+ * @description An organization's single sign-on setup, as one identity provider per verified email domain.
  * @type object
  */
 export type OrganizationSSO = {
@@ -884,7 +884,7 @@ export type OrganizationSSO = {
 };
 
 /**
- * @description Whether members on a provider\'s domain must sign in through it.
+ * @description Whether members on a provider's domain must sign in through it.
  * @type object
  */
 export type OrganizationSSOEnforcement = {
@@ -930,7 +930,7 @@ export type CreateOrganizationSSOProviderRequest = {
 };
 
 /**
- * @description Request payload for replacing an identity provider\'s credentials
+ * @description Request payload for replacing an identity provider's credentials
  * @type object
  */
 export type UpdateOrganizationSSOProviderRequest = {
@@ -1220,7 +1220,10 @@ export type ErrorResponse = {
 };
 
 /**
- * @description A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a\nresponse; a notification carries `method` without `id` and is not. The `method` and\n`params` values are defined by the MCP specification.\n
+ * @description A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a
+ * response; a notification carries `method` without `id` and is not. The `method` and
+ * `params` values are defined by the MCP specification.
+ *
  * @type object
  */
 export type JSONRPCMessage = {
@@ -1531,7 +1534,7 @@ export type ProjectScaleToZeroConfiguration = {
 
 export type CidrEntry = {
   /**
-   * @description IP address or CIDR block (e.g., \"192.168.0.0/24\")
+   * @description IP address or CIDR block (e.g., "192.168.0.0/24")
    * @minLength 1
    * @maxLength 64
    * @type string
@@ -2195,7 +2198,7 @@ export type BranchUpdateDetails = {
    */
   replicas?: number | undefined;
   /**
-   * @description Branch storage in GiB (gigabytes). The maximum allowed value depends on the organization\'s storage limit.
+   * @description Branch storage in GiB (gigabytes). The maximum allowed value depends on the organization's storage limit.
    *
    * Format: `int32`
    * @minLength 1
@@ -2747,7 +2750,7 @@ export type InstallationCredentials = {
    */
   access_token: string;
   /**
-   * @description Token type (e.g. \"Bearer\").
+   * @description Token type (e.g. "Bearer").
    * @type string
    */
   token_type: string;
@@ -2787,7 +2790,7 @@ export type UpsertInstallationRequest = {
    */
   scopes: string[];
   /**
-   * @description Map of policy id to the acceptance timestamp (RFC 3339), e.g. {\"toc\": \"2024-02-28T10:00:00Z\"}.
+   * @description Map of policy id to the acceptance timestamp (RFC 3339), e.g. {"toc": "2024-02-28T10:00:00Z"}.
    * @type object
    */
   acceptedPolicies: {
@@ -2803,7 +2806,7 @@ export type UpsertInstallationRequest = {
 
 export type DeleteInstallationRequest = {
   /**
-   * @description Whether to delete the installation\'s resources along with the installation.
+   * @description Whether to delete the installation's resources along with the installation.
    * @type boolean | undefined
    */
   cascadeResourceDeletion?: boolean | undefined;
@@ -2835,7 +2838,7 @@ export type BillingPlan = {
    */
   id: string;
   /**
-   * @description Plan type: \"subscription\" or \"prepayment\".
+   * @description Plan type: "subscription" or "prepayment".
    * @type string
    */
   type: string;
@@ -2862,7 +2865,7 @@ export type BillingPlan = {
    */
   initialCharge?: string | undefined;
   /**
-   * @description Display cost for fixed-cost plans, e.g. \"$20.00/month\". Omitted for usage-based plans.
+   * @description Display cost for fixed-cost plans, e.g. "$20.00/month". Omitted for usage-based plans.
    * @type string | undefined
    */
   cost?: string | undefined;
@@ -2929,7 +2932,10 @@ export type VercelError = {
 };
 
 /**
- * @description A provisioned Vercel Marketplace resource. Matches Vercel\'s Partner API\n\"Get Resource\" response. Secrets/connection info are returned by Provision\nResource, not here.\n
+ * @description A provisioned Vercel Marketplace resource. Matches Vercel's Partner API
+ * "Get Resource" response. Secrets/connection info are returned by Provision
+ * Resource, not here.
+ *
  * @type object
  */
 export type Resource = {
@@ -2956,7 +2962,7 @@ export type Resource = {
     [key: string]: unknown;
   };
   /**
-   * @description Resource lifecycle status. One of Vercel\'s values: ready, pending, onboarding, suspended, resumed, uninstalled, error.
+   * @description Resource lifecycle status. One of Vercel's values: ready, pending, onboarding, suspended, resumed, uninstalled, error.
    * @type string
    */
   status: string;
@@ -3025,7 +3031,9 @@ export type Secret = {
 };
 
 /**
- * @description A newly provisioned resource: the Resource fields plus the connection\nsecrets. Provision Resource is the only endpoint that returns secrets.\n
+ * @description A newly provisioned resource: the Resource fields plus the connection
+ * secrets. Provision Resource is the only endpoint that returns secrets.
+ *
  * @type object
  */
 export type ProvisionedResource = {
@@ -3052,7 +3060,7 @@ export type ProvisionedResource = {
     [key: string]: unknown;
   };
   /**
-   * @description Resource lifecycle status. One of Vercel\'s values: ready, pending, onboarding, suspended, resumed, uninstalled, error.
+   * @description Resource lifecycle status. One of Vercel's values: ready, pending, onboarding, suspended, resumed, uninstalled, error.
    * @type string
    */
   status: string;
@@ -4908,7 +4916,7 @@ export type GetOrganizationSSOPathParams = {
 };
 
 /**
- * @description An organization\'s single sign-on setup, as one identity provider per verified email domain.
+ * @description An organization's single sign-on setup, as one identity provider per verified email domain.
  * @type object
  */
 export type GetOrganizationSSO200 = OrganizationSSO;
@@ -5198,7 +5206,7 @@ export type CreateOrganizationSSOProviderPathParams = {
 };
 
 /**
- * @description An identity provider serving one of the organization\'s verified domains. The client secret is write-only and is never returned.
+ * @description An identity provider serving one of the organization's verified domains. The client secret is write-only and is never returned.
  * @type object
  */
 export type CreateOrganizationSSOProvider201 = OrganizationSSOProvider;
@@ -5282,14 +5290,14 @@ export type UpdateOrganizationSSOProviderPathParams = {
    */
   organizationID: OrganizationID;
   /**
-   * @description Alias identifying one of the organization\'s SSO identity providers
+   * @description Alias identifying one of the organization's SSO identity providers
    * @type string
    */
   providerAlias: string;
 };
 
 /**
- * @description An identity provider serving one of the organization\'s verified domains. The client secret is write-only and is never returned.
+ * @description An identity provider serving one of the organization's verified domains. The client secret is write-only and is never returned.
  * @type object
  */
 export type UpdateOrganizationSSOProvider200 = OrganizationSSOProvider;
@@ -5345,7 +5353,7 @@ export type UpdateOrganizationSSOProvider409 = AuthErrorResponse;
 export type UpdateOrganizationSSOProvider5XX = unknown;
 
 /**
- * @description Request payload for replacing an identity provider\'s credentials
+ * @description Request payload for replacing an identity provider's credentials
  * @type object
  */
 export type UpdateOrganizationSSOProviderMutationRequest = UpdateOrganizationSSOProviderRequest;
@@ -5380,7 +5388,7 @@ export type DeleteOrganizationSSOProviderPathParams = {
    */
   organizationID: OrganizationID;
   /**
-   * @description Alias identifying one of the organization\'s SSO identity providers
+   * @description Alias identifying one of the organization's SSO identity providers
    * @type string
    */
   providerAlias: string;
@@ -5440,14 +5448,14 @@ export type SetOrganizationSSOProviderEnforcementPathParams = {
    */
   organizationID: OrganizationID;
   /**
-   * @description Alias identifying one of the organization\'s SSO identity providers
+   * @description Alias identifying one of the organization's SSO identity providers
    * @type string
    */
   providerAlias: string;
 };
 
 /**
- * @description An identity provider serving one of the organization\'s verified domains. The client secret is write-only and is never returned.
+ * @description An identity provider serving one of the organization's verified domains. The client secret is write-only and is never returned.
  * @type object
  */
 export type SetOrganizationSSOProviderEnforcement200 = OrganizationSSOProvider;
@@ -5490,7 +5498,7 @@ export type SetOrganizationSSOProviderEnforcement409 = AuthErrorResponse;
 export type SetOrganizationSSOProviderEnforcement5XX = unknown;
 
 /**
- * @description Whether members on a provider\'s domain must sign in through it.
+ * @description Whether members on a provider's domain must sign in through it.
  * @type object
  */
 export type SetOrganizationSSOProviderEnforcementMutationRequest = OrganizationSSOEnforcement;
@@ -6489,7 +6497,9 @@ export type SendMcpRequestHeaderParams = {
    */
   Accept: string;
   /**
-   * @description Protocol revision negotiated during `initialize`, echoed on every subsequent request.\nOmitted on the `initialize` request itself.\n
+   * @description Protocol revision negotiated during `initialize`, echoed on every subsequent request.
+   * Omitted on the `initialize` request itself.
+   *
    * @example 2025-06-18
    * @type string | undefined
    */
@@ -6515,7 +6525,10 @@ export type SendMcpRequest415 = unknown;
 export type SendMcpRequest500 = unknown;
 
 /**
- * @description A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a\nresponse; a notification carries `method` without `id` and is not. The `method` and\n`params` values are defined by the MCP specification.\n
+ * @description A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a
+ * response; a notification carries `method` without `id` and is not. The `method` and
+ * `params` values are defined by the MCP specification.
+ *
  * @type object
  */
 export type SendMcpRequestMutationRequest = JSONRPCMessage;
@@ -9386,7 +9399,10 @@ export type GetResourcePathParams = {
 };
 
 /**
- * @description A provisioned Vercel Marketplace resource. Matches Vercel\'s Partner API\n\"Get Resource\" response. Secrets/connection info are returned by Provision\nResource, not here.\n
+ * @description A provisioned Vercel Marketplace resource. Matches Vercel's Partner API
+ * "Get Resource" response. Secrets/connection info are returned by Provision
+ * Resource, not here.
+ *
  * @type object
  */
 export type GetResource200 = Resource;
@@ -9497,14 +9513,19 @@ export type ProvisionResourcePathParams = {
 
 export type ProvisionResourceHeaderParams = {
   /**
-   * @description A stable key Vercel sends to make retries safe. A repeat with the same\nkey returns the existing resource; reusing it with a different body is a\nconflict (409). Optional — without it each call provisions a new resource.\n
+   * @description A stable key Vercel sends to make retries safe. A repeat with the same
+   * key returns the existing resource; reusing it with a different body is a
+   * conflict (409). Optional — without it each call provisions a new resource.
+   *
    * @type string | undefined
    */
   'Idempotency-Key'?: string | undefined;
 };
 
 /**
- * @description A newly provisioned resource: the Resource fields plus the connection\nsecrets. Provision Resource is the only endpoint that returns secrets.\n
+ * @description A newly provisioned resource: the Resource fields plus the connection
+ * secrets. Provision Resource is the only endpoint that returns secrets.
+ *
  * @type object
  */
 export type ProvisionResource200 = ProvisionedResource;
