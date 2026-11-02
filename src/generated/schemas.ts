@@ -1478,6 +1478,10 @@ export const getOrganizationErrorSchema = z.union([
   getOrganizationStatus5XXSchema
 ]);
 
+export const getOrganizationPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
+
 export const updateOrganizationPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
@@ -1529,6 +1533,10 @@ export const updateOrganizationBodySchema = z
   })
   .optional();
 
+export const updateOrganizationPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
+
 export const deleteOrganizationPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
@@ -1570,6 +1578,10 @@ export const deleteOrganizationErrorSchema = z.union([
   deleteOrganizationStatus404Schema,
   deleteOrganizationStatus5XXSchema
 ]);
+
+export const deleteOrganizationPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
 
 export const listOrganizationAPIKeysPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
@@ -1615,6 +1627,10 @@ export const listOrganizationAPIKeysErrorSchema = z.union([
   listOrganizationAPIKeysStatus5XXSchema
 ]);
 
+export const listOrganizationAPIKeysPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
+
 export const createOrganizationAPIKeyPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
@@ -1630,6 +1646,10 @@ export const createOrganizationAPIKeyResponseSchema = createOrganizationAPIKeySt
 export const createOrganizationAPIKeyErrorSchema = createOrganizationAPIKeyStatus400Schema;
 
 export const createOrganizationAPIKeyBodySchema = createAPIKeyRequestSchema;
+
+export const createOrganizationAPIKeyPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
 
 export const deleteOrganizationAPIKeysPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
@@ -1666,6 +1686,10 @@ export const deleteOrganizationAPIKeysBodySchema = z.object({
   ids: z.array(z.string()).max(50).describe('Array of API key IDs to delete')
 });
 
+export const deleteOrganizationAPIKeysPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
+
 export const listOrganizationMembersPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
@@ -1675,6 +1699,10 @@ export const listOrganizationMembersStatus200Schema = z.object({
 });
 
 export const listOrganizationMembersResponseSchema = listOrganizationMembersStatus200Schema;
+
+export const listOrganizationMembersPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
 
 export const removeOrganizationMemberPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
@@ -1702,6 +1730,11 @@ export const removeOrganizationMemberErrorSchema = z.union([
   removeOrganizationMemberStatus400Schema,
   removeOrganizationMemberStatus409Schema
 ]);
+
+export const removeOrganizationMemberPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization'),
+  userID: userIDSchema.describe('Unique identifier for a specific user account')
+});
 
 export const listOrganizationRolesPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
@@ -1740,6 +1773,10 @@ export const listOrganizationRolesErrorSchema = z.union([
   listOrganizationRolesStatus404Schema,
   listOrganizationRolesStatus5XXSchema
 ]);
+
+export const listOrganizationRolesPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
 
 export const setOrganizationMemberRolePathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
@@ -1796,6 +1833,11 @@ export const setOrganizationMemberRoleErrorSchema = z.union([
 export const setOrganizationMemberRoleBodySchema = setOrganizationMemberRoleRequestSchema.describe(
   'Request payload for setting the role of an organization member'
 );
+
+export const setOrganizationMemberRolePathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization'),
+  userID: userIDSchema.describe('Unique identifier for a specific user account')
+});
 
 export const listOrganizationInvitationsPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
@@ -1881,6 +1923,25 @@ export const listOrganizationInvitationsErrorSchema = z.union([
   listOrganizationInvitationsStatus5XXSchema
 ]);
 
+export const listOrganizationInvitationsPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
+
+export const listOrganizationInvitationsQuerySchema = z.object({
+  status: z.enum(['pending', 'expired']).optional().describe('Filter invitations by status'),
+  email: z.string().optional().describe('Filter invitations by email address'),
+  first_name: z.string().optional().describe('Filter invitations by first name'),
+  last_name: z.string().optional().describe('Filter invitations by last name'),
+  search: z.string().optional().describe('Search invitations by email or name'),
+  first: z
+    .int()
+    .min(0)
+    .optional()
+    .default(0)
+    .describe('Index of the first result to return (0-based offset for pagination)'),
+  max: z.int().min(1).max(100).optional().default(100).describe('Maximum number of results to return')
+});
+
 export const createOrganizationInvitationPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
@@ -1931,6 +1992,10 @@ export const createOrganizationInvitationErrorSchema = z.union([
 
 export const createOrganizationInvitationBodySchema = createOrganizationInvitationRequestSchema;
 
+export const createOrganizationInvitationPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
+
 export const getOrganizationInvitationPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
@@ -1976,6 +2041,11 @@ export const getOrganizationInvitationErrorSchema = z.union([
   getOrganizationInvitationStatus404Schema,
   getOrganizationInvitationStatus5XXSchema
 ]);
+
+export const getOrganizationInvitationPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization'),
+  invitationID: z.string().describe('Unique identifier for an invitation')
+});
 
 export const deleteOrganizationInvitationPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
@@ -2023,6 +2093,11 @@ export const deleteOrganizationInvitationErrorSchema = z.union([
   deleteOrganizationInvitationStatus5XXSchema
 ]);
 
+export const deleteOrganizationInvitationPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization'),
+  invitationID: z.string().describe('Unique identifier for an invitation')
+});
+
 export const resendOrganizationInvitationPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
@@ -2069,6 +2144,11 @@ export const resendOrganizationInvitationErrorSchema = z.union([
   resendOrganizationInvitationStatus5XXSchema
 ]);
 
+export const resendOrganizationInvitationPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization'),
+  invitationID: z.string().describe('Unique identifier for an invitation')
+});
+
 export const requestOrganizationDeletionPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
@@ -2111,6 +2191,10 @@ export const requestOrganizationDeletionErrorSchema = z.union([
   requestOrganizationDeletionStatus5XXSchema
 ]);
 
+export const requestOrganizationDeletionPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
+
 export const getOrganizationMembershipLimitsPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
@@ -2143,6 +2227,10 @@ export const getOrganizationMembershipLimitsErrorSchema = z.union([
   getOrganizationMembershipLimitsStatus5XXSchema
 ]);
 
+export const getOrganizationMembershipLimitsPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
+
 export const getOrganizationSSOPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
@@ -2169,6 +2257,10 @@ export const getOrganizationSSOErrorSchema = z.union([
   getOrganizationSSOStatus403Schema,
   getOrganizationSSOStatus5XXSchema
 ]);
+
+export const getOrganizationSSOPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
 
 export const claimOrganizationSSODomainPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
@@ -2210,6 +2302,10 @@ export const claimOrganizationSSODomainBodySchema = claimOrganizationSSODomainRe
   'Request payload for claiming an email domain for SSO'
 );
 
+export const claimOrganizationSSODomainPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
+
 export const deleteOrganizationSSODomainPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
@@ -2239,6 +2335,11 @@ export const deleteOrganizationSSODomainErrorSchema = z.union([
   deleteOrganizationSSODomainStatus409Schema,
   deleteOrganizationSSODomainStatus5XXSchema
 ]);
+
+export const deleteOrganizationSSODomainPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization'),
+  domain: z.string().describe('Email domain claimed for SSO')
+});
 
 export const verifyOrganizationSSODomainPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
@@ -2274,6 +2375,11 @@ export const verifyOrganizationSSODomainErrorSchema = z.union([
   verifyOrganizationSSODomainStatus409Schema,
   verifyOrganizationSSODomainStatus5XXSchema
 ]);
+
+export const verifyOrganizationSSODomainPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization'),
+  domain: z.string().describe('Email domain claimed for SSO')
+});
 
 export const createOrganizationSSOProviderPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
@@ -2314,6 +2420,10 @@ export const createOrganizationSSOProviderErrorSchema = z.union([
 export const createOrganizationSSOProviderBodySchema = createOrganizationSSOProviderRequestSchema.describe(
   'Request payload for registering an identity provider for a verified domain'
 );
+
+export const createOrganizationSSOProviderPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
 
 export const updateOrganizationSSOProviderPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
@@ -2362,6 +2472,11 @@ export const updateOrganizationSSOProviderBodySchema = updateOrganizationSSOProv
   "Request payload for replacing an identity provider's credentials"
 );
 
+export const updateOrganizationSSOProviderPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization'),
+  providerAlias: z.string().describe("Alias identifying one of the organization's SSO identity providers")
+});
+
 export const deleteOrganizationSSOProviderPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
@@ -2390,6 +2505,11 @@ export const deleteOrganizationSSOProviderErrorSchema = z.union([
   deleteOrganizationSSOProviderStatus403Schema,
   deleteOrganizationSSOProviderStatus5XXSchema
 ]);
+
+export const deleteOrganizationSSOProviderPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization'),
+  providerAlias: z.string().describe("Alias identifying one of the organization's SSO identity providers")
+});
 
 export const setOrganizationSSOProviderEnforcementPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
@@ -2432,6 +2552,11 @@ export const setOrganizationSSOProviderEnforcementBodySchema = organizationSSOEn
   "Whether members on a provider's domain must sign in through it."
 );
 
+export const setOrganizationSSOProviderEnforcementPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization'),
+  providerAlias: z.string().describe("Alias identifying one of the organization's SSO identity providers")
+});
+
 export const createBillingCheckoutSessionPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
@@ -2467,6 +2592,10 @@ export const createBillingCheckoutSessionErrorSchema = z.union([
   createBillingCheckoutSessionStatus403Schema,
   createBillingCheckoutSessionStatus5XXSchema
 ]);
+
+export const createBillingCheckoutSessionPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
 
 export const createBillingPaymentMethodSessionPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
@@ -2504,6 +2633,10 @@ export const createBillingPaymentMethodSessionErrorSchema = z.union([
   createBillingPaymentMethodSessionStatus5XXSchema
 ]);
 
+export const createBillingPaymentMethodSessionPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
+
 export const getBillingCustomerPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
@@ -2539,6 +2672,10 @@ export const getBillingCustomerErrorSchema = z.union([
   getBillingCustomerStatus404Schema,
   getBillingCustomerStatus5XXSchema
 ]);
+
+export const getBillingCustomerPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
 
 export const updateBillingCustomerPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
@@ -2583,6 +2720,10 @@ export const updateBillingCustomerErrorSchema = z.union([
 ]);
 
 export const updateBillingCustomerBodySchema = updateBillingCustomerRequestSchema;
+
+export const updateBillingCustomerPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
 
 export const getBillingInvoicesPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
@@ -2639,6 +2780,15 @@ export const getBillingInvoicesErrorSchema = z.union([
   getBillingInvoicesStatus5XXSchema
 ]);
 
+export const getBillingInvoicesPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
+
+export const getBillingInvoicesQuerySchema = z.object({
+  cursor: z.string().optional().describe('Pagination cursor from a previous response'),
+  limit: z.int().min(1).max(100).optional().default(20).describe('Number of invoices to fetch')
+});
+
 export const getBillingUpcomingInvoicePathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier for a specific organization'
 );
@@ -2674,6 +2824,10 @@ export const getBillingUpcomingInvoiceErrorSchema = z.union([
   getBillingUpcomingInvoiceStatus404Schema,
   getBillingUpcomingInvoiceStatus5XXSchema
 ]);
+
+export const getBillingUpcomingInvoicePathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier for a specific organization')
+});
 
 export const registerMarketplaceStatus200Schema = z.unknown();
 
@@ -2862,6 +3016,26 @@ export const queryBodySchema = SQLRequestSchema.describe(
   'SQL query request. Provide either `query` for a single query or `queries` for a batch.'
 );
 
+export const queryHeadersSchema = z.object({
+  'Array-Mode': z.enum(['true', 'false']).optional().describe('When `true`, return rows as arrays instead of objects.'),
+  'Raw-Text-Output': z
+    .enum(['true', 'false'])
+    .optional()
+    .describe('When `true`, return all values as strings without type conversion.'),
+  'Batch-Isolation-Level': z
+    .enum(['ReadCommitted', 'ReadUncommitted', 'RepeatableRead', 'Serializable'])
+    .optional()
+    .describe('Transaction isolation level for batch queries.'),
+  'Batch-Read-Only': z
+    .enum(['true', 'false'])
+    .optional()
+    .describe('When `true`, execute the batch transaction in read-only mode.'),
+  'Batch-Deferrable': z
+    .enum(['true', 'false'])
+    .optional()
+    .describe('When `true`, execute the batch transaction in deferrable mode.')
+});
+
 export const websocketStatus101Schema = z.unknown();
 
 export const websocketStatus400Schema = z.unknown();
@@ -2912,6 +3086,20 @@ export const sendMcpRequestErrorSchema = z.union([
 export const sendMcpRequestBodySchema = JSONRPCMessageSchema.describe(
   'A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a\nresponse; a notification carries `method` without `id` and is not. The `method` and\n`params` values are defined by the MCP specification.\n'
 );
+
+export const sendMcpRequestHeadersSchema = z.object({
+  Accept: z
+    .string()
+    .default('application/json, text/event-stream')
+    .describe('Must list both `application/json` and `text/event-stream`.'),
+  'MCP-Protocol-Version': z
+    .string()
+    .optional()
+    .describe(
+      'Protocol revision negotiated during `initialize`, echoed on every subsequent request.\nOmitted on the `initialize` request itself.\n'
+    )
+    .meta({ examples: ['2025-06-18'] })
+});
 
 export const githubWebhookStatus200Schema = z.unknown();
 
@@ -2969,6 +3157,12 @@ export const listRegionsErrorSchema = z.union([
   listRegionsStatusDefaultSchema
 ]);
 
+export const listRegionsPathSchema = z.object({
+  organizationID: organizationIDSchema.describe(
+    'Unique identifier of the organization to check region availability for'
+  )
+});
+
 export const listInstanceTypesPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization to check instance type availability for'
 );
@@ -3013,6 +3207,16 @@ export const listInstanceTypesErrorSchema = z.union([
   listInstanceTypesStatusDefaultSchema
 ]);
 
+export const listInstanceTypesPathSchema = z.object({
+  organizationID: organizationIDSchema.describe(
+    'Unique identifier of the organization to check instance type availability for'
+  )
+});
+
+export const listInstanceTypesQuerySchema = z.object({
+  region: z.string().describe('Region to check instance type availability for')
+});
+
 export const listImagesPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization to check image availability'
 );
@@ -3049,6 +3253,14 @@ export const listImagesErrorSchema = z.union([
   listImagesStatusDefaultSchema
 ]);
 
+export const listImagesPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization to check image availability')
+});
+
+export const listImagesQuerySchema = z.object({
+  region: z.string().optional().describe('Region to check image availability for organization')
+});
+
 export const listExtensionsPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization to check instance type availability for'
 );
@@ -3084,6 +3296,17 @@ export const listExtensionsErrorSchema = z.union([
   listExtensionsStatusDefaultSchema
 ]);
 
+export const listExtensionsPathSchema = z.object({
+  organizationID: organizationIDSchema.describe(
+    'Unique identifier of the organization to check instance type availability for'
+  )
+});
+
+export const listExtensionsQuerySchema = z.object({
+  image: z.string().describe('Image for which we list extensions'),
+  region: z.string().optional().describe('Region to list extensions for image in')
+});
+
 export const getOrganizationLimitsPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization'
 );
@@ -3111,6 +3334,10 @@ export const getOrganizationLimitsErrorSchema = z.union([
   getOrganizationLimitsStatus403Schema,
   getOrganizationLimitsStatus5XXSchema
 ]);
+
+export const getOrganizationLimitsPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization')
+});
 
 export const listProjectsPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization to list projects from'
@@ -3142,6 +3369,10 @@ export const listProjectsErrorSchema = z.union([
   listProjectsStatus5XXSchema,
   listProjectsStatusDefaultSchema
 ]);
+
+export const listProjectsPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization to list projects from')
+});
 
 export const createProjectPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization to create the project in'
@@ -3179,6 +3410,10 @@ export const createProjectBodySchema = z.object({
   configuration: projectConfigurationSchema
     .optional()
     .describe('Configuration details for a project, including its scale to zero settings')
+});
+
+export const createProjectPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization to create the project in')
 });
 
 export const getProjectPathOrganizationIDSchema = organizationIDSchema.describe(
@@ -3219,6 +3454,11 @@ export const getProjectErrorSchema = z.union([
   getProjectStatus5XXSchema,
   getProjectStatusDefaultSchema
 ]);
+
+export const getProjectPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization containing the project'),
+  projectID: z.string().describe('Unique identifier of the project to retrieve')
+});
 
 export const updateProjectPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization containing the project'
@@ -3264,6 +3504,11 @@ export const updateProjectBodySchema = z.object({
   configuration: updateProjectConfigurationSchema.optional().describe('Partial configuration update for a project')
 });
 
+export const updateProjectPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization containing the project'),
+  projectID: z.string().describe('Unique identifier of the project to update')
+});
+
 export const deleteProjectPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization containing the project'
 );
@@ -3301,6 +3546,11 @@ export const deleteProjectErrorSchema = z.union([
   deleteProjectStatusDefaultSchema
 ]);
 
+export const deleteProjectPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization containing the project'),
+  projectID: z.string().describe('Unique identifier of the project to delete')
+});
+
 export const getProjectLimitsPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization'
 );
@@ -3329,6 +3579,11 @@ export const getProjectLimitsErrorSchema = z.union([
   getProjectLimitsStatus5XXSchema,
   getProjectLimitsStatusDefaultSchema
 ]);
+
+export const getProjectLimitsPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization'),
+  projectID: z.string().describe('Unique identifier of the project to get limits for')
+});
 
 export const listBackupsPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization containing the project'
@@ -3371,6 +3626,11 @@ export const listBackupsErrorSchema = z.union([
   listBackupsStatusDefaultSchema
 ]);
 
+export const listBackupsPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization containing the project'),
+  projectID: z.string().describe('Unique identifier of the project to retrieve backups for')
+});
+
 export const getBackupPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization containing the project'
 );
@@ -3412,6 +3672,12 @@ export const getBackupErrorSchema = z.union([
   getBackupStatusDefaultSchema
 ]);
 
+export const getBackupPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization containing the project'),
+  projectID: z.string().describe('Unique identifier of the project to retrieve backups for'),
+  backupID: z.string().describe('Unique identifier of the backup for the project')
+});
+
 export const listBranchesPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization containing the project'
 );
@@ -3452,6 +3718,11 @@ export const listBranchesErrorSchema = z.union([
   listBranchesStatus5XXSchema,
   listBranchesStatusDefaultSchema
 ]);
+
+export const listBranchesPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization containing the project'),
+  projectID: z.string().describe('Unique identifier of the project to list branches from')
+});
 
 export const createBranchPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization containing the project'
@@ -3504,6 +3775,11 @@ export const createBranchBodySchema = branchCreationDetailsSchema.describe(
   'Details required when creating a new branch'
 );
 
+export const createBranchPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization containing the project'),
+  projectID: z.string().describe('Unique identifier of the project to create the branch in')
+});
+
 export const describeBranchPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization containing the project'
 );
@@ -3548,6 +3824,12 @@ export const describeBranchErrorSchema = z.union([
   describeBranchStatus5XXSchema,
   describeBranchStatusDefaultSchema
 ]);
+
+export const describeBranchPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization containing the project'),
+  projectID: z.string().describe('Unique identifier of the project containing the branch'),
+  branchID: z.string().describe('Unique identifier of the branch to retrieve details for')
+});
 
 export const updateBranchPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization containing the project'
@@ -3596,6 +3878,12 @@ export const updateBranchBodySchema = branchUpdateDetailsSchema.describe(
   'Details that can be updated for an existing branch'
 );
 
+export const updateBranchPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization containing the project'),
+  projectID: z.string().describe('Unique identifier of the project containing the branch'),
+  branchID: z.string().describe('Unique identifier of the branch to update')
+});
+
 export const deleteBranchPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization containing the project'
 );
@@ -3636,6 +3924,12 @@ export const deleteBranchErrorSchema = z.union([
   deleteBranchStatus5XXSchema,
   deleteBranchStatusDefaultSchema
 ]);
+
+export const deleteBranchPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization containing the project'),
+  projectID: z.string().describe('Unique identifier of the project containing the branch'),
+  branchID: z.string().describe('Unique identifier of the branch to delete')
+});
 
 export const getBranchCredentialsPathOrganizationIDSchema = organizationIDSchema;
 
@@ -3682,6 +3976,20 @@ export const getBranchCredentialsErrorSchema = z.union([
   getBranchCredentialsStatusDefaultSchema
 ]);
 
+export const getBranchCredentialsPathSchema = z.object({
+  organizationID: organizationIDSchema,
+  projectID: z.string(),
+  branchID: z.string()
+});
+
+export const getBranchCredentialsQuerySchema = z.object({
+  username: z
+    .string()
+    .optional()
+    .default('xata')
+    .describe('Username that the credentials requested for, defaults to `xata`')
+});
+
 export const rotateBranchCredentialsPathOrganizationIDSchema = organizationIDSchema;
 
 export const rotateBranchCredentialsPathProjectIDSchema = z.string();
@@ -3723,6 +4031,12 @@ export const rotateBranchCredentialsBodySchema = rotateCredentialsRequestSchema.
   'Request to rotate credentials for a branch database user'
 );
 
+export const rotateBranchCredentialsPathSchema = z.object({
+  organizationID: organizationIDSchema,
+  projectID: z.string(),
+  branchID: z.string()
+});
+
 export const branchMetricsPathOrganizationIDSchema = organizationIDSchema;
 
 export const branchMetricsPathProjectIDSchema = z.string();
@@ -3763,6 +4077,12 @@ export const branchMetricsErrorSchema = z.union([
 ]);
 
 export const branchMetricsBodySchema = branchMetricsRequestSchema;
+
+export const branchMetricsPathSchema = z.object({
+  organizationID: organizationIDSchema,
+  projectID: z.string(),
+  branchID: z.string()
+});
 
 export const restoreFromBackupPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization containing the project'
@@ -3819,6 +4139,12 @@ export const restoreFromBackupBodySchema = restoreDetailsSchema.describe(
   'Metadata about a backup, used in request to create a restore. If configuration is not provided, the branch will inherit the source branch configuration.'
 );
 
+export const restoreFromBackupPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization containing the project'),
+  projectID: z.string().describe('Unique identifier of the project containing the source branch'),
+  branchID: z.string().describe('Unique identifier of the source branch of the backup')
+});
+
 export const branchLogsPathOrganizationIDSchema = organizationIDSchema;
 
 export const branchLogsPathProjectIDSchema = z.string();
@@ -3859,6 +4185,12 @@ export const branchLogsErrorSchema = z.union([
 ]);
 
 export const branchLogsBodySchema = branchLogsRequestSchema;
+
+export const branchLogsPathSchema = z.object({
+  organizationID: organizationIDSchema,
+  projectID: z.string(),
+  branchID: z.string()
+});
 
 export const getBranchPostgresConfigPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization containing the project'
@@ -3905,6 +4237,12 @@ export const getBranchPostgresConfigErrorSchema = z.union([
   getBranchPostgresConfigStatusDefaultSchema
 ]);
 
+export const getBranchPostgresConfigPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization containing the project'),
+  projectID: z.string().describe('Unique identifier of the project containing the branch'),
+  branchID: z.string().describe('Unique identifier of the branch to retrieve PostgreSQL configuration for')
+});
+
 export const listGithubAppInstallationsPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization'
 );
@@ -3935,6 +4273,10 @@ export const listGithubAppInstallationsErrorSchema = z.union([
   listGithubAppInstallationsStatus5XXSchema,
   listGithubAppInstallationsStatusDefaultSchema
 ]);
+
+export const listGithubAppInstallationsPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization')
+});
 
 export const createGithubAppInstallationPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization'
@@ -3974,6 +4316,10 @@ export const createGithubAppInstallationErrorSchema = z.union([
 ]);
 
 export const createGithubAppInstallationBodySchema = createGithubAppInstallationRequestSchema;
+
+export const createGithubAppInstallationPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization')
+});
 
 export const updateGithubAppInstallationPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization'
@@ -4024,6 +4370,11 @@ export const updateGithubAppInstallationErrorSchema = z.union([
 
 export const updateGithubAppInstallationBodySchema = updateGithubAppInstallationRequestSchema;
 
+export const updateGithubAppInstallationPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization'),
+  githubInstallationID: z.string().describe('Unique identifier of the GitHub installation record')
+});
+
 export const getGithubRepositoryPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization'
 );
@@ -4058,6 +4409,12 @@ export const getGithubRepositoryErrorSchema = z.union([
   getGithubRepositoryStatus5XXSchema,
   getGithubRepositoryStatusDefaultSchema
 ]);
+
+export const getGithubRepositoryPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization'),
+  projectID: z.string().describe('Unique identifier of the project'),
+  branchID: z.string().describe('Unique identifier of the branch')
+});
 
 export const createGithubRepositoryPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization'
@@ -4102,6 +4459,12 @@ export const createGithubRepositoryErrorSchema = z.union([
 
 export const createGithubRepositoryBodySchema = createGithubRepositoryRequestSchema;
 
+export const createGithubRepositoryPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization'),
+  projectID: z.string().describe('Unique identifier of the project'),
+  branchID: z.string().describe('Unique identifier of the branch')
+});
+
 export const updateGithubRepositoryPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization'
 );
@@ -4145,6 +4508,12 @@ export const updateGithubRepositoryErrorSchema = z.union([
 
 export const updateGithubRepositoryBodySchema = updateGithubRepositoryRequestSchema;
 
+export const updateGithubRepositoryPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization'),
+  projectID: z.string().describe('Unique identifier of the project'),
+  branchID: z.string().describe('Unique identifier of the branch')
+});
+
 export const deleteGithubRepositoryPathOrganizationIDSchema = organizationIDSchema.describe(
   'Unique identifier of the organization'
 );
@@ -4184,6 +4553,12 @@ export const deleteGithubRepositoryErrorSchema = z.union([
   deleteGithubRepositoryStatusDefaultSchema
 ]);
 
+export const deleteGithubRepositoryPathSchema = z.object({
+  organizationID: organizationIDSchema.describe('Unique identifier of the organization'),
+  projectID: z.string().describe('Unique identifier of the project'),
+  branchID: z.string().describe('Unique identifier of the branch')
+});
+
 export const upsertInstallationPathInstallationIdSchema = z.string().describe('Vercel installation id (icfg_...).');
 
 export const upsertInstallationStatus204Schema = z.unknown();
@@ -4204,6 +4579,10 @@ export const upsertInstallationErrorSchema = z.union([
 
 export const upsertInstallationBodySchema = upsertInstallationRequestSchema;
 
+export const upsertInstallationPathSchema = z.object({
+  installationId: z.string().describe('Vercel installation id (icfg_...).')
+});
+
 export const deleteInstallationPathInstallationIdSchema = z.string().describe('Vercel installation id (icfg_...).');
 
 export const deleteInstallationStatus204Schema = z.unknown();
@@ -4220,6 +4599,10 @@ export const deleteInstallationErrorSchema = z.union([
 ]);
 
 export const deleteInstallationBodySchema = deleteInstallationRequestSchema.optional();
+
+export const deleteInstallationPathSchema = z.object({
+  installationId: z.string().describe('Vercel installation id (icfg_...).')
+});
 
 export const listBillingPlansForProductPathProductSlugSchema = z
   .string()
@@ -4254,6 +4637,14 @@ export const listBillingPlansForProductErrorSchema = z.union([
   listBillingPlansForProductStatus404Schema
 ]);
 
+export const listBillingPlansForProductPathSchema = z.object({
+  productSlug: z.string().describe('Vercel product slug (e.g. xata-postgres).')
+});
+
+export const listBillingPlansForProductQuerySchema = z.object({
+  metadata: z.string().optional().describe('Opaque metadata forwarded by Vercel.')
+});
+
 export const getResourcePathInstallationIdSchema = z.string().describe('Vercel installation id (icfg_...).');
 
 export const getResourcePathResourceIdSchema = z.string().describe('Vercel resource id.');
@@ -4275,6 +4666,11 @@ export const getResourceErrorSchema = z.union([
   getResourceStatus404Schema,
   getResourceStatus500Schema
 ]);
+
+export const getResourcePathSchema = z.object({
+  installationId: z.string().describe('Vercel installation id (icfg_...).'),
+  resourceId: z.string().describe('Vercel resource id.')
+});
 
 export const deleteResourcePathInstallationIdSchema = z.string().describe('Vercel installation id (icfg_...).');
 
@@ -4298,6 +4694,11 @@ export const deleteResourceErrorSchema = z.union([
   deleteResourceStatus429Schema,
   deleteResourceStatus500Schema
 ]);
+
+export const deleteResourcePathSchema = z.object({
+  installationId: z.string().describe('Vercel installation id (icfg_...).'),
+  resourceId: z.string().describe('Vercel resource id.')
+});
 
 export const provisionResourcePathInstallationIdSchema = z.string().describe('Vercel installation id (icfg_...).');
 
@@ -4341,6 +4742,19 @@ export const provisionResourceErrorSchema = z.union([
 export const provisionResourceBodySchema = provisionResourceRequestSchema.describe(
   'Vercel Provision Resource request body.'
 );
+
+export const provisionResourcePathSchema = z.object({
+  installationId: z.string().describe('Vercel installation id (icfg_...).')
+});
+
+export const provisionResourceHeadersSchema = z.object({
+  'Idempotency-Key': z
+    .string()
+    .optional()
+    .describe(
+      'A stable key Vercel sends to make retries safe. A repeat with the same\nkey returns the existing resource; reusing it with a different body is a\nconflict (409). Optional — without it each call provisions a new resource.\n'
+    )
+});
 
 export const orbWebhookStatus200Schema = z.unknown();
 

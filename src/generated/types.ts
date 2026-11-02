@@ -694,13 +694,13 @@ export type FullAPIKey = {
 export type OrganizationMembershipLimits = {
   /**
    * @description Maximum number of members allowed in the organization
-   * @minLength 1
+   * @minimum 1
    * @type integer
    */
   maxMembers: number;
   /**
    * @description Maximum number of pending invitations allowed at once
-   * @minLength 1
+   * @minimum 1
    * @type integer
    */
   maxInvites: number;
@@ -1037,8 +1037,8 @@ export type FieldDefinition = {
    * @description OID of the source table (0 if not a table column).
    *
    * Format: `int64`
-   * @minLength 0
-   * @maxLength 4294967295
+   * @minimum 0
+   * @maximum 4294967295
    * @type integer
    */
   tableID: number;
@@ -1046,8 +1046,8 @@ export type FieldDefinition = {
    * @description Attribute number of the column within the table (0 if not a table column, negative for system columns).
    *
    * Format: `int32`
-   * @minLength -32768
-   * @maxLength 32767
+   * @minimum -32768
+   * @maximum 32767
    * @type integer
    */
   columnID: number;
@@ -1055,8 +1055,8 @@ export type FieldDefinition = {
    * @description OID of the column data type.
    *
    * Format: `int64`
-   * @minLength 0
-   * @maxLength 4294967295
+   * @minimum 0
+   * @maximum 4294967295
    * @type integer
    */
   dataTypeID: number;
@@ -1064,8 +1064,8 @@ export type FieldDefinition = {
    * @description Data type size (negative for variable-length types).
    *
    * Format: `int32`
-   * @minLength -32768
-   * @maxLength 32767
+   * @minimum -32768
+   * @maximum 32767
    * @type integer
    */
   dataTypeSize: number;
@@ -1654,7 +1654,7 @@ export type ClusterConfiguration = {
    * @description Branch storage in GiB (gigabytes)
    *
    * Format: `int32`
-   * @maxLength 250
+   * @maximum 250
    * @type integer | undefined
    */
   storage?: number | undefined;
@@ -1672,8 +1672,8 @@ export type ClusterConfiguration = {
    * @description Number of replicas in the branch. Every child branch is created with no replicas. This can be updated.
    *
    * Format: `int32`
-   * @minLength 0
-   * @maxLength 4
+   * @minimum 0
+   * @maximum 4
    * @type integer
    */
   replicas: number;
@@ -1914,15 +1914,15 @@ export type BranchStatus = {
   lifecycle?: ClusterLifecycle | undefined;
   /**
    * @description Total number of database instances in the cluster
-   * @minLength 1
-   * @maxLength 5
+   * @minimum 1
+   * @maximum 5
    * @type integer
    */
   instanceCount: number;
   /**
    * @description Number of database instances that are ready and operational
-   * @minLength 0
-   * @maxLength 5
+   * @minimum 0
+   * @maximum 5
    * @type integer
    */
   instanceReadyCount: number;
@@ -1942,8 +1942,8 @@ export type BackupConfiguration = {
    * @description Number of days of point-in-time recovery to guarantee. You can restore the branch to any point within this many days. To provide this, the most recent full backup taken before the start of the window is always kept, along with all changes made after it. Because of this, restore points older than retentionPeriod are sometimes available, but how far back they go depends on the backup schedule and is not guaranteed.
    *
    * Format: `int32`
-   * @minLength 2
-   * @maxLength 35
+   * @minimum 2
+   * @maximum 35
    * @default 2
    * @type integer | undefined
    */
@@ -2192,8 +2192,8 @@ export type BranchUpdateDetails = {
    * @description Number of database replicas to scale to
    *
    * Format: `int32`
-   * @minLength 0
-   * @maxLength 4
+   * @minimum 0
+   * @maximum 4
    * @type integer | undefined
    */
   replicas?: number | undefined;
@@ -2201,7 +2201,7 @@ export type BranchUpdateDetails = {
    * @description Branch storage in GiB (gigabytes). The maximum allowed value depends on the organization's storage limit.
    *
    * Format: `int32`
-   * @minLength 1
+   * @minimum 1
    * @type integer | undefined
    */
   storage?: number | undefined;
@@ -2273,7 +2273,7 @@ export type BranchMetricName = (typeof branchMetricName)[keyof typeof branchMetr
 export type EffectiveProjectLimits = {
   /**
    * @description Maximum character length allowed for branch descriptions
-   * @minLength 25
+   * @minimum 25
    * @type integer
    */
   maxDescriptionLength: number;
@@ -2284,31 +2284,31 @@ export type EffectiveProjectLimits = {
   maxBranchesPerProject: number;
   /**
    * @description Maximum number of database instances allowed per branch
-   * @minLength 1
+   * @minimum 1
    * @type integer
    */
   maxInstancesPerBranch: number;
   /**
    * @description Minimum number of database instances required per branch
-   * @minLength 1
+   * @minimum 1
    * @type integer
    */
   minInstancesPerBranch: number;
   /**
    * @description Maximum VCPUs (in millicores) allowed per instance; instance types with a higher VCPUsRequest are unavailable
-   * @minLength 1
+   * @minimum 1
    * @type integer
    */
   maxAllowedInstanceType: number;
   /**
    * @description Maximum number of branches that can be created in a rolling one-hour window
-   * @minLength 1
+   * @minimum 1
    * @type integer
    */
   maxBranchesPerHour: number;
   /**
    * @description Maximum storage in GiB (gigabytes) allowed per branch; 0 means no limit
-   * @minLength 0
+   * @minimum 0
    * @type integer
    */
   maxStorageGBPerBranch: number;
@@ -2320,19 +2320,19 @@ export type EffectiveProjectLimits = {
 export type OrganizationLimits = EffectiveProjectLimits & {
   /**
    * @description Maximum number of projects allowed in the organization
-   * @minLength 1
+   * @minimum 1
    * @type integer
    */
   maxProjects: number;
   /**
    * @description Maximum number of projects that can be created in a rolling one-hour window
-   * @minLength 1
+   * @minimum 1
    * @type integer
    */
   maxProjectsPerHour: number;
   /**
    * @description Maximum number of active branches allowed across all projects in the organization
-   * @minLength 1
+   * @minimum 1
    * @type integer
    */
   maxBranchesPerOrg: number;
@@ -2523,8 +2523,8 @@ export type BranchLogsRequest = {
    */
   filters?: LogFilter[] | undefined;
   /**
-   * @minLength 1
-   * @maxLength 200
+   * @minimum 1
+   * @maximum 200
    * @default 100
    * @type integer | undefined
    */
@@ -4233,15 +4233,15 @@ export type ListOrganizationInvitationsQueryParams = {
   search?: string | undefined;
   /**
    * @description Index of the first result to return (0-based offset for pagination)
-   * @minLength 0
+   * @minimum 0
    * @default 0
    * @type integer | undefined
    */
   first?: number | undefined;
   /**
    * @description Maximum number of results to return
-   * @minLength 1
-   * @maxLength 100
+   * @minimum 1
+   * @maximum 100
    * @default 100
    * @type integer | undefined
    */
@@ -5877,8 +5877,8 @@ export type GetBillingInvoicesQueryParams = {
   cursor?: string | undefined;
   /**
    * @description Number of invoices to fetch
-   * @minLength 1
-   * @maxLength 100
+   * @minimum 1
+   * @maximum 100
    * @default 20
    * @type integer | undefined
    */
