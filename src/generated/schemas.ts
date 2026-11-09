@@ -993,6 +993,7 @@ export const branchMetricsRequestSchema = z.object({
   instances: z.array(z.string()).optional().describe('List of instance IDs to query'),
   aggregations: z
     .array(z.enum(['avg', 'max', 'min']))
+    .min(1)
     .describe(
       'List of aggregations to get, this is how the data-points within the interval are aggregated. Each one will generate a separate time-series per metric in the response.'
     )
