@@ -1,5 +1,13 @@
 # @xata.io/api
 
+## 0.1.29
+
+### Patch Changes
+
+- [#3452](https://github.com/xataio/frontend/pull/3452) [`22b9b39`](https://github.com/xataio/frontend/commit/22b9b39f3fb5b89574bba3910c1e4e55154ba568) Thanks [@xata-bot](https://github.com/xata-bot)! - Regenerate the API client with kubb 5.15, which adds request parameter schemas and corrects numeric JSDoc bounds
+
+- [#3450](https://github.com/xataio/frontend/pull/3450) [`92e9c19`](https://github.com/xataio/frontend/commit/92e9c193cc05b6af827d79dab04c9669482c96d0) Thanks [@xata-bot](https://github.com/xata-bot)! - Update dependencies, regenerate the API client with kubb 5.12, and format the generated pgroll and pgstream definitions with Biome
+
 ## 0.1.28
 
 ### Patch Changes
