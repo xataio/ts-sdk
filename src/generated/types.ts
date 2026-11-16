@@ -178,7 +178,7 @@ export type Organization = {
   /**
    * @description Marketplace provider for this organization (e.g. "aws"), if billed through a marketplace
    */
-  marketplace?: (OrganizationMarketplaceProvider | null) | undefined;
+  marketplace?: (OrganizationMarketplaceProvider | (null | null)) | undefined;
 };
 
 export const organizationRoleName = {
@@ -384,7 +384,7 @@ export type BillingCustomerResponse = {
   /**
    * @description Marketplace provider for this organization (e.g. "aws"), if billed through a marketplace
    */
-  marketplace: OrganizationMarketplaceProvider | null;
+  marketplace: OrganizationMarketplaceProvider | (null | null);
   /**
    * @description Read-only collection method configured for the organization.
    * @type string
@@ -399,7 +399,7 @@ export type BillingCustomerResponse = {
   /**
    * @description The Stripe default card payment method, when one is configured and retrievable.
    */
-  default_payment_method: BillingPaymentMethod | null;
+  default_payment_method: BillingPaymentMethod | (null | null);
   credits: BillingCredit[];
   credit_details: BillingCreditDetails;
 };
@@ -849,7 +849,7 @@ export type OrganizationSSODomain = {
   /**
    * @description The DNS record that proves control of the domain. It must stay published while the domain is verified.
    */
-  verification?: (OrganizationSSODomainVerification | null) | undefined;
+  verification?: (OrganizationSSODomainVerification | (null | null)) | undefined;
   /**
    * @description When the daily recheck first found the record missing from a verified domain.
    *
@@ -3276,7 +3276,7 @@ export type GetOrganizationsList404 = {
   message: string;
 };
 
-export type GetOrganizationsList5XX = unknown;
+export type GetOrganizationsList5xx = unknown;
 
 export type GetOrganizationsListOptions = {
   body?: never | undefined;
@@ -3290,7 +3290,7 @@ export type GetOrganizationsListResponses = {
   '400': GetOrganizationsList400;
   '401': GetOrganizationsList401;
   '404': GetOrganizationsList404;
-  '5XX': GetOrganizationsList5XX;
+  '5xx': GetOrganizationsList5xx;
 };
 
 /**
@@ -3347,7 +3347,7 @@ export type CreateOrganization404 = {
   message: string;
 };
 
-export type CreateOrganization5XX = unknown;
+export type CreateOrganization5xx = unknown;
 
 /**
  * @description Request payload for creating a new organization
@@ -3356,7 +3356,7 @@ export type CreateOrganization5XX = unknown;
 export type CreateOrganizationMutationRequest = CreateOrganizationRequest | undefined;
 
 export type CreateOrganizationOptions = {
-  body: CreateOrganizationMutationRequest;
+  body?: CreateOrganizationMutationRequest | undefined;
   path?: never | undefined;
   query?: never | undefined;
   headers?: never | undefined;
@@ -3367,7 +3367,7 @@ export type CreateOrganizationResponses = {
   '400': CreateOrganization400;
   '401': CreateOrganization401;
   '404': CreateOrganization404;
-  '5XX': CreateOrganization5XX;
+  '5xx': CreateOrganization5xx;
 };
 
 /**
@@ -3450,7 +3450,7 @@ export type GetOrganization404 = {
   message: string;
 };
 
-export type GetOrganization5XX = unknown;
+export type GetOrganization5xx = unknown;
 
 export type GetOrganizationOptions = {
   body?: never | undefined;
@@ -3465,7 +3465,7 @@ export type GetOrganizationResponses = {
   '401': GetOrganization401;
   '403': GetOrganization403;
   '404': GetOrganization404;
-  '5XX': GetOrganization5XX;
+  '5xx': GetOrganization5xx;
 };
 
 /**
@@ -3548,7 +3548,7 @@ export type UpdateOrganization404 = {
   message: string;
 };
 
-export type UpdateOrganization5XX = unknown;
+export type UpdateOrganization5xx = unknown;
 
 export type UpdateOrganizationMutationRequest =
   | {
@@ -3567,7 +3567,7 @@ export type UpdateOrganizationMutationRequest =
   | undefined;
 
 export type UpdateOrganizationOptions = {
-  body: UpdateOrganizationMutationRequest;
+  body?: UpdateOrganizationMutationRequest | undefined;
   path: UpdateOrganizationPathParams;
   query?: never | undefined;
   headers?: never | undefined;
@@ -3579,7 +3579,7 @@ export type UpdateOrganizationResponses = {
   '401': UpdateOrganization401;
   '403': UpdateOrganization403;
   '404': UpdateOrganization404;
-  '5XX': UpdateOrganization5XX;
+  '5xx': UpdateOrganization5xx;
 };
 
 /**
@@ -3658,7 +3658,7 @@ export type DeleteOrganization404 = {
   message: string;
 };
 
-export type DeleteOrganization5XX = unknown;
+export type DeleteOrganization5xx = unknown;
 
 export type DeleteOrganizationOptions = {
   body?: never | undefined;
@@ -3673,7 +3673,7 @@ export type DeleteOrganizationResponses = {
   '401': DeleteOrganization401;
   '403': DeleteOrganization403;
   '404': DeleteOrganization404;
-  '5XX': DeleteOrganization5XX;
+  '5xx': DeleteOrganization5xx;
 };
 
 /**
@@ -3758,7 +3758,7 @@ export type ListOrganizationAPIKeys404 = {
   message: string;
 };
 
-export type ListOrganizationAPIKeys5XX = unknown;
+export type ListOrganizationAPIKeys5xx = unknown;
 
 export type ListOrganizationAPIKeysOptions = {
   body?: never | undefined;
@@ -3773,7 +3773,7 @@ export type ListOrganizationAPIKeysResponses = {
   '401': ListOrganizationAPIKeys401;
   '403': ListOrganizationAPIKeys403;
   '404': ListOrganizationAPIKeys404;
-  '5XX': ListOrganizationAPIKeys5XX;
+  '5xx': ListOrganizationAPIKeys5xx;
 };
 
 /**
@@ -4046,7 +4046,7 @@ export type ListOrganizationRoles404 = {
   message: string;
 };
 
-export type ListOrganizationRoles5XX = unknown;
+export type ListOrganizationRoles5xx = unknown;
 
 export type ListOrganizationRolesOptions = {
   body?: never | undefined;
@@ -4060,7 +4060,7 @@ export type ListOrganizationRolesResponses = {
   '401': ListOrganizationRoles401;
   '403': ListOrganizationRoles403;
   '404': ListOrganizationRoles404;
-  '5XX': ListOrganizationRoles5XX;
+  '5xx': ListOrganizationRoles5xx;
 };
 
 /**
@@ -4158,7 +4158,7 @@ export type SetOrganizationMemberRole409 = {
   message: string;
 };
 
-export type SetOrganizationMemberRole5XX = unknown;
+export type SetOrganizationMemberRole5xx = unknown;
 
 /**
  * @description Request payload for setting the role of an organization member
@@ -4180,7 +4180,7 @@ export type SetOrganizationMemberRoleResponses = {
   '403': SetOrganizationMemberRole403;
   '404': SetOrganizationMemberRole404;
   '409': SetOrganizationMemberRole409;
-  '5XX': SetOrganizationMemberRole5XX;
+  '5xx': SetOrganizationMemberRole5xx;
 };
 
 /**
@@ -4312,7 +4312,7 @@ export type ListOrganizationInvitations404 = {
   message: string;
 };
 
-export type ListOrganizationInvitations5XX = unknown;
+export type ListOrganizationInvitations5xx = unknown;
 
 export type ListOrganizationInvitationsOptions = {
   body?: never | undefined;
@@ -4327,7 +4327,7 @@ export type ListOrganizationInvitationsResponses = {
   '401': ListOrganizationInvitations401;
   '403': ListOrganizationInvitations403;
   '404': ListOrganizationInvitations404;
-  '5XX': ListOrganizationInvitations5XX;
+  '5xx': ListOrganizationInvitations5xx;
 };
 
 /**
@@ -4419,7 +4419,7 @@ export type CreateOrganizationInvitation409 = {
   message: string;
 };
 
-export type CreateOrganizationInvitation5XX = unknown;
+export type CreateOrganizationInvitation5xx = unknown;
 
 export type CreateOrganizationInvitationMutationRequest = CreateOrganizationInvitationRequest;
 
@@ -4437,7 +4437,7 @@ export type CreateOrganizationInvitationResponses = {
   '403': CreateOrganizationInvitation403;
   '404': CreateOrganizationInvitation404;
   '409': CreateOrganizationInvitation409;
-  '5XX': CreateOrganizationInvitation5XX;
+  '5xx': CreateOrganizationInvitation5xx;
 };
 
 /**
@@ -4521,7 +4521,7 @@ export type GetOrganizationInvitation404 = {
   message: string;
 };
 
-export type GetOrganizationInvitation5XX = unknown;
+export type GetOrganizationInvitation5xx = unknown;
 
 export type GetOrganizationInvitationOptions = {
   body?: never | undefined;
@@ -4536,7 +4536,7 @@ export type GetOrganizationInvitationResponses = {
   '401': GetOrganizationInvitation401;
   '403': GetOrganizationInvitation403;
   '404': GetOrganizationInvitation404;
-  '5XX': GetOrganizationInvitation5XX;
+  '5xx': GetOrganizationInvitation5xx;
 };
 
 /**
@@ -4620,7 +4620,7 @@ export type DeleteOrganizationInvitation404 = {
   message: string;
 };
 
-export type DeleteOrganizationInvitation5XX = unknown;
+export type DeleteOrganizationInvitation5xx = unknown;
 
 export type DeleteOrganizationInvitationOptions = {
   body?: never | undefined;
@@ -4635,7 +4635,7 @@ export type DeleteOrganizationInvitationResponses = {
   '401': DeleteOrganizationInvitation401;
   '403': DeleteOrganizationInvitation403;
   '404': DeleteOrganizationInvitation404;
-  '5XX': DeleteOrganizationInvitation5XX;
+  '5xx': DeleteOrganizationInvitation5xx;
 };
 
 /**
@@ -4719,7 +4719,7 @@ export type ResendOrganizationInvitation404 = {
   message: string;
 };
 
-export type ResendOrganizationInvitation5XX = unknown;
+export type ResendOrganizationInvitation5xx = unknown;
 
 export type ResendOrganizationInvitationOptions = {
   body?: never | undefined;
@@ -4734,7 +4734,7 @@ export type ResendOrganizationInvitationResponses = {
   '401': ResendOrganizationInvitation401;
   '403': ResendOrganizationInvitation403;
   '404': ResendOrganizationInvitation404;
-  '5XX': ResendOrganizationInvitation5XX;
+  '5xx': ResendOrganizationInvitation5xx;
 };
 
 /**
@@ -4813,7 +4813,7 @@ export type RequestOrganizationDeletion409 = {
   message: string;
 };
 
-export type RequestOrganizationDeletion5XX = unknown;
+export type RequestOrganizationDeletion5xx = unknown;
 
 export type RequestOrganizationDeletionOptions = {
   body?: never | undefined;
@@ -4828,7 +4828,7 @@ export type RequestOrganizationDeletionResponses = {
   '401': RequestOrganizationDeletion401;
   '403': RequestOrganizationDeletion403;
   '409': RequestOrganizationDeletion409;
-  '5XX': RequestOrganizationDeletion5XX;
+  '5xx': RequestOrganizationDeletion5xx;
 };
 
 /**
@@ -4885,7 +4885,7 @@ export type GetOrganizationMembershipLimits403 = {
   message: string;
 };
 
-export type GetOrganizationMembershipLimits5XX = unknown;
+export type GetOrganizationMembershipLimits5xx = unknown;
 
 export type GetOrganizationMembershipLimitsOptions = {
   body?: never | undefined;
@@ -4898,7 +4898,7 @@ export type GetOrganizationMembershipLimitsResponses = {
   '200': GetOrganizationMembershipLimits200;
   '401': GetOrganizationMembershipLimits401;
   '403': GetOrganizationMembershipLimits403;
-  '5XX': GetOrganizationMembershipLimits5XX;
+  '5xx': GetOrganizationMembershipLimits5xx;
 };
 
 /**
@@ -4944,7 +4944,7 @@ export type GetOrganizationSSO401 = {
  */
 export type GetOrganizationSSO403 = AuthErrorResponse;
 
-export type GetOrganizationSSO5XX = unknown;
+export type GetOrganizationSSO5xx = unknown;
 
 export type GetOrganizationSSOOptions = {
   body?: never | undefined;
@@ -4957,7 +4957,7 @@ export type GetOrganizationSSOResponses = {
   '200': GetOrganizationSSO200;
   '401': GetOrganizationSSO401;
   '403': GetOrganizationSSO403;
-  '5XX': GetOrganizationSSO5XX;
+  '5xx': GetOrganizationSSO5xx;
 };
 
 /**
@@ -5022,7 +5022,7 @@ export type ClaimOrganizationSSODomain403 = AuthErrorResponse;
  */
 export type ClaimOrganizationSSODomain409 = AuthErrorResponse;
 
-export type ClaimOrganizationSSODomain5XX = unknown;
+export type ClaimOrganizationSSODomain5xx = unknown;
 
 /**
  * @description Request payload for claiming an email domain for SSO
@@ -5043,7 +5043,7 @@ export type ClaimOrganizationSSODomainResponses = {
   '401': ClaimOrganizationSSODomain401;
   '403': ClaimOrganizationSSODomain403;
   '409': ClaimOrganizationSSODomain409;
-  '5XX': ClaimOrganizationSSODomain5XX;
+  '5xx': ClaimOrganizationSSODomain5xx;
 };
 
 /**
@@ -5096,7 +5096,7 @@ export type DeleteOrganizationSSODomain403 = AuthErrorResponse;
  */
 export type DeleteOrganizationSSODomain409 = AuthErrorResponse;
 
-export type DeleteOrganizationSSODomain5XX = unknown;
+export type DeleteOrganizationSSODomain5xx = unknown;
 
 export type DeleteOrganizationSSODomainOptions = {
   body?: never | undefined;
@@ -5110,7 +5110,7 @@ export type DeleteOrganizationSSODomainResponses = {
   '401': DeleteOrganizationSSODomain401;
   '403': DeleteOrganizationSSODomain403;
   '409': DeleteOrganizationSSODomain409;
-  '5XX': DeleteOrganizationSSODomain5XX;
+  '5xx': DeleteOrganizationSSODomain5xx;
 };
 
 /**
@@ -5173,7 +5173,7 @@ export type VerifyOrganizationSSODomain404 = AuthErrorResponse;
  */
 export type VerifyOrganizationSSODomain409 = AuthErrorResponse;
 
-export type VerifyOrganizationSSODomain5XX = unknown;
+export type VerifyOrganizationSSODomain5xx = unknown;
 
 export type VerifyOrganizationSSODomainOptions = {
   body?: never | undefined;
@@ -5188,7 +5188,7 @@ export type VerifyOrganizationSSODomainResponses = {
   '403': VerifyOrganizationSSODomain403;
   '404': VerifyOrganizationSSODomain404;
   '409': VerifyOrganizationSSODomain409;
-  '5XX': VerifyOrganizationSSODomain5XX;
+  '5xx': VerifyOrganizationSSODomain5xx;
 };
 
 /**
@@ -5253,7 +5253,7 @@ export type CreateOrganizationSSOProvider403 = AuthErrorResponse;
  */
 export type CreateOrganizationSSOProvider409 = AuthErrorResponse;
 
-export type CreateOrganizationSSOProvider5XX = unknown;
+export type CreateOrganizationSSOProvider5xx = unknown;
 
 /**
  * @description Request payload for registering an identity provider for a verified domain
@@ -5274,7 +5274,7 @@ export type CreateOrganizationSSOProviderResponses = {
   '401': CreateOrganizationSSOProvider401;
   '403': CreateOrganizationSSOProvider403;
   '409': CreateOrganizationSSOProvider409;
-  '5XX': CreateOrganizationSSOProvider5XX;
+  '5xx': CreateOrganizationSSOProvider5xx;
 };
 
 /**
@@ -5350,7 +5350,7 @@ export type UpdateOrganizationSSOProvider404 = AuthErrorResponse;
  */
 export type UpdateOrganizationSSOProvider409 = AuthErrorResponse;
 
-export type UpdateOrganizationSSOProvider5XX = unknown;
+export type UpdateOrganizationSSOProvider5xx = unknown;
 
 /**
  * @description Request payload for replacing an identity provider's credentials
@@ -5372,7 +5372,7 @@ export type UpdateOrganizationSSOProviderResponses = {
   '403': UpdateOrganizationSSOProvider403;
   '404': UpdateOrganizationSSOProvider404;
   '409': UpdateOrganizationSSOProvider409;
-  '5XX': UpdateOrganizationSSOProvider5XX;
+  '5xx': UpdateOrganizationSSOProvider5xx;
 };
 
 /**
@@ -5419,7 +5419,7 @@ export type DeleteOrganizationSSOProvider401 = {
  */
 export type DeleteOrganizationSSOProvider403 = AuthErrorResponse;
 
-export type DeleteOrganizationSSOProvider5XX = unknown;
+export type DeleteOrganizationSSOProvider5xx = unknown;
 
 export type DeleteOrganizationSSOProviderOptions = {
   body?: never | undefined;
@@ -5432,7 +5432,7 @@ export type DeleteOrganizationSSOProviderResponses = {
   '204': DeleteOrganizationSSOProvider204;
   '401': DeleteOrganizationSSOProvider401;
   '403': DeleteOrganizationSSOProvider403;
-  '5XX': DeleteOrganizationSSOProvider5XX;
+  '5xx': DeleteOrganizationSSOProvider5xx;
 };
 
 /**
@@ -5495,7 +5495,7 @@ export type SetOrganizationSSOProviderEnforcement404 = AuthErrorResponse;
  */
 export type SetOrganizationSSOProviderEnforcement409 = AuthErrorResponse;
 
-export type SetOrganizationSSOProviderEnforcement5XX = unknown;
+export type SetOrganizationSSOProviderEnforcement5xx = unknown;
 
 /**
  * @description Whether members on a provider's domain must sign in through it.
@@ -5516,7 +5516,7 @@ export type SetOrganizationSSOProviderEnforcementResponses = {
   '403': SetOrganizationSSOProviderEnforcement403;
   '404': SetOrganizationSSOProviderEnforcement404;
   '409': SetOrganizationSSOProviderEnforcement409;
-  '5XX': SetOrganizationSSOProviderEnforcement5XX;
+  '5xx': SetOrganizationSSOProviderEnforcement5xx;
 };
 
 /**
@@ -5582,7 +5582,7 @@ export type CreateBillingCheckoutSession403 = {
   message: string;
 };
 
-export type CreateBillingCheckoutSession5XX = unknown;
+export type CreateBillingCheckoutSession5xx = unknown;
 
 export type CreateBillingCheckoutSessionOptions = {
   body?: never | undefined;
@@ -5596,7 +5596,7 @@ export type CreateBillingCheckoutSessionResponses = {
   '400': CreateBillingCheckoutSession400;
   '401': CreateBillingCheckoutSession401;
   '403': CreateBillingCheckoutSession403;
-  '5XX': CreateBillingCheckoutSession5XX;
+  '5xx': CreateBillingCheckoutSession5xx;
 };
 
 /**
@@ -5662,7 +5662,7 @@ export type CreateBillingPaymentMethodSession403 = {
   message: string;
 };
 
-export type CreateBillingPaymentMethodSession5XX = unknown;
+export type CreateBillingPaymentMethodSession5xx = unknown;
 
 export type CreateBillingPaymentMethodSessionOptions = {
   body?: never | undefined;
@@ -5676,7 +5676,7 @@ export type CreateBillingPaymentMethodSessionResponses = {
   '400': CreateBillingPaymentMethodSession400;
   '401': CreateBillingPaymentMethodSession401;
   '403': CreateBillingPaymentMethodSession403;
-  '5XX': CreateBillingPaymentMethodSession5XX;
+  '5xx': CreateBillingPaymentMethodSession5xx;
 };
 
 /**
@@ -5742,7 +5742,7 @@ export type GetBillingCustomer404 = {
   message: string;
 };
 
-export type GetBillingCustomer5XX = unknown;
+export type GetBillingCustomer5xx = unknown;
 
 export type GetBillingCustomerOptions = {
   body?: never | undefined;
@@ -5756,7 +5756,7 @@ export type GetBillingCustomerResponses = {
   '401': GetBillingCustomer401;
   '403': GetBillingCustomer403;
   '404': GetBillingCustomer404;
-  '5XX': GetBillingCustomer5XX;
+  '5xx': GetBillingCustomer5xx;
 };
 
 /**
@@ -5835,7 +5835,7 @@ export type UpdateBillingCustomer404 = {
   message: string;
 };
 
-export type UpdateBillingCustomer5XX = unknown;
+export type UpdateBillingCustomer5xx = unknown;
 
 export type UpdateBillingCustomerMutationRequest = UpdateBillingCustomerRequest;
 
@@ -5852,7 +5852,7 @@ export type UpdateBillingCustomerResponses = {
   '401': UpdateBillingCustomer401;
   '403': UpdateBillingCustomer403;
   '404': UpdateBillingCustomer404;
-  '5XX': UpdateBillingCustomer5XX;
+  '5xx': UpdateBillingCustomer5xx;
 };
 
 /**
@@ -5947,7 +5947,7 @@ export type GetBillingInvoices404 = {
   message: string;
 };
 
-export type GetBillingInvoices5XX = unknown;
+export type GetBillingInvoices5xx = unknown;
 
 export type GetBillingInvoicesOptions = {
   body?: never | undefined;
@@ -5962,7 +5962,7 @@ export type GetBillingInvoicesResponses = {
   '401': GetBillingInvoices401;
   '403': GetBillingInvoices403;
   '404': GetBillingInvoices404;
-  '5XX': GetBillingInvoices5XX;
+  '5xx': GetBillingInvoices5xx;
 };
 
 /**
@@ -6028,7 +6028,7 @@ export type GetBillingUpcomingInvoice404 = {
   message: string;
 };
 
-export type GetBillingUpcomingInvoice5XX = unknown;
+export type GetBillingUpcomingInvoice5xx = unknown;
 
 export type GetBillingUpcomingInvoiceOptions = {
   body?: never | undefined;
@@ -6042,7 +6042,7 @@ export type GetBillingUpcomingInvoiceResponses = {
   '401': GetBillingUpcomingInvoice401;
   '403': GetBillingUpcomingInvoice403;
   '404': GetBillingUpcomingInvoice404;
-  '5XX': GetBillingUpcomingInvoice5XX;
+  '5xx': GetBillingUpcomingInvoice5xx;
 };
 
 /**
@@ -6163,7 +6163,7 @@ export type ListUserAPIKeys401 = {
   message: string;
 };
 
-export type ListUserAPIKeys5XX = unknown;
+export type ListUserAPIKeys5xx = unknown;
 
 export type ListUserAPIKeysOptions = {
   body?: never | undefined;
@@ -6176,7 +6176,7 @@ export type ListUserAPIKeysResponses = {
   '200': ListUserAPIKeys200;
   '400': ListUserAPIKeys400;
   '401': ListUserAPIKeys401;
-  '5XX': ListUserAPIKeys5XX;
+  '5xx': ListUserAPIKeys5xx;
 };
 
 /**
@@ -6218,7 +6218,7 @@ export type CreateUserAPIKey401 = {
   message: string;
 };
 
-export type CreateUserAPIKey5XX = unknown;
+export type CreateUserAPIKey5xx = unknown;
 
 export type CreateUserAPIKeyMutationRequest = CreateAPIKeyRequest;
 
@@ -6233,7 +6233,7 @@ export type CreateUserAPIKeyResponses = {
   '201': CreateUserAPIKey201;
   '400': CreateUserAPIKey400;
   '401': CreateUserAPIKey401;
-  '5XX': CreateUserAPIKey5XX;
+  '5xx': CreateUserAPIKey5xx;
 };
 
 /**
@@ -6286,7 +6286,7 @@ export type DeleteUserAPIKeys404 = {
   message: string;
 };
 
-export type DeleteUserAPIKeys5XX = unknown;
+export type DeleteUserAPIKeys5xx = unknown;
 
 export type DeleteUserAPIKeysMutationRequest = {
   /**
@@ -6308,7 +6308,7 @@ export type DeleteUserAPIKeysResponses = {
   '400': DeleteUserAPIKeys400;
   '401': DeleteUserAPIKeys401;
   '404': DeleteUserAPIKeys404;
-  '5XX': DeleteUserAPIKeys5XX;
+  '5xx': DeleteUserAPIKeys5xx;
 };
 
 /**
@@ -6381,6 +6381,10 @@ export type QueryHeaderParams = {
   'Batch-Deferrable'?: QueryBatchDeferrable | undefined;
 };
 
+/**
+ * @example {"fields":[{"name":"id","tableID":0,"columnID":0,"dataTypeID":23,"dataTypeSize":4,"dataTypeModifier":-1,"format":"text"},{"name":"name","tableID":0,"columnID":0,"dataTypeID":25,"dataTypeSize":-1,"dataTypeModifier":-1,"format":"text"}],"command":"SELECT","rowCount":1,"rows":[{"id":42,"name":"Ada"}],"rowAsArray":false}
+ * @example {"results":[{"command":"INSERT","fields":[],"rowCount":1,"rows":[],"rowAsArray":false},{"command":"SELECT","fields":[{"name":"count","tableID":0,"columnID":0,"dataTypeID":20,"dataTypeSize":8,"dataTypeModifier":-1,"format":"text"}],"rowCount":1,"rows":[{"count":"1"}],"rowAsArray":false}]}
+ */
 export type Query200 = QueryResult | BatchResponse;
 
 /**
@@ -6439,6 +6443,8 @@ export type Query504 = ErrorResponse;
 
 /**
  * @description SQL query request. Provide either `query` for a single query or `queries` for a batch.
+ * @example {"query":"SELECT id, name FROM users WHERE id = $1","params":[42]}
+ * @example {"queries":[{"query":"INSERT INTO logs (message) VALUES ($1)","params":["hello"]},{"query":"SELECT count(*) FROM logs"}]}
  * @type object
  */
 export type QueryMutationRequest = SQLRequest;
@@ -6508,6 +6514,7 @@ export type SendMcpRequestHeaderParams = {
 
 /**
  * @description A JSON-RPC 2.0 response. Exactly one of `result` or `error` is present.
+ * @example {"jsonrpc":"2.0","id":3,"result":{"content":[{"text":"{\"operationID\":\"getOrganizationsList\",\"status\":200,\"data\":{\"organizations\":[{\"id\":\"org_123\",\"name\":\"Acme\"}]}}","type":"text"}],"isError":false}}
  * @type object
  */
 export type SendMcpRequest200 = JSONRPCResponse;
@@ -6524,11 +6531,23 @@ export type SendMcpRequest415 = unknown;
 
 export type SendMcpRequest500 = unknown;
 
+export type SendMcpRequestStatus401Headers = {
+  /**
+   * @description Bearer challenge pointing at the protected resource metadata, per RFC 9728.
+   * @example Bearer resource_metadata="https://api.xata.tech/.well-known/oauth-protected-resource/mcp"
+   * @type string | undefined
+   */
+  'WWW-Authenticate'?: string | undefined;
+};
+
 /**
  * @description A JSON-RPC 2.0 message. A request carries `id` and `method` and is answered with a
  * response; a notification carries `method` without `id` and is not. The `method` and
  * `params` values are defined by the MCP specification.
  *
+ * @example {"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"my-client","version":"1.0.0"}}}
+ * @example {"jsonrpc":"2.0","id":2,"method":"tools/list"}
+ * @example {"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_organizations_list","arguments":{}}}
  * @type object
  */
 export type SendMcpRequestMutationRequest = JSONRPCMessage;
@@ -6666,7 +6685,7 @@ export type ListRegions401 = {
   message: string;
 };
 
-export type ListRegions5XX = unknown;
+export type ListRegions5xx = unknown;
 
 export type ListRegionsDefault = unknown;
 
@@ -6681,7 +6700,7 @@ export type ListRegionsResponses = {
   '200': ListRegions200;
   '400': ListRegions400;
   '401': ListRegions401;
-  '5XX': ListRegions5XX;
+  '5xx': ListRegions5xx;
   default: ListRegionsDefault;
 };
 
@@ -6776,7 +6795,7 @@ export type ListInstanceTypes401 = {
   message: string;
 };
 
-export type ListInstanceTypes5XX = unknown;
+export type ListInstanceTypes5xx = unknown;
 
 export type ListInstanceTypesDefault = unknown;
 
@@ -6791,7 +6810,7 @@ export type ListInstanceTypesResponses = {
   '200': ListInstanceTypes200;
   '400': ListInstanceTypes400;
   '401': ListInstanceTypes401;
-  '5XX': ListInstanceTypes5XX;
+  '5xx': ListInstanceTypes5xx;
   default: ListInstanceTypesDefault;
 };
 
@@ -6851,7 +6870,7 @@ export type ListImages401 = {
   message: string;
 };
 
-export type ListImages5XX = unknown;
+export type ListImages5xx = unknown;
 
 export type ListImagesDefault = unknown;
 
@@ -6866,7 +6885,7 @@ export type ListImagesResponses = {
   '200': ListImages200;
   '400': ListImages400;
   '401': ListImages401;
-  '5XX': ListImages5XX;
+  '5xx': ListImages5xx;
   default: ListImagesDefault;
 };
 
@@ -6931,7 +6950,7 @@ export type ListExtensions401 = {
   message: string;
 };
 
-export type ListExtensions5XX = unknown;
+export type ListExtensions5xx = unknown;
 
 export type ListExtensionsDefault = unknown;
 
@@ -6946,7 +6965,7 @@ export type ListExtensionsResponses = {
   '200': ListExtensions200;
   '400': ListExtensions400;
   '401': ListExtensions401;
-  '5XX': ListExtensions5XX;
+  '5xx': ListExtensions5xx;
   default: ListExtensionsDefault;
 };
 
@@ -6995,7 +7014,7 @@ export type GetOrganizationLimits403 = {
   message: string;
 };
 
-export type GetOrganizationLimits5XX = unknown;
+export type GetOrganizationLimits5xx = unknown;
 
 export type GetOrganizationLimitsOptions = {
   body?: never | undefined;
@@ -7008,7 +7027,7 @@ export type GetOrganizationLimitsResponses = {
   '200': GetOrganizationLimits200;
   '401': GetOrganizationLimits401;
   '403': GetOrganizationLimits403;
-  '5XX': GetOrganizationLimits5XX;
+  '5xx': GetOrganizationLimits5xx;
 };
 
 /**
@@ -7059,7 +7078,7 @@ export type ListProjects401 = {
   message: string;
 };
 
-export type ListProjects5XX = unknown;
+export type ListProjects5xx = unknown;
 
 export type ListProjectsDefault = unknown;
 
@@ -7074,7 +7093,7 @@ export type ListProjectsResponses = {
   '200': ListProjects200;
   '400': ListProjects400;
   '401': ListProjects401;
-  '5XX': ListProjects5XX;
+  '5xx': ListProjects5xx;
   default: ListProjectsDefault;
 };
 
@@ -7124,7 +7143,7 @@ export type CreateProject401 = {
   message: string;
 };
 
-export type CreateProject5XX = unknown;
+export type CreateProject5xx = unknown;
 
 export type CreateProjectDefault = unknown;
 
@@ -7152,7 +7171,7 @@ export type CreateProjectResponses = {
   '201': CreateProject201;
   '400': CreateProject400;
   '401': CreateProject401;
-  '5XX': CreateProject5XX;
+  '5xx': CreateProject5xx;
   default: CreateProjectDefault;
 };
 
@@ -7220,7 +7239,7 @@ export type GetProject404 = {
   message: string;
 };
 
-export type GetProject5XX = unknown;
+export type GetProject5xx = unknown;
 
 export type GetProjectDefault = unknown;
 
@@ -7236,7 +7255,7 @@ export type GetProjectResponses = {
   '400': GetProject400;
   '401': GetProject401;
   '404': GetProject404;
-  '5XX': GetProject5XX;
+  '5xx': GetProject5xx;
   default: GetProjectDefault;
 };
 
@@ -7304,7 +7323,7 @@ export type UpdateProject404 = {
   message: string;
 };
 
-export type UpdateProject5XX = unknown;
+export type UpdateProject5xx = unknown;
 
 export type UpdateProjectDefault = unknown;
 
@@ -7333,7 +7352,7 @@ export type UpdateProjectResponses = {
   '400': UpdateProject400;
   '401': UpdateProject401;
   '404': UpdateProject404;
-  '5XX': UpdateProject5XX;
+  '5xx': UpdateProject5xx;
   default: UpdateProjectDefault;
 };
 
@@ -7397,7 +7416,7 @@ export type DeleteProject404 = {
   message: string;
 };
 
-export type DeleteProject5XX = unknown;
+export type DeleteProject5xx = unknown;
 
 export type DeleteProjectDefault = unknown;
 
@@ -7413,7 +7432,7 @@ export type DeleteProjectResponses = {
   '400': DeleteProject400;
   '401': DeleteProject401;
   '404': DeleteProject404;
-  '5XX': DeleteProject5XX;
+  '5xx': DeleteProject5xx;
   default: DeleteProjectDefault;
 };
 
@@ -7455,7 +7474,7 @@ export type GetProjectLimits401 = {
   message: string;
 };
 
-export type GetProjectLimits5XX = unknown;
+export type GetProjectLimits5xx = unknown;
 
 export type GetProjectLimitsDefault = unknown;
 
@@ -7469,7 +7488,7 @@ export type GetProjectLimitsOptions = {
 export type GetProjectLimitsResponses = {
   '200': GetProjectLimits200;
   '401': GetProjectLimits401;
-  '5XX': GetProjectLimits5XX;
+  '5xx': GetProjectLimits5xx;
   default: GetProjectLimitsDefault;
 };
 
@@ -7539,7 +7558,7 @@ export type ListBackups404 = {
   message: string;
 };
 
-export type ListBackups5XX = unknown;
+export type ListBackups5xx = unknown;
 
 export type ListBackupsDefault = unknown;
 
@@ -7555,7 +7574,7 @@ export type ListBackupsResponses = {
   '400': ListBackups400;
   '401': ListBackups401;
   '404': ListBackups404;
-  '5XX': ListBackups5XX;
+  '5xx': ListBackups5xx;
   default: ListBackupsDefault;
 };
 
@@ -7628,7 +7647,7 @@ export type GetBackup404 = {
   message: string;
 };
 
-export type GetBackup5XX = unknown;
+export type GetBackup5xx = unknown;
 
 export type GetBackupDefault = unknown;
 
@@ -7644,7 +7663,7 @@ export type GetBackupResponses = {
   '400': GetBackup400;
   '401': GetBackup401;
   '404': GetBackup404;
-  '5XX': GetBackup5XX;
+  '5xx': GetBackup5xx;
   default: GetBackupDefault;
 };
 
@@ -7714,7 +7733,7 @@ export type ListBranches404 = {
   message: string;
 };
 
-export type ListBranches5XX = unknown;
+export type ListBranches5xx = unknown;
 
 export type ListBranchesDefault = unknown;
 
@@ -7730,7 +7749,7 @@ export type ListBranchesResponses = {
   '400': ListBranches400;
   '401': ListBranches401;
   '404': ListBranches404;
-  '5XX': ListBranches5XX;
+  '5xx': ListBranches5xx;
   default: ListBranchesDefault;
 };
 
@@ -7811,7 +7830,7 @@ export type CreateBranch412 = {
   message: string;
 };
 
-export type CreateBranch5XX = unknown;
+export type CreateBranch5xx = unknown;
 
 export type CreateBranchDefault = unknown;
 
@@ -7833,7 +7852,7 @@ export type CreateBranchResponses = {
   '401': CreateBranch401;
   '404': CreateBranch404;
   '412': CreateBranch412;
-  '5XX': CreateBranch5XX;
+  '5xx': CreateBranch5xx;
   default: CreateBranchDefault;
 };
 
@@ -7906,7 +7925,7 @@ export type DescribeBranch404 = {
   message: string;
 };
 
-export type DescribeBranch5XX = unknown;
+export type DescribeBranch5xx = unknown;
 
 export type DescribeBranchDefault = unknown;
 
@@ -7922,7 +7941,7 @@ export type DescribeBranchResponses = {
   '400': DescribeBranch400;
   '401': DescribeBranch401;
   '404': DescribeBranch404;
-  '5XX': DescribeBranch5XX;
+  '5xx': DescribeBranch5xx;
   default: DescribeBranchDefault;
 };
 
@@ -7995,7 +8014,7 @@ export type UpdateBranch404 = {
   message: string;
 };
 
-export type UpdateBranch5XX = unknown;
+export type UpdateBranch5xx = unknown;
 
 export type UpdateBranchDefault = unknown;
 
@@ -8017,7 +8036,7 @@ export type UpdateBranchResponses = {
   '400': UpdateBranch400;
   '401': UpdateBranch401;
   '404': UpdateBranch404;
-  '5XX': UpdateBranch5XX;
+  '5xx': UpdateBranch5xx;
   default: UpdateBranchDefault;
 };
 
@@ -8086,7 +8105,7 @@ export type DeleteBranch404 = {
   message: string;
 };
 
-export type DeleteBranch5XX = unknown;
+export type DeleteBranch5xx = unknown;
 
 export type DeleteBranchDefault = unknown;
 
@@ -8102,7 +8121,7 @@ export type DeleteBranchResponses = {
   '400': DeleteBranch400;
   '401': DeleteBranch401;
   '404': DeleteBranch404;
-  '5XX': DeleteBranch5XX;
+  '5xx': DeleteBranch5xx;
   default: DeleteBranchDefault;
 };
 
@@ -8175,7 +8194,7 @@ export type GetBranchCredentials404 = {
   message: string;
 };
 
-export type GetBranchCredentials5XX = unknown;
+export type GetBranchCredentials5xx = unknown;
 
 export type GetBranchCredentialsDefault = unknown;
 
@@ -8191,7 +8210,7 @@ export type GetBranchCredentialsResponses = {
   '400': GetBranchCredentials400;
   '401': GetBranchCredentials401;
   '404': GetBranchCredentials404;
-  '5XX': GetBranchCredentials5XX;
+  '5xx': GetBranchCredentials5xx;
   default: GetBranchCredentialsDefault;
 };
 
@@ -8251,7 +8270,7 @@ export type RotateBranchCredentials404 = {
   message: string;
 };
 
-export type RotateBranchCredentials5XX = unknown;
+export type RotateBranchCredentials5xx = unknown;
 
 export type RotateBranchCredentialsDefault = unknown;
 
@@ -8273,7 +8292,7 @@ export type RotateBranchCredentialsResponses = {
   '400': RotateBranchCredentials400;
   '401': RotateBranchCredentials401;
   '404': RotateBranchCredentials404;
-  '5XX': RotateBranchCredentials5XX;
+  '5xx': RotateBranchCredentials5xx;
   default: RotateBranchCredentialsDefault;
 };
 
@@ -8337,7 +8356,7 @@ export type BranchMetrics404 = {
   message: string;
 };
 
-export type BranchMetrics5XX = unknown;
+export type BranchMetrics5xx = unknown;
 
 export type BranchMetricsDefault = unknown;
 
@@ -8355,7 +8374,7 @@ export type BranchMetricsResponses = {
   '400': BranchMetrics400;
   '401': BranchMetrics401;
   '404': BranchMetrics404;
-  '5XX': BranchMetrics5XX;
+  '5xx': BranchMetrics5xx;
   default: BranchMetricsDefault;
 };
 
@@ -8441,7 +8460,7 @@ export type RestoreFromBackup412 = {
   message: string;
 };
 
-export type RestoreFromBackup5XX = unknown;
+export type RestoreFromBackup5xx = unknown;
 
 export type RestoreFromBackupDefault = unknown;
 
@@ -8464,7 +8483,7 @@ export type RestoreFromBackupResponses = {
   '401': RestoreFromBackup401;
   '404': RestoreFromBackup404;
   '412': RestoreFromBackup412;
-  '5XX': RestoreFromBackup5XX;
+  '5xx': RestoreFromBackup5xx;
   default: RestoreFromBackupDefault;
 };
 
@@ -8528,7 +8547,7 @@ export type BranchLogs404 = {
   message: string;
 };
 
-export type BranchLogs5XX = unknown;
+export type BranchLogs5xx = unknown;
 
 export type BranchLogsDefault = unknown;
 
@@ -8546,7 +8565,7 @@ export type BranchLogsResponses = {
   '400': BranchLogs400;
   '401': BranchLogs401;
   '404': BranchLogs404;
-  '5XX': BranchLogs5XX;
+  '5xx': BranchLogs5xx;
   default: BranchLogsDefault;
 };
 
@@ -8619,7 +8638,7 @@ export type GetBranchPostgresConfig404 = {
   message: string;
 };
 
-export type GetBranchPostgresConfig5XX = unknown;
+export type GetBranchPostgresConfig5xx = unknown;
 
 export type GetBranchPostgresConfigDefault = unknown;
 
@@ -8635,7 +8654,7 @@ export type GetBranchPostgresConfigResponses = {
   '400': GetBranchPostgresConfig400;
   '401': GetBranchPostgresConfig401;
   '404': GetBranchPostgresConfig404;
-  '5XX': GetBranchPostgresConfig5XX;
+  '5xx': GetBranchPostgresConfig5xx;
   default: GetBranchPostgresConfigDefault;
 };
 
@@ -8687,7 +8706,7 @@ export type ListGithubAppInstallations401 = {
   message: string;
 };
 
-export type ListGithubAppInstallations5XX = unknown;
+export type ListGithubAppInstallations5xx = unknown;
 
 export type ListGithubAppInstallationsDefault = unknown;
 
@@ -8702,7 +8721,7 @@ export type ListGithubAppInstallationsResponses = {
   '200': ListGithubAppInstallations200;
   '400': ListGithubAppInstallations400;
   '401': ListGithubAppInstallations401;
-  '5XX': ListGithubAppInstallations5XX;
+  '5xx': ListGithubAppInstallations5xx;
   default: ListGithubAppInstallationsDefault;
 };
 
@@ -8765,7 +8784,7 @@ export type CreateGithubAppInstallation409 = {
   message: string;
 };
 
-export type CreateGithubAppInstallation5XX = unknown;
+export type CreateGithubAppInstallation5xx = unknown;
 
 export type CreateGithubAppInstallationDefault = unknown;
 
@@ -8783,7 +8802,7 @@ export type CreateGithubAppInstallationResponses = {
   '400': CreateGithubAppInstallation400;
   '401': CreateGithubAppInstallation401;
   '409': CreateGithubAppInstallation409;
-  '5XX': CreateGithubAppInstallation5XX;
+  '5xx': CreateGithubAppInstallation5xx;
   default: CreateGithubAppInstallationDefault;
 };
 
@@ -8864,7 +8883,7 @@ export type UpdateGithubAppInstallation409 = {
   message: string;
 };
 
-export type UpdateGithubAppInstallation5XX = unknown;
+export type UpdateGithubAppInstallation5xx = unknown;
 
 export type UpdateGithubAppInstallationDefault = unknown;
 
@@ -8883,7 +8902,7 @@ export type UpdateGithubAppInstallationResponses = {
   '401': UpdateGithubAppInstallation401;
   '404': UpdateGithubAppInstallation404;
   '409': UpdateGithubAppInstallation409;
-  '5XX': UpdateGithubAppInstallation5XX;
+  '5xx': UpdateGithubAppInstallation5xx;
   default: UpdateGithubAppInstallationDefault;
 };
 
@@ -8915,7 +8934,7 @@ export type GetGithubRepository200 = {
   /**
    * @description Repository mapping details, null if no mapping exists
    */
-  mapping: GithubRepository | null;
+  mapping: GithubRepository | (null | null);
 };
 
 export type GetGithubRepository400 = {
@@ -8944,7 +8963,7 @@ export type GetGithubRepository401 = {
   message: string;
 };
 
-export type GetGithubRepository5XX = unknown;
+export type GetGithubRepository5xx = unknown;
 
 export type GetGithubRepositoryDefault = unknown;
 
@@ -8959,7 +8978,7 @@ export type GetGithubRepositoryResponses = {
   '200': GetGithubRepository200;
   '400': GetGithubRepository400;
   '401': GetGithubRepository401;
-  '5XX': GetGithubRepository5XX;
+  '5xx': GetGithubRepository5xx;
   default: GetGithubRepositoryDefault;
 };
 
@@ -9032,7 +9051,7 @@ export type CreateGithubRepository409 = {
   message: string;
 };
 
-export type CreateGithubRepository5XX = unknown;
+export type CreateGithubRepository5xx = unknown;
 
 export type CreateGithubRepositoryDefault = unknown;
 
@@ -9050,7 +9069,7 @@ export type CreateGithubRepositoryResponses = {
   '400': CreateGithubRepository400;
   '401': CreateGithubRepository401;
   '409': CreateGithubRepository409;
-  '5XX': CreateGithubRepository5XX;
+  '5xx': CreateGithubRepository5xx;
   default: CreateGithubRepositoryDefault;
 };
 
@@ -9123,7 +9142,7 @@ export type UpdateGithubRepository404 = {
   message: string;
 };
 
-export type UpdateGithubRepository5XX = unknown;
+export type UpdateGithubRepository5xx = unknown;
 
 export type UpdateGithubRepositoryDefault = unknown;
 
@@ -9141,7 +9160,7 @@ export type UpdateGithubRepositoryResponses = {
   '400': UpdateGithubRepository400;
   '401': UpdateGithubRepository401;
   '404': UpdateGithubRepository404;
-  '5XX': UpdateGithubRepository5XX;
+  '5xx': UpdateGithubRepository5xx;
   default: UpdateGithubRepositoryDefault;
 };
 
@@ -9210,7 +9229,7 @@ export type DeleteGithubRepository404 = {
   message: string;
 };
 
-export type DeleteGithubRepository5XX = unknown;
+export type DeleteGithubRepository5xx = unknown;
 
 export type DeleteGithubRepositoryDefault = unknown;
 
@@ -9226,7 +9245,7 @@ export type DeleteGithubRepositoryResponses = {
   '400': DeleteGithubRepository400;
   '401': DeleteGithubRepository401;
   '404': DeleteGithubRepository404;
-  '5XX': DeleteGithubRepository5XX;
+  '5xx': DeleteGithubRepository5xx;
   default: DeleteGithubRepositoryDefault;
 };
 
@@ -9309,7 +9328,7 @@ export type DeleteInstallation409 = VercelError;
 export type DeleteInstallationMutationRequest = DeleteInstallationRequest | undefined;
 
 export type DeleteInstallationOptions = {
-  body: DeleteInstallationMutationRequest;
+  body?: DeleteInstallationMutationRequest | undefined;
   path: DeleteInstallationPathParams;
   query?: never | undefined;
   headers?: never | undefined;

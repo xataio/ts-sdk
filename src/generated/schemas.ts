@@ -67,7 +67,7 @@ export const organizationSchema = z
     name: z.string().describe('Human-readable name of the organization'),
     status: organizationStatusSchema.describe('Current status of the organization'),
     marketplace: z
-      .union([organizationMarketplaceProviderSchema, z.null()])
+      .union([organizationMarketplaceProviderSchema, z.null().nullable()])
       .optional()
       .describe('Marketplace provider for this organization (e.g. "aws"), if billed through a marketplace')
   })
@@ -154,7 +154,7 @@ export const billingCreditDetailsSchema = z.object({
 export const billingCustomerResponseSchema = z.object({
   billing_email: z.email(),
   marketplace: z
-    .union([organizationMarketplaceProviderSchema, z.null()])
+    .union([organizationMarketplaceProviderSchema, z.null().nullable()])
     .describe('Marketplace provider for this organization (e.g. "aws"), if billed through a marketplace'),
   collection_method: billingCollectionMethodSchema.describe(
     'Read-only collection method configured for the organization.'
@@ -162,7 +162,7 @@ export const billingCustomerResponseSchema = z.object({
   can_collect_payment: z.boolean(),
   has_payment_method: z.boolean().describe('True when the customer has a valid Stripe default card payment method.'),
   default_payment_method: z
-    .union([billingPaymentMethodSchema, z.null()])
+    .union([billingPaymentMethodSchema, z.null().nullable()])
     .describe('The Stripe default card payment method, when one is configured and retrievable.'),
   credits: z.array(billingCreditSchema),
   credit_details: billingCreditDetailsSchema
@@ -338,7 +338,7 @@ export const organizationSSODomainSchema = z
       ),
     verified: z.boolean().describe('Whether control of the domain has been proven through DNS'),
     verification: z
-      .union([organizationSSODomainVerificationSchema, z.null()])
+      .union([organizationSSODomainVerificationSchema, z.null().nullable()])
       .optional()
       .describe(
         'The DNS record that proves control of the domain. It must stay published while the domain is verified.'
@@ -1390,7 +1390,7 @@ export const getOrganizationsListStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const getOrganizationsListStatus5XXSchema = z.unknown();
+export const getOrganizationsListStatus5xxSchema = z.unknown();
 
 export const getOrganizationsListResponseSchema = getOrganizationsListStatus200Schema;
 
@@ -1398,7 +1398,7 @@ export const getOrganizationsListErrorSchema = z.union([
   getOrganizationsListStatus400Schema,
   getOrganizationsListStatus401Schema,
   getOrganizationsListStatus404Schema,
-  getOrganizationsListStatus5XXSchema
+  getOrganizationsListStatus5xxSchema
 ]);
 
 export const createOrganizationStatus201Schema = organizationSchema.describe(
@@ -1422,7 +1422,7 @@ export const createOrganizationStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const createOrganizationStatus5XXSchema = z.unknown();
+export const createOrganizationStatus5xxSchema = z.unknown();
 
 export const createOrganizationResponseSchema = createOrganizationStatus201Schema;
 
@@ -1430,7 +1430,7 @@ export const createOrganizationErrorSchema = z.union([
   createOrganizationStatus400Schema,
   createOrganizationStatus401Schema,
   createOrganizationStatus404Schema,
-  createOrganizationStatus5XXSchema
+  createOrganizationStatus5xxSchema
 ]);
 
 export const createOrganizationBodySchema = createOrganizationRequestSchema
@@ -1467,7 +1467,7 @@ export const getOrganizationStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const getOrganizationStatus5XXSchema = z.unknown();
+export const getOrganizationStatus5xxSchema = z.unknown();
 
 export const getOrganizationResponseSchema = getOrganizationStatus200Schema;
 
@@ -1476,7 +1476,7 @@ export const getOrganizationErrorSchema = z.union([
   getOrganizationStatus401Schema,
   getOrganizationStatus403Schema,
   getOrganizationStatus404Schema,
-  getOrganizationStatus5XXSchema
+  getOrganizationStatus5xxSchema
 ]);
 
 export const getOrganizationPathSchema = z.object({
@@ -1515,7 +1515,7 @@ export const updateOrganizationStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const updateOrganizationStatus5XXSchema = z.unknown();
+export const updateOrganizationStatus5xxSchema = z.unknown();
 
 export const updateOrganizationResponseSchema = updateOrganizationStatus200Schema;
 
@@ -1524,7 +1524,7 @@ export const updateOrganizationErrorSchema = z.union([
   updateOrganizationStatus401Schema,
   updateOrganizationStatus403Schema,
   updateOrganizationStatus404Schema,
-  updateOrganizationStatus5XXSchema
+  updateOrganizationStatus5xxSchema
 ]);
 
 export const updateOrganizationBodySchema = z
@@ -1568,7 +1568,7 @@ export const deleteOrganizationStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const deleteOrganizationStatus5XXSchema = z.unknown();
+export const deleteOrganizationStatus5xxSchema = z.unknown();
 
 export const deleteOrganizationResponseSchema = deleteOrganizationStatus204Schema;
 
@@ -1577,7 +1577,7 @@ export const deleteOrganizationErrorSchema = z.union([
   deleteOrganizationStatus401Schema,
   deleteOrganizationStatus403Schema,
   deleteOrganizationStatus404Schema,
-  deleteOrganizationStatus5XXSchema
+  deleteOrganizationStatus5xxSchema
 ]);
 
 export const deleteOrganizationPathSchema = z.object({
@@ -1616,7 +1616,7 @@ export const listOrganizationAPIKeysStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const listOrganizationAPIKeysStatus5XXSchema = z.unknown();
+export const listOrganizationAPIKeysStatus5xxSchema = z.unknown();
 
 export const listOrganizationAPIKeysResponseSchema = listOrganizationAPIKeysStatus200Schema;
 
@@ -1625,7 +1625,7 @@ export const listOrganizationAPIKeysErrorSchema = z.union([
   listOrganizationAPIKeysStatus401Schema,
   listOrganizationAPIKeysStatus403Schema,
   listOrganizationAPIKeysStatus404Schema,
-  listOrganizationAPIKeysStatus5XXSchema
+  listOrganizationAPIKeysStatus5xxSchema
 ]);
 
 export const listOrganizationAPIKeysPathSchema = z.object({
@@ -1764,7 +1764,7 @@ export const listOrganizationRolesStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const listOrganizationRolesStatus5XXSchema = z.unknown();
+export const listOrganizationRolesStatus5xxSchema = z.unknown();
 
 export const listOrganizationRolesResponseSchema = listOrganizationRolesStatus200Schema;
 
@@ -1772,7 +1772,7 @@ export const listOrganizationRolesErrorSchema = z.union([
   listOrganizationRolesStatus401Schema,
   listOrganizationRolesStatus403Schema,
   listOrganizationRolesStatus404Schema,
-  listOrganizationRolesStatus5XXSchema
+  listOrganizationRolesStatus5xxSchema
 ]);
 
 export const listOrganizationRolesPathSchema = z.object({
@@ -1818,7 +1818,7 @@ export const setOrganizationMemberRoleStatus409Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const setOrganizationMemberRoleStatus5XXSchema = z.unknown();
+export const setOrganizationMemberRoleStatus5xxSchema = z.unknown();
 
 export const setOrganizationMemberRoleResponseSchema = setOrganizationMemberRoleStatus204Schema;
 
@@ -1828,7 +1828,7 @@ export const setOrganizationMemberRoleErrorSchema = z.union([
   setOrganizationMemberRoleStatus403Schema,
   setOrganizationMemberRoleStatus404Schema,
   setOrganizationMemberRoleStatus409Schema,
-  setOrganizationMemberRoleStatus5XXSchema
+  setOrganizationMemberRoleStatus5xxSchema
 ]);
 
 export const setOrganizationMemberRoleBodySchema = setOrganizationMemberRoleRequestSchema.describe(
@@ -1912,7 +1912,7 @@ export const listOrganizationInvitationsStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const listOrganizationInvitationsStatus5XXSchema = z.unknown();
+export const listOrganizationInvitationsStatus5xxSchema = z.unknown();
 
 export const listOrganizationInvitationsResponseSchema = listOrganizationInvitationsStatus200Schema;
 
@@ -1921,7 +1921,7 @@ export const listOrganizationInvitationsErrorSchema = z.union([
   listOrganizationInvitationsStatus401Schema,
   listOrganizationInvitationsStatus403Schema,
   listOrganizationInvitationsStatus404Schema,
-  listOrganizationInvitationsStatus5XXSchema
+  listOrganizationInvitationsStatus5xxSchema
 ]);
 
 export const listOrganizationInvitationsPathSchema = z.object({
@@ -1978,7 +1978,7 @@ export const createOrganizationInvitationStatus409Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const createOrganizationInvitationStatus5XXSchema = z.unknown();
+export const createOrganizationInvitationStatus5xxSchema = z.unknown();
 
 export const createOrganizationInvitationResponseSchema = createOrganizationInvitationStatus201Schema;
 
@@ -1988,7 +1988,7 @@ export const createOrganizationInvitationErrorSchema = z.union([
   createOrganizationInvitationStatus403Schema,
   createOrganizationInvitationStatus404Schema,
   createOrganizationInvitationStatus409Schema,
-  createOrganizationInvitationStatus5XXSchema
+  createOrganizationInvitationStatus5xxSchema
 ]);
 
 export const createOrganizationInvitationBodySchema = createOrganizationInvitationRequestSchema;
@@ -2031,7 +2031,7 @@ export const getOrganizationInvitationStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const getOrganizationInvitationStatus5XXSchema = z.unknown();
+export const getOrganizationInvitationStatus5xxSchema = z.unknown();
 
 export const getOrganizationInvitationResponseSchema = getOrganizationInvitationStatus200Schema;
 
@@ -2040,7 +2040,7 @@ export const getOrganizationInvitationErrorSchema = z.union([
   getOrganizationInvitationStatus401Schema,
   getOrganizationInvitationStatus403Schema,
   getOrganizationInvitationStatus404Schema,
-  getOrganizationInvitationStatus5XXSchema
+  getOrganizationInvitationStatus5xxSchema
 ]);
 
 export const getOrganizationInvitationPathSchema = z.object({
@@ -2082,7 +2082,7 @@ export const deleteOrganizationInvitationStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const deleteOrganizationInvitationStatus5XXSchema = z.unknown();
+export const deleteOrganizationInvitationStatus5xxSchema = z.unknown();
 
 export const deleteOrganizationInvitationResponseSchema = deleteOrganizationInvitationStatus204Schema;
 
@@ -2091,7 +2091,7 @@ export const deleteOrganizationInvitationErrorSchema = z.union([
   deleteOrganizationInvitationStatus401Schema,
   deleteOrganizationInvitationStatus403Schema,
   deleteOrganizationInvitationStatus404Schema,
-  deleteOrganizationInvitationStatus5XXSchema
+  deleteOrganizationInvitationStatus5xxSchema
 ]);
 
 export const deleteOrganizationInvitationPathSchema = z.object({
@@ -2133,7 +2133,7 @@ export const resendOrganizationInvitationStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const resendOrganizationInvitationStatus5XXSchema = z.unknown();
+export const resendOrganizationInvitationStatus5xxSchema = z.unknown();
 
 export const resendOrganizationInvitationResponseSchema = resendOrganizationInvitationStatus204Schema;
 
@@ -2142,7 +2142,7 @@ export const resendOrganizationInvitationErrorSchema = z.union([
   resendOrganizationInvitationStatus401Schema,
   resendOrganizationInvitationStatus403Schema,
   resendOrganizationInvitationStatus404Schema,
-  resendOrganizationInvitationStatus5XXSchema
+  resendOrganizationInvitationStatus5xxSchema
 ]);
 
 export const resendOrganizationInvitationPathSchema = z.object({
@@ -2180,7 +2180,7 @@ export const requestOrganizationDeletionStatus409Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const requestOrganizationDeletionStatus5XXSchema = z.unknown();
+export const requestOrganizationDeletionStatus5xxSchema = z.unknown();
 
 export const requestOrganizationDeletionResponseSchema = requestOrganizationDeletionStatus202Schema;
 
@@ -2189,7 +2189,7 @@ export const requestOrganizationDeletionErrorSchema = z.union([
   requestOrganizationDeletionStatus401Schema,
   requestOrganizationDeletionStatus403Schema,
   requestOrganizationDeletionStatus409Schema,
-  requestOrganizationDeletionStatus5XXSchema
+  requestOrganizationDeletionStatus5xxSchema
 ]);
 
 export const requestOrganizationDeletionPathSchema = z.object({
@@ -2218,14 +2218,14 @@ export const getOrganizationMembershipLimitsStatus403Schema = z
   })
   .meta({ examples: [{ message: 'invalid API key' }] });
 
-export const getOrganizationMembershipLimitsStatus5XXSchema = z.unknown();
+export const getOrganizationMembershipLimitsStatus5xxSchema = z.unknown();
 
 export const getOrganizationMembershipLimitsResponseSchema = getOrganizationMembershipLimitsStatus200Schema;
 
 export const getOrganizationMembershipLimitsErrorSchema = z.union([
   getOrganizationMembershipLimitsStatus401Schema,
   getOrganizationMembershipLimitsStatus403Schema,
-  getOrganizationMembershipLimitsStatus5XXSchema
+  getOrganizationMembershipLimitsStatus5xxSchema
 ]);
 
 export const getOrganizationMembershipLimitsPathSchema = z.object({
@@ -2249,14 +2249,14 @@ export const getOrganizationSSOStatus401Schema = z
 
 export const getOrganizationSSOStatus403Schema = authErrorResponseSchema.describe('Error response');
 
-export const getOrganizationSSOStatus5XXSchema = z.unknown();
+export const getOrganizationSSOStatus5xxSchema = z.unknown();
 
 export const getOrganizationSSOResponseSchema = getOrganizationSSOStatus200Schema;
 
 export const getOrganizationSSOErrorSchema = z.union([
   getOrganizationSSOStatus401Schema,
   getOrganizationSSOStatus403Schema,
-  getOrganizationSSOStatus5XXSchema
+  getOrganizationSSOStatus5xxSchema
 ]);
 
 export const getOrganizationSSOPathSchema = z.object({
@@ -2287,7 +2287,7 @@ export const claimOrganizationSSODomainStatus403Schema = authErrorResponseSchema
 
 export const claimOrganizationSSODomainStatus409Schema = authErrorResponseSchema.describe('Error response');
 
-export const claimOrganizationSSODomainStatus5XXSchema = z.unknown();
+export const claimOrganizationSSODomainStatus5xxSchema = z.unknown();
 
 export const claimOrganizationSSODomainResponseSchema = claimOrganizationSSODomainStatus201Schema;
 
@@ -2296,7 +2296,7 @@ export const claimOrganizationSSODomainErrorSchema = z.union([
   claimOrganizationSSODomainStatus401Schema,
   claimOrganizationSSODomainStatus403Schema,
   claimOrganizationSSODomainStatus409Schema,
-  claimOrganizationSSODomainStatus5XXSchema
+  claimOrganizationSSODomainStatus5xxSchema
 ]);
 
 export const claimOrganizationSSODomainBodySchema = claimOrganizationSSODomainRequestSchema.describe(
@@ -2326,7 +2326,7 @@ export const deleteOrganizationSSODomainStatus403Schema = authErrorResponseSchem
 
 export const deleteOrganizationSSODomainStatus409Schema = authErrorResponseSchema.describe('Error response');
 
-export const deleteOrganizationSSODomainStatus5XXSchema = z.unknown();
+export const deleteOrganizationSSODomainStatus5xxSchema = z.unknown();
 
 export const deleteOrganizationSSODomainResponseSchema = deleteOrganizationSSODomainStatus204Schema;
 
@@ -2334,7 +2334,7 @@ export const deleteOrganizationSSODomainErrorSchema = z.union([
   deleteOrganizationSSODomainStatus401Schema,
   deleteOrganizationSSODomainStatus403Schema,
   deleteOrganizationSSODomainStatus409Schema,
-  deleteOrganizationSSODomainStatus5XXSchema
+  deleteOrganizationSSODomainStatus5xxSchema
 ]);
 
 export const deleteOrganizationSSODomainPathSchema = z.object({
@@ -2365,7 +2365,7 @@ export const verifyOrganizationSSODomainStatus404Schema = authErrorResponseSchem
 
 export const verifyOrganizationSSODomainStatus409Schema = authErrorResponseSchema.describe('Error response');
 
-export const verifyOrganizationSSODomainStatus5XXSchema = z.unknown();
+export const verifyOrganizationSSODomainStatus5xxSchema = z.unknown();
 
 export const verifyOrganizationSSODomainResponseSchema = verifyOrganizationSSODomainStatus200Schema;
 
@@ -2374,7 +2374,7 @@ export const verifyOrganizationSSODomainErrorSchema = z.union([
   verifyOrganizationSSODomainStatus403Schema,
   verifyOrganizationSSODomainStatus404Schema,
   verifyOrganizationSSODomainStatus409Schema,
-  verifyOrganizationSSODomainStatus5XXSchema
+  verifyOrganizationSSODomainStatus5xxSchema
 ]);
 
 export const verifyOrganizationSSODomainPathSchema = z.object({
@@ -2406,7 +2406,7 @@ export const createOrganizationSSOProviderStatus403Schema = authErrorResponseSch
 
 export const createOrganizationSSOProviderStatus409Schema = authErrorResponseSchema.describe('Error response');
 
-export const createOrganizationSSOProviderStatus5XXSchema = z.unknown();
+export const createOrganizationSSOProviderStatus5xxSchema = z.unknown();
 
 export const createOrganizationSSOProviderResponseSchema = createOrganizationSSOProviderStatus201Schema;
 
@@ -2415,7 +2415,7 @@ export const createOrganizationSSOProviderErrorSchema = z.union([
   createOrganizationSSOProviderStatus401Schema,
   createOrganizationSSOProviderStatus403Schema,
   createOrganizationSSOProviderStatus409Schema,
-  createOrganizationSSOProviderStatus5XXSchema
+  createOrganizationSSOProviderStatus5xxSchema
 ]);
 
 export const createOrganizationSSOProviderBodySchema = createOrganizationSSOProviderRequestSchema.describe(
@@ -2456,7 +2456,7 @@ export const updateOrganizationSSOProviderStatus404Schema = authErrorResponseSch
 
 export const updateOrganizationSSOProviderStatus409Schema = authErrorResponseSchema.describe('Error response');
 
-export const updateOrganizationSSOProviderStatus5XXSchema = z.unknown();
+export const updateOrganizationSSOProviderStatus5xxSchema = z.unknown();
 
 export const updateOrganizationSSOProviderResponseSchema = updateOrganizationSSOProviderStatus200Schema;
 
@@ -2466,7 +2466,7 @@ export const updateOrganizationSSOProviderErrorSchema = z.union([
   updateOrganizationSSOProviderStatus403Schema,
   updateOrganizationSSOProviderStatus404Schema,
   updateOrganizationSSOProviderStatus409Schema,
-  updateOrganizationSSOProviderStatus5XXSchema
+  updateOrganizationSSOProviderStatus5xxSchema
 ]);
 
 export const updateOrganizationSSOProviderBodySchema = updateOrganizationSSOProviderRequestSchema.describe(
@@ -2497,14 +2497,14 @@ export const deleteOrganizationSSOProviderStatus401Schema = z
 
 export const deleteOrganizationSSOProviderStatus403Schema = authErrorResponseSchema.describe('Error response');
 
-export const deleteOrganizationSSOProviderStatus5XXSchema = z.unknown();
+export const deleteOrganizationSSOProviderStatus5xxSchema = z.unknown();
 
 export const deleteOrganizationSSOProviderResponseSchema = deleteOrganizationSSOProviderStatus204Schema;
 
 export const deleteOrganizationSSOProviderErrorSchema = z.union([
   deleteOrganizationSSOProviderStatus401Schema,
   deleteOrganizationSSOProviderStatus403Schema,
-  deleteOrganizationSSOProviderStatus5XXSchema
+  deleteOrganizationSSOProviderStatus5xxSchema
 ]);
 
 export const deleteOrganizationSSOProviderPathSchema = z.object({
@@ -2537,7 +2537,7 @@ export const setOrganizationSSOProviderEnforcementStatus404Schema = authErrorRes
 
 export const setOrganizationSSOProviderEnforcementStatus409Schema = authErrorResponseSchema.describe('Error response');
 
-export const setOrganizationSSOProviderEnforcementStatus5XXSchema = z.unknown();
+export const setOrganizationSSOProviderEnforcementStatus5xxSchema = z.unknown();
 
 export const setOrganizationSSOProviderEnforcementResponseSchema = setOrganizationSSOProviderEnforcementStatus200Schema;
 
@@ -2546,7 +2546,7 @@ export const setOrganizationSSOProviderEnforcementErrorSchema = z.union([
   setOrganizationSSOProviderEnforcementStatus403Schema,
   setOrganizationSSOProviderEnforcementStatus404Schema,
   setOrganizationSSOProviderEnforcementStatus409Schema,
-  setOrganizationSSOProviderEnforcementStatus5XXSchema
+  setOrganizationSSOProviderEnforcementStatus5xxSchema
 ]);
 
 export const setOrganizationSSOProviderEnforcementBodySchema = organizationSSOEnforcementSchema.describe(
@@ -2583,7 +2583,7 @@ export const createBillingCheckoutSessionStatus403Schema = z
   })
   .meta({ examples: [{ message: 'invalid API key' }] });
 
-export const createBillingCheckoutSessionStatus5XXSchema = z.unknown();
+export const createBillingCheckoutSessionStatus5xxSchema = z.unknown();
 
 export const createBillingCheckoutSessionResponseSchema = createBillingCheckoutSessionStatus200Schema;
 
@@ -2591,7 +2591,7 @@ export const createBillingCheckoutSessionErrorSchema = z.union([
   createBillingCheckoutSessionStatus400Schema,
   createBillingCheckoutSessionStatus401Schema,
   createBillingCheckoutSessionStatus403Schema,
-  createBillingCheckoutSessionStatus5XXSchema
+  createBillingCheckoutSessionStatus5xxSchema
 ]);
 
 export const createBillingCheckoutSessionPathSchema = z.object({
@@ -2623,7 +2623,7 @@ export const createBillingPaymentMethodSessionStatus403Schema = z
   })
   .meta({ examples: [{ message: 'invalid API key' }] });
 
-export const createBillingPaymentMethodSessionStatus5XXSchema = z.unknown();
+export const createBillingPaymentMethodSessionStatus5xxSchema = z.unknown();
 
 export const createBillingPaymentMethodSessionResponseSchema = createBillingPaymentMethodSessionStatus200Schema;
 
@@ -2631,7 +2631,7 @@ export const createBillingPaymentMethodSessionErrorSchema = z.union([
   createBillingPaymentMethodSessionStatus400Schema,
   createBillingPaymentMethodSessionStatus401Schema,
   createBillingPaymentMethodSessionStatus403Schema,
-  createBillingPaymentMethodSessionStatus5XXSchema
+  createBillingPaymentMethodSessionStatus5xxSchema
 ]);
 
 export const createBillingPaymentMethodSessionPathSchema = z.object({
@@ -2663,7 +2663,7 @@ export const getBillingCustomerStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const getBillingCustomerStatus5XXSchema = z.unknown();
+export const getBillingCustomerStatus5xxSchema = z.unknown();
 
 export const getBillingCustomerResponseSchema = getBillingCustomerStatus200Schema;
 
@@ -2671,7 +2671,7 @@ export const getBillingCustomerErrorSchema = z.union([
   getBillingCustomerStatus401Schema,
   getBillingCustomerStatus403Schema,
   getBillingCustomerStatus404Schema,
-  getBillingCustomerStatus5XXSchema
+  getBillingCustomerStatus5xxSchema
 ]);
 
 export const getBillingCustomerPathSchema = z.object({
@@ -2708,7 +2708,7 @@ export const updateBillingCustomerStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const updateBillingCustomerStatus5XXSchema = z.unknown();
+export const updateBillingCustomerStatus5xxSchema = z.unknown();
 
 export const updateBillingCustomerResponseSchema = updateBillingCustomerStatus200Schema;
 
@@ -2717,7 +2717,7 @@ export const updateBillingCustomerErrorSchema = z.union([
   updateBillingCustomerStatus401Schema,
   updateBillingCustomerStatus403Schema,
   updateBillingCustomerStatus404Schema,
-  updateBillingCustomerStatus5XXSchema
+  updateBillingCustomerStatus5xxSchema
 ]);
 
 export const updateBillingCustomerBodySchema = updateBillingCustomerRequestSchema;
@@ -2769,7 +2769,7 @@ export const getBillingInvoicesStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const getBillingInvoicesStatus5XXSchema = z.unknown();
+export const getBillingInvoicesStatus5xxSchema = z.unknown();
 
 export const getBillingInvoicesResponseSchema = getBillingInvoicesStatus200Schema;
 
@@ -2778,7 +2778,7 @@ export const getBillingInvoicesErrorSchema = z.union([
   getBillingInvoicesStatus401Schema,
   getBillingInvoicesStatus403Schema,
   getBillingInvoicesStatus404Schema,
-  getBillingInvoicesStatus5XXSchema
+  getBillingInvoicesStatus5xxSchema
 ]);
 
 export const getBillingInvoicesPathSchema = z.object({
@@ -2815,7 +2815,7 @@ export const getBillingUpcomingInvoiceStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const getBillingUpcomingInvoiceStatus5XXSchema = z.unknown();
+export const getBillingUpcomingInvoiceStatus5xxSchema = z.unknown();
 
 export const getBillingUpcomingInvoiceResponseSchema = getBillingUpcomingInvoiceStatus200Schema;
 
@@ -2823,7 +2823,7 @@ export const getBillingUpcomingInvoiceErrorSchema = z.union([
   getBillingUpcomingInvoiceStatus401Schema,
   getBillingUpcomingInvoiceStatus403Schema,
   getBillingUpcomingInvoiceStatus404Schema,
-  getBillingUpcomingInvoiceStatus5XXSchema
+  getBillingUpcomingInvoiceStatus5xxSchema
 ]);
 
 export const getBillingUpcomingInvoicePathSchema = z.object({
@@ -2882,14 +2882,14 @@ export const listUserAPIKeysStatus401Schema = z
   })
   .meta({ examples: [{ message: 'invalid API key' }] });
 
-export const listUserAPIKeysStatus5XXSchema = z.unknown();
+export const listUserAPIKeysStatus5xxSchema = z.unknown();
 
 export const listUserAPIKeysResponseSchema = listUserAPIKeysStatus200Schema;
 
 export const listUserAPIKeysErrorSchema = z.union([
   listUserAPIKeysStatus400Schema,
   listUserAPIKeysStatus401Schema,
-  listUserAPIKeysStatus5XXSchema
+  listUserAPIKeysStatus5xxSchema
 ]);
 
 export const createUserAPIKeyStatus201Schema = z.object({
@@ -2908,14 +2908,14 @@ export const createUserAPIKeyStatus401Schema = z
   })
   .meta({ examples: [{ message: 'invalid API key' }] });
 
-export const createUserAPIKeyStatus5XXSchema = z.unknown();
+export const createUserAPIKeyStatus5xxSchema = z.unknown();
 
 export const createUserAPIKeyResponseSchema = createUserAPIKeyStatus201Schema;
 
 export const createUserAPIKeyErrorSchema = z.union([
   createUserAPIKeyStatus400Schema,
   createUserAPIKeyStatus401Schema,
-  createUserAPIKeyStatus5XXSchema
+  createUserAPIKeyStatus5xxSchema
 ]);
 
 export const createUserAPIKeyBodySchema = createAPIKeyRequestSchema;
@@ -2939,7 +2939,7 @@ export const deleteUserAPIKeysStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const deleteUserAPIKeysStatus5XXSchema = z.unknown();
+export const deleteUserAPIKeysStatus5xxSchema = z.unknown();
 
 export const deleteUserAPIKeysResponseSchema = deleteUserAPIKeysStatus204Schema;
 
@@ -2947,7 +2947,7 @@ export const deleteUserAPIKeysErrorSchema = z.union([
   deleteUserAPIKeysStatus400Schema,
   deleteUserAPIKeysStatus401Schema,
   deleteUserAPIKeysStatus404Schema,
-  deleteUserAPIKeysStatus5XXSchema
+  deleteUserAPIKeysStatus5xxSchema
 ]);
 
 export const deleteUserAPIKeysBodySchema = z.object({
@@ -3074,6 +3074,14 @@ export const sendMcpRequestStatus415Schema = z.unknown();
 
 export const sendMcpRequestStatus500Schema = z.unknown();
 
+export const sendMcpRequestStatus401HeadersSchema = z.object({
+  'WWW-Authenticate': z
+    .string()
+    .optional()
+    .describe('Bearer challenge pointing at the protected resource metadata, per RFC 9728.')
+    .meta({ examples: ['Bearer resource_metadata="https://api.xata.tech/.well-known/oauth-protected-resource/mcp"'] })
+});
+
 export const sendMcpRequestResponseSchema = z.union([sendMcpRequestStatus200Schema, sendMcpRequestStatus202Schema]);
 
 export const sendMcpRequestErrorSchema = z.union([
@@ -3145,7 +3153,7 @@ export const listRegionsStatus401Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-export const listRegionsStatus5XXSchema = z.unknown();
+export const listRegionsStatus5xxSchema = z.unknown();
 
 export const listRegionsStatusDefaultSchema = z.unknown();
 
@@ -3154,7 +3162,7 @@ export const listRegionsResponseSchema = listRegionsStatus200Schema;
 export const listRegionsErrorSchema = z.union([
   listRegionsStatus400Schema,
   listRegionsStatus401Schema,
-  listRegionsStatus5XXSchema,
+  listRegionsStatus5xxSchema,
   listRegionsStatusDefaultSchema
 ]);
 
@@ -3195,7 +3203,7 @@ export const listInstanceTypesStatus401Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-export const listInstanceTypesStatus5XXSchema = z.unknown();
+export const listInstanceTypesStatus5xxSchema = z.unknown();
 
 export const listInstanceTypesStatusDefaultSchema = z.unknown();
 
@@ -3204,7 +3212,7 @@ export const listInstanceTypesResponseSchema = listInstanceTypesStatus200Schema;
 export const listInstanceTypesErrorSchema = z.union([
   listInstanceTypesStatus400Schema,
   listInstanceTypesStatus401Schema,
-  listInstanceTypesStatus5XXSchema,
+  listInstanceTypesStatus5xxSchema,
   listInstanceTypesStatusDefaultSchema
 ]);
 
@@ -3241,7 +3249,7 @@ export const listImagesStatus401Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-export const listImagesStatus5XXSchema = z.unknown();
+export const listImagesStatus5xxSchema = z.unknown();
 
 export const listImagesStatusDefaultSchema = z.unknown();
 
@@ -3250,7 +3258,7 @@ export const listImagesResponseSchema = listImagesStatus200Schema;
 export const listImagesErrorSchema = z.union([
   listImagesStatus400Schema,
   listImagesStatus401Schema,
-  listImagesStatus5XXSchema,
+  listImagesStatus5xxSchema,
   listImagesStatusDefaultSchema
 ]);
 
@@ -3284,7 +3292,7 @@ export const listExtensionsStatus401Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-export const listExtensionsStatus5XXSchema = z.unknown();
+export const listExtensionsStatus5xxSchema = z.unknown();
 
 export const listExtensionsStatusDefaultSchema = z.unknown();
 
@@ -3293,7 +3301,7 @@ export const listExtensionsResponseSchema = listExtensionsStatus200Schema;
 export const listExtensionsErrorSchema = z.union([
   listExtensionsStatus400Schema,
   listExtensionsStatus401Schema,
-  listExtensionsStatus5XXSchema,
+  listExtensionsStatus5xxSchema,
   listExtensionsStatusDefaultSchema
 ]);
 
@@ -3326,14 +3334,14 @@ export const getOrganizationLimitsStatus403Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-export const getOrganizationLimitsStatus5XXSchema = z.unknown();
+export const getOrganizationLimitsStatus5xxSchema = z.unknown();
 
 export const getOrganizationLimitsResponseSchema = getOrganizationLimitsStatus200Schema;
 
 export const getOrganizationLimitsErrorSchema = z.union([
   getOrganizationLimitsStatus401Schema,
   getOrganizationLimitsStatus403Schema,
-  getOrganizationLimitsStatus5XXSchema
+  getOrganizationLimitsStatus5xxSchema
 ]);
 
 export const getOrganizationLimitsPathSchema = z.object({
@@ -3358,7 +3366,7 @@ export const listProjectsStatus401Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-export const listProjectsStatus5XXSchema = z.unknown();
+export const listProjectsStatus5xxSchema = z.unknown();
 
 export const listProjectsStatusDefaultSchema = z.unknown();
 
@@ -3367,7 +3375,7 @@ export const listProjectsResponseSchema = listProjectsStatus200Schema;
 export const listProjectsErrorSchema = z.union([
   listProjectsStatus400Schema,
   listProjectsStatus401Schema,
-  listProjectsStatus5XXSchema,
+  listProjectsStatus5xxSchema,
   listProjectsStatusDefaultSchema
 ]);
 
@@ -3393,7 +3401,7 @@ export const createProjectStatus401Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-export const createProjectStatus5XXSchema = z.unknown();
+export const createProjectStatus5xxSchema = z.unknown();
 
 export const createProjectStatusDefaultSchema = z.unknown();
 
@@ -3402,7 +3410,7 @@ export const createProjectResponseSchema = createProjectStatus201Schema;
 export const createProjectErrorSchema = z.union([
   createProjectStatus400Schema,
   createProjectStatus401Schema,
-  createProjectStatus5XXSchema,
+  createProjectStatus5xxSchema,
   createProjectStatusDefaultSchema
 ]);
 
@@ -3442,7 +3450,7 @@ export const getProjectStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const getProjectStatus5XXSchema = z.unknown();
+export const getProjectStatus5xxSchema = z.unknown();
 
 export const getProjectStatusDefaultSchema = z.unknown();
 
@@ -3452,7 +3460,7 @@ export const getProjectErrorSchema = z.union([
   getProjectStatus400Schema,
   getProjectStatus401Schema,
   getProjectStatus404Schema,
-  getProjectStatus5XXSchema,
+  getProjectStatus5xxSchema,
   getProjectStatusDefaultSchema
 ]);
 
@@ -3486,7 +3494,7 @@ export const updateProjectStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const updateProjectStatus5XXSchema = z.unknown();
+export const updateProjectStatus5xxSchema = z.unknown();
 
 export const updateProjectStatusDefaultSchema = z.unknown();
 
@@ -3496,7 +3504,7 @@ export const updateProjectErrorSchema = z.union([
   updateProjectStatus400Schema,
   updateProjectStatus401Schema,
   updateProjectStatus404Schema,
-  updateProjectStatus5XXSchema,
+  updateProjectStatus5xxSchema,
   updateProjectStatusDefaultSchema
 ]);
 
@@ -3533,7 +3541,7 @@ export const deleteProjectStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const deleteProjectStatus5XXSchema = z.unknown();
+export const deleteProjectStatus5xxSchema = z.unknown();
 
 export const deleteProjectStatusDefaultSchema = z.unknown();
 
@@ -3543,7 +3551,7 @@ export const deleteProjectErrorSchema = z.union([
   deleteProjectStatus400Schema,
   deleteProjectStatus401Schema,
   deleteProjectStatus404Schema,
-  deleteProjectStatus5XXSchema,
+  deleteProjectStatus5xxSchema,
   deleteProjectStatusDefaultSchema
 ]);
 
@@ -3569,7 +3577,7 @@ export const getProjectLimitsStatus401Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-export const getProjectLimitsStatus5XXSchema = z.unknown();
+export const getProjectLimitsStatus5xxSchema = z.unknown();
 
 export const getProjectLimitsStatusDefaultSchema = z.unknown();
 
@@ -3577,7 +3585,7 @@ export const getProjectLimitsResponseSchema = getProjectLimitsStatus200Schema;
 
 export const getProjectLimitsErrorSchema = z.union([
   getProjectLimitsStatus401Schema,
-  getProjectLimitsStatus5XXSchema,
+  getProjectLimitsStatus5xxSchema,
   getProjectLimitsStatusDefaultSchema
 ]);
 
@@ -3613,7 +3621,7 @@ export const listBackupsStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const listBackupsStatus5XXSchema = z.unknown();
+export const listBackupsStatus5xxSchema = z.unknown();
 
 export const listBackupsStatusDefaultSchema = z.unknown();
 
@@ -3623,7 +3631,7 @@ export const listBackupsErrorSchema = z.union([
   listBackupsStatus400Schema,
   listBackupsStatus401Schema,
   listBackupsStatus404Schema,
-  listBackupsStatus5XXSchema,
+  listBackupsStatus5xxSchema,
   listBackupsStatusDefaultSchema
 ]);
 
@@ -3659,7 +3667,7 @@ export const getBackupStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const getBackupStatus5XXSchema = z.unknown();
+export const getBackupStatus5xxSchema = z.unknown();
 
 export const getBackupStatusDefaultSchema = z.unknown();
 
@@ -3669,7 +3677,7 @@ export const getBackupErrorSchema = z.union([
   getBackupStatus400Schema,
   getBackupStatus401Schema,
   getBackupStatus404Schema,
-  getBackupStatus5XXSchema,
+  getBackupStatus5xxSchema,
   getBackupStatusDefaultSchema
 ]);
 
@@ -3706,7 +3714,7 @@ export const listBranchesStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const listBranchesStatus5XXSchema = z.unknown();
+export const listBranchesStatus5xxSchema = z.unknown();
 
 export const listBranchesStatusDefaultSchema = z.unknown();
 
@@ -3716,7 +3724,7 @@ export const listBranchesErrorSchema = z.union([
   listBranchesStatus400Schema,
   listBranchesStatus401Schema,
   listBranchesStatus404Schema,
-  listBranchesStatus5XXSchema,
+  listBranchesStatus5xxSchema,
   listBranchesStatusDefaultSchema
 ]);
 
@@ -3757,7 +3765,7 @@ export const createBranchStatus412Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the precondition failure')
 });
 
-export const createBranchStatus5XXSchema = z.unknown();
+export const createBranchStatus5xxSchema = z.unknown();
 
 export const createBranchStatusDefaultSchema = z.unknown();
 
@@ -3768,7 +3776,7 @@ export const createBranchErrorSchema = z.union([
   createBranchStatus401Schema,
   createBranchStatus404Schema,
   createBranchStatus412Schema,
-  createBranchStatus5XXSchema,
+  createBranchStatus5xxSchema,
   createBranchStatusDefaultSchema
 ]);
 
@@ -3812,7 +3820,7 @@ export const describeBranchStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const describeBranchStatus5XXSchema = z.unknown();
+export const describeBranchStatus5xxSchema = z.unknown();
 
 export const describeBranchStatusDefaultSchema = z.unknown();
 
@@ -3822,7 +3830,7 @@ export const describeBranchErrorSchema = z.union([
   describeBranchStatus400Schema,
   describeBranchStatus401Schema,
   describeBranchStatus404Schema,
-  describeBranchStatus5XXSchema,
+  describeBranchStatus5xxSchema,
   describeBranchStatusDefaultSchema
 ]);
 
@@ -3861,7 +3869,7 @@ export const updateBranchStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const updateBranchStatus5XXSchema = z.unknown();
+export const updateBranchStatus5xxSchema = z.unknown();
 
 export const updateBranchStatusDefaultSchema = z.unknown();
 
@@ -3871,7 +3879,7 @@ export const updateBranchErrorSchema = z.union([
   updateBranchStatus400Schema,
   updateBranchStatus401Schema,
   updateBranchStatus404Schema,
-  updateBranchStatus5XXSchema,
+  updateBranchStatus5xxSchema,
   updateBranchStatusDefaultSchema
 ]);
 
@@ -3912,7 +3920,7 @@ export const deleteBranchStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const deleteBranchStatus5XXSchema = z.unknown();
+export const deleteBranchStatus5xxSchema = z.unknown();
 
 export const deleteBranchStatusDefaultSchema = z.unknown();
 
@@ -3922,7 +3930,7 @@ export const deleteBranchErrorSchema = z.union([
   deleteBranchStatus400Schema,
   deleteBranchStatus401Schema,
   deleteBranchStatus404Schema,
-  deleteBranchStatus5XXSchema,
+  deleteBranchStatus5xxSchema,
   deleteBranchStatusDefaultSchema
 ]);
 
@@ -3963,7 +3971,7 @@ export const getBranchCredentialsStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const getBranchCredentialsStatus5XXSchema = z.unknown();
+export const getBranchCredentialsStatus5xxSchema = z.unknown();
 
 export const getBranchCredentialsStatusDefaultSchema = z.unknown();
 
@@ -3973,7 +3981,7 @@ export const getBranchCredentialsErrorSchema = z.union([
   getBranchCredentialsStatus400Schema,
   getBranchCredentialsStatus401Schema,
   getBranchCredentialsStatus404Schema,
-  getBranchCredentialsStatus5XXSchema,
+  getBranchCredentialsStatus5xxSchema,
   getBranchCredentialsStatusDefaultSchema
 ]);
 
@@ -4014,7 +4022,7 @@ export const rotateBranchCredentialsStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const rotateBranchCredentialsStatus5XXSchema = z.unknown();
+export const rotateBranchCredentialsStatus5xxSchema = z.unknown();
 
 export const rotateBranchCredentialsStatusDefaultSchema = z.unknown();
 
@@ -4024,7 +4032,7 @@ export const rotateBranchCredentialsErrorSchema = z.union([
   rotateBranchCredentialsStatus400Schema,
   rotateBranchCredentialsStatus401Schema,
   rotateBranchCredentialsStatus404Schema,
-  rotateBranchCredentialsStatus5XXSchema,
+  rotateBranchCredentialsStatus5xxSchema,
   rotateBranchCredentialsStatusDefaultSchema
 ]);
 
@@ -4063,7 +4071,7 @@ export const branchMetricsStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const branchMetricsStatus5XXSchema = z.unknown();
+export const branchMetricsStatus5xxSchema = z.unknown();
 
 export const branchMetricsStatusDefaultSchema = z.unknown();
 
@@ -4073,7 +4081,7 @@ export const branchMetricsErrorSchema = z.union([
   branchMetricsStatus400Schema,
   branchMetricsStatus401Schema,
   branchMetricsStatus404Schema,
-  branchMetricsStatus5XXSchema,
+  branchMetricsStatus5xxSchema,
   branchMetricsStatusDefaultSchema
 ]);
 
@@ -4121,7 +4129,7 @@ export const restoreFromBackupStatus412Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the precondition failure')
 });
 
-export const restoreFromBackupStatus5XXSchema = z.unknown();
+export const restoreFromBackupStatus5xxSchema = z.unknown();
 
 export const restoreFromBackupStatusDefaultSchema = z.unknown();
 
@@ -4132,7 +4140,7 @@ export const restoreFromBackupErrorSchema = z.union([
   restoreFromBackupStatus401Schema,
   restoreFromBackupStatus404Schema,
   restoreFromBackupStatus412Schema,
-  restoreFromBackupStatus5XXSchema,
+  restoreFromBackupStatus5xxSchema,
   restoreFromBackupStatusDefaultSchema
 ]);
 
@@ -4171,7 +4179,7 @@ export const branchLogsStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const branchLogsStatus5XXSchema = z.unknown();
+export const branchLogsStatus5xxSchema = z.unknown();
 
 export const branchLogsStatusDefaultSchema = z.unknown();
 
@@ -4181,7 +4189,7 @@ export const branchLogsErrorSchema = z.union([
   branchLogsStatus400Schema,
   branchLogsStatus401Schema,
   branchLogsStatus404Schema,
-  branchLogsStatus5XXSchema,
+  branchLogsStatus5xxSchema,
   branchLogsStatusDefaultSchema
 ]);
 
@@ -4224,7 +4232,7 @@ export const getBranchPostgresConfigStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const getBranchPostgresConfigStatus5XXSchema = z.unknown();
+export const getBranchPostgresConfigStatus5xxSchema = z.unknown();
 
 export const getBranchPostgresConfigStatusDefaultSchema = z.unknown();
 
@@ -4234,7 +4242,7 @@ export const getBranchPostgresConfigErrorSchema = z.union([
   getBranchPostgresConfigStatus400Schema,
   getBranchPostgresConfigStatus401Schema,
   getBranchPostgresConfigStatus404Schema,
-  getBranchPostgresConfigStatus5XXSchema,
+  getBranchPostgresConfigStatus5xxSchema,
   getBranchPostgresConfigStatusDefaultSchema
 ]);
 
@@ -4262,7 +4270,7 @@ export const listGithubAppInstallationsStatus401Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-export const listGithubAppInstallationsStatus5XXSchema = z.unknown();
+export const listGithubAppInstallationsStatus5xxSchema = z.unknown();
 
 export const listGithubAppInstallationsStatusDefaultSchema = z.unknown();
 
@@ -4271,7 +4279,7 @@ export const listGithubAppInstallationsResponseSchema = listGithubAppInstallatio
 export const listGithubAppInstallationsErrorSchema = z.union([
   listGithubAppInstallationsStatus400Schema,
   listGithubAppInstallationsStatus401Schema,
-  listGithubAppInstallationsStatus5XXSchema,
+  listGithubAppInstallationsStatus5xxSchema,
   listGithubAppInstallationsStatusDefaultSchema
 ]);
 
@@ -4302,7 +4310,7 @@ export const createGithubAppInstallationStatus409Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const createGithubAppInstallationStatus5XXSchema = z.unknown();
+export const createGithubAppInstallationStatus5xxSchema = z.unknown();
 
 export const createGithubAppInstallationStatusDefaultSchema = z.unknown();
 
@@ -4312,7 +4320,7 @@ export const createGithubAppInstallationErrorSchema = z.union([
   createGithubAppInstallationStatus400Schema,
   createGithubAppInstallationStatus401Schema,
   createGithubAppInstallationStatus409Schema,
-  createGithubAppInstallationStatus5XXSchema,
+  createGithubAppInstallationStatus5xxSchema,
   createGithubAppInstallationStatusDefaultSchema
 ]);
 
@@ -4354,7 +4362,7 @@ export const updateGithubAppInstallationStatus409Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const updateGithubAppInstallationStatus5XXSchema = z.unknown();
+export const updateGithubAppInstallationStatus5xxSchema = z.unknown();
 
 export const updateGithubAppInstallationStatusDefaultSchema = z.unknown();
 
@@ -4365,7 +4373,7 @@ export const updateGithubAppInstallationErrorSchema = z.union([
   updateGithubAppInstallationStatus401Schema,
   updateGithubAppInstallationStatus404Schema,
   updateGithubAppInstallationStatus409Schema,
-  updateGithubAppInstallationStatus5XXSchema,
+  updateGithubAppInstallationStatus5xxSchema,
   updateGithubAppInstallationStatusDefaultSchema
 ]);
 
@@ -4385,7 +4393,9 @@ export const getGithubRepositoryPathProjectIDSchema = z.string().describe('Uniqu
 export const getGithubRepositoryPathBranchIDSchema = z.string().describe('Unique identifier of the branch');
 
 export const getGithubRepositoryStatus200Schema = z.object({
-  mapping: z.union([githubRepositorySchema, z.null()]).describe('Repository mapping details, null if no mapping exists')
+  mapping: z
+    .union([githubRepositorySchema, z.null().nullable()])
+    .describe('Repository mapping details, null if no mapping exists')
 });
 
 export const getGithubRepositoryStatus400Schema = z.object({
@@ -4398,7 +4408,7 @@ export const getGithubRepositoryStatus401Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the authentication or authorization issue')
 });
 
-export const getGithubRepositoryStatus5XXSchema = z.unknown();
+export const getGithubRepositoryStatus5xxSchema = z.unknown();
 
 export const getGithubRepositoryStatusDefaultSchema = z.unknown();
 
@@ -4407,7 +4417,7 @@ export const getGithubRepositoryResponseSchema = getGithubRepositoryStatus200Sch
 export const getGithubRepositoryErrorSchema = z.union([
   getGithubRepositoryStatus400Schema,
   getGithubRepositoryStatus401Schema,
-  getGithubRepositoryStatus5XXSchema,
+  getGithubRepositoryStatus5xxSchema,
   getGithubRepositoryStatusDefaultSchema
 ]);
 
@@ -4444,7 +4454,7 @@ export const createGithubRepositoryStatus409Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const createGithubRepositoryStatus5XXSchema = z.unknown();
+export const createGithubRepositoryStatus5xxSchema = z.unknown();
 
 export const createGithubRepositoryStatusDefaultSchema = z.unknown();
 
@@ -4454,7 +4464,7 @@ export const createGithubRepositoryErrorSchema = z.union([
   createGithubRepositoryStatus400Schema,
   createGithubRepositoryStatus401Schema,
   createGithubRepositoryStatus409Schema,
-  createGithubRepositoryStatus5XXSchema,
+  createGithubRepositoryStatus5xxSchema,
   createGithubRepositoryStatusDefaultSchema
 ]);
 
@@ -4493,7 +4503,7 @@ export const updateGithubRepositoryStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const updateGithubRepositoryStatus5XXSchema = z.unknown();
+export const updateGithubRepositoryStatus5xxSchema = z.unknown();
 
 export const updateGithubRepositoryStatusDefaultSchema = z.unknown();
 
@@ -4503,7 +4513,7 @@ export const updateGithubRepositoryErrorSchema = z.union([
   updateGithubRepositoryStatus400Schema,
   updateGithubRepositoryStatus401Schema,
   updateGithubRepositoryStatus404Schema,
-  updateGithubRepositoryStatus5XXSchema,
+  updateGithubRepositoryStatus5xxSchema,
   updateGithubRepositoryStatusDefaultSchema
 ]);
 
@@ -4540,7 +4550,7 @@ export const deleteGithubRepositoryStatus404Schema = z.object({
   message: z.string().describe('Human-readable error message explaining the issue')
 });
 
-export const deleteGithubRepositoryStatus5XXSchema = z.unknown();
+export const deleteGithubRepositoryStatus5xxSchema = z.unknown();
 
 export const deleteGithubRepositoryStatusDefaultSchema = z.unknown();
 
@@ -4550,7 +4560,7 @@ export const deleteGithubRepositoryErrorSchema = z.union([
   deleteGithubRepositoryStatus400Schema,
   deleteGithubRepositoryStatus401Schema,
   deleteGithubRepositoryStatus404Schema,
-  deleteGithubRepositoryStatus5XXSchema,
+  deleteGithubRepositoryStatus5xxSchema,
   deleteGithubRepositoryStatusDefaultSchema
 ]);
 
