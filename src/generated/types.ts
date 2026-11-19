@@ -1757,6 +1757,11 @@ export type BranchShortMetadata = {
    * @type boolean
    */
   publicAccess: boolean;
+  /**
+   * @description Whether backups are enabled for the newly created branch. Only set in responses to branch creation.
+   * @type boolean | undefined
+   */
+  backupsEnabled?: boolean | undefined;
 };
 
 /**
@@ -1809,7 +1814,7 @@ export type BranchListMetadata = {
    */
   publicAccess: boolean;
   /**
-   * @description Whether the branch is in a region that supports backups
+   * @description Whether the branch's region supports backups. A branch can still have backups disabled; see the branch details for its actual state.
    * @type boolean
    */
   backupsEnabled: boolean;
@@ -2017,7 +2022,7 @@ export type BranchMetadata = {
    */
   publicAccess: boolean;
   /**
-   * @description Whether the branch is in a region that supports backups
+   * @description Whether backups are enabled for this branch
    * @type boolean
    */
   backupsEnabled: boolean;

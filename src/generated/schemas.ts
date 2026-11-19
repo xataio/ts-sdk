@@ -701,7 +701,11 @@ export const branchShortMetadataSchema = z
         'Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead. The hostname in this connection string carries a -deprecated marker in its first DNS label.'
       ),
     region: z.string().describe('Geographic region where the branch is deployed'),
-    publicAccess: z.boolean().describe('Whether the branch allows public access without authentication')
+    publicAccess: z.boolean().describe('Whether the branch allows public access without authentication'),
+    backupsEnabled: z
+      .boolean()
+      .optional()
+      .describe('Whether backups are enabled for the newly created branch. Only set in responses to branch creation.')
   })
   .describe('Basic metadata about a branch, used in response to create/update operations');
 
@@ -718,7 +722,11 @@ export const branchListMetadataSchema = z
       .describe('Identifier of the parent branch if this is a derived branch, null otherwise'),
     region: z.string().describe('Geographic region where the branch is deployed'),
     publicAccess: z.boolean().describe('Whether the branch allows public access without authentication'),
-    backupsEnabled: z.boolean().describe('Whether the branch is in a region that supports backups')
+    backupsEnabled: z
+      .boolean()
+      .describe(
+        "Whether the branch's region supports backups. A branch can still have backups disabled; see the branch details for its actual state."
+      )
   })
   .describe('Metadata about a branch used when listing branches in a project');
 
@@ -809,7 +817,7 @@ export const branchMetadataSchema = z
         'Deprecated: retrieve the connection string from the branch credentials endpoint (GET .../branches/{branchID}/credentials) instead. The hostname in this connection string carries a -deprecated marker in its first DNS label.'
       ),
     publicAccess: z.boolean().describe('Whether the branch allows public access without authentication'),
-    backupsEnabled: z.boolean().describe('Whether the branch is in a region that supports backups'),
+    backupsEnabled: z.boolean().describe('Whether backups are enabled for this branch'),
     scaleToZero: scaleToZeroConfigurationSchema.describe('Configuration for scaling branches to zero when not in use'),
     configuration: clusterConfigurationSchema.describe('Configuration details for a database cluster backing a branch'),
     backupConfiguration: backupConfigurationSchema
