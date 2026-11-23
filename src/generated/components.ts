@@ -2631,7 +2631,7 @@ export async function branchMetrics({
 
 /**
  * @summary Create a new branch from a backup of another branch
- * @description Creates a new branch from the continuous backup of the source branch. The source branch does not change. The new branch is created in the region and cell of the source branch, and its parentID is the source branch.
+ * @description Creates a new branch from the continuous backup of the source branch. The source branch does not change. The new branch is created in the region and cell of the source branch, and its parentID is the source branch. Returns 412 if the backups of the source branch cannot be restored to a new branch.
  * {@link /organizations/:organizationID/projects/:projectID/branches/:branchID/restore}
  */
 export async function restoreFromBackup({
